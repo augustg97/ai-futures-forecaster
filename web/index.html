@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Forecast Works</title>
+<style>
+  :root {
+    --board: #efece4;
+    --ink: #23262e;
+    --dim: #8b8578;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; background: var(--board); overflow: hidden;
+    font: 13px/1.5 "Avenir Next Condensed", "Roboto Condensed", "Arial Narrow",
+          system-ui, sans-serif; }
+
+  #board { position: fixed; inset: 0; cursor: grab; }
+  #board.dragging { cursor: grabbing; }
+  canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  /* Ink multiplies into the paper, so it darkens the tooth rather than sitting on top of it. */
+  #ink { mix-blend-mode: multiply; }
+
+  /* The only chrome: a masthead and the chip that names what is under the cursor. Everything
+     else — controls included — is drawn on the sheet, in ink, in millimetres. */
+  #mast { position: absolute; top: 20px; left: 24px; color: #6b6152; font-size: 10px;
+    letter-spacing: .26em; text-transform: uppercase; pointer-events: none; z-index: 30; }
+  #hint { position: absolute; top: 20px; right: 24px; color: #948b7c; font-size: 9.5px;
+    letter-spacing: .16em; text-transform: uppercase; pointer-events: none; z-index: 30;
+    text-align: right; line-height: 1.7; }
+  #chip { position: absolute; pointer-events: none; display: none; z-index: 40;
+    background: rgba(20,17,13,.93); color: #e8e2d4; padding: 5px 9px;
+    font-size: 10.5px; letter-spacing: .05em; white-space: nowrap; max-width: 340px; }
+  #chip b { display: block; font-size: 9px; letter-spacing: .2em; text-transform: uppercase;
+    color: #c8a24a; font-weight: 700; margin-bottom: 2px; }
+</style>
+</head>
+<body>
+<div id="board">
+  <canvas id="sheet"></canvas>
+  <canvas id="ink"></canvas>
+</div>
+<div id="mast">reading the forecast…</div>
+<div id="hint">drag to pan · scroll to zoom · f to fit<br>1–5 plates · click a mark for its note</div>
+<div id="chip"></div>
+<script>window.__BUILD = "DEV";</script>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

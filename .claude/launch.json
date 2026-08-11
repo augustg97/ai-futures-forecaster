@@ -1,0 +1,14 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "forecast-works",
+      "runtimeExecutable": "/usr/bin/python3",
+      "runtimeArgs": [
+        "/Users/augustgweon/Forecast Works/build/serve.py",
+        "8154"
+      ],
+      "port": 8154
+    }
+  ]
+}

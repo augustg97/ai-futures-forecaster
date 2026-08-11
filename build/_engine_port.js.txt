@@ -1,0 +1,221 @@
+function xmap(y,L,R){
+  const w=R-L, split=L+w*0.66;
+  return y<=2040 ? L+(y-2012)/(2040-2012)*(split-L)
+                 : split+(y-2040)/(2100-2040)*(R-split);
+}
+function xinv(x,L,R){
+  const w=R-L, split=L+w*0.66;
+  return x<=split ? 2012+(x-L)/(split-L)*(2040-2012)
+                  : 2040+(x-split)/(R-split)*(2100-2040);
+}
+
+/* ---------- deterministic PRNG (client instantiation) ---------- */
+function mulberry32(a){ return function(){ a|=0; a=a+0x6D2B79F5|0;
+  let t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t;
+  return ((t^t>>>14)>>>0)/4294967296; }; }
+
+/* ---------- engine functions against shipped constants ---------- */
+function capPath(wl){
+  const kn = D.engine.tempo_knots[wl.T].map(k=>k.slice());
+  let knots = kn;
+  if (wl.C==="C3" && (wl.T==="T2"||wl.T==="T3")){
+    const held = knots.filter(k=>k[1]<=4.0);
+    held.push([2040.0,4.0]);
+    const resume = knots.filter(k=>k[1]>4.0).map(k=>[k[0]+7.5,k[1]]);
+    knots = held.concat(resume.filter(k=>k[0]>2040.0));
+  } else if (wl.A==="A2" && (wl.T==="T1"||wl.T==="T2")){
+    knots = knots.map(k=> k[1]>=4.0 ? [k[0]+0.8,k[1]] : k);
+  }
+  if (knots[knots.length-1][0] < D.engine.y1)
+    knots.push([D.engine.y1, knots[knots.length-1][1]]);
+  return knots;
+}
+function capAt(knots,y){
+  if (y<=knots[0][0]) return knots[0][1];
+  if (y>=knots[knots.length-1][0]) return knots[knots.length-1][1];
+  let i=1; while(knots[i][0]<y) i++;
+  const [y0,v0]=knots[i-1],[y1,v1]=knots[i];
+  return v0+(v1-v0)*(y-y0)/(y1-y0);
+}
+function tracksJS(wl){
+  const P = D.engine.track_params;
+  const kn = capPath(wl);
+  let gw=62.0, us=0.58, cn=0.22, eu=0.05, rev=0.14, jobs=0.0,
+      laws=61, appr=P.APPROVAL0[wl.P];
+  const out={year:[],cap:[],gw:[],us:[],cn:[],eu:[],rev:[],jobs:[],laws:[],
+             appr:[],copies:[],speed:[]};
+  for (let y=D.engine.y0; y<=D.engine.y1; y++){
+    const c=capAt(kn,y);
+    let g=P.COMPUTE_G[wl.S]*P.E_DAMP[wl.E];
+    g=1.0+(g-1.0)*(1.0/(1.0+Math.max(0,gw/8000.0)));
+    gw=Math.min(60000.0,gw*g);
+    if (wl.C==="C2") us=Math.min(0.72,us+0.004);
+    if (wl.C==="C3"){ us=Math.max(0.44,us-0.003); cn=Math.min(0.30,cn+0.002); }
+    if (wl.C==="C4") eu=Math.min(0.16,eu+0.0025);
+    cn=Math.min(0.34,cn+(wl.S!=="S3"?0.003:0.000));
+    const lift=1.0+0.10*Math.max(0,c-2.6);
+    const rg=1.0+(P.REV_G[wl.D]-1.0)*lift;
+    rev=Math.min(30.0,rev*(1.0+(rg-1.0)/(1.0+rev/6.0)));
+    jobs=Math.max(-35.0,jobs+P.JOBS_RATE[wl.D]*Math.min(2.5,Math.max(0.3,c-2.0)));
+    laws=laws+P.LAWS_RATE[wl.C];
+    appr+=(wl.D==="D1"?-1.2:-0.3)+(wl.C==="C3"?0.8:0.0);
+    appr=Math.max(8,Math.min(72,appr));
+    const copies=c<3.0?0:Math.min(5e7,2.2e4*Math.pow(10,1.1*(c-3.0)));
+    const speed=c<3.0?1:Math.min(1000,Math.floor(13*Math.pow(5.5,c-3.0)));
+    out.year.push(y); out.cap.push(c); out.gw.push(gw);
+    out.us.push(us); out.cn.push(cn); out.eu.push(eu);
+    out.rev.push(rev); out.jobs.push(jobs); out.laws.push(laws|0);
+    out.appr.push(appr); out.copies.push(copies|0); out.speed.push(speed|0);
+  }
+  return out;
+}
+function instantiateJS(wl, seed){
+  const rng = mulberry32(seed);
+  const kn = capPath(wl);
+  const evs=[];
+  for (const t of D.engine.templates){
+    let ok=true;
+    for (const ax in t.req) if (!t.req[ax].includes(wl[ax])) ok=false;
+    if (!ok || rng() > t.p) continue;
+    let year = t.w[0] + (t.w[1]-t.w[0])*Math.pow(rng(),1.3);
+    if (t.tie==="cap>=3"){ const k=kn.find(k=>k[1]>=3.0); year=k?k[0]:null; }
+    if (t.tie==="cap>=4"){ const k=kn.find(k=>k[1]>=4.0); year=k?k[0]:null; }
+    if (year===null || year>D.engine.y1) continue;
+    let txt = t.text.replace("{year}", String(Math.floor(year)))
+                    .replace("{survives}", wl.E==="E2"?"survives":"stalls");
+    evs.push({year:Math.round(year*10)/10, layer:t.layer, text:txt,
+              cites:t.cites});
+  }
+  evs.sort((a,b)=>a.year-b.year);
+  return evs;
+}
+/* ancestral sampler with conditionals; pins = do-semantics */
+function sampleOne(rng, weights, pinned){
+  const wl={};
+  for (const a of D.network.axes){
+    const k=a.key;
+    if (pinned[k]){ wl[k]=pinned[k]; continue; }
+    const w={};
+    for (const p of a.positions) w[p[0]] = weights[k][p[0]];
+    const cond = D.network.conditionals[k]||{};
+    for (const par in cond)
+      if (Object.values(wl).includes(par))
+        for (const pos in cond[par]) if (w[pos]!==undefined) w[pos]*=cond[par][pos];
+    const tot=Object.values(w).reduce((x,y)=>x+y,0);
+    let r=rng()*tot, chosen=null;
+    for (const pos in w){ r-=w[pos]; if(r<=0){ chosen=pos; break; } }
+    wl[k]=chosen||Object.keys(w)[0];
+  }
+  return wl;
+}
+function jointP(wl, weights){
+  let p=1.0; const chosen={};
+  for (const a of D.network.axes){
+    const k=a.key, w={};
+    for (const q of a.positions) w[q[0]]=weights[k][q[0]];
+    const cond=D.network.conditionals[k]||{};
+    for (const par in cond)
+      if (Object.values(chosen).includes(par))
+        for (const pos in cond[par]) if(w[pos]!==undefined) w[pos]*=cond[par][pos];
+    const tot=Object.values(w).reduce((x,y)=>x+y,0);
+    p*=w[wl[k]]/tot; chosen[k]=wl[k];
+  }
+  return p;
+}
+function argmaxLine(weights, pinned){
+  const keys=D.network.axes.map(a=>a.key);
+  const posl=D.network.axes.map(a=>a.positions.map(p=>p[0]));
+  let best=null,bp=-1;
+  const rec=(i,wl)=>{
+    if (i===keys.length){ const p=jointP(wl,weights);
+      if(p>bp){bp=p;best={...wl};} return; }
+    const k=keys[i];
+    const opts=pinned[k]?[pinned[k]]:posl[i];
+    for (const o of opts){ wl[k]=o; rec(i+1,wl); }
+  };
+  rec(0,{});
+  return [best,bp];
+}
+function marginalsOf(lines){
+  const m={};
+  for (const wl of lines) for (const k in wl){
+    m[k]=m[k]||{}; m[k][wl[k]]=(m[k][wl[k]]||0)+1; }
+  for (const k in m){ const n=Object.values(m[k]).reduce((a,b)=>a+b,0);
+    for (const p in m[k]) m[k][p]/=n; }
+  return m;
+}
+function bandsOf(lines){
+  const yrs=[]; for(let y=D.engine.y0;y<=D.engine.y1;y++) yrs.push(y);
+  const paths=lines.map(wl=>{ const k=capPath(wl);
+    return yrs.map(y=>capAt(k,y)); });
+  const out={year:yrs};
+  for (const p of [10,25,50,75,90]) out["p"+p]=[];
+  for (let c=0;c<yrs.length;c++){
+    const vals=paths.map(pt=>pt[c]).sort((a,b)=>a-b);
+    for (const p of [10,25,50,75,90])
+      out["p"+p].push(vals[Math.floor(vals.length*p/100)]);
+  }
+  return out;
+}
+
+/* ---------- conditioning ---------- */
+function baseWeights(){
+  const w={};
+  for (const a of D.network.axes){ w[a.key]={};
+    for (const p of a.positions) w[a.key][p[0]]=p[2]; }
+  return w;
+}
+function recondition(){
+  S.alt = null; $("altBack").style.display = "none";
+  const pins=Object.keys(S.pin);
+  if (!pins.length){ condCache=null; refreshAll(); return; }
+  const w=baseWeights();
+  let lines, mode;
+  if (S.obs && D.ens2k){
+    const filt=D.ens2k.lines.filter(wl=>pins.every(k=>wl[k]===S.pin[k]));
+    if (filt.length>=40){ lines=filt; mode="observed "+filt.length+" of 2000 lines"; }
+  }
+  if (!lines){
+    const rng=mulberry32(4242);
+    lines=[]; for(let i=0;i<3000;i++) lines.push(sampleOne(rng,w,S.pin));
+    mode=(S.obs?"observation unavailable (too few matching lines) — ":"")+
+         "do-mode · 3000 resampled";
+  }
+  const [ml]=argmaxLine(w,S.pin);
+  condCache={lines, mode, marginals:marginalsOf(lines), bands:bandsOf(lines),
+             main:ml, tracks:tracksJS(ml), events:instantiateJS(ml,20260731)};
+  refreshAll();
+}
+function altLine(){ return (S.alt!==null && D.exemplars)?
+  D.exemplars.lines[S.alt] : null; }
+function activeMain(){ const a=altLine(); return a?a.wl:
+  (condCache?condCache.main:D.mainline.wl); }
+function activeTracks(){ const a=altLine(); return a?a.tracks:
+  (condCache?condCache.tracks:D.mainline.tracks); }
+function activeEvents(){ const a=altLine(); return a?a.events:
+  (condCache?condCache.events:D.mainline.events); }
+function activeLayers(){ const a=altLine(); if(a&&a.layers) return a.layers;
+  if(condCache) return layersJS(condCache.main);
+  return D.mainline.layers||{}; }
+function activeMarginals(){ return condCache?condCache.marginals:D.marginals.today; }
+/* client-side outcome matrix for composed lines: engine ships the matrix
+   implicitly through mainline/exemplars; composed lines reuse the nearest
+   shipped source — the mainline's matrix filtered is wrong, so we ship a
+   minimal JS mirror of the matching rule against engine data when needed */
+function layersJS(wl){
+  /* exemplars carry precomputed layers; composed lines borrow the closest
+     exemplar (same T and C when possible) — labelled in the panel */
+  if (!D.exemplars) return D.mainline.layers||{};
+  let best=null, bs=-1;
+  for (const e of D.exemplars.lines){
+    let s=0; for (const k in wl) if (e.wl[k]===wl[k]) s++;
+    if (e.wl.T===wl.T) s+=2;
+    if (e.wl.C===wl.C) s+=2;
+    if (s>bs){bs=s;best=e;}
+  }
+  return best?best.layers:(D.mainline.layers||{});
+}
+
+/* ---------- data ---------- */
+const J = n => fetch("data/forecast/"+n+"?v="+DATA_V).then(r=>{
+  if(!r.ok) throw new Error(n); return r.json(); });
