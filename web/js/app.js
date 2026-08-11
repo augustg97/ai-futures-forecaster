@@ -320,8 +320,17 @@ function axisNotes(a) {
     }
   }
   if (inter.length) secs.push({ h: 'How this axis interacts', p: inter });
-  if (a.subaxes && a.subaxes.length) {
-    secs.push({ h: 'Sub-axes', p: [a.subaxes.map((s) => s.name || s.key).join(' · ')] });
+  // A sub-axis carrying `origin` was added by the parent's weekly schema review, not by the
+  // draughtsman. It is uncited and unapproved, so it is not drawn as though it were authored.
+  const subs = a.subaxes || [];
+  const drawn = subs.filter((s) => !s.origin), prov = subs.filter((s) => s.origin);
+  if (drawn.length) {
+    secs.push({ h: 'Sub-axes', p: [drawn.map((s) => s.name || s.key).join(' · ')] });
+  }
+  if (prov.length) {
+    secs.push({ h: 'Sub-axes — provisional, not approved', p: prov.map(
+      (s) => `${s.key} · ${s.name || ''} — added by the schema review itself, uncited and ` +
+             `awaiting the draughtsman's approval. Logged as: ${s.origin}`) });
   }
   secs.push({ h: 'Grounding', p: [(a.cites || []).concat(
     a.positions.flatMap((p) => p[3] || [])).slice(0, 14).join(' · ')] });

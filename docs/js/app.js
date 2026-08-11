@@ -5,9 +5,9 @@
 // on that instrument. It reads the same emitted data and implements the same functions against
 // the same shipped constants (`engine.json`), so the two surfaces cannot drift apart.
 
-import { Draft, PEN, INK, drawPaper } from './draft.js?v=20260811-1130';
-import { PLATES, SHEET, ZONE, drawPlate, fmtDate } from './plates.js?v=20260811-1130';
-import { dial, column, strip, fmtNum } from './instruments.js?v=20260811-1130';
+import { Draft, PEN, INK, drawPaper } from './draft.js?v=20260811-1347';
+import { PLATES, SHEET, ZONE, drawPlate, fmtDate } from './plates.js?v=20260811-1347';
+import { dial, column, strip, fmtNum } from './instruments.js?v=20260811-1347';
 
 // One build number, injected into index.html at ship time, versions BOTH the data fetches and
 // (via the build's import rewrite) every module. A fresh app.js against a stale draft.js is the
@@ -320,8 +320,17 @@ function axisNotes(a) {
     }
   }
   if (inter.length) secs.push({ h: 'How this axis interacts', p: inter });
-  if (a.subaxes && a.subaxes.length) {
-    secs.push({ h: 'Sub-axes', p: [a.subaxes.map((s) => s.name || s.key).join(' · ')] });
+  // A sub-axis carrying `origin` was added by the parent's weekly schema review, not by the
+  // draughtsman. It is uncited and unapproved, so it is not drawn as though it were authored.
+  const subs = a.subaxes || [];
+  const drawn = subs.filter((s) => !s.origin), prov = subs.filter((s) => s.origin);
+  if (drawn.length) {
+    secs.push({ h: 'Sub-axes', p: [drawn.map((s) => s.name || s.key).join(' · ')] });
+  }
+  if (prov.length) {
+    secs.push({ h: 'Sub-axes — provisional, not approved', p: prov.map(
+      (s) => `${s.key} · ${s.name || ''} — added by the schema review itself, uncited and ` +
+             `awaiting the draughtsman's approval. Logged as: ${s.origin}`) });
   }
   secs.push({ h: 'Grounding', p: [(a.cites || []).concat(
     a.positions.flatMap((p) => p[3] || [])).slice(0, 14).join(' · ')] });

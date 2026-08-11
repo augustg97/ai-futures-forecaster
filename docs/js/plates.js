@@ -6,8 +6,8 @@
 // right; and the behaviour traces run the width of the centre beneath the view. Every plate
 // uses these zones, so a new sheet inherits the composition instead of inventing one.
 
-import { PEN, INK, Draft } from './draft.js?v=20260811-1130';
-import { dial, column, annunciator, manifold, strip, tally, fmtNum } from './instruments.js?v=20260811-1130';
+import { PEN, INK, Draft } from './draft.js?v=20260811-1347';
+import { dial, column, annunciator, manifold, strip, tally, fmtNum } from './instruments.js?v=20260811-1347';
 
 export const SHEET = [841, 594];
 
