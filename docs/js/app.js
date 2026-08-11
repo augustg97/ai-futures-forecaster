@@ -5,9 +5,9 @@
 // on that instrument. It reads the same emitted data and implements the same functions against
 // the same shipped constants (`engine.json`), so the two surfaces cannot drift apart.
 
-import { Draft, PEN, INK, drawPaper } from './draft.js?v=20260811-0146';
-import { PLATES, SHEET, ZONE, drawPlate, fmtDate } from './plates.js?v=20260811-0146';
-import { dial, column, strip, fmtNum } from './instruments.js?v=20260811-0146';
+import { Draft, PEN, INK, drawPaper } from './draft.js?v=20260811-1130';
+import { PLATES, SHEET, ZONE, drawPlate, fmtDate } from './plates.js?v=20260811-1130';
+import { dial, column, strip, fmtNum } from './instruments.js?v=20260811-1130';
 
 // One build number, injected into index.html at ship time, versions BOTH the data fetches and
 // (via the build's import rewrite) every module. A fresh app.js against a stale draft.js is the
