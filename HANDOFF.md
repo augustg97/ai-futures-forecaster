@@ -30,7 +30,17 @@ pass before this publishes, and the client's climate constants are EXTRACTED fro
   alternatives browser, date index, hover chips, per-mark note selection driving the notes
   column, hash state, pan/zoom/fit.
 - Nightly: `build/nightly.sh` + a scheduled task at 11:20 local, after the Atlas's 10:47 run.
-- Data as shipped: network `r2-2026-08-06`, read `2026-08-10`.
+- Data as shipped: network `r2-2026-08-06`, read `2026-08-11`.
+- Axis notes separate AUTHORED sub-axes from PROVISIONAL ones — a sub-axis carrying `origin`
+  was written by the parent's weekly schema review, is uncited, and is drawn under its own
+  "provisional, not approved" heading with the origin printed verbatim (added 2026-08-11).
+
+## A trap the parent sets
+
+`network.version` is NOT a sufficient change detector. On 2026-08-10 the Atlas's weekly schema
+review added `C.watch-federal` and `E.watch-ai` on its own, left `version` at `r2-2026-08-06`,
+and added no changelog entry. A version comparison reports "no change" while the registry has
+grown. Diff the axis and sub-axis KEYS, not just the version string.
 
 ## Known gaps, honestly
 
