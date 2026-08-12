@@ -42,12 +42,22 @@ review added `C.watch-federal` and `E.watch-ai` on its own, left `version` at `r
 and added no changelog entry. A version comparison reports "no change" while the registry has
 grown. Diff the axis and sub-axis KEYS, not just the version string.
 
-## Known gaps, honestly
+## The audit and the frame budget (2026-08-11, second round)
 
-- **No collision audit yet.** The Systems Works records every text box and reports overlaps;
-  this sheet does not, so a dense plate can overprint without anything saying so. That is the
-  first thing to build (their §5 is the model: record the box BEFORE the legibility cull, make
-  solid marks declare themselves obstacles, sweep every plate at fitted zoom).
+- **The collision audit is built and clean.** `__FW.auditSweep()` in the console draws all five
+  plates at four dates plus seven selections with lettering recorded, and reports text/text,
+  text-on-solid, off-sheet and column overflow. **27 cases, 211–299 marks each, 0/0/0.**
+  It earned that zero: on first run it found **88 collisions** on the details band (the
+  manifold's readings sat in the panel's own sub-caption; the dials' scale figures sat on their
+  readouts), and both are fixed. Before trusting a zero, run the positive control — two
+  overlapping labels, a label on declared-solid ground, a mark past the frame — and confirm it
+  returns exactly three findings.
+- **Frame budget: 8.6 ms** median full redraw at 2560×1440 (was 29.1). `text()` had been
+  applying tracking one glyph at a time: 22,568 `measureText` + 11,284 `fillText` per frame.
+  Panning no longer redraws at all — the last ink is blitted and a crisp redraw follows 170 ms
+  after the gesture settles.
+
+## Known gaps, honestly
 - Note cards are drawn only on the key plate; selection currently fills the notes column.
   Pinning a drawn card to the selected mark on every plate is the natural next step.
 - The world map is equirectangular with no projection choice; sites are authored points.
