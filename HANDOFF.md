@@ -1,6 +1,6 @@
 # The Forecast Works — live state
 
-**Live:** https://augustg97.github.io/forecast-works/ · build `20260812-0104`
+**Live:** https://augustg97.github.io/forecast-works/ · build `20260812-0112`
 **Local:** `python3 build/serve.py 8154` (serves `web/`, never `docs/`)
 
 ## What it is
@@ -10,7 +10,7 @@ Seven tabs. Within a tab the drawing is a vertical sheet 300 mm wide at one fixe
 
 | tab | sections | what it carries |
 |-----|----------|-----------------|
-| Forecast | masthead · board · readout | three columns: instruments and the six behaviour recorders on the LEFT, the chart and its date index in the MIDDLE, the controls as a tabbed panel on the RIGHT — then the passage and the drawn scenes underneath |
+| Forecast | masthead · readout · board · scenes | the composed passage first, as a three-column band across the head of the sheet; then the board — instruments and the six behaviour recorders on the LEFT, the chart and its date index in the MIDDLE, the controls as a tabbed panel on the RIGHT; then the two drawn scenes |
 | Instruments | details | A tempo dials · B compute manifold · C capability domains and agent collectives |
 | Behaviour | behaviour | six recorders: compute, revenue, employment, measures, approval, emissions |
 | World | world | the active line on the ground |
@@ -39,7 +39,7 @@ python3 build/build_site.py            # gate → pull → stamp → docs/
 __FW.auditSweep()                      # console; REQUIRE controlPasses: true
 ```
 
-Last sweep: **23 cases · 11,907 lettering marks · 0 collisions · 0 off-section · 0 overflows ·
+Last sweep: **23 cases · 12,146 lettering marks · 0 collisions · 0 off-section · 0 overflows ·
 control passes.** Full pass over every section: ~18 ms. Effect recalculation on a setting
 change: 22 ms, cached per setting.
 

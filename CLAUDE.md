@@ -54,7 +54,7 @@ Systems Works. Read by scrolling, at one fixed scale.
 10. **The client implements functions against `engine.json` constants.** Never mirror a literal
    from the Atlas into JS; extend the build's extractor instead (see `climate_params()`).
 
-11. **Dev never caches; production always versions.** `build/serve.py` sends `no-store`; the
+11. **Dev never caches; production always versions — INCLUDING THE ENTRY MODULE.** `build/serve.py` sends `no-store`; the
    build versions every module import in `docs/`.
 
 12. **Run the collision audit before shipping a layout change** — `__FW.auditSweep()` in the
@@ -140,3 +140,9 @@ __FW.auditSweep()                      # in the console: the audit (check `contr
   to its left.
 - **The paper colour is `PAPER` in draft.js.** Never hard-code `#f4f1e8` or its successors —
   a stale literal shows up as a pale rectangle on white.
+
+- **Versioning only the imports leaves `index.html` loading a bare `js/app.js`.** A cache holding
+  that one file pulls in its own old `?v=` imports, so the page runs the previous build entirely
+  while `window.__BUILD` — read from the fresh index.html — reports the new stamp. The build now
+  versions the entry too and refuses to publish if it cannot find it exactly once. **Verify a
+  deploy by checking something the new build DRAWS, never by checking the stamp alone.**
