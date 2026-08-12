@@ -782,9 +782,15 @@ function sheetState(measure) {
     figures: chooseFigures(wl, state.yr, cap),
     drawWorld: drawWorldPlate, drawAlts: drawAltsPlate, drawMorning: drawMorningPlate,
   };
-  const bal = balance(measure, noteBody, NOTE_COL, 2.0);
+  // The panel already letters the entry's name at 3.4 mm; repeating it as the first column
+  // heading says the same thing twice in two sizes.
+  const title = sel ? (noteBody[0].h || 'Selected') : 'Notes';
+  const body = sel
+    ? [{ ...noteBody[0], h: null }].concat(noteBody.slice(1))
+    : noteBody;
+  const bal = balance(measure, body, NOTE_COL, 2.0);
   S.note = {
-    title: sel ? (noteBody[0].h || 'Selected') : 'Notes',
+    title,
     eyebrow: sel ? `SELECTED · ${state.selected}` : 'NOTHING SELECTED · THE STANDING NOTE',
     cols: bal.cols, h: bal.h,
   };
