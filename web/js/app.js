@@ -5,9 +5,11 @@
 // on that instrument. It reads the same emitted data and implements the same functions against
 // the same shipped constants (`engine.json`), so the two surfaces cannot drift apart.
 
-import { Draft, PEN, INK, drawPaper } from './draft.js';
-import { PLATES, SHEET, ZONE, drawPlate, fmtDate } from './plates.js';
-import { dial, column, strip, fmtNum } from './instruments.js';
+import { Draft, PEN, INK, paperTileURL } from './draft.js';
+import { SECTIONS, SHEET_W, NOTE_COL, CHART, balance } from './sections.js';
+import { column, fmtNum } from './instruments.js';
+import { describe, headline } from './narrative.js';
+import { chooseFigures } from './figures.js';
 
 // One build number, injected into index.html at ship time, versions BOTH the data fetches and
 // (via the build's import rewrite) every module. A fresh app.js against a stale draft.js is the
@@ -16,18 +18,20 @@ const DATA_V = (typeof window !== 'undefined' && window.__BUILD) || 'DEV';
 const NOW_Y = 2026.58;
 const TRUNK = [[2012, 0.15], [2016, 0.45], [2019, 0.8], [2022, 1.1], [2022.92, 1.5],
                [2024, 1.9], [2025.5, 2.3], [NOW_Y, 2.6]];
-const BOARD = [SHEET[0] + 190, SHEET[1] + 140];
+// The document is drawn at one fixed width, so 2 mm of cap height is always the same number of
+// pixels and nothing has to be zoomed to be read. Below the minimum the page scrolls sideways
+// rather than shrinking the type past legibility.
+const DOC_MIN = 1000, DOC_MAX = 1380;
 
-const board = document.getElementById('board');
-const inkCv = document.getElementById('ink');
-const paperCv = document.getElementById('sheet');
+const docEl = document.getElementById('doc');
 const chipEl = document.getElementById('chip');
-const draft = new Draft(inkCv);
+const navEl = document.getElementById('nav');
 const D = {};
+const SEC = [];                       // { id, fn, el, cv, draft, h, sig }
 
 const state = {
-  plateId: 'mainline', yr: NOW_Y, pin: {}, obs: false, alt: null,
-  centre: [0, 0], mmPerPx: 0.5, hovered: null, selected: null,
+  yr: NOW_Y, pin: {}, obs: false, alt: null,
+  mmPerPx: 0.25, hovered: null, selected: null, touched: null,
   ready: false, fitted: false,
 };
 
@@ -247,60 +251,7 @@ function marginals30() {
   return h[Math.max(0, h.length - 31)].marginals || {};
 }
 
-// ── the notes column: what the sheet is telling you ──────────────────────────
-function baseNotes() {
-  const g = D.grounding.counts;
-  const m = activeMarginals();
-  const pct = (k, p) => ((m[k] || {})[p] * 100 || 0).toFixed(0);
-  const del = D.delta.entries || [];
-  const today = del.filter((e) => e.date === D.delta.date);
-  return [
-    { h: 'What this sheet is', p: [
-      'A probabilistic world-model of the AI transition, 2012 to 2100, drawn as a document. ' +
-      'The observed record to the left of TODAY is the wiki\'s own dated record. Everything ' +
-      'to the right is a distribution over futures — not one path, and not a prediction of ' +
-      'the draughtsman\'s.',
-      'The forecast is re-sampled every morning from the AI Policy Wiki as it records what ' +
-      'actually happened, so this sheet is redrawn daily and its title block carries the date ' +
-      'it was read.'] },
-    { h: 'Why the forecast has this shape', p: [
-      `It is a MIXTURE of tempos, not a path. A ${pct('T', 'T1')}% explosive tail pulls the ` +
-      `upper envelope to the ceiling by the early 2030s; the ${pct('T', 'T2')}% fast and ` +
-      `${pct('T', 'T3')}% gradual mass carries the median through the superhuman-coder datum ` +
-      `and on to researcher level mid-decade; and the ${pct('T', 'T4')}% no-superintelligence ` +
-      'floor is why the lower envelope stays under the researcher datum into the 2050s.',
-      'Shelves inside the band are policy, not physics: a verified deal holds lines at ' +
-      'expert level from 2035 to 2040, and the moratorium tail freezes below the researcher ' +
-      'datum altogether. Past 2045 most sampled futures saturate the ladder — what still ' +
-      'differs there is OUTCOMES, which is what the behaviour traces and the notes track.'] },
-    { h: 'Reading the drawing', p: [
-      'Blue is probability in motion: the envelopes, the median, the date index. Ink is the ' +
-      'observed record and the structure of the sheet. Red is annotation and revision — ' +
-      'including whatever the evidence moved this morning. Green is a goal or a target. ' +
-      'Ochre carries delays and the active composed line. Chain-dot rules across the drawing ' +
-      'are DATUMS: the capability milestones, each a level the run has passed.',
-      'Anything drawn can be pointed at. Hovering rules a light box around a mark; clicking ' +
-      'pins a note card to it and fills this column with the full entry.'] },
-    { h: 'This morning', p: today.length
-      ? [`${today.length} evidence applications were made to the network today. ` +
-         today.slice(-3).map((e) => `${e.rule} (${e.impact_class}, ×${(e.magnitude || 0).toFixed(4)})`).join('; ') + '.',
-         'Each application logs its arithmetic — impact class, corroborating sources, ' +
-         'novelty decay, the axis positions moved and the driver that moved them. Plate 4 ' +
-         'draws the day in full.']
-      : ['No evidence application has been made since the last emit. The residue — ' +
-         'developments no rule yet reads — accumulates for the weekly schema review, which ' +
-         'may add an axis or a sub-axis on its own and log it for review. Plate 4 draws the ' +
-         'morning in full.'] },
-    { h: 'Where these probabilities come from', p: [
-      `A documented belief network of ${D.network.axes.length} axes with sub-axes, priors ` +
-      `carrying provenance, and cited conditionals, sampled into an ensemble of world-lines. ` +
-      `${g.direct} wiki pages ground the engine directly; ${g.corpus} more feed the observed ` +
-      'record. Thin axes get widened priors — uncertainty is inherited, never hidden.',
-      'They are the model\'s structured judgments, not measurements. Registered claims are ' +
-      'scored in public as they resolve.'] },
-  ];
-}
-
+// ── the notes: what a selected mark says ────────────────────────────────────
 function axisNotes(a) {
   const m = activeMarginals()[a.key] || {}, w30 = marginals30()[a.key] || {};
   const secs = [{ h: a.name, p: [a.desc || ''] }];
@@ -328,7 +279,7 @@ function axisNotes(a) {
     secs.push({ h: 'Sub-axes', p: [drawn.map((s) => s.name || s.key).join(' · ')] });
   }
   if (prov.length) {
-    secs.push({ h: 'Sub-axes — provisional, not approved', p: prov.map(
+    secs.push({ h: 'Sub-axes — provisional, awaiting approval', p: prov.map(
       (s) => `${s.key} · ${s.name || ''} — added by the schema review itself, uncited and ` +
              `awaiting the draughtsman's approval. Logged as: ${s.origin}`) });
   }
@@ -468,12 +419,6 @@ function topoPaths() {
 }
 function drawWorldPlate(d, S, box) {
   const [x, y, w, h] = box;
-  d.text([x, y + h + 6], 'THE WORLD',
-         { size: 3.6, weight: 600, track: 0.13, colour: INK.ink });
-  d.text([x, y + h + 2],
-         'THE ACTIVE WORLD-LINE ON THE GROUND · REGIME TINT ∝ MODELLED COMPUTE SHARE · ' +
-         'SITE SYMBOL ∝ MODELLED CAPACITY',
-         { size: 1.8, colour: INK.pencilLight, track: 0.10 });
   const X = (lon) => x + (lon + 180) / 360 * w;
   const Y = (lat) => y + h * 0.52 + (lat / 90) * h * 0.42;
   d.rect(x, y, w, h, { weight: PEN.thin, colour: INK.ink });
@@ -544,12 +489,6 @@ function drawWorldPlate(d, S, box) {
 
 function drawAltsPlate(d, S, box) {
   const [x, y, w, h] = box;
-  d.text([x, y + h + 6], 'ALTERNATIVE FUTURES',
-         { size: 3.6, weight: 600, track: 0.13, colour: INK.ink });
-  d.text([x, y + h + 2],
-         'TWELVE SAMPLED WORLD-LINES ACROSS THE PROBABILITY CURVE · EACH DRAWN IN FULL · ' +
-         'CLICK ONE TO MAKE IT THE ACTIVE LINE ON EVERY PLATE',
-         { size: 1.8, colour: INK.pencilLight, track: 0.10 });
   if (!D.exemplars) { d.text([x, y + h / 2], 'THE ENSEMBLE IS STILL LOADING',
     { size: 2.4, colour: INK.pencilLight }); return; }
   const scored = D.exemplars.lines.map((e, i) => ({ i, c40: capAt(capPath(e.wl), 2040) }))
@@ -596,12 +535,6 @@ function drawAltsPlate(d, S, box) {
 
 function drawMorningPlate(d, S, box) {
   const [x, y, w, h] = box;
-  d.text([x, y + h + 6], "THIS MORNING'S REVISION",
-         { size: 3.6, weight: 600, track: 0.13, colour: INK.ink });
-  d.text([x, y + h + 2],
-         `EVIDENCE APPLIED TO THE NETWORK ON ${D.delta.date} · EVERY MARK CARRIES ITS ` +
-         'ARITHMETIC AND ITS DRIVER',
-         { size: 1.8, colour: INK.pencilLight, track: 0.10 });
   const ent = (D.delta.entries || []).slice().reverse();
   const today = ent.filter((e) => e.date === D.delta.date);
   const show = (today.length ? today : ent).slice(0, 14);
@@ -636,7 +569,10 @@ function drawMorningPlate(d, S, box) {
       bx += Math.max(26, mag + 8);
     }
     if (e.driver) {
-      d.textBlock([x + 1, ry + rowH - 13.0], 'DRIVER: ' + e.driver, w - 4,
+      // The parent emits the driver at a fixed 140 characters. Ending the quotation without
+      // a mark would read as a sentence the draughtsman wrote and then abandoned.
+      const cut = e.driver.length >= 140 ? ' …' : '';
+      d.textBlock([x + 1, ry + rowH - 13.0], 'DRIVER: ' + e.driver + cut, w - 4,
                   { size: 1.55, lead: 1.4, colour: INK.pencil, max: 2 });
     }
     d.region(`delta:${(D.delta.entries || []).indexOf(e)}`, x, ry, w, rowH, e);
@@ -658,10 +594,11 @@ function drawMorningPlate(d, S, box) {
       drift[ax] = (drift[ax] || 0) + Math.abs(v);
     }
   }
+  const colGap = Math.min(34, (w - 210) / D.network.axes.length);
   D.network.axes.forEach((a, i) => {
-    column(d, x + 4 + i * 26, netY - 22, 7, 20, {
+    column(d, x + 4 + i * colGap, netY - 22, 8, 20, {
       value: Math.min(1, (drift[a.key] || 0) / 0.02),
-      label: a.key + ' · ' + a.name.toUpperCase().slice(0, 12),
+      label: a.key + ' · ' + a.name.toUpperCase().slice(0, 20),
       sub: ((drift[a.key] || 0) * 100).toFixed(2) + 'pp',
       colour: (drift[a.key] || 0) > 0 ? INK.red : INK.inkLight,
       id: `axis:${a.key}`,
@@ -669,274 +606,351 @@ function drawMorningPlate(d, S, box) {
   });
   const res = (D.claims.claims || []).length;
   d.noteCard([x + 200, netY + 12], 'WHAT A QUIET MORNING MEANS',
-    ['A morning with few applications is not a morning with no news. Developments no rule ' +
-     'yet reads accumulate as RESIDUE, and the weekly schema review may answer a sustained ' +
-     'cluster by adding an axis or a sub-axis on its own — logged for review, never silent. ' +
+    ['A quiet morning still carries news. Developments that no rule yet reads accumulate as ' +
+     'RESIDUE, and the weekly schema review can answer a sustained cluster by adding an axis ' +
+     'or a sub-axis on its own authority, logged for review. ' +
      `${res} claims stand registered for scoring as they resolve.`],
     { width: w - 210 });
 }
 
-function drawKeyPlate(d, S, box) {
-  const [x, y, w, h] = box;
-  d.text([x, y + h + 6], 'THE KEY',
-         { size: 3.6, weight: 600, track: 0.13, colour: INK.ink });
-  d.text([x, y + h + 2],
-         'THE CONVENTIONS THIS SHEET IS DRAWN IN, AND THE VOCABULARY IT USES',
-         { size: 1.8, colour: INK.pencilLight, track: 0.10 });
-  let yy = y + h - 12;
-  d.text([x, yy], 'LINE TYPES', { size: 2.8, weight: 700, track: 0.16, colour: INK.ink });
-  yy -= 6;
-  const lines = [
-    ['OBSERVED RECORD', INK.ink, PEN.outline, null,
-     'What the wiki has recorded. To the left of TODAY, and never extrapolated.'],
-    ['THE DISTRIBUTION', INK.blue, PEN.outline, null,
-     'Probability in motion: the median world-line, the envelopes, the date index.'],
-    ['DATUM', INK.red, PEN.thin, [7, 2, 1.4, 2],
-     'A capability milestone — a level the run has passed, ruled across the drawing.'],
-    ['ANNOTATION / REVISION', INK.red, PEN.thin, null,
-     'Dimensions, notes, and whatever this morning\'s evidence moved.'],
-    ['THE ACTIVE COMPOSED LINE', INK.ochre, PEN.medium, [4, 2],
-     'A world-line you pinned or selected, drawn against the distribution it came from.'],
-    ['GOAL / TARGET', INK.green, PEN.medium, [5, 2, 1.4, 2],
-     'A registered claim or a coordination target — something aimed at rather than expected.'],
-    ['ENERGY', INK.warm, PEN.medium, null,
-     'Compute, power and emissions — the physical substrate of the whole thing.'],
-  ];
-  for (const [name, c, pen, dash, gloss] of lines) {
-    d.line([x, yy], [x + 24, yy], { weight: pen, colour: c, dash });
-    d.text([x + 28, yy - 0.8], name, { size: 2.2, weight: 600, track: 0.12, colour: c });
-    d.textBlock([x + 28, yy - 4.2], gloss, w * 0.44,
-                { size: 1.8, lead: 1.4, colour: INK.pencil, max: 2 });
-    yy -= 12.5;
+
+// ── what a setting does to the forecast ──────────────────────────────────────
+// A control that only changes a number teaches nothing. Each button carries the movement it
+// makes in the median capability index at 2040, measured the way the chart measures it: sample
+// the network with that setting held, take the median of the sampled paths, subtract the
+// median without it. It is the same arithmetic for all 26 positions, so the figures compare.
+const EFF_N = 48, EFF_YEAR = 2040;
+// Capability alone is the wrong readout for most of these variables: by 2040 the median has
+// already saturated the ladder under half the settings, so four of the seven rows would report
+// nothing. Each position is measured against all seven quantities the model carries and prints
+// the one it moves hardest, scaled by what counts as a movement in that quantity.
+const EFF_READ = [
+  ['MEDIAN CAPABILITY', (t, i) => t.cap[i], (d) => (d > 0 ? '+' : '') + d.toFixed(2), 0.15],
+  ['COMPUTE', (t, i) => t.gw[i], (d) => (d > 0 ? '+' : '−') + fmtNum(Math.abs(d)) + ' GW', 250],
+  ['AI REVENUE', (t, i) => t.rev[i], (d) => (d > 0 ? '+' : '−') + Math.abs(d).toFixed(1) + ' $T', 0.5],
+  ['EMPLOYMENT', (t, i) => t.jobs[i], (d) => (d > 0 ? '+' : '−') + Math.abs(d).toFixed(1) + 'PP', 1.0],
+  ['MEASURES IN FORCE', (t, i) => t.laws[i], (d) => (d > 0 ? '+' : '−') + Math.round(Math.abs(d)), 10],
+  ['APPROVAL', (t, i) => t.appr[i], (d) => (d > 0 ? '+' : '−') + Math.abs(d).toFixed(1) + 'PP', 1.5],
+  ['AI EMISSIONS', (t, i) => t.co2[i], (d) => (d > 0 ? '+' : '−') + fmtNum(Math.abs(d)) + ' MT', 80],
+];
+let effCache = { sig: null, base: null, map: {} };
+
+// Common random numbers. Drawing a fresh stream for each setting makes the comparison mostly
+// resampling noise — emissions are in the thousands, so a few unlucky draws swamp the real
+// effect and every button reports the same movement. One fixed matrix of uniforms, one per
+// sample per variable, is reused for every setting, so the only thing that differs between the
+// baseline and the test is the setting itself.
+let EFF_U = null;
+function effUniforms() {
+  if (EFF_U) return EFF_U;
+  const rng = mulberry32(99173);
+  EFF_U = [];
+  for (let n = 0; n < EFF_N; n++) {
+    const row = [];
+    for (let j = 0; j < D.network.axes.length; j++) row.push(rng());
+    EFF_U.push(row);
   }
-  // the axis glossary, three columns
-  const gx = x + w * 0.52;
-  let gy = y + h - 12;
-  d.text([gx, gy], 'THE SEVEN AXES',
-         { size: 2.8, weight: 700, track: 0.16, colour: INK.ink });
-  gy -= 6;
+  return EFF_U;
+}
+function sampleFixed(us, weights, pinned) {
+  const wl = {};
+  D.network.axes.forEach((a, j) => {
+    const k = a.key;
+    if (pinned[k]) { wl[k] = pinned[k]; return; }
+    const w = {};
+    for (const p of a.positions) w[p[0]] = weights[k][p[0]];
+    const cd = D.network.conditionals[k] || {};
+    for (const par in cd) {
+      if (Object.values(wl).includes(par)) {
+        for (const pos in cd[par]) if (w[pos] !== undefined) w[pos] *= cd[par][pos];
+      }
+    }
+    const tot = Object.values(w).reduce((x, y) => x + y, 0);
+    let r = us[j] * tot, chosen = null;
+    for (const pos in w) { r -= w[pos]; if (r <= 0) { chosen = pos; break; } }
+    wl[k] = chosen || Object.keys(w)[0];
+  });
+  return wl;
+}
+function readoutsFor(pinned) {
+  const w = baseWeights(), U = effUniforms();
+  const sums = EFF_READ.map(() => 0);
+  for (let n = 0; n < EFF_N; n++) {
+    const tr = tracksJS(sampleFixed(U[n], w, pinned));
+    const i = Math.max(0, Math.min(tr.year.length - 1, EFF_YEAR - D.engine.y0));
+    EFF_READ.forEach((r, k) => { sums[k] += r[1](tr, i); });
+  }
+  return sums.map((s) => s / EFF_N);
+}
+function effectsFor(pin) {
+  const sig = JSON.stringify(pin);
+  if (effCache.sig === sig) return effCache;
+  const base = readoutsFor(pin);
+  const map = {};
   for (const a of D.network.axes) {
-    d.text([gx, gy], a.key + ' · ' + a.name.toUpperCase(),
-           { size: 2.1, weight: 700, track: 0.10, colour: INK.ink });
-    const used = d.textBlock([gx, gy - 3.6], a.desc || '', w * 0.44,
-                             { size: 1.75, lead: 1.4, colour: INK.pencil, max: 3 });
-    d.text([gx, gy - 4.2 - used], a.positions.map((p) => p[0]).join(' · '),
-           { size: 1.6, colour: INK.blue, face: 'figure' });
-    d.region(`axis:${a.key}`, gx - 2, gy - 6 - used, w * 0.46, 9 + used, a);
-    gy -= used + 11;
+    for (const p of a.positions) {
+      const key = `${a.key}:${p[0]}`;
+      if (pin[a.key] === p[0]) { map[key] = 0; continue; }   // set: it is the baseline
+      const v = readoutsFor({ ...pin, [a.key]: p[0] });
+      let best = null, score = 0;
+      EFF_READ.forEach((r, k) => {
+        const d = v[k] - base[k], s = Math.abs(d) / r[3];
+        if (s > score && s >= 1) { score = s; best = { label: r[0], text: r[2](d), d }; }
+      });
+      map[key] = best;
+    }
   }
-  d.noteCard([x, y + 46],
-             'THE INSTRUMENT, NOT THE GRAPHIC',
-             ['Where a real instrument already performs an abstraction, this sheet builds it: ' +
-              'a probability is a needle on an engraved face, a drift is the angle between two ' +
-              'needles, a share is a float riding in a tube, a threshold is a lamp that trips, ' +
-              'a quantity over time is a pen on a moving chart.'],
-             { width: w * 0.46 });
+  effCache = { sig, base, map };
+  return effCache;
 }
 
-// ── the sheet state handed to the plates ─────────────────────────────────────
-function sheetState() {
+// ── the notes: what the document is telling you ──────────────────────────────
+function defaultNotes() {
+  const m = activeMarginals();
+  const pct = (k, p) => ((m[k] || {})[p] * 100 || 0).toFixed(0);
+  const del = D.delta.entries || [];
+  const today = del.filter((e) => e.date === D.delta.date);
+  return [
+    { h: 'How to read this document', p: [
+      'Scroll. Every section is drawn at one width, so nothing needs to be zoomed. Anything ' +
+      'drawn can be pointed at: hovering rules a light box around a mark, and clicking it ' +
+      'fills this panel with the full entry and rings the mark in red.',
+      'The controls above set the model\'s variables. A setting redraws the forecast, the ' +
+      'described future, the instruments, the map and the behaviour charts together, and this ' +
+      'panel takes on the note for whatever you set.'] },
+    { h: 'Why the forecast has this shape', p: [
+      `The band is a mixture of tempos. A ${pct('T', 'T1')}% explosive tail pulls the upper ` +
+      `envelope to the ceiling by the early 2030s. The ${pct('T', 'T2')}% fast and ` +
+      `${pct('T', 'T3')}% gradual mass carries the median through the superhuman-coder datum ` +
+      `and on to researcher level in the middle of the decade. The ${pct('T', 'T4')}% ` +
+      'no-superintelligence floor holds the lower envelope under the researcher datum into ' +
+      'the 2050s.',
+      'The shelves inside the band come from policy. A verified deal holds lines at expert ' +
+      'level from 2035 to 2040, and the moratorium tail freezes below the researcher datum ' +
+      'altogether. Past 2045 most sampled futures saturate the ladder; what still separates ' +
+      'them there is outcomes, which the behaviour charts and the described future track.'] },
+    { h: 'The colour code', p: [
+      'Blue carries probability in motion: the envelopes, the median, the date index. Ink is ' +
+      'the observed record and the structure of the document. Red is annotation and revision, ' +
+      'including whatever the evidence moved this morning. Green marks a goal or a target. ' +
+      'Ochre carries delays and the active composed line. Warm carries energy — compute, ' +
+      'power, emissions. Chain-dot rules across a chart are datums: capability levels the ' +
+      'run has passed.'] },
+    { h: 'This morning', p: today.length
+      ? [`${today.length} evidence applications were made to the network today. ` +
+         today.slice(-3).map((e) =>
+           `${e.rule} (${e.impact_class}, ×${(e.magnitude || 0).toFixed(4)})`).join('; ') + '.',
+         'Each application logs its arithmetic: impact class, corroborating sources, novelty ' +
+         'decay, the positions moved and the driver that moved them. The revision section ' +
+         'draws the day in full.']
+      : ['No evidence application has been made since the last emit. Developments that no ' +
+         'rule yet reads accumulate as residue for the weekly schema review, which may add a ' +
+         'variable on its own authority and log it for review. The revision section draws ' +
+         'the morning in full.'] },
+  ];
+}
+
+// ── the state handed to the sections ─────────────────────────────────────────
+function sheetState(measure) {
   const wl = activeMain();
   const kn = capPath(wl);
+  const tr = activeTracks();
+  const idx = Math.max(0, Math.min(tr.year.length - 1, Math.floor(state.yr) - D.engine.y0));
+  const cap = state.yr < NOW_Y ? trunkCap(state.yr) : tr.cap[idx];
   const sel = selectionNotes();
-  return {
-    plateId: state.plateId,
-    plateTitle: (PLATES.find((p) => p.id === state.plateId) || {}).title || '',
-    yr: state.yr, NOW: NOW_Y, TRUNK, pin: state.pin, obs: state.obs,
+  const noteBody = sel || defaultNotes();
+  const eff = effectsFor(state.pin);
+  const desc = describe(wl, state.yr, tr, D.engine.y0);
+  const S = {
+    yr: state.yr, NOW: NOW_Y, TRUNK, pin: state.pin, obs: state.obs, build: DATA_V,
     engine: D.engine, network: D.network, crisis: D.crisis, grounding: D.grounding,
     delta: D.delta, marginals: activeMarginals(), marginals30: marginals30(),
-    bands: activeBands(), tracks: activeTracks(), events: activeEvents(),
-    layers: activeLayers(), main: wl,
+    bands: activeBands(), tracks: tr, events: activeEvents(),
+    layers: activeLayers(), main: wl, idx, cap,
     capAt: (y) => capAt(kn, y), trunkCap,
-    altOrPinned: !!(cond || state.alt !== null),
-    lineLabel: ['T','A','C','D','S','P','E'].map((k) => wl[k]).join('·') +
-      (state.alt !== null ? '  ·  ALTERNATIVE' : cond ? '  ·  COMPOSED' : '  ·  MAINLINE'),
-    notes: sel || baseNotes(),
-    epigraph: {
-      lines: ['“IT IS A VEHICLE FOR COMMUNICATING', 'AND STRESS-TESTING OUR', 'RECOMMENDATIONS.”'],
-      cite: 'AI 2040: PLAN A, ON WHAT A SCENARIO IS FOR',
+    crossYear: (th) => {
+      for (let i = 0; i < tr.cap.length; i++) if (tr.cap[i] >= th) return tr.year[i];
+      return null;
     },
-    drawWorldPlate, drawAltsPlate, drawMorningPlate, drawKeyPlate,
+    // The forecast with nothing set, kept as a ghost line so a setting's effect is a visible gap
+    baselineBands: (cond || state.alt !== null) ? D.bands.annual : null,
+    altOrPinned: !!(cond || state.alt !== null),
+    lineLabel: ['T', 'A', 'C', 'D', 'S', 'P', 'E'].map((k) => wl[k]).join('·'),
+    effect: (k, p) => (eff.map[`${k}:${p}`] ?? null),
+    headline: headline(wl, state.yr, tr, D.engine.y0),
+    description: balance(measure, desc, NOTE_COL, 2.0),
+    figures: chooseFigures(wl, state.yr, cap),
+    drawWorld: drawWorldPlate, drawAlts: drawAltsPlate, drawMorning: drawMorningPlate,
   };
+  const bal = balance(measure, noteBody, NOTE_COL, 2.0);
+  S.note = {
+    title: sel ? (noteBody[0].h || 'Selected') : 'Notes',
+    eyebrow: sel ? `SELECTED · ${state.selected}` : 'NOTHING SELECTED · THE STANDING NOTE',
+    cols: bal.cols, h: bal.h,
+  };
+  return S;
 }
 
-// ── the board: view, picking, interaction ────────────────────────────────────
-// A zero-sized board yields a non-finite scale, and a non-finite scale draws nothing while
-// reporting no error — the module can run before the browser has laid the page out. So fitting
-// is a no-op until the board has a size, and the first frame retries it.
-function fitSheet() {
-  const w = board.clientWidth, h = board.clientHeight;
-  if (!(w > 0 && h > 0)) return false;
-  state.mmPerPx = Math.max(SHEET[0] / (w * 0.985), SHEET[1] / (h * 0.94));
-  state.centre = [0, 0];
-  state.fitted = true;
-  clampView();
-  return true;
+// ── the document: layout, picking, interaction ───────────────────────────────
+function docWidth() {
+  return Math.max(DOC_MIN, Math.min(DOC_MAX, Math.floor(document.documentElement.clientWidth - 40)));
 }
-function fitSheetIfUnset() {
-  if (!state.fitted || !Number.isFinite(state.mmPerPx) || state.mmPerPx <= 0) fitSheet();
+function layout(S) {
+  const W = docWidth();
+  state.mmPerPx = SHEET_W / W;
+  docEl.style.width = W + 'px';
+  for (const s of SEC) {
+    const hmm = Math.max(20, s.fn.height(S));
+    if (Math.abs(hmm - s.h) > 0.05) {
+      s.h = hmm;
+      s.el.style.height = (hmm / state.mmPerPx) + 'px';
+      s.cv.style.height = (hmm / state.mmPerPx) + 'px';
+      s.sig = '';
+    }
+    if (s.cv.clientWidth !== W) { s.cv.style.width = W + 'px'; s.sig = ''; }
+  }
+  state.fitted = W > 0;
 }
-function clampView() {
-  const maxX = Math.max(0, (BOARD[0] - board.clientWidth * state.mmPerPx) / 2);
-  const maxY = Math.max(0, (BOARD[1] - board.clientHeight * state.mmPerPx) / 2);
-  state.centre[0] = Math.max(-maxX, Math.min(maxX, state.centre[0]));
-  state.centre[1] = Math.max(-maxY, Math.min(maxY, state.centre[1]));
+function cursorToMM(sec, e) {
+  const r = sec.cv.getBoundingClientRect();
+  if (!(r.width > 0)) return null;
+  const k = SHEET_W / r.width;
+  return [(e.clientX - r.left) * k, (r.bottom - e.clientY) * k];
 }
-function cursorToSheet(e) {
-  const r = board.getBoundingClientRect();
-  return [state.centre[0] + (e.clientX - r.left - r.width / 2) * state.mmPerPx,
-          state.centre[1] - (e.clientY - r.top - r.height / 2) * state.mmPerPx];
-}
+function sectionOf(el) { return SEC.find((s) => s.cv === el || s.el === el || s.el.contains(el)); }
 
-let drag = null;
-board.addEventListener('pointerdown', (e) => {
-  const [mx, my] = cursorToSheet(e);
-  const hit = draft.hitTest(mx, my);
-  if (hit && hit.id.startsWith('ctl:')) {
-    drag = { kind: 'ctl', id: hit.id, moved: false };
-    if (hit.id === 'ctl:time') setTimeFromPointer(mx);
-    else applyControl(hit.id);
-    board.setPointerCapture(e.pointerId);
+let dragging = null;
+function onDown(e) {
+  const sec = sectionOf(e.target);
+  if (!sec) return;
+  const mm = cursorToMM(sec, e);
+  if (!mm) return;
+  const hit = sec.draft.hitTest(mm[0], mm[1]);
+  if (!hit) { if (state.selected) { state.selected = null; writeHash(); redraw(); } return; }
+  if (hit.id === 'ctl:time') {
+    dragging = { sec, id: hit.id };
+    sec.cv.setPointerCapture(e.pointerId);
+    setTimeFrom(mm[0]);
     return;
   }
-  drag = { kind: 'pan', x: e.clientX, y: e.clientY,
-           cx: state.centre[0], cy: state.centre[1], moved: false, hit };
-  board.classList.add('dragging');
-  board.setPointerCapture(e.pointerId);
-});
-board.addEventListener('pointermove', (e) => {
-  const [mx, my] = cursorToSheet(e);
-  if (drag && drag.kind === 'ctl') {
-    drag.moved = true;
-    if (drag.id === 'ctl:time') { setTimeFromPointer(mx); schedule(); }
-    return;
-  }
-  if (drag && drag.kind === 'pan') {
-    const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
-    if (Math.abs(dx) + Math.abs(dy) > 3) drag.moved = true;
-    state.centre[0] = drag.cx - dx * state.mmPerPx;
-    state.centre[1] = drag.cy + dy * state.mmPerPx;
-    clampView(); markMoving(); schedule();
-    return;
-  }
-  const hit = draft.hitTest(mx, my);
+  if (hit.id.startsWith('ctl:')) { applyControl(hit.id); return; }
+  state.selected = state.selected === hit.id ? null : hit.id;
+  if (hit.id.startsWith('alt:')) { state.alt = +hit.id.split(':')[1]; cond = null; state.pin = {}; }
+  writeHash(); redraw();
+}
+function onMove(e) {
+  if (dragging) { const mm = cursorToMM(dragging.sec, e); if (mm) setTimeFrom(mm[0]); return; }
+  const sec = sectionOf(e.target);
+  if (!sec) { chipEl.style.display = 'none'; return; }
+  const mm = cursorToMM(sec, e);
+  const hit = mm ? sec.draft.hitTest(mm[0], mm[1]) : null;
   const id = hit ? hit.id : null;
   if (id !== (state.hovered && state.hovered.id)) {
-    state.hovered = hit;
-    board.style.cursor = hit ? (hit.id.startsWith('ctl:') ? 'pointer' : 'pointer') : 'grab';
-    schedule();
+    state.hovered = hit ? { ...hit, sec: sec.id } : null;
+    docEl.style.cursor = hit ? 'pointer' : 'default';
+    redraw();
   }
-  if (hit) {
-    const label = hoverLabel(hit);
-    if (label) {
-      chipEl.innerHTML = `<b>${label[0]}</b>${label[1]}`;
-      chipEl.style.display = 'block';
-      // Flip the chip back inside the window near an edge — trailing the cursor blindly
-      // pushes it off the page, which is the one piece of lettering the sheet's own audit
-      // cannot see because it is not on the sheet.
-      const cw = chipEl.offsetWidth, chh = chipEl.offsetHeight;
-      const left = e.clientX + 14 + cw > innerWidth - 6 ? e.clientX - 14 - cw : e.clientX + 14;
-      const top = e.clientY + 16 + chh > innerHeight - 6 ? e.clientY - 12 - chh : e.clientY + 16;
-      chipEl.style.left = Math.max(6, left) + 'px';
-      chipEl.style.top = Math.max(6, top) + 'px';
-    } else chipEl.style.display = 'none';
+  const label = hit ? hoverLabel(hit) : null;
+  if (label) {
+    chipEl.innerHTML = `<b>${label[0]}</b>${label[1]}`;
+    chipEl.style.display = 'block';
+    const cw = chipEl.offsetWidth, ch = chipEl.offsetHeight;
+    const left = e.clientX + 14 + cw > innerWidth - 6 ? e.clientX - 14 - cw : e.clientX + 14;
+    const top = e.clientY + 16 + ch > innerHeight - 6 ? e.clientY - 12 - ch : e.clientY + 16;
+    chipEl.style.left = Math.max(6, left) + 'px';
+    chipEl.style.top = Math.max(6, top) + 'px';
   } else chipEl.style.display = 'none';
-});
-board.addEventListener('pointerup', (e) => {
-  board.classList.remove('dragging');
-  if (drag && drag.kind === 'pan' && !drag.moved) {
-    const hit = drag.hit;
-    if (hit && !hit.id.startsWith('ctl:')) {
-      state.selected = state.selected === hit.id ? null : hit.id;
-      writeHash();
-    } else if (!hit) state.selected = null;
-    schedule();
-  }
-  drag = null;
-});
-board.addEventListener('pointerleave', () => { chipEl.style.display = 'none'; });
-board.addEventListener('wheel', (e) => {
-  e.preventDefault();
-  const before = cursorToSheet(e);
-  const maxMm = Math.max(BOARD[0] / board.clientWidth, BOARD[1] / board.clientHeight);
-  state.mmPerPx = Math.max(0.06, Math.min(maxMm, state.mmPerPx * Math.exp(e.deltaY * 0.0012)));
-  const after = cursorToSheet(e);
-  state.centre[0] += before[0] - after[0];
-  state.centre[1] += before[1] - after[1];
-  clampView(); markMoving(); schedule();
-}, { passive: false });
+}
+docEl.addEventListener('pointerdown', onDown);
+docEl.addEventListener('pointermove', onMove);
+docEl.addEventListener('pointerup', () => { dragging = null; });
+docEl.addEventListener('pointerleave', () => { chipEl.style.display = 'none'; });
 
-function setTimeFromPointer(mx) {
-  const L = ZONE.left;
-  const bx = L.x + 8 + 24, bw = (L.w - 16) - 24;
-  const t = Math.max(0, Math.min(1, (mx - bx) / bw));
-  state.yr = 2012 + t * (2100 - 2012);
-  writeHash();
+function setTimeFrom(mmX) {
+  state.yr = Math.round(CHART.year(mmX) * 4) / 4;
+  writeHash(); redraw();
+}
+function revealNote() {
+  const n = SEC.find((s) => s.id === 'note');
+  if (!n) return;
+  const r = n.el.getBoundingClientRect();
+  if (r.top > innerHeight * 0.72 || r.bottom < innerHeight * 0.28) {
+    n.el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
 }
 function applyControl(id) {
-  const [, kind, arg] = id.split(':');
-  if (kind === 'plate') { state.plateId = arg; state.selected = null; }
-  else if (kind === 'pin') {
-    const a = D.network.axes.find((z) => z.key === arg);
-    const poss = a.positions.map((p) => p[0]);
-    const cur = state.pin[arg];
-    const idx = cur ? poss.indexOf(cur) + 1 : 0;
-    if (idx >= poss.length) delete state.pin[arg]; else state.pin[arg] = poss[idx];
+  const [, kind, arg, pos] = id.split(':');
+  if (kind === 'pin') {
+    if (state.pin[arg] === pos) { delete state.pin[arg]; state.selected = `axis:${arg}`; }
+    else { state.pin[arg] = pos; state.selected = `pos:${arg}:${pos}`; }
     state.alt = null; recondition();
+    revealNote();
   } else if (kind === 'mode') {
-    if (arg === 'do') state.obs = false;
-    if (arg === 'obs') state.obs = true;
+    state.obs = arg === 'obs';
     recondition();
-  } else if (kind === 'reset') { state.pin = {}; state.alt = null; cond = null; }
-  writeHash(); schedule();
+  } else if (kind === 'reset') {
+    state.pin = {}; state.alt = null; cond = null; state.selected = null;
+  }
+  writeHash(); redraw();
 }
 function hoverLabel(hit) {
   const [kind, ...rest] = hit.id.split(':');
   const m = activeMarginals();
-  if (kind === 'axis') { const a = hit.payload;
-    return ['AXIS ' + rest[0], a ? a.name : '']; }
+  if (kind === 'ctl') {
+    if (rest[0] === 'time') return ['DATE INDEX', 'drag to move the whole document in time'];
+    if (rest[0] === 'pin') {
+      const a = D.network.axes.find((z) => z.key === rest[1]);
+      const p = a && a.positions.find((q) => q[0] === rest[2]);
+      const e = effCache.map[`${rest[1]}:${rest[2]}`];
+      return p ? ['SET THIS VARIABLE', p[1] +
+        (e ? ` — ${e > 0 ? '+' : ''}${e.toFixed(2)} on the 2040 median` : '')] : null;
+    }
+    if (rest[0] === 'mode') return ['CONDITIONING MODE', rest[1] === 'obs'
+      ? 'reweight everything else in light of the setting'
+      : 'hold the setting, leave the rest at their priors'];
+    if (rest[0] === 'reset') return ['RELEASE', 'return every variable to the evidence'];
+    return ['CONTROL', hit.id.replace('ctl:', '')];
+  }
+  if (kind === 'axis') { const a = hit.payload; return ['VARIABLE ' + rest[0], a ? a.name : '']; }
   if (kind === 'pos') { const p = hit.payload;
     return ['POSITION ' + rest[1],
       (p ? p[1] : '') + ' — ' + (((m[rest[0]] || {})[rest[1]] || 0) * 100).toFixed(1) + '%']; }
   if (kind === 'crisis') { const c = hit.payload; return ['CRISIS POINT', c ? c.q : '']; }
-  if (kind === 'mile') return ['MILESTONE DATUM', 'level ' + rest[0] + ' on the ladder'];
+  if (kind === 'mile') return ['MILESTONE DATUM', D.engine.ladder[+rest[0]] || ''];
   if (kind === 'dom') { const dm = D.engine.domains[+rest[0]];
     return dm ? ['CAPABILITY DOMAIN', dm.n] : null; }
   if (kind === 'site') { const p = hit.payload;
     return p ? ['COMPUTE SITE', `${p.s.n} — ~${p.gwSite.toFixed(1)} GW modelled`] : null; }
   if (kind === 'alt') { const e = hit.payload;
     return e ? ['ALTERNATIVE', ['T','A','C','D','S','P','E'].map((k) => e.wl[k]).join('·')] : null; }
-  if (kind === 'delta') { const e = hit.payload;
-    return e ? ['EVIDENCE APPLICATION', e.rule] : null; }
+  if (kind === 'delta') { const e = hit.payload; return e ? ['EVIDENCE APPLICATION', e.rule] : null; }
   if (kind === 'trk') return ['BEHAVIOUR TRACE', 'click for its mechanism'];
   if (kind === 'stat') return ['READING', hit.payload ? hit.payload[0] : ''];
   if (kind === 'layer') return ['OUTCOME LAYER', rest[0]];
-  if (kind === 'wp') { const e = hit.payload; return e ? ['WAYPOINT', String(Math.floor(e.year))] : null; }
-  if (kind === 'ctl') return ['CONTROL', hit.id.replace('ctl:', '')];
+  if (kind === 'wp') { const e = hit.payload;
+    return e ? ['WAYPOINT', String(Math.floor(e.year))] : null; }
   return null;
 }
 
 addEventListener('keydown', (e) => {
-  if (e.key === 'f' || e.key === 'F') { fitSheet(); schedule(); }
-  if (e.key === 'Escape') { state.selected = null; schedule(); }
-  if (e.key === 'ArrowLeft') { state.yr = Math.max(2012, state.yr - (e.shiftKey ? 5 : 0.5)); writeHash(); schedule(); }
-  if (e.key === 'ArrowRight') { state.yr = Math.min(2100, state.yr + (e.shiftKey ? 5 : 0.5)); writeHash(); schedule(); }
-  const n = parseInt(e.key, 10);
-  if (n >= 1 && n <= PLATES.length) { state.plateId = PLATES[n - 1].id; state.selected = null; writeHash(); schedule(); }
+  if (e.target && /INPUT|TEXTAREA/.test(e.target.tagName)) return;
+  if (e.key === 'Escape') { state.selected = null; redraw(); }
+  if (e.key === 'ArrowLeft') {
+    state.yr = Math.max(2012, state.yr - (e.shiftKey ? 5 : 0.5)); writeHash(); redraw(); }
+  if (e.key === 'ArrowRight') {
+    state.yr = Math.min(2100, state.yr + (e.shiftKey ? 5 : 0.5)); writeHash(); redraw(); }
 });
-addEventListener('resize', () => { PAPER_SIG = ''; schedule(); });
+addEventListener('resize', () => { for (const s of SEC) s.sig = ''; redraw(); });
 
 function writeHash() {
-  const pins = Object.entries(state.pin).map(([, v]) => v).join('.');
+  const pins = Object.values(state.pin).join('.');
   history.replaceState(null, '',
-    `#p=${state.plateId}&y=${state.yr.toFixed(2)}` +
-    (pins ? `&pin=${pins}` : '') + (state.obs ? '&obs=1' : '') +
+    `#y=${state.yr.toFixed(2)}` + (pins ? `&pin=${pins}` : '') + (state.obs ? '&obs=1' : '') +
     (state.alt !== null ? `&alt=${state.alt}` : '') +
     (state.selected ? `&s=${encodeURIComponent(state.selected)}` : ''));
 }
 function readHash() {
   const h = location.hash;
-  const p = h.match(/p=([a-z]+)/); if (p && PLATES.some((q) => q.id === p[1])) state.plateId = p[1];
   const y = h.match(/y=([\d.]+)/); if (y) state.yr = Math.max(2012, Math.min(2100, +y[1]));
   const pin = h.match(/pin=([A-Z0-9.]+)/);
   if (pin) for (const pos of pin[1].split('.')) {
@@ -950,145 +964,145 @@ function readHash() {
 }
 
 // ── the frame ────────────────────────────────────────────────────────────────
-let rafId = 0, lastSig = '', PAPER_SIG = '';
-function schedule() { if (!rafId) rafId = requestAnimationFrame(() => { rafId = 0; frame(); }); }
+// Each section is its own canvas with its own signature, so a change that touches one section
+// redraws one section. Sections outside the viewport are left for the observer to ask for.
+let rafId = 0;
+const visible = new Set();
+function redraw() { if (!rafId) rafId = requestAnimationFrame(() => { rafId = 0; frame(); }); }
 
-// ── motion ───────────────────────────────────────────────────────────────────
-// A pan changes nothing on the sheet except where it sits, and a full redraw of this drawing
-// costs ~20 ms. So while the view is moving, the last completed ink is blitted at the new
-// offset (and scale, for a wheel), and a crisp redraw follows once the gesture settles.
-let inkCache = null;                 // { cv, sig, centre, mmPerPx, w, h }
-let moving = false, settleTimer = 0;
-function markMoving() {
-  moving = true;
-  clearTimeout(settleTimer);
-  settleTimer = setTimeout(() => { moving = false; lastSig = ''; schedule(); }, 170);
-}
-function cacheInk(sig) {
-  const cv = inkCache && inkCache.cv ? inkCache.cv : document.createElement('canvas');
-  if (cv.width !== inkCv.width || cv.height !== inkCv.height) {
-    cv.width = inkCv.width; cv.height = inkCv.height;
-  }
-  const c = cv.getContext('2d');
-  c.setTransform(1, 0, 0, 1, 0, 0);
-  c.clearRect(0, 0, cv.width, cv.height);
-  c.drawImage(inkCv, 0, 0);
-  inkCache = { cv, sig, centre: [state.centre[0], state.centre[1]],
-               mmPerPx: state.mmPerPx, w: board.clientWidth, h: board.clientHeight };
-}
-function blitInk() {
-  const dpr = draft.dpr || 1;
-  const W = board.clientWidth, H = board.clientHeight;
-  if (inkCv.width !== W * dpr || inkCv.height !== H * dpr) return false;
-  const k = inkCache.mmPerPx / state.mmPerPx;
-  const dx = (inkCache.centre[0] - state.centre[0]) / state.mmPerPx;
-  const dy = -(inkCache.centre[1] - state.centre[1]) / state.mmPerPx;
-  const ctx = draft.ctx;
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  ctx.clearRect(0, 0, W, H);
-  ctx.save();
-  ctx.translate(W / 2 + dx, H / 2 + dy);
-  ctx.scale(k, k);
-  ctx.drawImage(inkCache.cv, -W / 2 * dpr / dpr, -H / 2, W, H);
-  ctx.restore();
-  return true;
-}
 function frame() {
   if (!state.ready) return;
-  if (!state.fitted || !Number.isFinite(state.mmPerPx) || state.mmPerPx <= 0) {
-    if (!fitSheet()) { requestAnimationFrame(() => { lastSig = ''; schedule(); }); return; }
-    lastSig = '';
+  const S = sheetState(SEC[0].draft);
+  layout(S);
+  if (!state.fitted) { requestAnimationFrame(frame); return; }
+  const common = [state.yr.toFixed(2), JSON.stringify(state.pin), state.obs ? 1 : 0,
+                  state.alt, state.selected, state.hovered && state.hovered.id,
+                  docEl.clientWidth].join('|');
+  for (const s of SEC) {
+    if (!visible.has(s.id)) continue;
+    const sig = s.id + '|' + common + '|' + s.h.toFixed(2);
+    if (sig === s.sig) continue;
+    s.sig = sig;
+    drawSection(s, S);
   }
-  const contentSig = [state.plateId, state.yr.toFixed(3), JSON.stringify(state.pin),
-                      state.obs ? 1 : 0, state.alt, state.selected,
-                      state.hovered && state.hovered.id,
-                      board.clientWidth, board.clientHeight].join('|');
-  const sig = contentSig + '|' + state.centre[0].toFixed(2) + '|' +
-              state.centre[1].toFixed(2) + '|' + state.mmPerPx.toFixed(5);
-  if (sig === lastSig) return;
-  lastSig = sig;
-  const paperSig = [state.centre[0].toFixed(2), state.centre[1].toFixed(2),
-                    state.mmPerPx.toFixed(5), board.clientWidth, board.clientHeight].join('|');
-  if (paperSig !== PAPER_SIG) {
-    PAPER_SIG = paperSig;
-    const w = board.clientWidth, h = board.clientHeight;
-    const sx = w / 2 - (SHEET[0] / 2 + state.centre[0]) / state.mmPerPx;
-    const sy = h / 2 - (SHEET[1] / 2 - state.centre[1]) / state.mmPerPx;
-    drawPaper(paperCv, [sx, sy, SHEET[0] / state.mmPerPx, SHEET[1] / state.mmPerPx]);
-  }
-  // While the view is moving, reuse the last completed ink rather than redrawing the sheet.
-  if (moving && inkCache && inkCache.sig === contentSig &&
-      inkCache.w === board.clientWidth && inkCache.h === board.clientHeight) {
-    if (blitInk()) return;
-  }
-  draft.begin({ centre: state.centre, mmPerPx: state.mmPerPx });
-  const S = sheetState();
-  drawPlate(draft, S);
-  // hover and selection, ruled the way a draughtsman rules them
-  const hov = state.hovered && draft.prevRegions.find((r) => r.id === state.hovered.id);
-  if (hov && hov.id !== state.selected) highlight(hov, false);
-  const sel = state.selected && draft.prevRegions.find((r) => r.id === state.selected);
-  if (sel) highlight(sel, true);
-  cacheInk(contentSig);
+  updateNav();
 }
-function highlight(r, isSel) {
+function drawSection(s, S) {
+  s.draft.begin({ centre: [SHEET_W / 2, s.h / 2], mmPerPx: state.mmPerPx });
+  s.fn(s.draft, S, s.h);
+  const hov = state.hovered && state.hovered.sec === s.id &&
+              s.draft.regions.find((r) => r.id === state.hovered.id);
+  if (hov && hov.id !== state.selected) highlight(s.draft, hov, false);
+  const sel = state.selected && s.draft.regions.find((r) => r.id === state.selected);
+  if (sel) highlight(s.draft, sel, true);
+}
+function highlight(d, r, isSel) {
   const c = isSel ? INK.red : INK.blue, m = 1.4;
   const x0 = r.x - m, y0 = r.y - m, x1 = r.x + r.w + m, y1 = r.y + r.h + m;
-  draft.polyline([[x0, y0], [x1, y0], [x1, y1], [x0, y1]],
-                 { close: true, weight: isSel ? PEN.thin : PEN.hairline, colour: c,
-                   dash: isSel ? null : [2.4, 1.8] });
+  d.polyline([[x0, y0], [x1, y0], [x1, y1], [x0, y1]],
+             { close: true, weight: isSel ? PEN.thin : PEN.hairline, colour: c,
+               dash: isSel ? null : [2.4, 1.8] });
   if (isSel) {
     const t = Math.min(4.0, Math.min(r.w, r.h) * 0.30);
     for (const [cx, cy, sx, sy] of [[x0, y0, 1, 1], [x1, y0, -1, 1],
                                     [x1, y1, -1, -1], [x0, y1, 1, -1]]) {
-      draft.polyline([[cx + sx * t, cy], [cx, cy], [cx, cy + sy * t]],
-                     { weight: PEN.medium, colour: c });
+      d.polyline([[cx + sx * t, cy], [cx, cy], [cx, cy + sy * t]],
+                 { weight: PEN.medium, colour: c });
     }
   }
 }
 
-// ── the collision audit ──────────────────────────────────────────────────────
-// Every plate, at several dates and selections, drawn with lettering recorded. Two defects
-// are reported: lettering that overlaps other lettering or solid ground, and anything drawn
-// outside the frame line. Run from the console: __FW.auditSweep().
-function auditSweep({ tol = 0.6 } = {}) {
-  const saved = { plate: state.plateId, yr: state.yr, sel: state.selected,
-                  alt: state.alt, pin: { ...state.pin }, hovered: state.hovered };
-  const cases = [];
-  for (const p of PLATES) {
-    for (const yr of [2026.58, 2033, 2049, 2090]) {
-      cases.push({ plate: p.id, yr, sel: null });
-    }
+// ── the rail ─────────────────────────────────────────────────────────────────
+const NAV_TITLE = { header: 'Masthead', forecast: 'The forecast', controls: 'Controls',
+  note: 'Notes', future: 'The future', details: 'Instruments', behaviour: 'Behaviour',
+  world: 'The world', alternatives: 'Alternatives', morning: 'This morning',
+  sources: 'Method' };
+function buildNav() {
+  navEl.innerHTML = '';
+  for (const s of SEC) {
+    const b = document.createElement('button');
+    b.textContent = NAV_TITLE[s.id] || s.id;
+    b.dataset.id = s.id;
+    b.onclick = () => s.el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    navEl.appendChild(b);
   }
-  // and the selections that swap the whole notes column
+}
+function updateNav() {
+  let cur = null, bestTop = Infinity;
+  for (const s of SEC) {
+    const r = s.el.getBoundingClientRect();
+    if (r.bottom > innerHeight * 0.3 && r.top < bestTop) { bestTop = r.top; cur = s.id; }
+  }
+  for (const b of navEl.children) b.classList.toggle('on', b.dataset.id === cur);
+}
+
+// ── the collision audit ──────────────────────────────────────────────────────
+// Every section, at several dates and selections, drawn with lettering recorded. Two defects
+// are reported: lettering that overlaps other lettering or solid ground, and anything drawn
+// outside the section. Run from the console: __FW.auditSweep().
+function auditSweep({ tol = 0.6 } = {}) {
+  const saved = { yr: state.yr, sel: state.selected, alt: state.alt,
+                  pin: { ...state.pin }, hovered: state.hovered };
+  const cases = [];
+  for (const yr of [2026.58, 2033, 2049, 2090]) cases.push({ yr, sel: null, pin: {} });
   for (const sel of ['axis:C', 'axis:T', 'pos:E:E4', 'crisis:deal-window',
                      'layer:climate', 'dom:4', 'mile:3']) {
-    cases.push({ plate: 'mainline', yr: 2033, sel });
+    cases.push({ yr: 2033, sel, pin: {} });
+  }
+  for (const pin of [{ T: 'T1' }, { C: 'C5', D: 'D1' }, { T: 'T4', S: 'S3' },
+                   { C: 'C3' }, { D: 'D1', E: 'E4', P: 'P1' }]) {
+    cases.push({ yr: 2041, sel: null, pin });
   }
   const out = { cases: cases.length, collisions: [], offSheet: [], overflows: [], byCase: [] };
   state.hovered = null;
   for (const c of cases) {
-    state.plateId = c.plate; state.yr = c.yr; state.selected = c.sel;
-    state.alt = null; state.pin = {}; cond = null;
-    draft.begin({ centre: [0, 0], mmPerPx: state.mmPerPx, audit: true });
-    drawPlate(draft, sheetState());
-    const col = draft.collisions(tol);
-    const off = draft.offSheet(SHEET, 10);
-    const ovf = draft.overflows || [];
-    out.byCase.push({ plate: c.plate, yr: c.yr, sel: c.sel,
-                      marks: draft.marks.length, col: col.length, off: off.length,
-                      ovf: ovf.length });
-    for (const x of ovf) (out.overflows = out.overflows || []).push({ ...x, plate: c.plate });
-    for (const x of col) out.collisions.push({ ...x, plate: c.plate, yr: c.yr, sel: c.sel });
-    for (const x of off) out.offSheet.push({ ...x, plate: c.plate, yr: c.yr, sel: c.sel });
+    state.yr = c.yr; state.selected = c.sel; state.alt = null;
+    state.pin = { ...c.pin };
+    if (Object.keys(state.pin).length) recondition(); else cond = null;
+    const S = sheetState(SEC[0].draft);
+    for (const s of SEC) {
+      const h = Math.max(20, s.fn.height(S));
+      s.draft.begin({ centre: [SHEET_W / 2, h / 2], mmPerPx: state.mmPerPx, audit: true });
+      s.fn(s.draft, S, h);
+      const col = s.draft.collisions(tol);
+      const off = s.draft.outside([0, 0, SHEET_W, h], 0.6);
+      const ovf = s.draft.overflows || [];
+      out.byCase.push({ sec: s.id, yr: c.yr, sel: c.sel, pin: JSON.stringify(c.pin),
+                        marks: s.draft.marks.length, col: col.length,
+                        off: off.length, ovf: ovf.length });
+      for (const x of ovf) out.overflows.push({ ...x, sec: s.id });
+      for (const x of col) out.collisions.push({ ...x, sec: s.id, yr: c.yr, sel: c.sel });
+      for (const x of off) out.offSheet.push({ ...x, sec: s.id, yr: c.yr, sel: c.sel });
+    }
   }
-  Object.assign(state, { plateId: saved.plate, yr: saved.yr, selected: saved.sel,
-                         alt: saved.alt, pin: saved.pin, hovered: saved.hovered });
-  if (Object.keys(saved.pin).length) recondition();
-  lastSig = ''; schedule();
+  Object.assign(state, { yr: saved.yr, selected: saved.sel, alt: saved.alt,
+                         pin: saved.pin, hovered: saved.hovered });
+  if (Object.keys(saved.pin).length) recondition(); else cond = null;
+  for (const s of SEC) s.sig = '';
+  redraw();
+  // A positive control. The instrument reports a zero often enough that the zero has to be
+  // earned: three faults are planted — two labels on top of each other, a label on declared
+  // solid ground, and a mark past the frame — and all three must come back.
+  {
+    const d0 = SEC[0].draft;
+    d0.begin({ centre: [SHEET_W / 2, 50], mmPerPx: state.mmPerPx, audit: true });
+    d0.text([40, 50], 'CONTROL OVERLAP ALPHA', { size: 3 });
+    d0.text([40, 50], 'CONTROL OVERLAP BETA', { size: 3 });
+    d0.obstacle(100, 40, 40, 20, 'control-solid');
+    d0.text([104, 46], 'CONTROL ON SOLID', { size: 3 });
+    d0.text([SHEET_W + 40, 50], 'CONTROL OFF SHEET', { size: 3 });
+    const cc = d0.collisions(tol), oo = d0.outside([0, 0, SHEET_W, 100], 0.6);
+    out.control = { textText: cc.filter((c) => c.kind === 'text/text').length,
+                    textSolid: cc.filter((c) => c.kind === 'text/solid').length,
+                    offSheet: oo.length };
+    out.controlPasses = out.control.textText >= 1 && out.control.textSolid >= 1 &&
+                        out.control.offSheet >= 1;
+    d0.marks = null; d0.obstacles = null;
+  }
   out.collisions.sort((a, b) => b.area - a.area);
   out.worstCollisions = out.collisions.slice(0, 24);
-  out.offSheetUnique = [...new Map(out.offSheet.map((o) => [o.str + '|' + o.plate, o]))
+  out.marksTotal = out.byCase.reduce((a, b) => a + b.marks, 0);
+  out.offSheetUnique = [...new Map(out.offSheet.map((o) => [o.str + '|' + o.sec, o]))
                         .values()].slice(0, 40);
   return out;
 }
@@ -1098,25 +1112,50 @@ const J = (n) => fetch(`data/forecast/${n}?v=${DATA_V}`).then((r) => {
   if (!r.ok) throw new Error(n); return r.json();
 });
 async function boot() {
-  const note = document.getElementById('mast');
+  const mast = document.getElementById('mast');
   [D.engine, D.network, D.bands, D.marginals, D.mainline, D.crisis, D.delta,
    D.claims, D.grounding, D.climate] = await Promise.all([
     J('engine.json'), J('network.json'), J('bands.json'), J('marginals.json'),
     J('mainline.json'), J('crisis.json'), J('delta.json'), J('claims.json'),
     J('grounding.json'), J('climate.json')]);
   readHash();
+
+  document.body.style.backgroundImage = `url(${paperTileURL()})`;
+  docEl.style.backgroundImage = `url(${paperTileURL()})`;
+  for (const s of SECTIONS) {
+    const el = document.createElement('section');
+    const cv = document.createElement('canvas');
+    el.appendChild(cv);
+    docEl.appendChild(el);
+    SEC.push({ id: s.id, fn: s.fn, el, cv, draft: new Draft(cv), h: 0, sig: '' });
+  }
+  buildNav();
+  // Only what is on screen is drawn; a section entering the viewport asks for its own ink.
+  const io = new IntersectionObserver((ents) => {
+    let need = false;
+    for (const e of ents) {
+      const s = SEC.find((q) => q.el === e.target);
+      if (!s) continue;
+      if (e.isIntersecting) { visible.add(s.id); need = true; } else visible.delete(s.id);
+    }
+    if (need) redraw();
+  }, { rootMargin: '600px 0px' });
+  for (const s of SEC) io.observe(s.el);
+  addEventListener('scroll', updateNav, { passive: true });
+
   state.ready = true;
-  fitSheet();
-  new ResizeObserver(() => { PAPER_SIG = ''; lastSig = ''; fitSheetIfUnset(); schedule(); })
-    .observe(board);
-  schedule();
-  note.textContent = 'THE FORECAST WORKS';
-  J('exemplars.json').then((d) => { D.exemplars = d; lastSig = ''; schedule(); }).catch(() => {});
+  redraw();
+  new ResizeObserver(() => { for (const s of SEC) s.sig = ''; redraw(); }).observe(docEl);
+  mast.textContent = 'The Forecast Works · ' + D.network.date;
+
+  J('exemplars.json').then((d) => { D.exemplars = d; for (const s of SEC) s.sig = ''; redraw(); })
+    .catch(() => {});
   J('ensemble2k.json').then((d) => { D.ens2k = d; }).catch(() => {});
   fetch(`data/countries-110m.json?v=${DATA_V}`).then((r) => (r.ok ? r.json() : null))
-    .then((d) => { if (d) { D.topo = d; lastSig = ''; schedule(); } }).catch(() => {});
-  window.__FW = { state, D, draft, sheetState, fitSheet, capPath, capAt, tracksJS,
-                  auditSweep };
+    .then((d) => { if (d) { D.topo = d; for (const s of SEC) s.sig = ''; redraw(); } })
+    .catch(() => {});
+  window.__FW = { state, D, SEC, sheetState: () => sheetState(SEC[0].draft), capPath, capAt, tracksJS, auditSweep,
+                  effectsFor, redraw };
   window.__FRAME_READY = true;
 }
 boot().catch((e) => {

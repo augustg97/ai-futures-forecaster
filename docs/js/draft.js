@@ -104,6 +104,24 @@ export class Draft {
     return out.sort((p, q) => q.area - p.area);
   }
 
+  // The same check for a drawing laid out from a corner rather than a centre — a section of
+  // the scrolling document, whose millimetre space runs 0…W across and 0…H up. Passing such a
+  // section to `offSheet` reports every mark on it, because that method assumes the origin is
+  // the middle of the sheet.
+  outside(box, pad = 0.5) {
+    const [x0, y0, w, h] = box;
+    const bad = [];
+    for (const m of (this.marks || [])) {
+      if (m.margin) continue;
+      if (m.x < x0 - pad || m.x + m.w > x0 + w + pad ||
+          m.y < y0 - pad || m.y + m.h > y0 + h + pad) {
+        bad.push({ str: m.str, x: +m.x.toFixed(1), y: +m.y.toFixed(1),
+                   right: +(m.x + m.w).toFixed(1), top: +(m.y + m.h).toFixed(1) });
+      }
+    }
+    return bad;
+  }
+
   // Anything drawn outside the frame line is a defect, except the zone references, which
   // belong in the margin and say so.
   offSheet(sheet, margin = 10) {
@@ -623,6 +641,30 @@ function makePaperTile(aspect) {
     ctx.beginPath(); ctx.arc(fx, fy, fr, 0, Math.PI * 2); ctx.fill();
   }
   return cv;
+}
+
+// The scrolling document wants the same material as a repeating background, so the paper costs
+// nothing at all to scroll. Only the tooth tiles; the fibre blooms are left to the sheet
+// version, because a repeating bloom reads as a pattern.
+let paperURL = null;
+export function paperTileURL(px = 168) {
+  if (paperURL) return paperURL;
+  const cv = document.createElement('canvas');
+  cv.width = px; cv.height = px;
+  const ctx = cv.getContext('2d');
+  ctx.fillStyle = '#f4f1e8';
+  ctx.fillRect(0, 0, px, px);
+  const img = ctx.getImageData(0, 0, px, px), d = img.data;
+  let seed = 20260812;
+  const rnd = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
+  const cl = (v) => Math.max(0, Math.min(255, v));
+  for (let i = 0; i < d.length; i += 4) {
+    const n = (rnd() - 0.5) * 7.0;
+    d[i] = cl(d[i] + n); d[i + 1] = cl(d[i + 1] + n * 0.96); d[i + 2] = cl(d[i + 2] + n * 0.86);
+  }
+  ctx.putImageData(img, 0, 0);
+  paperURL = cv.toDataURL('image/png');
+  return paperURL;
 }
 
 export function drawPaper(cv, sheetRect) {
