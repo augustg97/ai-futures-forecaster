@@ -5,12 +5,12 @@
 // on that instrument. It reads the same emitted data and implements the same functions against
 // the same shipped constants (`engine.json`), so the two surfaces cannot drift apart.
 
-import { Draft, PEN, INK, paperTileURL } from './draft.js?v=20260812-0104';
+import { Draft, PEN, INK, paperTileURL } from './draft.js?v=20260812-0109';
 import { SECTIONS, SHEET_W, TABS, CHART, COL, CTL_NOTE_W, balance,
-         measureProse, measureSections } from './sections.js?v=20260812-0104';
-import { column, fmtNum } from './instruments.js?v=20260812-0104';
-import { describe, headline } from './narrative.js?v=20260812-0104';
-import { chooseFigures } from './figures.js?v=20260812-0104';
+         proseColumns, measureSections, SHEET_CW } from './sections.js?v=20260812-0109';
+import { column, fmtNum } from './instruments.js?v=20260812-0109';
+import { describe, headline } from './narrative.js?v=20260812-0109';
+import { chooseFigures } from './figures.js?v=20260812-0109';
 
 // One build number, injected into index.html at ship time, versions BOTH the data fetches and
 // (via the build's import rewrite) every module. A fresh app.js against a stale draft.js is the
@@ -755,7 +755,8 @@ function sheetState(measure) {
     lineLabel: ['T', 'A', 'C', 'D', 'S', 'P', 'E'].map((k) => wl[k]).join('·'),
     effect: (k, p) => (eff.map[`${k}:${p}`] ?? null),
     headline: headline(wl, state.yr, tr, D.engine.y0),
-    prose: { paras, h: measureProse(measure, paras, (SHEET_W - 26 - 12) / 2, 2.0) },
+    prose: proseColumns(measure, paras),
+    headlineH: 0,   // filled below, once the headline string exists
     figures: chooseFigures(wl, state.yr, cap),
     plain,
     drawWorld: drawWorldPlate, drawAlts: drawAltsPlate, drawMorning: drawMorningPlate,
@@ -764,6 +765,8 @@ function sheetState(measure) {
   // on the controls, a milestone or a crisis point fills the band under the chart, and anything
   // on one of the other tabs sits at the head of that tab. Nothing sends the reader scrolling
   // to find the explanation of what they just pressed.
+  S.headlineH = measure.wrap(S.headline, SHEET_CW, { size: 3.2, weight: 600 }).length
+                * 3.2 * 1.28 + 3.2;
   const notes = selectionNotes();
   if (notes) {
     const kind = state.selected.split(':')[0];

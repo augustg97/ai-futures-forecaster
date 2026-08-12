@@ -5,13 +5,14 @@
 // wide, drawn at one fixed scale so lettering keeps the size it was drawn at and nothing has to
 // be zoomed. A section's millimetre space runs x 0 → 300 across and y 0 → H up from its foot.
 
-import { PEN, INK, PAPER } from './draft.js?v=20260812-0104';
-import { dial, manifold, strip, tally, fmtNum } from './instruments.js?v=20260812-0104';
-import { drawFigure } from './figures.js?v=20260812-0104';
+import { PEN, INK, PAPER } from './draft.js?v=20260812-0109';
+import { dial, manifold, strip, tally, fmtNum } from './instruments.js?v=20260812-0109';
+import { drawFigure } from './figures.js?v=20260812-0109';
 
 export const SHEET_W = 300;
 const PAD = 13;
 const CW = SHEET_W - PAD * 2;
+export const SHEET_CW = CW;
 
 export const TABS = [
   { id: 'forecast', label: 'Forecast' },
@@ -48,6 +49,26 @@ export function measureProse(d, paras, colW, size = 2.0) {
     h += d.runInLines(p.lead, p.text, colW, size).lines.length * size * LEAD + 2.4;
   }
   return h;
+}
+// The passage across n columns, split so the columns end level. Three columns keep it a band
+// across the head of the sheet instead of a wall the chart has to sit under.
+export const PROSE_N = 3;
+export const PROSE_COL = (CW - (PROSE_N - 1) * 10) / PROSE_N;
+export function proseColumns(d, paras, colW = PROSE_COL, n = PROSE_N, size = 2.0) {
+  const hs = paras.map((p) => measureProse(d, [p], colW, size));
+  const total = hs.reduce((a, b) => a + b, 0), target = total / n;
+  const cols = [];
+  let cur = [], run = 0;
+  for (let i = 0; i < paras.length; i++) {
+    const left = paras.length - i, need = n - cols.length;
+    if (cur.length && run + hs[i] / 2 > target && cols.length < n - 1 && left > need - 1) {
+      cols.push(cur); cur = []; run = 0;
+    }
+    cur.push(paras[i]); run += hs[i];
+  }
+  cols.push(cur);
+  while (cols.length < n) cols.push([]);
+  return { cols, h: Math.max(...cols.map((c) => measureProse(d, c, colW, size))) };
 }
 // Split a run of sections into two columns of roughly equal drawn height.
 export function balance(d, secs, colW, size = 2.0) {
@@ -635,32 +656,42 @@ board.height = (S) => {
   return Math.max(left, mid, right) + 12;
 };
 
-// ── 3 · the passage and the scenes ───────────────────────────────────────────
+// ── 3 · the passage, across the head of the sheet ───────────────────────────
 export function readout(d, S, H) {
   let y = H - 8;
   d.textBlock([PAD, y], S.headline, CW,
-              { size: 3.0, lead: 1.3, colour: INK.blue, weight: 600 });
-  y -= d.wrap(S.headline, CW, { size: 3.0, weight: 600 }).length * 3.0 * 1.3 + 3.0;
+              { size: 3.2, lead: 1.28, colour: INK.blue, weight: 600 });
+  y -= d.wrap(S.headline, CW, { size: 3.2, weight: 600 }).length * 3.2 * 1.28 + 3.2;
   rule(d, y + 1.6, PAD, CW, { weight: PEN.thin, colour: INK.blue });
-  y -= 2.0;
-  const colW = (CW - 12) / 2;
-  const half = Math.ceil(S.prose.paras.length / 2);
-  const cols = [S.prose.paras.slice(0, half), S.prose.paras.slice(half)];
-  cols.forEach((col, ci) => {
+  y -= 2.2;
+  S.prose.cols.forEach((col, ci) => {
     let cy = y;
-    const cx = PAD + ci * (colW + 12);
+    const cx = PAD + ci * (PROSE_COL + 10);
     for (const para of col) {
-      cy -= d.runIn([cx, cy], para.lead, para.text, colW,
-                    { size: 2.0, lead: LEAD, colour: INK.pencil, leadColour: INK.ink }) + 2.6;
+      cy -= d.runIn([cx, cy], para.lead, para.text, PROSE_COL,
+                    { size: 2.0, lead: LEAD, colour: INK.pencil, leadColour: INK.ink }) + 2.4;
     }
   });
-  const fw = (CW - 14) / 2, fh = 62;
+  for (let i = 1; i < PROSE_N; i++) {
+    const gx = PAD + i * (PROSE_COL + 10) - 5;
+    d.line([gx, 4], [gx, y - 1], { weight: PEN.hairline, colour: INK.inkLight, alpha: 0.45 });
+  }
+  return H;
+}
+readout.height = (S) => 22 + (S.headlineH || 12) + S.prose.h;
+
+// ── the drawn scenes ────────────────────────────────────────────────────────
+export function scenes(d, S, H) {
+  const y = head(d, H - 8, 'SCENES',
+    'Two drawings of the future the settings and the date describe. Each caption states what ' +
+    'the scene depicts and which setting selected it.');
+  const fw = (CW - 14) / 2, fh = y - 12;
   S.figures.forEach((f, i) => {
     drawFigure(d, f.key, PAD + i * (fw + 14), 8, fw, fh);
   });
   return H;
 }
-readout.height = (S) => 26 + S.prose.h + 78;
+scenes.height = () => 92;
 
 function behaviourPanels(S) {
   const tr = S.tracks;
@@ -906,8 +937,9 @@ sources.height = () => 150;
 
 export const SECTIONS = [
   { id: 'header', fn: header, tab: 'forecast' },
-  { id: 'board', fn: board, tab: 'forecast' },
   { id: 'readout', fn: readout, tab: 'forecast' },
+  { id: 'board', fn: board, tab: 'forecast' },
+  { id: 'scenes', fn: scenes, tab: 'forecast' },
   { id: 'details', fn: details, tab: 'instruments' },
   { id: 'behaviour', fn: behaviour, tab: 'behaviour' },
   { id: 'world', fn: world, tab: 'world' },

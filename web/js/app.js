@@ -7,7 +7,7 @@
 
 import { Draft, PEN, INK, paperTileURL } from './draft.js';
 import { SECTIONS, SHEET_W, TABS, CHART, COL, CTL_NOTE_W, balance,
-         measureProse, measureSections } from './sections.js';
+         proseColumns, measureSections, SHEET_CW } from './sections.js';
 import { column, fmtNum } from './instruments.js';
 import { describe, headline } from './narrative.js';
 import { chooseFigures } from './figures.js';
@@ -755,7 +755,8 @@ function sheetState(measure) {
     lineLabel: ['T', 'A', 'C', 'D', 'S', 'P', 'E'].map((k) => wl[k]).join('·'),
     effect: (k, p) => (eff.map[`${k}:${p}`] ?? null),
     headline: headline(wl, state.yr, tr, D.engine.y0),
-    prose: { paras, h: measureProse(measure, paras, (SHEET_W - 26 - 12) / 2, 2.0) },
+    prose: proseColumns(measure, paras),
+    headlineH: 0,   // filled below, once the headline string exists
     figures: chooseFigures(wl, state.yr, cap),
     plain,
     drawWorld: drawWorldPlate, drawAlts: drawAltsPlate, drawMorning: drawMorningPlate,
@@ -764,6 +765,8 @@ function sheetState(measure) {
   // on the controls, a milestone or a crisis point fills the band under the chart, and anything
   // on one of the other tabs sits at the head of that tab. Nothing sends the reader scrolling
   // to find the explanation of what they just pressed.
+  S.headlineH = measure.wrap(S.headline, SHEET_CW, { size: 3.2, weight: 600 }).length
+                * 3.2 * 1.28 + 3.2;
   const notes = selectionNotes();
   if (notes) {
     const kind = state.selected.split(':')[0];
