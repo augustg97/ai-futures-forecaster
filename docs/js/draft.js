@@ -477,6 +477,35 @@ export class Draft {
     }
   }
 
+  // A paragraph with a bold run-in: the lead sits on the first line and the body flows around
+  // it, so a passage can be signposted without being cut into sections.
+  runInLines(lead, body, widthMM, size) {
+    const gap = size * 0.55;
+    const lw = lead ? this.textWidth(lead, { size, weight: 700, track: 0.06 }) + gap : 0;
+    const lines = [];
+    let cur = '', avail = widthMM - lw;
+    for (const word of String(body).split(/\s+/)) {
+      const trial = cur ? cur + ' ' + word : word;
+      if (this.textWidth(trial, { size }) > avail && cur) {
+        lines.push(cur); cur = word; avail = widthMM;
+      } else cur = trial;
+    }
+    if (cur) lines.push(cur);
+    return { lines, lw };
+  }
+  runIn(pos, lead, body, widthMM,
+        { size = 2.0, lead: leading = 1.45, colour = null, leadColour = null } = {}) {
+    const { lines, lw } = this.runInLines(lead, body, widthMM, size);
+    if (lead) {
+      this.text(pos, lead, { size, weight: 700, track: 0.06,
+                             colour: leadColour ?? this.ink.ink });
+    }
+    lines.forEach((ln, i) => {
+      this.text([pos[0] + (i ? 0 : lw), pos[1] - i * size * leading], ln, { size, colour });
+    });
+    return Math.max(1, lines.length) * size * leading;
+  }
+
   leader(from, to, str, { colour = null, size = 2.0, align = 'left', gap = 0.9 } = {}) {
     const c = colour ?? this.ink.inkLight;
     this.line(from, to, { weight: PEN.hairline, colour: c });

@@ -6,7 +6,8 @@
 // the same shipped constants (`engine.json`), so the two surfaces cannot drift apart.
 
 import { Draft, PEN, INK, paperTileURL } from './draft.js';
-import { SECTIONS, SHEET_W, NOTE_COL, CHART, balance } from './sections.js';
+import { SECTIONS, SHEET_W, TABS, CHART, CHART_W, PROSE_W, balance,
+         measureProse } from './sections.js';
 import { column, fmtNum } from './instruments.js';
 import { describe, headline } from './narrative.js';
 import { chooseFigures } from './figures.js';
@@ -25,12 +26,12 @@ const DOC_MIN = 1000, DOC_MAX = 1380;
 
 const docEl = document.getElementById('doc');
 const chipEl = document.getElementById('chip');
-const navEl = document.getElementById('nav');
+const tabsEl = document.getElementById('tabs');
 const D = {};
 const SEC = [];                       // { id, fn, el, cv, draft, h, sig }
 
 const state = {
-  yr: NOW_Y, pin: {}, obs: false, alt: null,
+  tab: 'forecast', yr: NOW_Y, pin: {}, obs: false, alt: null,
   mmPerPx: 0.25, hovered: null, selected: null, touched: null,
   ready: false, fitted: false,
 };
@@ -606,9 +607,9 @@ function drawMorningPlate(d, S, box) {
   });
   const res = (D.claims.claims || []).length;
   d.noteCard([x + 200, netY + 12], 'WHAT A QUIET MORNING MEANS',
-    ['A quiet morning still carries news. Developments that no rule yet reads accumulate as ' +
-     'RESIDUE, and the weekly schema review can answer a sustained cluster by adding an axis ' +
-     'or a sub-axis on its own authority, logged for review. ' +
+    ['A quiet morning still carries news. Developments that fall outside every rule accumulate ' +
+     'as RESIDUE, and the weekly schema review can answer a sustained cluster by adding an ' +
+     'axis or a sub-axis on its own authority, logged for review. ' +
      `${res} claims stand registered for scoring as they resolve.`],
     { width: w - 210 });
 }
@@ -705,49 +706,26 @@ function effectsFor(pin) {
 }
 
 // ── the notes: what the document is telling you ──────────────────────────────
-function defaultNotes() {
-  const m = activeMarginals();
-  const pct = (k, p) => ((m[k] || {})[p] * 100 || 0).toFixed(0);
-  const del = D.delta.entries || [];
-  const today = del.filter((e) => e.date === D.delta.date);
-  return [
-    { h: 'How to read this document', p: [
-      'Scroll. Every section is drawn at one width, so nothing needs to be zoomed. Anything ' +
-      'drawn can be pointed at: hovering rules a light box around a mark, and clicking it ' +
-      'fills this panel with the full entry and rings the mark in red.',
-      'The controls above set the model\'s variables. A setting redraws the forecast, the ' +
-      'described future, the instruments, the map and the behaviour charts together, and this ' +
-      'panel takes on the note for whatever you set.'] },
-    { h: 'Why the forecast has this shape', p: [
-      `The band is a mixture of tempos. A ${pct('T', 'T1')}% explosive tail pulls the upper ` +
-      `envelope to the ceiling by the early 2030s. The ${pct('T', 'T2')}% fast and ` +
-      `${pct('T', 'T3')}% gradual mass carries the median through the superhuman-coder datum ` +
-      `and on to researcher level in the middle of the decade. The ${pct('T', 'T4')}% ` +
-      'no-superintelligence floor holds the lower envelope under the researcher datum into ' +
-      'the 2050s.',
-      'The shelves inside the band come from policy. A verified deal holds lines at expert ' +
-      'level from 2035 to 2040, and the moratorium tail freezes below the researcher datum ' +
-      'altogether. Past 2045 most sampled futures saturate the ladder; what still separates ' +
-      'them there is outcomes, which the behaviour charts and the described future track.'] },
-    { h: 'The colour code', p: [
-      'Blue carries probability in motion: the envelopes, the median, the date index. Ink is ' +
-      'the observed record and the structure of the document. Red is annotation and revision, ' +
-      'including whatever the evidence moved this morning. Green marks a goal or a target. ' +
-      'Ochre carries delays and the active composed line. Warm carries energy — compute, ' +
-      'power, emissions. Chain-dot rules across a chart are datums: capability levels the ' +
-      'run has passed.'] },
-    { h: 'This morning', p: today.length
-      ? [`${today.length} evidence applications were made to the network today. ` +
-         today.slice(-3).map((e) =>
-           `${e.rule} (${e.impact_class}, ×${(e.magnitude || 0).toFixed(4)})`).join('; ') + '.',
-         'Each application logs its arithmetic: impact class, corroborating sources, novelty ' +
-         'decay, the positions moved and the driver that moved them. The revision section ' +
-         'draws the day in full.']
-      : ['No evidence application has been made since the last emit. Developments that no ' +
-         'rule yet reads accumulate as residue for the weekly schema review, which may add a ' +
-         'variable on its own authority and log it for review. The revision section draws ' +
-         'the morning in full.'] },
-  ];
+// The parent writes each variable's provenance into its own description — which scenario a
+// position was quarried from, and where in the literature it sits. That belongs in the method
+// section and in the grounding line under a selected entry. On a button it crowds out what the
+// setting actually means, so the clauses naming a source document are dropped here. The
+// parent's text is left untouched; this is a reading of it.
+const SCENARIO = new RegExp('(AI[- ]?20\\d\\d|Situational[- ]Awareness|Normal[- ]Technology' +
+  '|Machines of Loving Grace|Europe 20\\d\\d|Plan A|plan family)', 'i');
+function plain(text) {
+  let out = String(text || '');
+  // a dash clause or a parenthesis that exists only to name a source
+  out = out.replace(
+    /\s+[\u2013\u2014]\s+[^.;]*?(AI[- ]?20\d\d|Situational|Normal[- ]Technology|Loving Grace|Europe 20\d\d|Plan A|plan family)[^.;]*/gi, '');
+  out = out.replace(/\s*\([^)]*(AI[- ]?20\d\d|Situational|Normal[- ]Technology|Plan A)[^)]*\)/gi, '');
+  // then whole sentences that do the same
+  const sents = out.split(/(?<=[.;])\s+/);
+  const kept = sents.filter((q) => !SCENARIO.test(q));
+  out = (kept.length ? kept : sents).join(' ')
+    .replace(/\s+/g, ' ').replace(/\s+([.;,])/g, '$1').trim();
+  if (out && !/[.!?]$/.test(out)) out += '.';
+  return out;
 }
 
 // ── the state handed to the sections ─────────────────────────────────────────
@@ -757,14 +735,13 @@ function sheetState(measure) {
   const tr = activeTracks();
   const idx = Math.max(0, Math.min(tr.year.length - 1, Math.floor(state.yr) - D.engine.y0));
   const cap = state.yr < NOW_Y ? trunkCap(state.yr) : tr.cap[idx];
-  const sel = selectionNotes();
-  const noteBody = sel || defaultNotes();
   const eff = effectsFor(state.pin);
-  const desc = describe(wl, state.yr, tr, D.engine.y0);
+  const paras = describe(wl, state.yr, tr, D.engine.y0);
   const S = {
     yr: state.yr, NOW: NOW_Y, TRUNK, pin: state.pin, obs: state.obs, build: DATA_V,
     engine: D.engine, network: D.network, crisis: D.crisis, grounding: D.grounding,
     delta: D.delta, marginals: activeMarginals(), marginals30: marginals30(),
+    priors: D.marginals.today,
     bands: activeBands(), tracks: tr, events: activeEvents(),
     layers: activeLayers(), main: wl, idx, cap,
     capAt: (y) => capAt(kn, y), trunkCap,
@@ -778,22 +755,32 @@ function sheetState(measure) {
     lineLabel: ['T', 'A', 'C', 'D', 'S', 'P', 'E'].map((k) => wl[k]).join('·'),
     effect: (k, p) => (eff.map[`${k}:${p}`] ?? null),
     headline: headline(wl, state.yr, tr, D.engine.y0),
-    description: balance(measure, desc, NOTE_COL, 2.0),
+    prose: { paras, h: measureProse(measure, paras, PROSE_W, 2.0) },
     figures: chooseFigures(wl, state.yr, cap),
+    plain,
     drawWorld: drawWorldPlate, drawAlts: drawAltsPlate, drawMorning: drawMorningPlate,
   };
-  // The panel already letters the entry's name at 3.4 mm; repeating it as the first column
-  // heading says the same thing twice in two sizes.
-  const title = sel ? (noteBody[0].h || 'Selected') : 'Notes';
-  const body = sel
-    ? [{ ...noteBody[0], h: null }].concat(noteBody.slice(1))
-    : noteBody;
-  const bal = balance(measure, body, NOTE_COL, 2.0);
-  S.note = {
-    title,
-    eyebrow: sel ? `SELECTED · ${state.selected}` : 'NOTHING SELECTED · THE STANDING NOTE',
-    cols: bal.cols, h: bal.h,
-  };
+  // A note is drawn where the mark that opened it is: an axis entry unfolds inside its own row
+  // on the controls, a milestone or a crisis point fills the band under the chart, and anything
+  // on one of the other tabs sits at the head of that tab. Nothing sends the reader scrolling
+  // to find the explanation of what they just pressed.
+  const notes = selectionNotes();
+  if (notes) {
+    const kind = state.selected.split(':')[0];
+    const onChart = kind === 'mile' || kind === 'crisis';
+    const width = (state.tab === 'forecast' && onChart) ? CHART_W : SHEET_W - 26;
+    // The panel letters the entry's name at 2.4 mm; repeating it as the first column heading
+    // says the same thing twice in two sizes.
+    const body = [{ ...notes[0], h: null }].concat(notes.slice(1));
+    const bal = balance(measure, body, (width - 20) / 2, 2.0);
+    const note = { title: notes[0].h || 'Note', cols: bal.cols, h: bal.h };
+    if (state.tab !== 'forecast') S.plateNote = note;
+    else if (onChart) S.chartNote = note;
+    else if (kind === 'axis' || kind === 'pos') {
+      S.openAxis = state.selected.split(':')[1];
+      S.openNote = note;
+    } else S.chartNote = note;
+  }
   return S;
 }
 
@@ -806,6 +793,9 @@ function layout(S) {
   state.mmPerPx = SHEET_W / W;
   docEl.style.width = W + 'px';
   for (const s of SEC) {
+    const on = s.tab === state.tab;
+    if (s.on !== on) { s.on = on; s.el.style.display = on ? 'block' : 'none'; s.sig = ''; }
+    if (!on) continue;
     const hmm = Math.max(20, s.fn.height(S));
     if (Math.abs(hmm - s.h) > 0.05) {
       s.h = hmm;
@@ -834,9 +824,9 @@ function onDown(e) {
   const hit = sec.draft.hitTest(mm[0], mm[1]);
   if (!hit) { if (state.selected) { state.selected = null; writeHash(); redraw(); } return; }
   if (hit.id === 'ctl:time') {
-    dragging = { sec, id: hit.id };
+    dragging = { sec, id: hit.id, map: hit.payload || null };
     sec.cv.setPointerCapture(e.pointerId);
-    setTimeFrom(mm[0]);
+    setTimeFrom(mm[0], hit.payload);
     return;
   }
   if (hit.id.startsWith('ctl:')) { applyControl(hit.id); return; }
@@ -845,7 +835,11 @@ function onDown(e) {
   writeHash(); redraw();
 }
 function onMove(e) {
-  if (dragging) { const mm = cursorToMM(dragging.sec, e); if (mm) setTimeFrom(mm[0]); return; }
+  if (dragging) {
+    const mm = cursorToMM(dragging.sec, e);
+    if (mm) setTimeFrom(mm[0], dragging.map);
+    return;
+  }
   const sec = sectionOf(e.target);
   if (!sec) { chipEl.style.display = 'none'; return; }
   const mm = cursorToMM(sec, e);
@@ -872,17 +866,12 @@ docEl.addEventListener('pointermove', onMove);
 docEl.addEventListener('pointerup', () => { dragging = null; });
 docEl.addEventListener('pointerleave', () => { chipEl.style.display = 'none'; });
 
-function setTimeFrom(mmX) {
-  state.yr = Math.round(CHART.year(mmX) * 4) / 4;
+function setTimeFrom(mmX, map) {
+  const yr = map && map.linear
+    ? map.y0 + Math.max(0, Math.min(1, (mmX - map.x0) / map.w)) * (map.y1 - map.y0)
+    : CHART.year(mmX);
+  state.yr = Math.round(yr * 4) / 4;
   writeHash(); redraw();
-}
-function revealNote() {
-  const n = SEC.find((s) => s.id === 'note');
-  if (!n) return;
-  const r = n.el.getBoundingClientRect();
-  if (r.top > innerHeight * 0.72 || r.bottom < innerHeight * 0.28) {
-    n.el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
 }
 function applyControl(id) {
   const [, kind, arg, pos] = id.split(':');
@@ -890,7 +879,6 @@ function applyControl(id) {
     if (state.pin[arg] === pos) { delete state.pin[arg]; state.selected = `axis:${arg}`; }
     else { state.pin[arg] = pos; state.selected = `pos:${arg}:${pos}`; }
     state.alt = null; recondition();
-    revealNote();
   } else if (kind === 'mode') {
     state.obs = arg === 'obs';
     recondition();
@@ -953,6 +941,7 @@ addEventListener('hashchange', () => {
   if (!state.ready) return;
   state.pin = {}; state.alt = null; state.selected = null; cond = null;
   readHash();
+  markTabs();
   for (const s of SEC) s.sig = '';
   redraw();
 });
@@ -960,12 +949,14 @@ addEventListener('hashchange', () => {
 function writeHash() {
   const pins = Object.values(state.pin).join('.');
   history.replaceState(null, '',
-    `#y=${state.yr.toFixed(2)}` + (pins ? `&pin=${pins}` : '') + (state.obs ? '&obs=1' : '') +
+    `#t=${state.tab}&y=${state.yr.toFixed(2)}` +
+    (pins ? `&pin=${pins}` : '') + (state.obs ? '&obs=1' : '') +
     (state.alt !== null ? `&alt=${state.alt}` : '') +
     (state.selected ? `&s=${encodeURIComponent(state.selected)}` : ''));
 }
 function readHash() {
   const h = location.hash;
+  const t = h.match(/t=([a-z]+)/); if (t && TABS.some((q) => q.id === t[1])) state.tab = t[1];
   const y = h.match(/y=([\d.]+)/); if (y) state.yr = Math.max(2012, Math.min(2100, +y[1]));
   const pin = h.match(/pin=([A-Z0-9.]+)/);
   if (pin) for (const pos of pin[1].split('.')) {
@@ -990,17 +981,17 @@ function frame() {
   const S = sheetState(SEC[0].draft);
   layout(S);
   if (!state.fitted) { requestAnimationFrame(frame); return; }
-  const common = [state.yr.toFixed(2), JSON.stringify(state.pin), state.obs ? 1 : 0,
-                  state.alt, state.selected, state.hovered && state.hovered.id,
-                  docEl.clientWidth].join('|');
+  const common = [state.tab, state.yr.toFixed(2), JSON.stringify(state.pin),
+                  state.obs ? 1 : 0, state.alt, state.selected,
+                  state.hovered && state.hovered.id, docEl.clientWidth].join('|');
   for (const s of SEC) {
-    if (!visible.has(s.id)) continue;
+    if (!s.on || !visible.has(s.id)) continue;
     const sig = s.id + '|' + common + '|' + s.h.toFixed(2);
     if (sig === s.sig) continue;
     s.sig = sig;
     drawSection(s, S);
   }
-  updateNav();
+  markTabs();
 }
 function drawSection(s, S) {
   s.draft.begin({ centre: [SHEET_W / 2, s.h / 2], mmPerPx: state.mmPerPx });
@@ -1028,27 +1019,29 @@ function highlight(d, r, isSel) {
 }
 
 // ── the rail ─────────────────────────────────────────────────────────────────
-const NAV_TITLE = { header: 'Masthead', forecast: 'The forecast', controls: 'Controls',
-  note: 'Notes', future: 'The future', details: 'Instruments', behaviour: 'Behaviour',
-  world: 'The world', alternatives: 'Alternatives', morning: 'This morning',
-  sources: 'Method' };
-function buildNav() {
-  navEl.innerHTML = '';
-  for (const s of SEC) {
+function buildTabs() {
+  tabsEl.innerHTML = '';
+  for (const t of TABS) {
     const b = document.createElement('button');
-    b.textContent = NAV_TITLE[s.id] || s.id;
-    b.dataset.id = s.id;
-    b.onclick = () => s.el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    navEl.appendChild(b);
+    b.textContent = t.label;
+    b.dataset.id = t.id;
+    b.onclick = () => setTab(t.id);
+    tabsEl.appendChild(b);
   }
+  markTabs();
 }
-function updateNav() {
-  let cur = null, bestTop = Infinity;
-  for (const s of SEC) {
-    const r = s.el.getBoundingClientRect();
-    if (r.bottom > innerHeight * 0.3 && r.top < bestTop) { bestTop = r.top; cur = s.id; }
-  }
-  for (const b of navEl.children) b.classList.toggle('on', b.dataset.id === cur);
+function markTabs() {
+  for (const b of tabsEl.children) b.classList.toggle('on', b.dataset.id === state.tab);
+}
+function setTab(id) {
+  if (state.tab === id) return;
+  state.tab = id;
+  // A selection made on one tab has no mark to point at on another, so it is released.
+  state.selected = null;
+  markTabs();
+  scrollTo({ top: 0, behavior: 'instant' });
+  writeHash();
+  redraw();
 }
 
 // ── the collision audit ──────────────────────────────────────────────────────
@@ -1057,7 +1050,7 @@ function updateNav() {
 // outside the section. Run from the console: __FW.auditSweep().
 function auditSweep({ tol = 0.6 } = {}) {
   const saved = { yr: state.yr, sel: state.selected, alt: state.alt,
-                  pin: { ...state.pin }, hovered: state.hovered };
+                  pin: { ...state.pin }, hovered: state.hovered, tab: state.tab };
   const cases = [];
   for (const yr of [2026.58, 2033, 2049, 2090]) cases.push({ yr, sel: null, pin: {} });
   for (const sel of ['axis:C', 'axis:T', 'pos:E:E4', 'crisis:deal-window',
@@ -1073,16 +1066,19 @@ function auditSweep({ tol = 0.6 } = {}) {
   for (const c of cases) {
     state.yr = c.yr; state.selected = c.sel; state.alt = null;
     state.pin = { ...c.pin };
+    state.tab = 'forecast';
     if (Object.keys(state.pin).length) recondition(); else cond = null;
     const S = sheetState(SEC[0].draft);
     for (const s of SEC) {
+      state.tab = s.tab;
       const h = Math.max(20, s.fn.height(S));
       s.draft.begin({ centre: [SHEET_W / 2, h / 2], mmPerPx: state.mmPerPx, audit: true });
       s.fn(s.draft, S, h);
       const col = s.draft.collisions(tol);
       const off = s.draft.outside([0, 0, SHEET_W, h], 0.6);
       const ovf = s.draft.overflows || [];
-      out.byCase.push({ sec: s.id, yr: c.yr, sel: c.sel, pin: JSON.stringify(c.pin),
+      out.byCase.push({ sec: s.id, tab: s.tab, yr: c.yr, sel: c.sel,
+                        pin: JSON.stringify(c.pin),
                         marks: s.draft.marks.length, col: col.length,
                         off: off.length, ovf: ovf.length });
       for (const x of ovf) out.overflows.push({ ...x, sec: s.id });
@@ -1091,7 +1087,7 @@ function auditSweep({ tol = 0.6 } = {}) {
     }
   }
   Object.assign(state, { yr: saved.yr, selected: saved.sel, alt: saved.alt,
-                         pin: saved.pin, hovered: saved.hovered });
+                         pin: saved.pin, hovered: saved.hovered, tab: saved.tab });
   if (Object.keys(saved.pin).length) recondition(); else cond = null;
   for (const s of SEC) s.sig = '';
   redraw();
@@ -1142,9 +1138,10 @@ async function boot() {
     const cv = document.createElement('canvas');
     el.appendChild(cv);
     docEl.appendChild(el);
-    SEC.push({ id: s.id, fn: s.fn, el, cv, draft: new Draft(cv), h: 0, sig: '' });
+    SEC.push({ id: s.id, fn: s.fn, tab: s.tab, el, cv,
+               draft: new Draft(cv), h: 0, sig: '', on: null });
   }
-  buildNav();
+  buildTabs();
   // Only what is on screen is drawn; a section entering the viewport asks for its own ink.
   const io = new IntersectionObserver((ents) => {
     let need = false;
@@ -1156,7 +1153,6 @@ async function boot() {
     if (need) redraw();
   }, { rootMargin: '600px 0px' });
   for (const s of SEC) io.observe(s.el);
-  addEventListener('scroll', updateNav, { passive: true });
 
   state.ready = true;
   redraw();

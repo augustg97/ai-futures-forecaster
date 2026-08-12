@@ -1,18 +1,31 @@
 // THE FORECAST WORKS — the document
 //
-// A vertical sheet, read at a fixed scale by scrolling. The width is constant at 300 mm and
-// every section states its own height, so lettering keeps the size it was drawn at and the
-// reader never has to zoom. Sections are drawn bottom-up in their own millimetre space:
-// x runs 0 → 300 across, y runs 0 → H up from the section's foot.
+// Seven tabs. The first carries the forecast, the passage describing it, and the controls that
+// set it; the rest hold one plate each. Within a tab the drawing is a vertical sheet 300 mm
+// wide, drawn at one fixed scale so lettering keeps the size it was drawn at and nothing has to
+// be zoomed. A section's millimetre space runs x 0 → 300 across and y 0 → H up from its foot.
 
 import { PEN, INK } from './draft.js';
 import { dial, manifold, strip, tally, fmtNum } from './instruments.js';
-import { describe, headline } from './narrative.js';
-import { chooseFigures, drawFigure } from './figures.js';
+import { drawFigure } from './figures.js';
 
 export const SHEET_W = 300;
 const PAD = 13;
 const CW = SHEET_W - PAD * 2;
+
+// the forecast tab's two columns: the chart on the left, the passage on the right
+export const CHART_W = 184;
+export const PROSE_W = CW - CHART_W - 10;
+
+export const TABS = [
+  { id: 'forecast', label: 'Forecast' },
+  { id: 'instruments', label: 'Instruments' },
+  { id: 'behaviour', label: 'Behaviour' },
+  { id: 'world', label: 'World' },
+  { id: 'alternatives', label: 'Alternatives' },
+  { id: 'revision', label: 'This morning' },
+  { id: 'method', label: 'Method' },
+];
 
 // ── shared furniture ─────────────────────────────────────────────────────────
 
@@ -33,6 +46,13 @@ export function measureSections(d, secs, colW, size = 2.0) {
   }
   return h;
 }
+export function measureProse(d, paras, colW, size = 2.0) {
+  let h = 0;
+  for (const p of paras) {
+    h += d.runInLines(p.lead, p.text, colW, size).lines.length * size * LEAD + 2.4;
+  }
+  return h;
+}
 // Split a run of sections into two columns of roughly equal drawn height.
 export function balance(d, secs, colW, size = 2.0) {
   const hs = secs.map((s) => measureSections(d, [s], colW, size));
@@ -48,16 +68,16 @@ export function balance(d, secs, colW, size = 2.0) {
                        measureSections(d, secs.slice(cut), colW, size)) };
 }
 
-function rule(d, y, { colour = INK.ink, weight = PEN.medium } = {}) {
-  d.line([PAD, y], [PAD + CW, y], { weight, colour });
+function rule(d, y, x0 = PAD, w = CW, { colour = INK.ink, weight = PEN.medium } = {}) {
+  d.line([x0, y], [x0 + w, y], { weight, colour });
 }
 
-function head(d, y, title, sub) {
-  d.text([PAD, y], title, { size: 4.0, weight: 700, track: 0.18, colour: INK.ink });
-  rule(d, y - 2.4, { weight: PEN.thin, colour: INK.inkLight });
+function head(d, y, title, sub, { x = PAD, w = CW } = {}) {
+  d.text([x, y], title, { size: 4.0, weight: 700, track: 0.18, colour: INK.ink });
+  rule(d, y - 2.4, x, w, { weight: PEN.thin, colour: INK.inkLight });
   if (sub) {
-    return y - 7.4 - d.textBlock([PAD, y - 5.4], sub, CW,
-      { size: 2.0, lead: 1.45, colour: INK.pencil });
+    return y - 7.4 - d.textBlock([x, y - 5.4], sub, w,
+      { size: 2.0, lead: LEAD, colour: INK.pencil });
   }
   return y - 5.0;
 }
@@ -69,51 +89,119 @@ function firstSentence(str) {
   return first ? first + '.' : '';
 }
 
-// A button that says what it does. Wide enough for a name and a line of description.
-function button(d, x, y, w, h, { name, desc, on, dim, id, payload, accent }) {
+// Lettering cut to the width it has. A long position name ran into the figure at the right of
+// its own button; the full name is in the entry the button opens.
+function fit(d, str, w, opts) {
+  if (d.textWidth(str, opts) <= w) return str;
+  let s = String(str);
+  while (s.length > 4 && d.textWidth(s + '…', opts) > w) s = s.slice(0, -1);
+  return s.replace(/[\s·-]+$/, '') + '…';
+}
+
+// A button that says what it does.
+function button(d, x, y, w, h,
+                { name, desc, on, dim, id, payload, accent, tick, nameW = null }) {
   const c = on ? (accent || INK.blue) : INK.ink;
   d.rect(x, y, w, h, {
     weight: on ? PEN.outline : PEN.thin, colour: on ? c : INK.inkLight,
     fill: on ? 'rgba(21,84,166,0.10)' : (dim ? 'rgba(24,28,38,0.02)' : null),
   });
-  if (on) {
-    d.line([x + 1.2, y + 1.2], [x + 1.2, y + h - 1.2], { weight: PEN.heavy, colour: c });
-  }
-  d.text([x + 4.0, y + h - 4.4], name,
-         { size: 2.3, weight: on ? 700 : 600, colour: on ? c : INK.ink, track: 0.06 });
+  if (on) d.line([x + 1.2, y + 1.2], [x + 1.2, y + h - 1.2], { weight: PEN.heavy, colour: c });
+  const nameOpts = { size: 2.3, weight: on ? 700 : 600, track: 0.06 };
+  d.text([x + 4.0, y + h - 4.4],
+         nameW ? fit(d, name, nameW, nameOpts) : name,
+         { ...nameOpts, colour: on ? c : INK.ink });
   if (desc) {
     d.textBlock([x + 4.0, y + h - 7.6], desc, w - 6.5,
                 { size: 1.8, lead: 1.38, colour: on ? INK.pencil : INK.pencilLight, max: 5 });
   }
+  if (tick) {
+    d.arc([x + w - 4.0, y + h - 3.6], 1.5, 0, Math.PI * 2,
+          { weight: PEN.thin, colour: on ? c : INK.inkLight });
+    if (on) d.dot([x + w - 4.0, y + h - 3.6], 0.85, { colour: c });
+  }
   if (id) d.region(id, x, y, w, h, payload);
 }
 
-// ── 1 · the header ───────────────────────────────────────────────────────────
+// A note drawn where the reader is looking: two columns inside a ruled block.
+function noteBlock(d, x, y, w, note, { title = null, colour = INK.red } = {}) {
+  const colW = (w - 12) / 2;
+  d.rect(x, y - note.h - (title ? 9 : 4), w, note.h + (title ? 11 : 6),
+         { weight: PEN.thin, colour, alpha: 0.6 });
+  let top = y;
+  if (title) {
+    d.text([x + 4, y - 3.0], title.toUpperCase(),
+           { size: 2.4, weight: 700, track: 0.16, colour });
+    top = y - 7.4;
+  }
+  note.cols.forEach((col, ci) => {
+    let cy = top;
+    const cx = x + 4 + ci * (colW + 4);
+    for (const sec of col) {
+      if (sec.h) {
+        d.text([cx, cy], sec.h.toUpperCase(),
+               { size: 2.0, weight: 700, track: 0.14, colour: INK.ink });
+        cy -= 3.8;
+      }
+      for (const p of sec.p || []) {
+        if (!p) continue;
+        cy -= d.textBlock([cx, cy], p, colW - 4, { size: 2.0, lead: LEAD, colour: INK.pencil })
+            + 2.0;
+      }
+      cy -= 2.4;
+    }
+  });
+}
+
+// The date index belongs on every plate that reads a date, so a reader on the instruments or
+// the behaviour tab can move time without going back to the forecast. Its scale is linear,
+// unlike the chart's, so the region carries its own mapping.
+export function dateStrip(d, x, y, w, S) {
+  const y0 = 2026, y1 = 2100;
+  const X = (yr) => x + ((Math.max(y0, Math.min(y1, yr)) - y0) / (y1 - y0)) * w;
+  d.line([x, y], [x + w, y], { weight: PEN.medium, colour: INK.ink });
+  for (let yr = y0; yr <= y1; yr += 2) {
+    const major = yr % 10 === 0;
+    d.line([X(yr), y], [X(yr), y - (major ? 3.0 : 1.5)],
+           { weight: PEN.hairline, colour: INK.inkLight });
+    if (major) {
+      d.text([X(yr), y - 6.6], String(yr),
+             { size: 1.7, align: 'center', face: 'figure', colour: INK.inkLight });
+    }
+  }
+  const nx = X(S.yr);
+  d.polyline([[nx, y], [nx - 2.4, y + 4.2], [nx + 2.4, y + 4.2]],
+             { close: true, weight: PEN.medium, colour: INK.blue, fill: INK.blue });
+  d.text([nx, y + 5.8], String(Math.floor(S.yr)),
+         { size: 2.2, align: 'center', face: 'figure', colour: INK.blue, weight: 700 });
+  d.text([x - 2, y + 5.8], 'DATE', { size: 1.8, align: 'right', colour: INK.pencilLight,
+                                     track: 0.16 });
+  d.region('ctl:time', x - 3, y - 8, w + 6, 16, { linear: true, x0: x, w, y0, y1 });
+}
+
+// ── 1 · masthead ─────────────────────────────────────────────────────────────
 export function header(d, S, H) {
-  let y = H - 8;
+  const y = H - 8;
   d.text([PAD, y], 'THE FORECAST WORKS',
          { size: 6.0, weight: 700, track: 0.22, colour: INK.ink });
   d.text([PAD + CW, y], S.network.version.toUpperCase() + ' · READ ' + S.network.date,
          { size: 2.0, align: 'right', colour: INK.inkLight, track: 0.14, face: 'figure' });
-  rule(d, y - 4.0, { weight: PEN.border });
-  y -= 9.0;
-  d.textBlock([PAD, y], 'A probabilistic model of the AI transition, 2012 to 2100, drawn as a ' +
-    'document. The record to the left of TODAY is what the AI Policy Wiki has ' +
-    'recorded. Everything to the right is a distribution over futures, re-sampled each ' +
-    'morning as the wiki records what happened.', CW,
-    { size: 2.1, lead: 1.45, colour: INK.pencil });
-  y -= 11;
-  d.text([PAD, y], S.headline, { size: 2.6, weight: 600, colour: INK.blue, track: 0.02 });
+  rule(d, y - 4.0, PAD, CW, { weight: PEN.border });
+  d.textBlock([PAD, y - 9.0],
+    'A probabilistic model of the AI transition, 2012 to 2100, drawn as a document. The record ' +
+    'to the left of TODAY is what the AI Policy Wiki has recorded. Everything to the right is a ' +
+    'distribution over futures, re-sampled each morning as the wiki records what happened.', CW,
+    { size: 2.1, lead: LEAD, colour: INK.pencil });
   return H;
 }
-header.height = () => 34;
+header.height = () => 26;
 
-// ── 2 · the forecast ─────────────────────────────────────────────────────────
+// ── 2 · forecast, with the passage beside it ─────────────────────────────────
 // The time axis is compressed after 2040: the next fifteen years carry most of what the model
-// has to say, and the rest of the century needs to be on the same sheet. The mapping is
-// exported so the date control reads the same scale the chart is drawn on.
+// has to say, and the rest of the century belongs on the same chart. The mapping is exported so
+// the date control reads the same scale the chart is drawn on.
 export const CHART = {
-  bx: PAD + 16, bw: CW - 30, Y0: 2012, Y1: 2100, KNEE: 2040, SPLIT: 0.66,
+  bx: PAD + 16, bw: CHART_W - 18, Y0: 2012, Y1: 2100, KNEE: 2040, SPLIT: 0.66,
   x(yr) {
     const C = CHART;
     return yr <= C.KNEE
@@ -129,14 +217,16 @@ export const CHART = {
   },
 };
 
-export function forecast(d, S, H) {
-  let y = head(d, H - 8, 'THE FORECAST',
-    'Capability against time. The heavy ink line is the recorded past. The blue band is the ' +
-    'spread of sampled futures, drawn at the tenth to ninetieth percentile with the middle ' +
-    'half hatched more closely. The chain-dot rules are capability milestones, each labelled ' +
-    'at the left.');
+const NOTE_BAND = 40;
 
-  const bx = CHART.bx, bw = CHART.bw, by = 26, bh = y - 34;
+export function forecast(d, S, H) {
+  let y = head(d, H - 8, 'FORECAST',
+    'Capability against time. The heavy ink line is the recorded past; the blue band is the ' +
+    'spread of sampled futures at the tenth to ninetieth percentile, with the middle half ' +
+    'hatched more closely. Chain-dot rules are the capability milestones.',
+    { x: PAD, w: CHART_W });
+
+  const bx = CHART.bx, bw = CHART.bw, by = NOTE_BAND + 22, bh = y - by - 6;
   const X = CHART.x;
   const Yv = (v) => by + Math.max(0, Math.min(6.4, v)) / 6.4 * bh;
 
@@ -149,20 +239,18 @@ export function forecast(d, S, H) {
   }
   for (let yr = 2020; yr <= 2100; yr += 10) {
     d.line([X(yr), by - 1.8], [X(yr), by], { weight: PEN.hairline, colour: INK.inkLight });
-    d.text([X(yr), by - 5.4], String(yr),
-           { size: 2.1, align: 'center', face: 'figure', colour: INK.inkLight });
+    d.text([X(yr), by - 5.0], String(yr),
+           { size: 2.0, align: 'center', face: 'figure', colour: INK.inkLight });
   }
-  // milestone datums
   for (let i = 1; i <= 6; i++) {
     d.line([bx, Yv(i)], [bx + bw, Yv(i)],
            { weight: PEN.thin, colour: INK.red, dash: [7, 2, 1.4, 2], alpha: 0.5 });
     d.text([bx + 1.8, Yv(i) + 1.4], (S.engine.ladder[i] || '').toUpperCase(),
-           { size: 1.9, colour: INK.red, track: 0.12, alpha: 0.92 });
+           { size: 1.85, colour: INK.red, track: 0.12, alpha: 0.92 });
     d.text([bx - 2.0, Yv(i) - 0.8], String(i),
            { size: 1.9, align: 'right', face: 'figure', colour: INK.redLight });
     d.region(`mile:${i}`, bx, Yv(i) - 2.4, bw, 4.8, i);
   }
-  // the band
   const B = S.bands;
   const env = (lo, hi, spacing, fill) => {
     const pts = [];
@@ -185,14 +273,12 @@ export function forecast(d, S, H) {
   env('p10', 'p90', 3.4, 'rgba(58,132,214,0.08)');
   env('p25', 'p75', 1.8, 'rgba(58,132,214,0.12)');
 
-  // the baseline median, kept as a ghost whenever a control is set, so the effect of the
-  // setting is the gap between the two lines
   const med = [];
+  let diffLabel = null;
   B.year.forEach((yr, i) => { if (yr >= S.NOW) med.push([X(yr), Yv(B.p50[i])]); });
   if (S.baselineBands) {
     // The difference between the two medians IS the effect of the settings, so it is drawn as
-    // an area rather than left for the eye to subtract. The label goes where the gap is widest,
-    // because at either end the two lines usually sit on top of each other.
+    // an area. The label goes where the gap is widest; at either end the lines coincide.
     const G = S.baselineBands, g = [];
     let wide = 0, wideYr = null;
     G.year.forEach((yr, i) => {
@@ -204,11 +290,12 @@ export function forecast(d, S, H) {
       }
     });
     if (wide > 0.05) {
-      d.fillPoly(g.concat(med.slice().reverse()), 'rgba(176,120,26,0.13)');
+      const poly = g.concat(med.slice().reverse());
+      d.fillPoly(poly, 'rgba(176,120,26,0.13)');
       d.hatch([X(S.NOW), by, bw - (X(S.NOW) - bx), bh],
               { spacing: 2.2, angle: Math.PI / 2, weight: PEN.hairline, colour: INK.ochre,
                 path: (dd) => {
-                  const ctx = dd.ctx, poly = g.concat(med.slice().reverse());
+                  const ctx = dd.ctx;
                   poly.forEach((pt, i) => {
                     const px = dd.x(pt[0]), py = dd.y(pt[1]);
                     if (i) ctx.lineTo(px, py); else ctx.moveTo(px, py);
@@ -217,123 +304,163 @@ export function forecast(d, S, H) {
                 } });
     }
     d.polyline(g, { weight: PEN.thin, colour: INK.pencil, dash: [4, 2.4] });
-    if (wideYr) {
+    if (wide > 0.05 && wideYr) {
       const gi = G.year.indexOf(wideYr), bi = B.year.indexOf(wideYr);
-      const my = (Yv(G.p50[gi]) + Yv(B.p50[bi])) / 2;
-      d.leader([X(wideYr), my], [X(wideYr) + 10, my - 8],
-               `WHAT YOUR SETTINGS MOVED · ${B.p50[bi] - G.p50[gi] > 0 ? '+' : '−'}` +
-               `${Math.abs(B.p50[bi] - G.p50[gi]).toFixed(2)} AT ${Math.floor(wideYr)}`,
-               { colour: INK.ochre, size: 1.9 });
+      diffLabel = { yr: wideYr, my: (Yv(G.p50[gi]) + Yv(B.p50[bi])) / 2,
+                    d: B.p50[bi] - G.p50[gi] };
     }
-    d.text([X(2098), Yv(G.p50[G.year.indexOf(2098)]) - 3.4], 'NOTHING SET',
-           { size: 1.8, align: 'right', colour: INK.pencil, track: 0.12 });
+    d.text([bx + bw - 1.5, Yv(G.p50[G.year.indexOf(2098)]) - 3.4], 'EVERY VARIABLE FREE',
+           { size: 1.7, align: 'right', colour: INK.pencil, track: 0.12 });
   }
   d.polyline(med, { weight: PEN.outline, colour: INK.blue });
 
-  // the record
-  d.polyline(S.TRUNK.map((p) => [X(p[0]), Yv(p[1])]),
-             { weight: PEN.outline, colour: INK.ink });
-  d.text([X(2013), Yv(0.8)], 'RECORDED', { size: 2.1, colour: INK.ink, weight: 600, track: 0.14 });
+  d.polyline(S.TRUNK.map((p) => [X(p[0]), Yv(p[1])]), { weight: PEN.outline, colour: INK.ink });
+  d.text([X(2013), Yv(0.8)], 'RECORDED', { size: 2.0, colour: INK.ink, weight: 600, track: 0.14 });
 
-  // today and the date index
   d.line([X(S.NOW), by], [X(S.NOW), by + bh + 2.0], { weight: PEN.medium, colour: INK.ink });
   d.text([X(S.NOW) + 1.6, by + bh - 3.4], 'TODAY',
-         { size: 2.3, colour: INK.ink, weight: 700, track: 0.18 });
+         { size: 2.2, colour: INK.ink, weight: 700, track: 0.18 });
   d.line([X(S.yr), by], [X(S.yr), by + bh], { weight: PEN.thin, colour: INK.blue });
   d.polyline([[X(S.yr), by + bh], [X(S.yr) - 2.0, by + bh + 3.4], [X(S.yr) + 2.0, by + bh + 3.4]],
              { close: true, weight: PEN.thin, colour: INK.blue, fill: INK.blue });
   d.text([X(S.yr), by + bh + 5.6], String(Math.floor(S.yr)),
          { size: 2.2, align: 'center', face: 'figure', colour: INK.blue, weight: 700 });
 
-  // crisis points
+  // crisis points, each label taking the first slot clear of the ones already placed
   const CRY = { 'deal-window': 2030, 'explosive-takeoff': 2028, 'no-sc-window': 2036,
                 'alignment-fails': 2031, 'hard-deflate': 2028.5, 'researcher-by-2035': 2035 };
-  // Leaders placed at a fixed alternating offset ran their labels into each other wherever two
-  // crisis points sat close on the curve. Each label now takes the first slot that is clear of
-  // the ones already placed, and the leader stretches to wherever that is.
   const placed = [];
-  const SLOTS = [12, -12, 19, -19, 26, -26, 33, -33];
+  const SLOTS = [11, -11, 18, -18, 25, -25, 32, -32];
+  const place = (cx, cy, str, size) => {
+    const tw = d.textWidth(str, { size });
+    for (const cand of SLOTS) {
+      const box = { x: cx + 6, y: cy + cand - 1.0, w: tw + 1.5, h: 3.5 };
+      if (!placed.some((q) => Math.min(q.x + q.w, box.x + box.w) - Math.max(q.x, box.x) > 0 &&
+                              Math.min(q.y + q.h, box.y + box.h) - Math.max(q.y, box.y) > 0)) {
+        placed.push(box); return cand;
+      }
+    }
+    return SLOTS[SLOTS.length - 1];
+  };
+  // The difference label takes its slot first: it names the whole point of the settings, and
+  // it collided with a crisis label whenever the two happened to land together.
+  if (diffLabel) {
+    const str = `YOUR SETTINGS MOVED THIS ${diffLabel.d > 0 ? '+' : '−'}` +
+                `${Math.abs(diffLabel.d).toFixed(2)} AT ${Math.floor(diffLabel.yr)}`;
+    const off = place(X(diffLabel.yr), diffLabel.my, str, 1.85);
+    d.leader([X(diffLabel.yr), diffLabel.my], [X(diffLabel.yr) + 6, diffLabel.my + off], str,
+             { colour: INK.ochre, size: 1.85, gap: 2.4 });
+  }
   const items = S.crisis.crises.map((c) => {
     const yr = CRY[c.id] || 2032;
-    return { c, yr, cx: X(yr), cy: Yv(S.capAt(yr)) };
+    return { c, cx: X(yr), cy: Yv(S.capAt(yr)) };
   }).sort((a, b) => a.cx - b.cx);
   for (const it of items) {
     const c = it.c;
     const p = c.kind === 'axis' ? (S.marginals[c.axis] || {})[c.pos] ?? c.p : c.p;
     const str = `${(p * 100).toFixed(0)}%  ${c.q.toUpperCase()}`;
-    const tw = d.textWidth(str, { size: 1.85 });
-    let off = SLOTS[SLOTS.length - 1];
-    for (const cand of SLOTS) {
-      const lx = it.cx + 7, ly = it.cy + cand - 1.0;
-      const box = { x: lx, y: ly, w: tw + 1.5, h: 3.6 };
-      if (!placed.some((q) => Math.min(q.x + q.w, box.x + box.w) - Math.max(q.x, box.x) > 0 &&
-                              Math.min(q.y + q.h, box.y + box.h) - Math.max(q.y, box.y) > 0)) {
-        off = cand; placed.push(box); break;
-      }
-    }
+    const off = place(it.cx, it.cy, str, 1.8);
     d.polyline([[it.cx, it.cy - 2.2], [it.cx + 2.2, it.cy], [it.cx, it.cy + 2.2],
                 [it.cx - 2.2, it.cy]],
                { close: true, weight: PEN.thin, colour: INK.red, fill: 'rgba(244,241,232,0.92)' });
-    d.leader([it.cx, it.cy], [it.cx + 7, it.cy + off], str, { colour: INK.red, size: 1.85 });
+    // The leader arrives on a diagonal, so its tip lands inside the first glyph at the default
+    // gap and eats the leading digit. Stand the lettering further off.
+    d.leader([it.cx, it.cy], [it.cx + 6, it.cy + off], str,
+             { colour: INK.red, size: 1.8, gap: 2.4 });
     d.region(`crisis:${c.id}`, it.cx - 3.4, it.cy - 3.4, 6.8, 6.8, c);
   }
 
-  // the date scrubber, drawn as a graduated bar under the chart
-  const sy = 18;
+  // the date index
+  const sy = NOTE_BAND + 6;
   d.line([bx, sy], [bx + bw, sy], { weight: PEN.medium, colour: INK.ink });
   for (let yr = 2015; yr <= 2100; yr += 5) {
-    const major = yr % 20 === 0;
-    d.line([X(yr), sy], [X(yr), sy - (major ? 3.0 : 1.8)],
+    d.line([X(yr), sy], [X(yr), sy - (yr % 20 === 0 ? 3.0 : 1.8)],
            { weight: PEN.hairline, colour: INK.inkLight });
   }
   const nx = X(S.yr);
   d.polyline([[nx, sy], [nx - 2.4, sy + 4.4], [nx + 2.4, sy + 4.4]],
              { close: true, weight: PEN.medium, colour: INK.blue, fill: INK.blue });
-  d.text([bx, sy - 5.4], 'DRAG THE INDEX, OR CLICK ANYWHERE ON THE CHART, TO CHANGE THE DATE',
-         { size: 1.8, colour: INK.pencilLight, track: 0.10 });
+  d.text([bx, sy - 5.6], 'DRAG THE INDEX, OR CLICK ANYWHERE ON THE CHART, TO CHANGE THE DATE',
+         { size: 1.75, colour: INK.pencilLight, track: 0.10 });
   d.region('ctl:time', bx - 4, sy - 3, bw + 8, 10);
 
-  // the key, on the plate it explains
-  const keys = [
-    ['RECORDED', INK.ink, PEN.outline, null],
-    ['MEDIAN OF SAMPLED FUTURES', INK.blue, PEN.outline, null],
-    ['MILESTONE DATUM', INK.red, PEN.thin, [7, 2, 1.4, 2]],
-    ['THE SAME FORECAST WITH NOTHING SET', INK.erase, PEN.thin, [4, 2.4]],
-  ];
-  keys.forEach((it, i) => {
-    const kx = bx + (i % 2) * (bw * 0.44) + bw * 0.10;
-    const ly = 7.4 - Math.floor(i / 2) * 4.2;
-    d.line([kx, ly + 0.6], [kx + 11, ly + 0.6], { weight: it[2], colour: it[1], dash: it[3] });
-    d.text([kx + 13, ly], it[0], { size: 1.8, colour: INK.pencil, track: 0.08 });
-  });
-  S.chartX = X; S.chartY = Yv; S.chartBox = [bx, by, bw, bh];
+  // The band under the chart holds the key, and takes the note of any mark on the chart the
+  // reader points at, so an explanation appears where the reader is already looking.
+  if (S.chartNote) {
+    noteBlock(d, PAD, NOTE_BAND - 3, CHART_W, S.chartNote, { title: S.chartNote.title });
+  } else {
+    const keys = [
+      ['RECORDED', INK.ink, PEN.outline, null],
+      ['MEDIAN OF SAMPLED FUTURES', INK.blue, PEN.outline, null],
+      ['MILESTONE DATUM', INK.red, PEN.thin, [7, 2, 1.4, 2]],
+      ['THE SAME FORECAST WITH EVERY VARIABLE FREE', INK.erase, PEN.thin, [4, 2.4]],
+    ];
+    d.rect(PAD, 3, CHART_W, NOTE_BAND - 6, { weight: PEN.hairline, colour: INK.inkLight });
+    d.text([PAD + 4, NOTE_BAND - 8], 'KEY',
+           { size: 2.2, weight: 700, track: 0.18, colour: INK.ink });
+    d.text([PAD + CHART_W - 4, NOTE_BAND - 8],
+           'CLICK A MILESTONE OR A CRISIS POINT AND ITS ENTRY APPEARS HERE',
+           { size: 1.7, align: 'right', colour: INK.pencilLight, track: 0.10 });
+    keys.forEach((it, i) => {
+      const kx = PAD + 5 + (i % 2) * (CHART_W * 0.48);
+      const ly = NOTE_BAND - 14 - Math.floor(i / 2) * 4.6;
+      d.line([kx, ly + 0.6], [kx + 10, ly + 0.6], { weight: it[2], colour: it[1], dash: it[3] });
+      d.text([kx + 12, ly], it[0], { size: 1.8, colour: INK.pencil, track: 0.08 });
+    });
+  }
+
+  // ── the passage, beside the chart ──────────────────────────────────────────
+  const px = PAD + CHART_W + 10;
+  let py = H - 8;
+  d.textBlock([px, py], S.headline, PROSE_W,
+              { size: 2.6, lead: 1.32, colour: INK.blue, weight: 600 });
+  py -= d.wrap(S.headline, PROSE_W, { size: 2.6, weight: 600 }).length * 2.6 * 1.32 + 3.4;
+  rule(d, py + 1.4, px, PROSE_W, { weight: PEN.thin, colour: INK.blue });
+  py -= 1.6;
+  for (const para of S.prose.paras) {
+    py -= d.runIn([px, py], para.lead, para.text, PROSE_W,
+                  { size: 2.0, lead: LEAD, colour: INK.pencil, leadColour: INK.ink }) + 2.4;
+  }
+  py -= 3;
+  const fw = PROSE_W, fh = 54;
+  for (const f of S.figures) {
+    py -= fh;
+    drawFigure(d, f.key, px, py, fw, fh);
+    py -= 5;
+  }
   return H;
 }
-forecast.height = () => 206;
+forecast.height = (S) => {
+  const left = 22 + NOTE_BAND + 128;
+  const right = 30 + S.prose.h + S.figures.length * 59;
+  return Math.max(left, right);
+};
 
-// ── 3 · the controls ─────────────────────────────────────────────────────────
+// ── 3 · controls ─────────────────────────────────────────────────────────────
 const ROW_H = 25, BTN_H = 27;
 
 export function controls(d, S, H) {
-  let y = head(d, H - 8, 'THE CONTROLS',
-    'Each row is one variable in the model. Selecting a setting fixes that variable and ' +
-    'redraws the whole document for it: the forecast, the described future, the instruments ' +
-    'and the behaviour charts. Along the foot of each button is what that setting moves ' +
-    'hardest, and by how much, measured in 2040 against the same model the charts draw. The ' +
-    'percentage at the top right is the weight the network currently puts on that setting. ' +
-    'Selecting the same button again releases the variable.');
+  let y = head(d, H - 8, 'CONTROLS',
+    'Each row is one variable. Choosing a setting fixes that variable and redraws the whole ' +
+    'document for it. Along the foot of each button is the quantity that setting moves ' +
+    'hardest, and by how much, measured in 2040 against the model the charts draw; the ' +
+    'percentage at the top right is the weight the network currently puts on it. Choosing a ' +
+    'setting opens its full entry directly beneath the row, and choosing it again releases ' +
+    'the variable. Once a variable is set, the other buttons on its row carry the weight the ' +
+    'evidence alone gives them.');
   y -= 3;
 
   for (const a of S.network.axes) {
     const pin = S.pin[a.key];
     const marg = S.marginals[a.key] || {};
+    const open = S.openAxis === a.key ? S.openNote : null;
     d.text([PAD, y], a.name.toUpperCase(),
            { size: 2.6, weight: 700, track: 0.14, colour: pin ? INK.blue : INK.ink });
     const modal = Object.entries(marg).sort((p, q) => q[1] - p[1])[0];
     d.text([PAD + CW, y], pin ? 'SET BY YOU' :
              modal ? `MOST LIKELY: ${modal[0]} AT ${(modal[1] * 100).toFixed(0)}%` : '',
            { size: 1.8, align: 'right', colour: pin ? INK.blue : INK.inkLight, track: 0.12 });
-    d.textBlock([PAD, y - 3.2], a.desc || '', CW,
+    d.textBlock([PAD, y - 3.2], S.plain(a.desc || ''), CW,
                 { size: 1.85, lead: 1.4, colour: INK.pencil, max: 2 });
     d.region(`axis:${a.key}`, PAD, y - 4, CW, 6, a);
     const n = a.positions.length;
@@ -342,19 +469,24 @@ export function controls(d, S, H) {
     a.positions.forEach((p, i) => {
       const bxx = PAD + i * (bw + 2.6);
       const eff = S.effect(a.key, p[0]);
+      const prior = ((S.priors[a.key] || {})[p[0]] || 0) * 100;
+      const right = !pin ? `${((marg[p[0]] || 0) * 100).toFixed(0)}%`
+                         : pin === p[0] ? 'SET' : `PRIOR ${prior.toFixed(0)}%`;
+      const rw = d.textWidth(right, { size: pin && pin !== p[0] ? 1.7 : 1.9,
+                                      face: 'figure', weight: 700 });
       button(d, bxx, byy, bw, BTN_H, {
         name: p[1].split(' (')[0].toUpperCase(),
-        desc: firstSentence(p[4]),
+        nameW: bw - 9.0 - rw,
+        desc: S.plain(firstSentence(p[4])),
         on: pin === p[0], dim: !!pin && pin !== p[0],
         id: `ctl:pin:${a.key}:${p[0]}`, payload: p,
       });
-      const w8 = (marg[p[0]] || 0) * 100;
-      d.text([bxx + bw - 3.0, byy + BTN_H - 4.4],
-             `${w8.toFixed(0)}%`,
-             { size: 1.9, align: 'right', face: 'figure',
-               colour: pin === p[0] ? INK.blue : INK.inkLight, weight: 700 });
-      // What this setting moves, and by how much, in the quantity it moves hardest. Drawn in
-      // ink: a rise in emissions and a rise in approval are the same kind of statement here.
+      // Under a setting every other position on the row reads zero, which says nothing. The
+      // weight the evidence gives it is the useful figure, so that is what is shown instead.
+      d.text([bxx + bw - 3.0, byy + BTN_H - 4.4], right,
+             { size: pin && pin !== p[0] ? 1.7 : 1.9, align: 'right', face: 'figure',
+               weight: 700,
+               colour: pin === p[0] ? INK.blue : pin ? INK.pencilLight : INK.inkLight });
       if (eff !== 0) {
         d.line([bxx + 3.4, byy + 4.6], [bxx + bw - 3.0, byy + 4.6],
                { weight: PEN.hairline, colour: INK.inkLight, alpha: 0.7 });
@@ -371,100 +503,56 @@ export function controls(d, S, H) {
                { size: 1.5, track: 0.10, colour: INK.pencilLight });
       }
     });
-    y -= ROW_H + BTN_H - 6;
+    y = byy - 5;
+    if (open) {
+      noteBlock(d, PAD, y, CW, open, { title: open.title });
+      y -= open.h + 15;
+    }
+    y -= 4;
   }
 
-  // the two mode switches, and the release
-  const mb = (CW - 5.2) / 3;
-  button(d, PAD, y - BTN_H + 8, mb, BTN_H - 8, {
-    name: 'SUPPOSE IT HAPPENS', on: !S.obs, id: 'ctl:mode:do',
-    desc: 'Treat a setting as something done to the world; the other variables keep their ' +
-          'prior weights.' });
-  button(d, PAD + mb + 2.6, y - BTN_H + 8, mb, BTN_H - 8, {
-    name: 'SUPPOSE WE LEARN IT', on: S.obs, id: 'ctl:mode:obs',
-    desc: 'Treat a setting as news; the model reweights the other variables in light of it.' });
-  button(d, PAD + (mb + 2.6) * 2, y - BTN_H + 8, mb, BTN_H - 8, {
-    name: 'RELEASE ALL', on: false, id: 'ctl:reset',
-    desc: 'Return every variable to the distribution the evidence produced.' });
+  // ── the two settings that govern how a choice is applied ───────────────────
+  d.text([PAD, y], 'HOW A CHOICE IS APPLIED',
+         { size: 2.6, weight: 700, track: 0.14, colour: INK.ink });
+  d.textBlock([PAD, y - 3.2],
+    'A separate setting, in force for every variable above. It decides what the rest of the ' +
+    'network does when you fix one variable.', CW,
+    { size: 1.85, lead: 1.4, colour: INK.pencil });
+  const mw = (CW - 5.2) / 3;
+  const my = y - 9.4 - BTN_H;
+  button(d, PAD, my, mw, BTN_H, {
+    name: 'SUPPOSE IT HAPPENS', on: !S.obs, tick: true, id: 'ctl:mode:do',
+    desc: 'Fix the setting and hold every other variable at its prior weight. Reads: what ' +
+          'follows if this is made true.' });
+  button(d, PAD + mw + 2.6, my, mw, BTN_H, {
+    name: 'SUPPOSE WE LEARN IT', on: S.obs, tick: true, id: 'ctl:mode:obs',
+    desc: 'Fix the setting and reweight every other variable in its light. Reads: what this ' +
+          'would tell you about the rest.' });
+  button(d, PAD + (mw + 2.6) * 2, my, mw, BTN_H, {
+    name: 'RELEASE EVERY VARIABLE', on: false, accent: INK.red, id: 'ctl:reset',
+    desc: 'Clears all settings at once and returns each variable to the weight the evidence ' +
+          'gives it.' });
+  d.text([PAD + (mw + 2.6) * 2, my - 3.4], 'A COMMAND, TAKING EFFECT WHEN PRESSED',
+         { size: 1.6, colour: INK.pencilLight, track: 0.12 });
+  d.text([PAD, my - 3.4], 'TWO MODES · ONE IN FORCE AT A TIME',
+         { size: 1.6, colour: INK.pencilLight, track: 0.12 });
   return H;
 }
-controls.height = (S) => 44 + S.network.axes.length * (ROW_H + BTN_H - 6) + BTN_H + 6;
+controls.height = (S) => {
+  const rows = S.network.axes.length * (ROW_H + BTN_H - 6);
+  return 56 + rows + (S.openNote ? S.openNote.h + 19 : 0) + BTN_H + 16;
+};
 
-// ── 4 · the note ─────────────────────────────────────────────────────────────
-export const NOTE_COL = (CW - 12) / 2;
-
-export function note(d, S, H) {
-  const n = S.note;
-  let y = H - 8;
-  d.rect(PAD - 4, 4, CW + 8, H - 6, { weight: PEN.thin, colour: INK.red, alpha: 0.55 });
-  d.text([PAD, y], n.title.toUpperCase(),
-         { size: 3.4, weight: 700, track: 0.18, colour: INK.red });
-  d.text([PAD + CW, y], n.eyebrow.toUpperCase(),
-         { size: 1.9, align: 'right', colour: INK.inkLight, track: 0.16 });
-  rule(d, y - 2.8, { weight: PEN.thin, colour: INK.red });
-  y -= 7.4;
-  n.cols.forEach((col, ci) => {
-    const x = PAD + ci * (NOTE_COL + 12);
-    let cy = y;
-    for (const sec of col) {
-      if (sec.h) {
-        d.text([x, cy], sec.h.toUpperCase(),
-               { size: 2.1, weight: 700, track: 0.16, colour: INK.ink });
-        cy -= 3.8;
-      }
-      for (const p of sec.p || []) {
-        if (!p) continue;
-        cy -= d.textBlock([x, cy], p, NOTE_COL,
-                          { size: 2.0, lead: LEAD, colour: INK.pencil }) + 2.0;
-      }
-      cy -= 2.4;
-    }
-  });
-  return H;
-}
-note.height = (S) => S.note.h + 14;
-
-// ── 5 · the future being forecast ────────────────────────────────────────────
-export function future(d, S, H) {
-  let y = head(d, H - 8, 'THE FUTURE BEING FORECAST',
-    'Composed from the settings on the controls and the date on the index. Changing either ' +
-    'rewrites this passage. The wording is authored; the figures are read from the same ' +
-    'tracks the behaviour charts draw.');
-  const colW = NOTE_COL;
-  S.description.cols.forEach((col, ci) => {
-    const x = PAD + ci * (colW + 12);
-    let cy = y;
-    for (const sec of col) {
-      d.text([x, cy], sec.h.toUpperCase(),
-             { size: 2.2, weight: 700, track: 0.16, colour: INK.blue });
-      cy -= 3.8;
-      for (const p of sec.p) {
-        cy -= d.textBlock([x, cy], p, colW,
-                          { size: 2.0, lead: LEAD, colour: INK.pencil }) + 2.0;
-      }
-      cy -= 2.6;
-    }
-  });
-  // The scenes sit directly under the prose, so the section closes where its content does.
-  const fw = (CW - 14) / 2, fh = 68;
-  const fy = Math.max(8, y - S.description.h - 6 - fh);
-  S.figures.forEach((f, i) => {
-    drawFigure(d, f.key, PAD + i * (fw + 14), fy, fw, fh);
-  });
-  return H;
-}
-future.height = (S) => 26 + S.description.h + 76;
-
-// ── 6 · the details ──────────────────────────────────────────────────────────
+// ── 4 · instruments ──────────────────────────────────────────────────────────
 export function details(d, S, H) {
-  let y = head(d, H - 8, 'DETAIL   THE INSTRUMENTS',
+  const y = head(d, H - 8, 'INSTRUMENTS',
     'Three readings of the active world-line at the date on the index, each built as an ' +
     'instrument: a needle against an engraved face, floats riding in a manifold, and a lamp ' +
     'panel with its domain lettered beside it.');
+  dateStrip(d, PAD + 44, y - 4, CW - 44, S);
   const colW = (CW - 16) / 3;
-  const tops = y - 4;
+  const tops = y - 18;
 
-  // A — the tempo dials
   d.text([PAD, tops], 'A   CAPABILITY TEMPO',
          { size: 2.8, weight: 700, track: 0.14, colour: INK.ink });
   d.textBlock([PAD, tops - 3.6], 'One face per setting. The pale needle stands where the ' +
@@ -479,15 +567,13 @@ export function details(d, S, H) {
     });
   });
 
-  // B — the compute manifold
   const bx = PAD + colW + 8;
   d.text([bx, tops], 'B   COMPUTE SHARES',
          { size: 2.8, weight: 700, track: 0.14, colour: INK.ink });
   d.textBlock([bx, tops - 3.6], 'Floats riding in tubes against one scale: each region\'s ' +
     'share of modelled global AI compute on this line, at this date.', colW,
     { size: 1.8, lead: 1.4, colour: INK.pencil });
-  const tr = S.tracks;
-  const i0 = S.idx;
+  const tr = S.tracks, i0 = S.idx;
   manifold(d, bx + 8, tops - 46, colW - 16, 30, [
     { k: 'US', v: tr.us[i0], c: INK.blue, wash: INK.blueWash },
     { k: 'CN', v: tr.cn[i0], c: INK.red, wash: 'rgba(150,44,38,0.20)' },
@@ -495,34 +581,27 @@ export function details(d, S, H) {
     { k: 'ROW', v: Math.max(0, 1 - tr.us[i0] - tr.cn[i0] - tr.eu[i0]),
       c: INK.pencil, wash: 'rgba(52,50,48,0.16)' },
   ], { id: 'manifold' });
-  // The manifold puts its own legends 2.6 and 5.4 mm below the tubes, so the total clears them.
   d.text([bx, tops - 60], `TOTAL ${fmtNum(tr.gw[i0])} GW · ${fmtNum(tr.twh[i0])} TWH/YR`,
          { size: 2.1, face: 'figure', colour: INK.warm, weight: 700 });
   d.textBlock([bx, tops - 64], 'The total is the modelled build-out on this line. The energy ' +
     'figure is that capacity run at the utilisation the parent model assumes.', colW,
     { size: 1.75, lead: 1.4, colour: INK.pencilLight });
 
-  // C — the domain panel, expanded
   const cx = PAD + (colW + 8) * 2;
   d.text([cx, tops], 'C   CAPABILITY DOMAINS',
          { size: 2.8, weight: 700, track: 0.14, colour: INK.ink });
   d.textBlock([cx, tops - 3.6], 'A lamp trips when the active line crosses that domain\'s ' +
     'threshold on the ladder. The year given is when this line crosses it.', colW,
     { size: 1.8, lead: 1.4, colour: INK.pencil });
-  const cap = S.cap;
   let dy = tops - 10;
   S.engine.domains.forEach((dm, i) => {
-    const on = cap >= dm.th;
+    const on = S.cap >= dm.th;
     const yr = S.crossYear(dm.th);
     d.rect(cx, dy - 8.6, colW, 8.2, {
       weight: on ? PEN.thin : PEN.hairline, colour: on ? INK.ink : INK.inkLight,
       fill: on ? 'rgba(178,86,24,0.14)' : null, solid: on, label: 'lamp',
     });
-    if (on) {
-      d.dot([cx + 3.0, dy - 4.4], 1.3, { colour: INK.warm });
-    } else {
-      d.dot([cx + 3.0, dy - 4.4], 1.3, { colour: INK.inkLight, hollow: true });
-    }
+    d.dot([cx + 3.0, dy - 4.4], 1.3, { colour: on ? INK.warm : INK.inkLight, hollow: !on });
     d.text([cx + 6.0, dy - 3.4], dm.k,
            { size: 1.9, weight: 700, track: 0.12, pocket: true,
              colour: on ? INK.ink : INK.pencilLight });
@@ -535,20 +614,23 @@ export function details(d, S, H) {
     d.region(`dom:${i}`, cx, dy - 8.6, colW, 8.2, dm);
     dy -= 9.4;
   });
-  // The tally letters its own caption; a second heading above it said the same thing twice.
   tally(d, cx, dy - 4.0, colW, { n: tr.copies[i0], speed: tr.speed[i0], id: 'tally' });
+  if (S.plateNote) noteBlock(d, PAD, 44, CW, S.plateNote, { title: S.plateNote.title });
   return H;
 }
-details.height = (S) => 34 + Math.max(100, S.engine.domains.length * 9.4 + 30);
+details.height = (S) => 48 + Math.max(100, S.engine.domains.length * 9.4 + 30) +
+  (S.plateNote ? S.plateNote.h + 22 : 0);
 
-// ── 7 · behaviour over time ──────────────────────────────────────────────────
+// ── 5 · behaviour over time ──────────────────────────────────────────────────
 export function behaviour(d, S, H) {
-  let y = head(d, H - 8, 'BEHAVIOUR OVER TIME',
+  const y = head(d, H - 8, 'BEHAVIOUR OVER TIME',
     'Six quantities on the active world-line, 2026 to 2100. Each pen sits at the date on the ' +
-    'index and its reading is printed beside it. The scale of each chart is derived from its ' +
-    'own series, so the shape is comparable across settings even when the magnitude is not.');
+    'index and its reading is printed beside it. Every chart derives its scale from its own ' +
+    'series, so the shapes stay comparable across settings while the magnitudes differ.');
+  dateStrip(d, PAD + 44, y - 4, CW - 44, S);
   const tr = S.tracks, yrs = tr.year;
-  const cw = (CW - 24) / 3, ch = (y - 22) / 2 - 12;
+  const foot = S.plateNote ? S.plateNote.h + 26 : 12;
+  const cw = (CW - 24) / 3, ch = (y - 14 - foot - 10) / 2 - 12;
   const panels = [
     { d: tr.gw, label: 'COMPUTE', unit: 'GW INSTALLED', c: INK.warm, id: 'trk:gw',
       fmt: (v) => fmtNum(v),
@@ -560,8 +642,7 @@ export function behaviour(d, S, H) {
             'output.' },
     { d: tr.jobs, label: 'EMPLOYMENT', unit: '% CUMULATIVE CHANGE', c: INK.red, id: 'trk:jobs',
       fmt: (v) => v.toFixed(0),
-      note: 'Cumulative employment effect. The shock rate follows the 2028 crisis memo\'s ' +
-            'published path.' },
+      note: 'Cumulative employment effect. The shock rate follows the published crisis path.' },
     { d: tr.laws, label: 'MEASURES IN FORCE', unit: 'COUNT', c: INK.green, id: 'trk:laws',
       fmt: (v) => fmtNum(v),
       note: 'Tracked statutes and regulations. The fragmented-blocs setting legislates ' +
@@ -577,15 +658,13 @@ export function behaviour(d, S, H) {
   ];
   panels.forEach((p, i) => {
     const px = PAD + (i % 3) * (cw + 12);
-    const py = 22 + (1 - Math.floor(i / 3)) * (ch + 24);
+    const py = foot + 10 + (1 - Math.floor(i / 3)) * (ch + 24);
     const lo = Math.min(...p.d), hi = Math.max(...p.d);
     const pad = (hi - lo) * 0.08 || 1;
     strip(d, px + 10, py + 15, cw - 12, ch - 15, {
       data: p.d, years: yrs, y0: lo - pad, y1: hi + pad, colour: p.c,
       label: p.label, unit: p.unit, now: Math.max(S.engine.y0, S.yr), id: p.id, fmt: p.fmt,
     });
-    // The recorder engraves its own vertical scale hard against the frame, so the years go
-    // under the frame line rather than beside the zero, where they ran into it.
     d.text([px + 10, py + 11.4], String(yrs[0]),
            { size: 1.6, colour: INK.pencilLight, face: 'figure' });
     d.text([px + cw - 2, py + 11.4], String(yrs[yrs.length - 1]),
@@ -599,46 +678,58 @@ export function behaviour(d, S, H) {
     d.textBlock([px + 10, py + 7.6], p.note, cw - 12,
                 { size: 1.7, lead: 1.38, colour: INK.pencilLight, max: 2 });
   });
+  if (S.plateNote) noteBlock(d, PAD, S.plateNote.h + 15, CW, S.plateNote,
+                             { title: S.plateNote.title });
   return H;
 }
-behaviour.height = () => 250;
+behaviour.height = (S) => 250 + (S.plateNote ? S.plateNote.h + 26 : 0);
 
-// ── 8 · the world ────────────────────────────────────────────────────────────
+// ── 6 · world ────────────────────────────────────────────────────────────────
 export function world(d, S, H) {
-  const y = head(d, H - 8, 'THE WORLD',
+  const y = head(d, H - 8, 'WORLD',
     'The active world-line on the ground. Hatch density carries each region\'s share of ' +
     'modelled compute; the warm marks are sites drawn at the capacity this line gives them at ' +
-    'this date. Site positions are authored from the record; the capacities are modelled.');
-  S.drawWorld(d, S, [PAD, 16, CW, y - 22]);
+    'this date. Site positions come from the record; the capacities are modelled.');
+  dateStrip(d, PAD + 44, y - 4, CW - 44, S);
+  const foot = S.plateNote ? S.plateNote.h + 24 : 16;
+  S.drawWorld(d, S, [PAD, foot, CW, y - 16 - foot - 6]);
+  if (S.plateNote) noteBlock(d, PAD, S.plateNote.h + 13, CW, S.plateNote,
+                             { title: S.plateNote.title });
   return H;
 }
-world.height = () => 200;
+world.height = (S) => 214 + (S.plateNote ? S.plateNote.h + 24 : 0);
 
-// ── 9 · alternatives ─────────────────────────────────────────────────────────
+// ── 7 · alternatives ─────────────────────────────────────────────────────────
 export function alternatives(d, S, H) {
   const y = head(d, H - 8, 'ALTERNATIVE FUTURES',
     'Twelve sampled world-lines drawn across the spread, from the slowest quarter to the ' +
     'fastest. Each panel shows that line\'s capability path against the same milestone rules. ' +
-    'Selecting one makes it the active line through the whole document.');
-  S.drawAlts(d, S, [PAD, 14, CW, y - 20]);
+    'Choosing one makes it the active line through the whole document.');
+  const foot = S.plateNote ? S.plateNote.h + 22 : 14;
+  S.drawAlts(d, S, [PAD, foot, CW, y - foot - 6]);
+  if (S.plateNote) noteBlock(d, PAD, S.plateNote.h + 11, CW, S.plateNote,
+                             { title: S.plateNote.title });
   return H;
 }
-alternatives.height = () => 232;
+alternatives.height = (S) => 232 + (S.plateNote ? S.plateNote.h + 22 : 0);
 
-// ── 10 · this morning ────────────────────────────────────────────────────────
+// ── 8 · this morning ─────────────────────────────────────────────────────────
 export function morning(d, S, H) {
   const y = head(d, H - 8, "THIS MORNING'S REVISION",
     'What the evidence moved on the network today, with the arithmetic that moved it: impact ' +
     'class, corroborating sources, novelty decay, the positions changed and the development ' +
     'that drove them. The newest application is ringed in a revision cloud.');
-  S.drawMorning(d, S, [PAD, 14, CW, y - 20]);
+  const foot = S.plateNote ? S.plateNote.h + 22 : 14;
+  S.drawMorning(d, S, [PAD, foot, CW, y - foot - 6]);
+  if (S.plateNote) noteBlock(d, PAD, S.plateNote.h + 11, CW, S.plateNote,
+                             { title: S.plateNote.title });
   return H;
 }
-morning.height = () => 190;
+morning.height = (S) => 190 + (S.plateNote ? S.plateNote.h + 22 : 0);
 
-// ── 11 · sources ─────────────────────────────────────────────────────────────
+// ── 9 · method ───────────────────────────────────────────────────────────────
 export function sources(d, S, H) {
-  let y = head(d, H - 8, 'METHOD AND SOURCES', null);
+  const y = head(d, H - 8, 'METHOD AND SOURCES', null);
   const g = S.grounding.counts;
   const colW = (CW - 12) / 2;
   const left = [
@@ -647,24 +738,23 @@ export function sources(d, S, H) {
      `priors carrying provenance, and cited conditional relationships, sampled into an ` +
      `ensemble of world-lines. ${g.direct} wiki pages ground the engine directly and ` +
      `${g.corpus} more feed the recorded past. Variables with thin grounding get wider ` +
-     `priors, so uncertainty is inherited and stated. These are the model's ` +
-     `structured judgments, documented and adjustable, and scored in public as registered ` +
-     `claims resolve.`],
+     `priors, so uncertainty is inherited and stated. These are the model's structured ` +
+     `judgments, documented and adjustable, and scored in public as registered claims resolve.`],
     ['THE DAILY UPDATE',
      'Each morning the day\'s developments are classified against cited evidence rules under ' +
      'a tiered impact methodology, scaled by corroboration and damped by repetition. Every ' +
-     'application logs its arithmetic and its driver. A morning with few applications leaves ' +
-     'residue, which the weekly schema review can answer by adding a variable on its own ' +
-     'authority; such additions are marked as provisional wherever they appear.'],
+     'application logs its arithmetic and its driver. A quiet morning leaves residue, which ' +
+     'the weekly schema review can answer by adding a variable on its own authority; such ' +
+     'additions are marked provisional wherever they appear.'],
   ];
   const right = [
-    ['THE LITERATURE, TAKEN APART',
+    ['THE LITERATURE QUARRIED',
      'AI 2027 and its endings · AI 2040 Plan A and the plan family scored beside it · ' +
      'Situational Awareness · Europe 2031 · Machines of Loving Grace · AI as Normal ' +
      'Technology · The 2028 Global Intelligence Crisis · Anthropic\'s 2028 scenarios. Each is ' +
      'quarried for positions, parameters and event templates, and cited where its parts are ' +
-     'used. No scenario is reproduced whole.'],
-    ['THIS SHEET',
+     'used. Each scenario contributes parts.'],
+    ['THIS DOCUMENT',
      'A second surface on the AI Atlas forecast engine, which holds the network, the evidence ' +
      'layer and the nightly gate. This document reads that engine\'s emitted forecast and ' +
      'publishes only when its gate passes. The drafting conventions follow The Systems Works.'],
@@ -673,16 +763,16 @@ export function sources(d, S, H) {
   for (const [h, p] of left) {
     d.text([PAD, ly], h, { size: 2.1, weight: 700, track: 0.16, colour: INK.red });
     ly -= 3.6;
-    ly -= d.textBlock([PAD, ly], p, colW, { size: 1.9, lead: 1.45, colour: INK.pencil }) + 3.0;
+    ly -= d.textBlock([PAD, ly], p, colW, { size: 1.9, lead: LEAD, colour: INK.pencil }) + 3.0;
   }
   for (const [h, p] of right) {
     const x = PAD + colW + 12;
     d.text([x, ry], h, { size: 2.1, weight: 700, track: 0.16, colour: INK.red });
     ry -= 3.6;
-    ry -= d.textBlock([x, ry], p, colW, { size: 1.9, lead: 1.45, colour: INK.pencil }) + 3.0;
+    ry -= d.textBlock([x, ry], p, colW, { size: 1.9, lead: LEAD, colour: INK.pencil }) + 3.0;
   }
   const foot = Math.min(ly, ry) - 4;
-  rule(d, foot, { weight: PEN.thin, colour: INK.inkLight });
+  rule(d, foot, PAD, CW, { weight: PEN.thin, colour: INK.inkLight });
   d.text([PAD, foot - 4.4],
          `DATA ${S.build} · NETWORK ${S.network.version.toUpperCase()} · READ ${S.network.date}`,
          { size: 1.8, face: 'figure', colour: INK.inkLight, track: 0.06 });
@@ -691,10 +781,13 @@ export function sources(d, S, H) {
 sources.height = () => 150;
 
 export const SECTIONS = [
-  { id: 'header', fn: header }, { id: 'forecast', fn: forecast },
-  { id: 'controls', fn: controls }, { id: 'note', fn: note },
-  { id: 'future', fn: future }, { id: 'details', fn: details },
-  { id: 'behaviour', fn: behaviour }, { id: 'world', fn: world },
-  { id: 'alternatives', fn: alternatives }, { id: 'morning', fn: morning },
-  { id: 'sources', fn: sources },
+  { id: 'header', fn: header, tab: 'forecast' },
+  { id: 'forecast', fn: forecast, tab: 'forecast' },
+  { id: 'controls', fn: controls, tab: 'forecast' },
+  { id: 'details', fn: details, tab: 'instruments' },
+  { id: 'behaviour', fn: behaviour, tab: 'behaviour' },
+  { id: 'world', fn: world, tab: 'world' },
+  { id: 'alternatives', fn: alternatives, tab: 'alternatives' },
+  { id: 'morning', fn: morning, tab: 'revision' },
+  { id: 'sources', fn: sources, tab: 'method' },
 ];

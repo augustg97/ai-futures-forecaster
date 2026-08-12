@@ -355,9 +355,9 @@ function stalled(d, b) {
   // the notice
   d.rect(x + w * 0.80, sea + h * 0.10, w * 0.16, h * 0.10,
          { weight: PEN.thin, colour: INK.red, fill: 'rgba(244,241,232,0.9)' });
-  d.text([x + w * 0.88, sea + h * 0.16], 'WORKS',
+  d.text([x + w * 0.88, sea + h * 0.10 + 5.0], 'WORKS',
          { size: 1.5, align: 'center', colour: INK.red, track: 0.12, pocket: true });
-  d.text([x + w * 0.88, sea + h * 0.13], 'SUSPENDED',
+  d.text([x + w * 0.88, sea + h * 0.10 + 2.0], 'SUSPENDED',
          { size: 1.5, align: 'center', colour: INK.red, track: 0.12, pocket: true });
   d.line([x + w * 0.88, sea], [x + w * 0.88, sea + h * 0.10],
          { weight: PEN.hairline, colour: INK.red });

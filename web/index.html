@@ -25,38 +25,38 @@
     /* Ink multiplies into the paper, so it darkens the tooth rather than sitting on top. */
     mix-blend-mode: multiply; }
 
-  /* The only chrome: a masthead rail that follows the reader, and the chip that names what is
-     under the cursor. Everything else is drawn on the paper, in ink, in millimetres. */
-  /* The rail carries the masthead and the table of contents, and it stays put while the
-     document runs under it, so the reader always knows where in the sheet they are. */
+  /* The only chrome: the tab rail and the chip that names what is under the cursor.
+     Everything else is drawn on the paper, in ink, in millimetres. */
   #rail { position: fixed; top: 0; left: 0; right: 0; z-index: 30;
-    background: rgba(220,215,201,.965); border-bottom: 1px solid rgba(107,97,82,.28);
-    display: flex; align-items: center; gap: 14px; padding: 5px 16px 4px;
+    background: rgba(220,215,201,.975); border-bottom: 1px solid rgba(107,97,82,.5);
+    display: flex; align-items: flex-end; gap: 16px; padding: 6px 16px 0;
     backdrop-filter: blur(2px); }
   #mast, #hint { color: #6b6152; font-size: 9.5px; letter-spacing: .22em;
-    text-transform: uppercase; white-space: nowrap; }
+    text-transform: uppercase; white-space: nowrap; padding-bottom: 5px; }
   #hint { color: #948b7c; letter-spacing: .13em; margin-left: auto; }
-  #nav { display: flex; gap: 2px; flex-wrap: wrap; }
-  #nav button { appearance: none; border: 0; background: transparent; cursor: pointer;
-    color: #948b7c; font: inherit; font-size: 8.5px; letter-spacing: .15em;
-    text-transform: uppercase; white-space: nowrap; padding: 3px 6px 2px;
-    border-bottom: 2px solid transparent; }
-  #nav button:hover { color: #6b6152; }
-  #nav button.on { color: #1554a6; font-weight: 700; border-bottom-color: #1554a6; }
-  #doc { margin-top: 30px; }
+  #tabs { display: flex; gap: 0; flex-wrap: wrap; }
+  #tabs button { appearance: none; cursor: pointer; color: #6b6152; font: inherit;
+    font-size: 9.5px; letter-spacing: .14em; text-transform: uppercase; white-space: nowrap;
+    padding: 5px 13px 4px; background: rgba(198,192,176,.5);
+    border: 1px solid rgba(107,97,82,.34); border-bottom: 0; margin-right: 3px;
+    position: relative; top: 1px; }
+  #tabs button:hover { background: rgba(210,204,188,.8); color: #3a352c; }
+  #tabs button.on { background: #f4f1e8; color: #1554a6; font-weight: 700;
+    border-color: rgba(107,97,82,.5); box-shadow: 0 -1px 0 #1554a6 inset,
+    0 2px 0 #f4f1e8; }
+  #doc { margin-top: 34px; min-height: calc(100vh - 34px); }
   @media (max-width: 1100px) { #hint { display: none; } }
   #chip { position: fixed; pointer-events: none; display: none; z-index: 40;
     background: rgba(20,17,13,.93); color: #e8e2d4; padding: 5px 9px;
     font-size: 10.5px; letter-spacing: .05em; white-space: nowrap; max-width: 340px; }
   #chip b { display: block; font-size: 9px; letter-spacing: .2em; text-transform: uppercase;
     color: #c8a24a; font-weight: 700; margin-bottom: 2px; }
-  @media (max-width: 900px) { #nav { display: none; } }
 </style>
 </head>
 <body>
 <div id="rail"><span id="mast">reading the forecast…</span>
-  <nav id="nav"></nav>
-  <span id="hint">scroll to read · click a mark for its note</span></div>
+  <nav id="tabs"></nav>
+  <span id="hint">click a mark for its entry</span></div>
 <div id="doc"></div>
 <div id="chip"></div>
 <script>window.__BUILD = "DEV";</script>

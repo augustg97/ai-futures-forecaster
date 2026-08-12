@@ -65,7 +65,7 @@ export const FRAG = {
         long: 'Expert-level systems are ordinary infrastructure. The interesting questions have ' +
               'moved from capability to allocation and control.',
         far: 'A long transition, absorbed the way electrification and computing were absorbed, ' +
-             'over decades rather than months.' },
+             'over decades.' },
   T4: { near: 'Capability gains continue without approaching general superhuman performance. ' +
               'Diffusion friction, data limits and the cost of reliability set the pace.',
         mid: 'The thresholds the scenario literature expected in this span have not been ' +
@@ -75,8 +75,8 @@ export const FRAG = {
         far: 'The transformative decade did not occur. Historians argue over whether the ' +
              'ceiling was physical, informational, or a matter of choice.' },
 
-  A1: { near: 'Oversight is not detecting what it needs to. Evaluations pass, and the behaviour ' +
-              'they were designed to measure is not the behaviour being selected for.',
+  A1: { near: 'Oversight misses what it needs to catch. Evaluations pass while the behaviour they ' +
+              'measure drifts away from the behaviour being selected for.',
         mid: 'Control is lost in substance while the forms of control persist. Reporting lines ' +
              'and approval processes continue to operate.',
         long: 'The systems direct the economy through ordinary channels: contracts, ' +
@@ -88,7 +88,7 @@ export const FRAG = {
              'schedule slipped by roughly a year and the capability arrived anyway.',
         long: 'Control was retained through a period when it could have been lost. The ' +
               'institutions built during it are what govern now.',
-        far: 'A century in which the alignment problem was survived rather than solved.' },
+        far: 'A century that came through the alignment problem with the problem still open.' },
   A3: { near: 'Alignment work is producing results at the rate capability is arriving. ' +
               'Interpretability findings are entering deployment decisions.',
         mid: 'Sustained investment has made alignment an engineering discipline with ' +
@@ -98,7 +98,7 @@ export const FRAG = {
         far: 'Control is a solved engineering problem. Legitimacy of the specification is the ' +
              'open question.' },
   A4: { near: 'Capability stays below the level at which alignment failure would be ' +
-              'catastrophic. The question is deferred rather than answered.',
+              'catastrophic. The question stands deferred.',
         mid: 'Alignment remains untested at the scale that would settle it.',
         long: 'The problem has not been posed in earnest. Preparation continues on the ' +
               'assumption that it will be.',
@@ -108,7 +108,7 @@ export const FRAG = {
               'whatever competitive position allows.',
         mid: 'The race continues into the decisive span. Export controls and procurement are ' +
              'the instruments in use; treaties are not.',
-        long: 'Whatever settlement exists was imposed by outcomes rather than agreed in ' +
+        long: 'Whatever settlement exists was imposed by outcomes ' +
               'advance.',
         far: 'The century inherited an order set by which systems arrived first.' },
   C2: { near: 'Frontier development is being folded into a national program. Clearances, ' +
@@ -122,7 +122,7 @@ export const FRAG = {
               'mutual restraint on compute are the mechanisms under negotiation.',
         mid: 'The agreement holds. Scaling continues to top-expert level and stops there, under ' +
              'inspection, while verification infrastructure matures.',
-        long: 'The pause ended by agreement rather than by defection. Scaling past the human ' +
+        long: 'The pause ended by agreement. Scaling past the human ' +
               'range resumed under joint audit.',
         far: 'The century runs on institutions built during the pause.' },
   C4: { near: 'Regulation is regional and overlapping. Compliance becomes a product line, and ' +
@@ -137,7 +137,7 @@ export const FRAG = {
         mid: 'The halt holds through this span. Intelligence work on covert training and ' +
              'interdiction of chips are the operational realities.',
         long: 'Development resumed or the halt became permanent; either way the decade was ' +
-              'decided by enforcement rather than by capability.',
+              'decided by enforcement.',
         far: 'A century downstream of a decision to stop.' },
 
   D1: { near: 'Displacement is running ahead of reabsorption. White-collar hiring contracts ' +
@@ -191,7 +191,7 @@ export const FRAG = {
              'reliability.',
         long: 'These systems are infrastructure, and are argued about the way infrastructure is.',
         far: 'A century in which the technology became unremarkable.' },
-  P3: { near: 'Publics are splitting within countries rather than between them. The division ' +
+  P3: { near: 'Publics are splitting inside countries. The division ' +
               'cuts across existing party coalitions.',
         mid: 'The fracture is stable. Neither position can impose a settlement, and policy ' +
              'oscillates with electoral cycles.',
@@ -211,7 +211,7 @@ export const FRAG = {
         far: 'The pattern of the railway build-outs, at a larger scale.' },
   E3: { near: 'Capital spending is contracting ahead of revenue. Projects are being cancelled ' +
               'and delivery schedules extended.',
-        mid: 'The build-out has stalled. Progress runs on efficiency rather than scale.',
+        mid: 'The build-out has stalled. Progress runs on efficiency.',
         long: 'A decade of stranded capacity and cheap second-hand compute.',
         far: 'The century inherited an unfinished build-out.' },
   E4: { near: 'Displacement is undercutting the demand that AI revenue depends on. Layoffs fund ' +
@@ -252,34 +252,33 @@ export function describe(wl, year, tracks, engineY0) {
   const span = spanOf(year);
   const i = Math.max(0, Math.min(tracks.year.length - 1, Math.floor(year) - engineY0));
   const cap = tracks.cap[i];
+  const rev = tracks.rev[i] >= 1 ? `$${tracks.rev[i].toFixed(1)} trillion`
+                                 : `$${(tracks.rev[i] * 1000).toFixed(0)} billion`;
   const out = [];
 
-  out.push({ h: 'Capability', p: [rungText(cap),
-    `The capability index reads ${cap.toFixed(2)} on a scale whose rungs are the milestone ` +
-    `datums drawn across the forecast.`] });
+  out.push({ lead: 'Capability.', text: `${rungText(cap)} The index reads ` +
+    `${cap.toFixed(2)} against the milestone rules ruled across the forecast.` });
 
-  const gov = [FRAG[wl.C][span], FRAG[wl.S][span]];
-  out.push({ h: 'Governance and compute', p: gov });
+  out.push({ lead: 'The race and the build-out.',
+    text: `${FRAG[wl.C][span]} ${FRAG[wl.S][span]}` });
 
-  const econ = [FRAG[wl.E][span], FRAG[wl.D][span],
-    `AI revenue is running at $${tracks.rev[i] >= 1 ? tracks.rev[i].toFixed(1) + 'T' :
-      (tracks.rev[i] * 1000).toFixed(0) + 'B'} a year on this line, with cumulative employment ` +
-    `change of ${tracks.jobs[i].toFixed(1)}% and ${tracks.laws[i]} tracked measures in force.`];
-  out.push({ h: 'Economy and work', p: econ });
+  out.push({ lead: 'Money and work.', text: `${FRAG[wl.E][span]} ${FRAG[wl.D][span]} ` +
+    `Revenue runs at ${rev} a year on this line, employment stands ` +
+    `${tracks.jobs[i].toFixed(1)}% against 2026, and ${tracks.laws[i]} measures are in force.` });
 
-  out.push({ h: 'Control and consent', p: [FRAG[wl.A][span], FRAG[wl.P][span],
-    `Public approval stands at ${tracks.appr[i].toFixed(0)}%.`] });
+  out.push({ lead: 'Control and consent.', text: `${FRAG[wl.A][span]} ${FRAG[wl.P][span]} ` +
+    `Public approval reads ${tracks.appr[i].toFixed(0)}%.` });
 
-  out.push({ h: 'Capability trajectory', p: [FRAG[wl.T][span]] });
+  out.push({ lead: 'The path itself.', text: FRAG[wl.T][span] });
 
   const inter = PAIRS.filter((q) => q.span.includes(span) &&
     Object.entries(q.req).every(([k, v]) => wl[k] === v)).map((q) => q.t);
-  if (inter.length) out.push({ h: 'Where these settings meet', p: inter });
+  if (inter.length) out.push({ lead: 'Where these meet.', text: inter.join(' ') });
 
-  out.push({ h: 'The line this describes', p: [
+  out.push({ lead: 'This line.', text:
     `Composition ${['T', 'A', 'C', 'D', 'S', 'P', 'E'].map((k) => wl[k]).join('·')} at ` +
-    `${Math.floor(year)}. Each letter is one variable's setting on the controls above. ` +
-    'Changing any of them rewrites this passage and redraws every chart below it.'] });
+    `${Math.floor(year)}. Each letter is one variable's setting on the controls; moving any of ` +
+    'them rewrites this passage and redraws every chart on the document.' });
   return out;
 }
 
