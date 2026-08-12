@@ -5,12 +5,12 @@
 // on that instrument. It reads the same emitted data and implements the same functions against
 // the same shipped constants (`engine.json`), so the two surfaces cannot drift apart.
 
-import { Draft, PEN, INK, paperTileURL } from './draft.js?v=20260812-0037';
-import { SECTIONS, SHEET_W, TABS, CHART, CHART_W, PROSE_W, balance,
-         measureProse } from './sections.js?v=20260812-0037';
-import { column, fmtNum } from './instruments.js?v=20260812-0037';
-import { describe, headline } from './narrative.js?v=20260812-0037';
-import { chooseFigures } from './figures.js?v=20260812-0037';
+import { Draft, PEN, INK, paperTileURL } from './draft.js?v=20260812-0104';
+import { SECTIONS, SHEET_W, TABS, CHART, COL, CTL_NOTE_W, balance,
+         measureProse, measureSections } from './sections.js?v=20260812-0104';
+import { column, fmtNum } from './instruments.js?v=20260812-0104';
+import { describe, headline } from './narrative.js?v=20260812-0104';
+import { chooseFigures } from './figures.js?v=20260812-0104';
 
 // One build number, injected into index.html at ship time, versions BOTH the data fetches and
 // (via the build's import rewrite) every module. A fresh app.js against a stale draft.js is the
@@ -31,7 +31,7 @@ const D = {};
 const SEC = [];                       // { id, fn, el, cv, draft, h, sig }
 
 const state = {
-  tab: 'forecast', yr: NOW_Y, pin: {}, obs: false, alt: null,
+  tab: 'forecast', ctlAxis: 'T', yr: NOW_Y, pin: {}, obs: false, alt: null,
   mmPerPx: 0.25, hovered: null, selected: null, touched: null,
   ready: false, fitted: false,
 };
@@ -755,7 +755,7 @@ function sheetState(measure) {
     lineLabel: ['T', 'A', 'C', 'D', 'S', 'P', 'E'].map((k) => wl[k]).join('·'),
     effect: (k, p) => (eff.map[`${k}:${p}`] ?? null),
     headline: headline(wl, state.yr, tr, D.engine.y0),
-    prose: { paras, h: measureProse(measure, paras, PROSE_W, 2.0) },
+    prose: { paras, h: measureProse(measure, paras, (SHEET_W - 26 - 12) / 2, 2.0) },
     figures: chooseFigures(wl, state.yr, cap),
     plain,
     drawWorld: drawWorldPlate, drawAlts: drawAltsPlate, drawMorning: drawMorningPlate,
@@ -768,19 +768,26 @@ function sheetState(measure) {
   if (notes) {
     const kind = state.selected.split(':')[0];
     const onChart = kind === 'mile' || kind === 'crisis';
-    const width = (state.tab === 'forecast' && onChart) ? CHART_W : SHEET_W - 26;
+    const inPanel = kind === 'axis' || kind === 'pos';
     // The panel letters the entry's name at 2.4 mm; repeating it as the first column heading
     // says the same thing twice in two sizes.
     const body = [{ ...notes[0], h: null }].concat(notes.slice(1));
-    const bal = balance(measure, body, (width - 20) / 2, 2.0);
-    const note = { title: notes[0].h || 'Note', cols: bal.cols, h: bal.h };
-    if (state.tab !== 'forecast') S.plateNote = note;
-    else if (onChart) S.chartNote = note;
-    else if (kind === 'axis' || kind === 'pos') {
+    const mk = (w, columns) => {
+      if (columns === 1) {
+        return { title: notes[0].h || 'Note', cols: [body],
+                 h: measureSections(measure, body, w - 8, 2.0) };
+      }
+      const bal = balance(measure, body, (w - 12) / 2, 2.0);
+      return { title: notes[0].h || 'Note', cols: bal.cols, h: bal.h };
+    };
+    if (state.tab !== 'forecast') S.plateNote = mk(SHEET_W - 26, 2);
+    else if (inPanel) {
       S.openAxis = state.selected.split(':')[1];
-      S.openNote = note;
-    } else S.chartNote = note;
+      S.openNote = mk(CTL_NOTE_W + 8, 1);
+      if (S.openAxis !== state.ctlAxis) state.ctlAxis = S.openAxis;
+    } else S.chartNote = mk(COL.mid.w, 2);
   }
+  S.ctlAxis = state.ctlAxis;
   return S;
 }
 
@@ -875,10 +882,14 @@ function setTimeFrom(mmX, map) {
 }
 function applyControl(id) {
   const [, kind, arg, pos] = id.split(':');
-  if (kind === 'pin') {
+  if (kind === 'axis') {
+    state.ctlAxis = arg;
+    state.selected = null;
+  } else if (kind === 'pin') {
     if (state.pin[arg] === pos) { delete state.pin[arg]; state.selected = `axis:${arg}`; }
     else { state.pin[arg] = pos; state.selected = `pos:${arg}:${pos}`; }
     state.alt = null; recondition();
+    state.ctlAxis = arg;
   } else if (kind === 'mode') {
     state.obs = arg === 'obs';
     recondition();
@@ -892,6 +903,10 @@ function hoverLabel(hit) {
   const m = activeMarginals();
   if (kind === 'ctl') {
     if (rest[0] === 'time') return ['DATE INDEX', 'drag to move the whole document in time'];
+    if (rest[0] === 'axis') {
+      const a = D.network.axes.find((z) => z.key === rest[1]);
+      return a ? ['VARIABLE ' + rest[1], a.name] : null;
+    }
     if (rest[0] === 'pin') {
       const a = D.network.axes.find((z) => z.key === rest[1]);
       const p = a && a.positions.find((q) => q[0] === rest[2]);
@@ -949,7 +964,7 @@ addEventListener('hashchange', () => {
 function writeHash() {
   const pins = Object.values(state.pin).join('.');
   history.replaceState(null, '',
-    `#t=${state.tab}&y=${state.yr.toFixed(2)}` +
+    `#t=${state.tab}&v=${state.ctlAxis}&y=${state.yr.toFixed(2)}` +
     (pins ? `&pin=${pins}` : '') + (state.obs ? '&obs=1' : '') +
     (state.alt !== null ? `&alt=${state.alt}` : '') +
     (state.selected ? `&s=${encodeURIComponent(state.selected)}` : ''));
@@ -957,6 +972,7 @@ function writeHash() {
 function readHash() {
   const h = location.hash;
   const t = h.match(/t=([a-z]+)/); if (t && TABS.some((q) => q.id === t[1])) state.tab = t[1];
+  const v = h.match(/v=([A-Z])/); if (v) state.ctlAxis = v[1];
   const y = h.match(/y=([\d.]+)/); if (y) state.yr = Math.max(2012, Math.min(2100, +y[1]));
   const pin = h.match(/pin=([A-Z0-9.]+)/);
   if (pin) for (const pos of pin[1].split('.')) {
@@ -981,7 +997,7 @@ function frame() {
   const S = sheetState(SEC[0].draft);
   layout(S);
   if (!state.fitted) { requestAnimationFrame(frame); return; }
-  const common = [state.tab, state.yr.toFixed(2), JSON.stringify(state.pin),
+  const common = [state.tab, state.ctlAxis, state.yr.toFixed(2), JSON.stringify(state.pin),
                   state.obs ? 1 : 0, state.alt, state.selected,
                   state.hovered && state.hovered.id, docEl.clientWidth].join('|');
   for (const s of SEC) {
@@ -1050,12 +1066,16 @@ function setTab(id) {
 // outside the section. Run from the console: __FW.auditSweep().
 function auditSweep({ tol = 0.6 } = {}) {
   const saved = { yr: state.yr, sel: state.selected, alt: state.alt,
-                  pin: { ...state.pin }, hovered: state.hovered, tab: state.tab };
+                  pin: { ...state.pin }, hovered: state.hovered, tab: state.tab,
+                  ctlAxis: state.ctlAxis };
   const cases = [];
   for (const yr of [2026.58, 2033, 2049, 2090]) cases.push({ yr, sel: null, pin: {} });
   for (const sel of ['axis:C', 'axis:T', 'pos:E:E4', 'crisis:deal-window',
                      'layer:climate', 'dom:4', 'mile:3']) {
     cases.push({ yr: 2033, sel, pin: {} });
+  }
+  for (const v of D.network.axes.map((a) => a.key)) {
+    cases.push({ yr: 2036, sel: null, pin: {}, v });
   }
   for (const pin of [{ T: 'T1' }, { C: 'C5', D: 'D1' }, { T: 'T4', S: 'S3' },
                    { C: 'C3' }, { D: 'D1', E: 'E4', P: 'P1' }]) {
@@ -1067,6 +1087,7 @@ function auditSweep({ tol = 0.6 } = {}) {
     state.yr = c.yr; state.selected = c.sel; state.alt = null;
     state.pin = { ...c.pin };
     state.tab = 'forecast';
+    state.ctlAxis = c.v || 'C';
     if (Object.keys(state.pin).length) recondition(); else cond = null;
     const S = sheetState(SEC[0].draft);
     for (const s of SEC) {
@@ -1087,7 +1108,8 @@ function auditSweep({ tol = 0.6 } = {}) {
     }
   }
   Object.assign(state, { yr: saved.yr, selected: saved.sel, alt: saved.alt,
-                         pin: saved.pin, hovered: saved.hovered, tab: saved.tab });
+                         pin: saved.pin, hovered: saved.hovered, tab: saved.tab,
+                         ctlAxis: saved.ctlAxis });
   if (Object.keys(saved.pin).length) recondition(); else cond = null;
   for (const s of SEC) s.sig = '';
   redraw();

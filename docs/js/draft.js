@@ -21,22 +21,25 @@ export const PEN = {
 
 // Ink densities, and what each colour MEANS. A drawing office had a limited palette and used it
 // meaningfully; the code is declared here and never broken, so a reader learns it once.
+// Printer paper: near-white, so the ink reads at full strength against it.
+export const PAPER = '#fdfdfb';
+
 export const INK = {
-  ink: 'rgba(24,28,38,0.92)',          // structure: the sheet itself, observed record
-  inkLight: 'rgba(24,28,38,0.62)',
-  pencil: 'rgba(52,50,48,0.72)',       // construction lines, secondary annotation
-  pencilLight: 'rgba(52,50,48,0.42)',
-  red: 'rgba(150,44,38,0.88)',         // revision — what the evidence moved THIS MORNING
-  redLight: 'rgba(150,44,38,0.55)',
-  blue: 'rgba(21,84,166,0.92)',        // probability in motion: bands, the forecast itself
-  blueLight: 'rgba(21,84,166,0.52)',
-  blueWash: 'rgba(58,132,214,0.26)',   // the body of a distribution, laid in as a wash
-  green: 'rgba(24,96,78,0.86)',        // goals and desired states: claims, the deal, targets
-  greenWash: 'rgba(40,120,96,0.20)',
-  warm: 'rgba(178,86,24,0.88)',        // energy — compute, power, emissions
-  warmWash: 'rgba(206,120,52,0.24)',
-  ochre: 'rgba(150,110,26,0.85)',      // delays and time constants: pauses, shelves, lags
-  erase: 'rgba(120,116,110,0.20)',     // a ghost where something was rubbed out
+  ink: 'rgba(16,19,26,0.97)',          // structure: the sheet itself, observed record
+  inkLight: 'rgba(16,19,26,0.72)',
+  pencil: 'rgba(38,38,40,0.86)',       // construction lines, secondary annotation
+  pencilLight: 'rgba(38,38,40,0.54)',
+  red: 'rgba(178,28,24,0.95)',         // revision — what the evidence moved THIS MORNING
+  redLight: 'rgba(178,28,24,0.62)',
+  blue: 'rgba(10,72,168,0.97)',        // probability in motion: bands, the forecast itself
+  blueLight: 'rgba(10,72,168,0.60)',
+  blueWash: 'rgba(38,118,214,0.30)',   // the body of a distribution, laid in as a wash
+  green: 'rgba(10,104,76,0.94)',       // goals and desired states: claims, the deal, targets
+  greenWash: 'rgba(24,132,98,0.24)',
+  warm: 'rgba(196,78,10,0.95)',        // energy — compute, power, emissions
+  warmWash: 'rgba(224,120,36,0.28)',
+  ochre: 'rgba(168,116,8,0.92)',       // delays and time constants: pauses, shelves, lags
+  erase: 'rgba(110,108,104,0.26)',     // a ghost where something was rubbed out
 };
 
 const DRAFT_FACE = '"Avenir Next Condensed","Roboto Condensed","Arial Narrow",' +
@@ -238,7 +241,7 @@ export class Draft {
     ctx.beginPath();
     ctx.arc(this.x(c[0]), this.y(c[1]), this.s(r), 0, Math.PI * 2);
     if (hollow) {
-      ctx.fillStyle = '#efece4'; ctx.fill();
+      ctx.fillStyle = PAPER; ctx.fill();
       this.stroke({ weight: PEN.thin, colour });
     } else {
       ctx.fillStyle = colour ?? this.ink.ink; ctx.fill();
@@ -648,14 +651,14 @@ function makePaperTile(aspect) {
   const cv = document.createElement('canvas');
   cv.width = w; cv.height = h;
   const ctx = cv.getContext('2d');
-  ctx.fillStyle = '#f4f1e8';
+  ctx.fillStyle = PAPER;
   ctx.fillRect(0, 0, w, h);
   const img = ctx.getImageData(0, 0, w, h);
   const d = img.data;
   let seed = 20260811;
   const rnd = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
   for (let i = 0; i < d.length; i += 4) {
-    const n = (rnd() - 0.5) * 7.5;
+    const n = (rnd() - 0.5) * 3.8;
     d[i] = Math.max(0, Math.min(255, d[i] + n));
     d[i + 1] = Math.max(0, Math.min(255, d[i + 1] + n * 0.96));
     d[i + 2] = Math.max(0, Math.min(255, d[i + 2] + n * 0.86));
@@ -664,8 +667,8 @@ function makePaperTile(aspect) {
   for (let i = 0; i < 26; i++) {
     const fx = rnd() * w, fy = rnd() * h, fr = (8 + rnd() * 46) * (w / 900);
     const g = ctx.createRadialGradient(fx, fy, 0, fx, fy, fr);
-    g.addColorStop(0, 'rgba(176,146,96,0.055)');
-    g.addColorStop(1, 'rgba(176,146,96,0)');
+    g.addColorStop(0, 'rgba(150,140,120,0.030)');
+    g.addColorStop(1, 'rgba(150,140,120,0)');
     ctx.fillStyle = g;
     ctx.beginPath(); ctx.arc(fx, fy, fr, 0, Math.PI * 2); ctx.fill();
   }
@@ -681,14 +684,14 @@ export function paperTileURL(px = 168) {
   const cv = document.createElement('canvas');
   cv.width = px; cv.height = px;
   const ctx = cv.getContext('2d');
-  ctx.fillStyle = '#f4f1e8';
+  ctx.fillStyle = PAPER;
   ctx.fillRect(0, 0, px, px);
   const img = ctx.getImageData(0, 0, px, px), d = img.data;
   let seed = 20260812;
   const rnd = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
   const cl = (v) => Math.max(0, Math.min(255, v));
   for (let i = 0; i < d.length; i += 4) {
-    const n = (rnd() - 0.5) * 7.0;
+    const n = (rnd() - 0.5) * 3.4;
     d[i] = cl(d[i] + n); d[i + 1] = cl(d[i + 1] + n * 0.96); d[i + 2] = cl(d[i + 2] + n * 0.86);
   }
   ctx.putImageData(img, 0, 0);
@@ -704,7 +707,7 @@ export function drawPaper(cv, sheetRect) {
     cv.width = W * dpr; cv.height = H * dpr;
   }
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  ctx.fillStyle = '#e6e2d8';
+  ctx.fillStyle = '#cfcec9';
   ctx.fillRect(0, 0, W, H);
   const [sx, sy, sw, sh] = sheetRect;
   if (!(sw > 0 && sh > 0)) return;

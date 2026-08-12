@@ -6,7 +6,7 @@
 <title>The Forecast Works</title>
 <style>
   :root {
-    --board: #dcd7c9;
+    --board: #c9c8c3;
     --ink: #23262e;
     --dim: #8b8578;
   }
@@ -18,7 +18,7 @@
 
   /* The document scrolls. Nothing zooms: every section is drawn at one fixed width so the
      lettering keeps the size it was drawn at. */
-  #doc { margin: 0 auto; background: #f4f1e8; box-shadow: 0 0 44px rgba(40,34,24,.30);
+  #doc { margin: 0 auto; background: #fdfdfb; box-shadow: 0 0 40px rgba(30,30,28,.34);
     padding-bottom: 40px; }
   #doc section { position: relative; display: block; }
   #doc canvas { display: block; width: 100%; height: auto;
@@ -28,22 +28,22 @@
   /* The only chrome: the tab rail and the chip that names what is under the cursor.
      Everything else is drawn on the paper, in ink, in millimetres. */
   #rail { position: fixed; top: 0; left: 0; right: 0; z-index: 30;
-    background: rgba(220,215,201,.975); border-bottom: 1px solid rgba(107,97,82,.5);
+    background: rgba(226,225,220,.975); border-bottom: 1px solid rgba(70,68,62,.45);
     display: flex; align-items: flex-end; gap: 16px; padding: 6px 16px 0;
     backdrop-filter: blur(2px); }
-  #mast, #hint { color: #6b6152; font-size: 9.5px; letter-spacing: .22em;
+  #mast, #hint { color: #4a4844; font-size: 9.5px; letter-spacing: .22em;
     text-transform: uppercase; white-space: nowrap; padding-bottom: 5px; }
-  #hint { color: #948b7c; letter-spacing: .13em; margin-left: auto; }
+  #hint { color: #7d7a72; letter-spacing: .13em; margin-left: auto; }
   #tabs { display: flex; gap: 0; flex-wrap: wrap; }
-  #tabs button { appearance: none; cursor: pointer; color: #6b6152; font: inherit;
+  #tabs button { appearance: none; cursor: pointer; color: #4a4844; font: inherit;
     font-size: 9.5px; letter-spacing: .14em; text-transform: uppercase; white-space: nowrap;
-    padding: 5px 13px 4px; background: rgba(198,192,176,.5);
-    border: 1px solid rgba(107,97,82,.34); border-bottom: 0; margin-right: 3px;
+    padding: 5px 13px 4px; background: rgba(206,205,199,.6);
+    border: 1px solid rgba(70,68,62,.30); border-bottom: 0; margin-right: 3px;
     position: relative; top: 1px; }
-  #tabs button:hover { background: rgba(210,204,188,.8); color: #3a352c; }
-  #tabs button.on { background: #f4f1e8; color: #1554a6; font-weight: 700;
-    border-color: rgba(107,97,82,.5); box-shadow: 0 -1px 0 #1554a6 inset,
-    0 2px 0 #f4f1e8; }
+  #tabs button:hover { background: rgba(238,237,232,.9); color: #1a1a18; }
+  #tabs button.on { background: #fdfdfb; color: #0a48a8; font-weight: 700;
+    border-color: rgba(70,68,62,.5); box-shadow: 0 -2px 0 #0a48a8 inset,
+    0 2px 0 #fdfdfb; }
   #doc { margin-top: 34px; min-height: calc(100vh - 34px); }
   @media (max-width: 1100px) { #hint { display: none; } }
   #chip { position: fixed; pointer-events: none; display: none; z-index: 40;
@@ -59,7 +59,7 @@
   <span id="hint">click a mark for its entry</span></div>
 <div id="doc"></div>
 <div id="chip"></div>
-<script>window.__BUILD = "20260812-0037";</script>
+<script>window.__BUILD = "20260812-0104";</script>
 <script type="module" src="js/app.js"></script>
 </body>
 </html>

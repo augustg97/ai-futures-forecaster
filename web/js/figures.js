@@ -99,7 +99,7 @@ function offshore(d, b) {
   const px = x + w * 0.24, pw = w * 0.50, deck = sea + h * 0.09;
   d.polyline([[px - 2.4, sea - 0.6], [px + pw + 2.4, sea - 0.6],
               [px + pw - 3, deck], [px + 3, deck]],
-             { close: true, weight: PEN.outline, colour: INK.ink, fill: 'rgba(244,241,232,0.9)' });
+             { close: true, weight: PEN.outline, colour: INK.ink, fill: 'rgba(253,253,251,0.9)' });
   d.hatch([px - 2, sea - 0.6, pw + 4, deck - sea + 0.6],
           { spacing: 1.3, angle: Math.PI / 4, weight: PEN.hairline, colour: INK.inkLight });
   // legs into the water
@@ -112,12 +112,12 @@ function offshore(d, b) {
   for (let i = 0; i < 5; i++) {
     const hx = px + 3 + i * hallW, hh = h * 0.085;
     d.rect(hx, deck, hallW - 1.4, hh,
-           { weight: PEN.medium, colour: INK.ink, fill: 'rgba(244,241,232,0.92)' });
+           { weight: PEN.medium, colour: INK.ink, fill: 'rgba(253,253,251,0.92)' });
     d.hatch([hx, deck, hallW - 1.4, hh],
             { spacing: 1.0, angle: -Math.PI / 3, weight: PEN.hairline, colour: INK.inkLight });
     if (i < 4) {
       d.rect(hx + 1.6, deck + hh + 0.6, hallW - 4.6, h * 0.055,
-             { weight: PEN.thin, colour: INK.ink, fill: 'rgba(244,241,232,0.92)' });
+             { weight: PEN.thin, colour: INK.ink, fill: 'rgba(253,253,251,0.92)' });
     }
   }
   // cooling stacks, warm because they carry the energy
@@ -133,7 +133,7 @@ function offshore(d, b) {
          { size: 1.5, colour: INK.ochre, track: 0.12, pocket: true });
   d.polyline([[px + pw + 6, sea - 1.2], [px + pw + 14, sea - 1.2],
               [px + pw + 12.5, sea - 3.0], [px + pw + 7.5, sea - 3.0]],
-             { close: true, weight: PEN.thin, colour: INK.ink, fill: 'rgba(244,241,232,0.9)' });
+             { close: true, weight: PEN.thin, colour: INK.ink, fill: 'rgba(253,253,251,0.9)' });
   person(d, px + 5, deck + h * 0.085, h * 0.05, INK.ink);
   person(d, px + 8, deck + h * 0.085, h * 0.05, INK.ink);
   d.text([x + w - 2, y + h * 0.06], 'OUTSIDE ANY JURISDICTION',
@@ -160,7 +160,7 @@ function campus(d, b) {
       const hy = sea - h * rk.off * 0.4 + h * rk.off;
       d.rect(hx, hy, hw - 2.2, hh,
              { weight: ri === 2 ? PEN.medium : PEN.thin, colour: INK.ink,
-               fill: 'rgba(244,241,232,0.9)', alpha: rk.a });
+               fill: 'rgba(253,253,251,0.9)', alpha: rk.a });
       d.hatch([hx, hy, hw - 2.2, hh],
               { spacing: 1.1, angle: Math.PI / 3, weight: PEN.hairline, colour: INK.inkLight });
       // roof plant
@@ -217,7 +217,7 @@ function verification(d, b) {
   const { x, y, w, h, sea } = S;
   // the fab: a long blind wall, because that is what these buildings are
   const fx = x + w * 0.06, fw = w * 0.62, fh = h * 0.30;
-  d.rect(fx, sea, fw, fh, { weight: PEN.outline, colour: INK.ink, fill: 'rgba(244,241,232,0.93)' });
+  d.rect(fx, sea, fw, fh, { weight: PEN.outline, colour: INK.ink, fill: 'rgba(253,253,251,0.93)' });
   d.hatch([fx, sea, fw, fh],
           { spacing: 1.6, angle: Math.PI / 4, weight: PEN.hairline, colour: INK.inkLight });
   for (let i = 1; i < 7; i++) {
@@ -288,7 +288,7 @@ function robotZone(d, b) {
   for (let i = 0; i < 9; i++) {
     const bx = x + w * (0.08 + i * 0.055), bh = h * (0.03 + r() * 0.05);
     d.rect(bx, sea, w * 0.045, bh,
-           { weight: PEN.hairline, colour: INK.ink, fill: 'rgba(244,241,232,0.85)' });
+           { weight: PEN.hairline, colour: INK.ink, fill: 'rgba(253,253,251,0.85)' });
     d.hatch([bx, sea, w * 0.045, bh],
             { spacing: 0.9, angle: -Math.PI / 4, weight: PEN.hairline, colour: INK.inkLight });
   }
@@ -324,7 +324,7 @@ function stalled(d, b) {
   }
   // partial cladding on the finished half
   d.rect(fx, sea, fw * 0.44, fh * 0.68,
-         { weight: PEN.thin, colour: INK.ink, fill: 'rgba(244,241,232,0.75)' });
+         { weight: PEN.thin, colour: INK.ink, fill: 'rgba(253,253,251,0.75)' });
   d.hatch([fx, sea, fw * 0.44, fh * 0.68],
           { spacing: 1.6, angle: Math.PI / 4, weight: PEN.hairline, colour: INK.inkLight });
   // the idle crane, jib slack
@@ -354,7 +354,7 @@ function stalled(d, b) {
   }
   // the notice
   d.rect(x + w * 0.80, sea + h * 0.10, w * 0.16, h * 0.10,
-         { weight: PEN.thin, colour: INK.red, fill: 'rgba(244,241,232,0.9)' });
+         { weight: PEN.thin, colour: INK.red, fill: 'rgba(253,253,251,0.9)' });
   d.text([x + w * 0.88, sea + h * 0.10 + 5.0], 'WORKS',
          { size: 1.5, align: 'center', colour: INK.red, track: 0.12, pocket: true });
   d.text([x + w * 0.88, sea + h * 0.10 + 2.0], 'SUSPENDED',
@@ -371,9 +371,9 @@ function square(d, b) {
   const { x, y, w, h, sea } = S;
   // the ministry: a portico, because the argument is with the state
   const mx = x + w * 0.56, mw = w * 0.38, mh = h * 0.34;
-  d.rect(mx, sea, mw, mh, { weight: PEN.outline, colour: INK.ink, fill: 'rgba(244,241,232,0.94)' });
+  d.rect(mx, sea, mw, mh, { weight: PEN.outline, colour: INK.ink, fill: 'rgba(253,253,251,0.94)' });
   d.polyline([[mx - 2, sea + mh], [mx + mw / 2, sea + mh + h * 0.10], [mx + mw + 2, sea + mh]],
-             { close: true, weight: PEN.medium, colour: INK.ink, fill: 'rgba(244,241,232,0.94)' });
+             { close: true, weight: PEN.medium, colour: INK.ink, fill: 'rgba(253,253,251,0.94)' });
   for (let i = 0; i < 7; i++) {
     const cx = mx + 2 + (i * (mw - 4)) / 6;
     d.line([cx, sea], [cx, sea + mh], { weight: PEN.thin, colour: INK.inkLight });
@@ -399,7 +399,7 @@ function square(d, b) {
     const py = y + h * (0.20 + (i % 3) * 0.045);
     d.line([px, py - h * 0.06], [px, py], { weight: PEN.hairline, colour: INK.ink });
     d.rect(px - w * 0.022, py, w * 0.044, h * 0.035,
-           { weight: PEN.thin, colour: INK.red, fill: 'rgba(244,241,232,0.9)' });
+           { weight: PEN.thin, colour: INK.red, fill: 'rgba(253,253,251,0.9)' });
     for (let k = 0; k < 2; k++) {
       d.line([px - w * 0.017, py + h * (0.012 + k * 0.010)],
              [px + w * (k ? 0.008 : 0.017), py + h * (0.012 + k * 0.010)],

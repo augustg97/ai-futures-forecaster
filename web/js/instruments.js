@@ -12,7 +12,7 @@
 //
 // Everything is in sheet millimetres and goes through Draft.
 
-import { PEN, INK } from './draft.js';
+import { PEN, INK, PAPER } from './draft.js';
 
 // ── the dial ─────────────────────────────────────────────────────────────────
 // An engraved 240° face. The LIVE needle is ink; the GHOST needle is where the same reading
@@ -63,7 +63,7 @@ export function dial(d, cx, cy, r, { label, value, was = null, sub = '', id = nu
   d.line([cx, cy], [cx + Math.cos(a) * r * 0.88, cy + Math.sin(a) * r * 0.88],
          { weight: PEN.medium, colour: c });
   d.dot([cx, cy], 0.85, { colour: INK.ink });
-  d.dot([cx, cy], 0.42, { colour: '#f4f1e8' });
+  d.dot([cx, cy], 0.42, { colour: PAPER });
   d.text([cx, cy - r * 0.52], (value * 100).toFixed(0) + '%',
          { size: 2.6, align: 'center', colour: c, weight: 700, face: 'figure' });
   if (label) d.text([cx, cy - r - 3.4], label,
@@ -156,7 +156,7 @@ export function manifold(d, x, y, w, h, series, { id = null, unit = '%' } = {}) 
     // the float: a machined bob riding at the reading
     d.polyline([[cx + 0.2, y + fh], [cx + tw / 2, y + fh + 1.3], [cx + tw - 0.2, y + fh],
                 [cx + tw / 2, y + fh - 1.3]],
-               { close: true, weight: PEN.thin, colour: s.c, fill: 'rgba(244,241,232,0.9)' });
+               { close: true, weight: PEN.thin, colour: s.c, fill: 'rgba(253,253,251,0.9)' });
     // Both legends sit BELOW the tubes. Putting the reading above them ran it into the
     // panel's own sub-caption, which the audit reported eleven times over.
     d.text([cx + tw / 2, y - 2.6], s.k,
@@ -206,9 +206,17 @@ export function strip(d, x, y, w, h, { data, years, y0, y1, colour = null, label
     const nx = X(now);
     d.line([nx, y], [nx, y + h], { weight: PEN.hairline, colour: INK.red });
     const i = Math.max(0, Math.min(data.length - 1, Math.round(now - years[0])));
-    d.dot([nx, Y(data[i])], 0.55, { colour: INK.red });
-    d.text([Math.min(nx + 1.2, x + w - 12), Y(data[i]) + 1.4], fmt(data[i]),
-           { size: 1.6, colour: INK.red, weight: 700, face: 'figure' });
+    const py = Y(data[i]);
+    d.dot([nx, py], 0.55, { colour: INK.red });
+    // The label band along the top of the frame is the recorder's own lettering. A reading that
+    // lands in it is unreadable, so it drops to the underside of the pen instead.
+    const str = fmt(data[i]);
+    const rw = d.textWidth(str, { size: 1.6, face: 'figure', weight: 700 });
+    const right = nx + 1.2 + rw < x + w - 1;
+    const inLabelBand = py + 1.4 + 1.6 > y + h - 3.2;
+    d.text([right ? nx + 1.2 : nx - 1.2, py + (inLabelBand ? -2.6 : 1.4)], str,
+           { size: 1.6, colour: INK.red, weight: 700, face: 'figure',
+             align: right ? 'left' : 'right' });
   }
   if (id) d.region(id, x, y, w, h);
 }
