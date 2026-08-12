@@ -14,9 +14,19 @@ Systems Works. Read by scrolling, at one fixed scale.
 2. **This project owns no forecast data.** If the Atlas has not emitted, this build fails
    rather than drawing something plausible. The Atlas gate runs first and refuses the publish.
 
-3. **The sheet is a VERTICAL DOCUMENT, one section per canvas.** 300 mm wide, drawn at a
-   fixed scale so nothing is zoomed; `web/js/sections.js` owns the stack and each section
-   states its own height before anything in it is drawn. There is no pan and no zoom.
+3. **Seven TABS, each a vertical sheet of sections, one section per canvas.** 300 mm wide,
+   drawn at a fixed scale so nothing is zoomed; `web/js/sections.js` owns the tabs and the
+   stack, and each section states its own height before anything in it is drawn. No pan, no
+   zoom. Only the open tab's sections are laid out, painted or hit-tested.
+
+   **A note opens where the mark that opened it is** — an axis entry inside its own control
+   row, a chart mark in the band under the chart, anything else at the head of its tab. Sending
+   the reader scrolling to find the explanation of what they just pressed is the defect this
+   replaced.
+
+   **Any plate that reads a date carries its own date index** (`dateStrip`). Its scale is
+   linear where the chart's is compressed after 2040, so the region carries its own mapping and
+   the pointer handler reads whichever it landed on.
 
 4. **Measure prose, don't estimate it.** A section that grows with its text gets its height
    from `measureSections()`, which uses the drawing's own `wrap()`. Character-count estimates
@@ -106,3 +116,15 @@ __FW.auditSweep()                      # in the console: the audit (check `contr
   reads as an abandoned sentence; the sheet appends "…" when the field is at the cap.
 - **A hidden Browser pane fires no rAF and its screenshots go blank after a scripted scroll.**
   Verify layout with the Playwright MCP instead, which renders and screenshots reliably.
+
+- **Titles carry no article** — CONTROLS, INSTRUMENTS, FORECAST, WORLD, METHOD AND SOURCES.
+- **Say what a thing is, never what it is not.** No "X, not Y", no "rather than", no "instead
+  of" in any authored string. This applies to the drawing's own lettering as much as to prose.
+- **The parent writes provenance into its variable descriptions.** `plain()` drops the clauses
+  and parentheses naming a source document and re-punctuates what is left; the citations stay in
+  Method and in the grounding line of a selected entry. Dropping a dash clause without
+  re-punctuating leaves "or halt This axis owns…".
+- **A leader arrives on a diagonal**, so at the default gap its tip lands inside the first glyph
+  and eats it. Stand crisis and difference labels off by 2.4 mm.
+- **One slot allocator for every label on the chart.** The difference label placed on its own
+  collided with the crisis labels whenever they landed together.
