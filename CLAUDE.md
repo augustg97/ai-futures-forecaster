@@ -14,7 +14,10 @@ Systems Works. Read by scrolling, at one fixed scale.
 2. **This project owns no forecast data.** If the Atlas has not emitted, this build fails
    rather than drawing something plausible. The Atlas gate runs first and refuses the publish.
 
-3. **Seven TABS, each a vertical sheet of sections, one section per canvas.** 300 mm wide,
+3. **Seven TABS, each a vertical sheet of sections, one section per canvas.** The forecast tab
+   is a three-column BOARD — instruments and behaviour left, chart middle, controls right —
+   with the passage below it. Column geometry is `COL` in `sections.js`; nothing may assume the
+   full sheet width inside a column. 300 mm wide,
    drawn at a fixed scale so nothing is zoomed; `web/js/sections.js` owns the tabs and the
    stack, and each section states its own height before anything in it is drawn. No pan, no
    zoom. Only the open tab's sections are laid out, painted or hit-tested.
@@ -128,3 +131,12 @@ __FW.auditSweep()                      # in the console: the audit (check `contr
   and eats it. Stand crisis and difference labels off by 2.4 mm.
 - **One slot allocator for every label on the chart.** The difference label placed on its own
   collided with the crisis labels whenever they landed together.
+
+- **A note block's column width follows the number of columns it was MEASURED at**, never the
+  block width alone. A one-column note wrapped to half its width runs off the foot of its
+  section, where nothing catches it.
+- **Clamp a chart label inside the frame on BOTH axes.** Pushed up it lands on the plate's
+  caption; pushed right it lands in the next column. A label with no room to its right is set
+  to its left.
+- **The paper colour is `PAPER` in draft.js.** Never hard-code `#f4f1e8` or its successors —
+  a stale literal shows up as a pale rectangle on white.

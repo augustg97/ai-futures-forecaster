@@ -1,6 +1,6 @@
 # The Forecast Works — live state
 
-**Live:** https://augustg97.github.io/forecast-works/ · build `20260812-0037`
+**Live:** https://augustg97.github.io/forecast-works/ · build `20260812-0104`
 **Local:** `python3 build/serve.py 8154` (serves `web/`, never `docs/`)
 
 ## What it is
@@ -10,13 +10,20 @@ Seven tabs. Within a tab the drawing is a vertical sheet 300 mm wide at one fixe
 
 | tab | sections | what it carries |
 |-----|----------|-----------------|
-| Forecast | masthead · forecast · controls | the band and its milestones on the left, the composed passage and the drawn scenes in a column to its right, the controls below |
+| Forecast | masthead · board · readout | three columns: instruments and the six behaviour recorders on the LEFT, the chart and its date index in the MIDDLE, the controls as a tabbed panel on the RIGHT — then the passage and the drawn scenes underneath |
 | Instruments | details | A tempo dials · B compute manifold · C capability domains and agent collectives |
 | Behaviour | behaviour | six recorders: compute, revenue, employment, measures, approval, emissions |
 | World | world | the active line on the ground |
 | Alternatives | alternatives | twelve sampled world-lines across the spread |
 | This morning | morning | today's evidence applications with their arithmetic, and the net drift |
 | Method | sources | method, grounding counts, the literature, and what this surface is |
+
+## The colour of the sheet
+
+Printer white, `PAPER = '#fdfdfb'` in `draft.js`, with the paper tooth at half its old
+amplitude and the fibre blooms nearly colourless. Every ink is a density over that white, and
+the whole palette was sharpened with the paper (ink 0.97, red 178·28·24, blue 10·72·168, warm
+196·78·10). Nothing in the drawing may hard-code a paper colour — import `PAPER`.
 
 ## Where a note appears
 
@@ -32,7 +39,7 @@ python3 build/build_site.py            # gate → pull → stamp → docs/
 __FW.auditSweep()                      # console; REQUIRE controlPasses: true
 ```
 
-Last sweep: **16 cases · 9,620 lettering marks · 0 collisions · 0 off-section · 0 overflows ·
+Last sweep: **23 cases · 11,907 lettering marks · 0 collisions · 0 off-section · 0 overflows ·
 control passes.** Full pass over every section: ~18 ms. Effect recalculation on a setting
 change: 22 ms, cached per setting.
 
