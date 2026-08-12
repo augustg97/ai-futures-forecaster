@@ -816,7 +816,7 @@ board.addEventListener('pointermove', (e) => {
     if (Math.abs(dx) + Math.abs(dy) > 3) drag.moved = true;
     state.centre[0] = drag.cx - dx * state.mmPerPx;
     state.centre[1] = drag.cy + dy * state.mmPerPx;
-    clampView(); schedule();
+    clampView(); markMoving(); schedule();
     return;
   }
   const hit = draft.hitTest(mx, my);
@@ -831,8 +831,14 @@ board.addEventListener('pointermove', (e) => {
     if (label) {
       chipEl.innerHTML = `<b>${label[0]}</b>${label[1]}`;
       chipEl.style.display = 'block';
-      chipEl.style.left = (e.clientX + 14) + 'px';
-      chipEl.style.top = (e.clientY + 16) + 'px';
+      // Flip the chip back inside the window near an edge — trailing the cursor blindly
+      // pushes it off the page, which is the one piece of lettering the sheet's own audit
+      // cannot see because it is not on the sheet.
+      const cw = chipEl.offsetWidth, chh = chipEl.offsetHeight;
+      const left = e.clientX + 14 + cw > innerWidth - 6 ? e.clientX - 14 - cw : e.clientX + 14;
+      const top = e.clientY + 16 + chh > innerHeight - 6 ? e.clientY - 12 - chh : e.clientY + 16;
+      chipEl.style.left = Math.max(6, left) + 'px';
+      chipEl.style.top = Math.max(6, top) + 'px';
     } else chipEl.style.display = 'none';
   } else chipEl.style.display = 'none';
 });
@@ -857,7 +863,7 @@ board.addEventListener('wheel', (e) => {
   const after = cursorToSheet(e);
   state.centre[0] += before[0] - after[0];
   state.centre[1] += before[1] - after[1];
-  clampView(); schedule();
+  clampView(); markMoving(); schedule();
 }, { passive: false });
 
 function setTimeFromPointer(mx) {
@@ -946,16 +952,59 @@ function readHash() {
 // ── the frame ────────────────────────────────────────────────────────────────
 let rafId = 0, lastSig = '', PAPER_SIG = '';
 function schedule() { if (!rafId) rafId = requestAnimationFrame(() => { rafId = 0; frame(); }); }
+
+// ── motion ───────────────────────────────────────────────────────────────────
+// A pan changes nothing on the sheet except where it sits, and a full redraw of this drawing
+// costs ~20 ms. So while the view is moving, the last completed ink is blitted at the new
+// offset (and scale, for a wheel), and a crisp redraw follows once the gesture settles.
+let inkCache = null;                 // { cv, sig, centre, mmPerPx, w, h }
+let moving = false, settleTimer = 0;
+function markMoving() {
+  moving = true;
+  clearTimeout(settleTimer);
+  settleTimer = setTimeout(() => { moving = false; lastSig = ''; schedule(); }, 170);
+}
+function cacheInk(sig) {
+  const cv = inkCache && inkCache.cv ? inkCache.cv : document.createElement('canvas');
+  if (cv.width !== inkCv.width || cv.height !== inkCv.height) {
+    cv.width = inkCv.width; cv.height = inkCv.height;
+  }
+  const c = cv.getContext('2d');
+  c.setTransform(1, 0, 0, 1, 0, 0);
+  c.clearRect(0, 0, cv.width, cv.height);
+  c.drawImage(inkCv, 0, 0);
+  inkCache = { cv, sig, centre: [state.centre[0], state.centre[1]],
+               mmPerPx: state.mmPerPx, w: board.clientWidth, h: board.clientHeight };
+}
+function blitInk() {
+  const dpr = draft.dpr || 1;
+  const W = board.clientWidth, H = board.clientHeight;
+  if (inkCv.width !== W * dpr || inkCv.height !== H * dpr) return false;
+  const k = inkCache.mmPerPx / state.mmPerPx;
+  const dx = (inkCache.centre[0] - state.centre[0]) / state.mmPerPx;
+  const dy = -(inkCache.centre[1] - state.centre[1]) / state.mmPerPx;
+  const ctx = draft.ctx;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, W, H);
+  ctx.save();
+  ctx.translate(W / 2 + dx, H / 2 + dy);
+  ctx.scale(k, k);
+  ctx.drawImage(inkCache.cv, -W / 2 * dpr / dpr, -H / 2, W, H);
+  ctx.restore();
+  return true;
+}
 function frame() {
   if (!state.ready) return;
   if (!state.fitted || !Number.isFinite(state.mmPerPx) || state.mmPerPx <= 0) {
     if (!fitSheet()) { requestAnimationFrame(() => { lastSig = ''; schedule(); }); return; }
     lastSig = '';
   }
-  const sig = [state.plateId, state.yr.toFixed(3), JSON.stringify(state.pin), state.obs ? 1 : 0,
-               state.alt, state.selected, state.hovered && state.hovered.id,
-               state.centre[0].toFixed(2), state.centre[1].toFixed(2),
-               state.mmPerPx.toFixed(5), board.clientWidth, board.clientHeight].join('|');
+  const contentSig = [state.plateId, state.yr.toFixed(3), JSON.stringify(state.pin),
+                      state.obs ? 1 : 0, state.alt, state.selected,
+                      state.hovered && state.hovered.id,
+                      board.clientWidth, board.clientHeight].join('|');
+  const sig = contentSig + '|' + state.centre[0].toFixed(2) + '|' +
+              state.centre[1].toFixed(2) + '|' + state.mmPerPx.toFixed(5);
   if (sig === lastSig) return;
   lastSig = sig;
   const paperSig = [state.centre[0].toFixed(2), state.centre[1].toFixed(2),
@@ -967,6 +1016,11 @@ function frame() {
     const sy = h / 2 - (SHEET[1] / 2 - state.centre[1]) / state.mmPerPx;
     drawPaper(paperCv, [sx, sy, SHEET[0] / state.mmPerPx, SHEET[1] / state.mmPerPx]);
   }
+  // While the view is moving, reuse the last completed ink rather than redrawing the sheet.
+  if (moving && inkCache && inkCache.sig === contentSig &&
+      inkCache.w === board.clientWidth && inkCache.h === board.clientHeight) {
+    if (blitInk()) return;
+  }
   draft.begin({ centre: state.centre, mmPerPx: state.mmPerPx });
   const S = sheetState();
   drawPlate(draft, S);
@@ -975,6 +1029,7 @@ function frame() {
   if (hov && hov.id !== state.selected) highlight(hov, false);
   const sel = state.selected && draft.prevRegions.find((r) => r.id === state.selected);
   if (sel) highlight(sel, true);
+  cacheInk(contentSig);
 }
 function highlight(r, isSel) {
   const c = isSel ? INK.red : INK.blue, m = 1.4;
@@ -990,6 +1045,52 @@ function highlight(r, isSel) {
                      { weight: PEN.medium, colour: c });
     }
   }
+}
+
+// ── the collision audit ──────────────────────────────────────────────────────
+// Every plate, at several dates and selections, drawn with lettering recorded. Two defects
+// are reported: lettering that overlaps other lettering or solid ground, and anything drawn
+// outside the frame line. Run from the console: __FW.auditSweep().
+function auditSweep({ tol = 0.6 } = {}) {
+  const saved = { plate: state.plateId, yr: state.yr, sel: state.selected,
+                  alt: state.alt, pin: { ...state.pin }, hovered: state.hovered };
+  const cases = [];
+  for (const p of PLATES) {
+    for (const yr of [2026.58, 2033, 2049, 2090]) {
+      cases.push({ plate: p.id, yr, sel: null });
+    }
+  }
+  // and the selections that swap the whole notes column
+  for (const sel of ['axis:C', 'axis:T', 'pos:E:E4', 'crisis:deal-window',
+                     'layer:climate', 'dom:4', 'mile:3']) {
+    cases.push({ plate: 'mainline', yr: 2033, sel });
+  }
+  const out = { cases: cases.length, collisions: [], offSheet: [], overflows: [], byCase: [] };
+  state.hovered = null;
+  for (const c of cases) {
+    state.plateId = c.plate; state.yr = c.yr; state.selected = c.sel;
+    state.alt = null; state.pin = {}; cond = null;
+    draft.begin({ centre: [0, 0], mmPerPx: state.mmPerPx, audit: true });
+    drawPlate(draft, sheetState());
+    const col = draft.collisions(tol);
+    const off = draft.offSheet(SHEET, 10);
+    const ovf = draft.overflows || [];
+    out.byCase.push({ plate: c.plate, yr: c.yr, sel: c.sel,
+                      marks: draft.marks.length, col: col.length, off: off.length,
+                      ovf: ovf.length });
+    for (const x of ovf) (out.overflows = out.overflows || []).push({ ...x, plate: c.plate });
+    for (const x of col) out.collisions.push({ ...x, plate: c.plate, yr: c.yr, sel: c.sel });
+    for (const x of off) out.offSheet.push({ ...x, plate: c.plate, yr: c.yr, sel: c.sel });
+  }
+  Object.assign(state, { plateId: saved.plate, yr: saved.yr, selected: saved.sel,
+                         alt: saved.alt, pin: saved.pin, hovered: saved.hovered });
+  if (Object.keys(saved.pin).length) recondition();
+  lastSig = ''; schedule();
+  out.collisions.sort((a, b) => b.area - a.area);
+  out.worstCollisions = out.collisions.slice(0, 24);
+  out.offSheetUnique = [...new Map(out.offSheet.map((o) => [o.str + '|' + o.plate, o]))
+                        .values()].slice(0, 40);
+  return out;
 }
 
 // ── boot ─────────────────────────────────────────────────────────────────────
@@ -1014,7 +1115,8 @@ async function boot() {
   J('ensemble2k.json').then((d) => { D.ens2k = d; }).catch(() => {});
   fetch(`data/countries-110m.json?v=${DATA_V}`).then((r) => (r.ok ? r.json() : null))
     .then((d) => { if (d) { D.topo = d; lastSig = ''; schedule(); } }).catch(() => {});
-  window.__FW = { state, D, draft, sheetState, fitSheet, capPath, capAt, tracksJS };
+  window.__FW = { state, D, draft, sheetState, fitSheet, capPath, capAt, tracksJS,
+                  auditSweep };
   window.__FRAME_READY = true;
 }
 boot().catch((e) => {

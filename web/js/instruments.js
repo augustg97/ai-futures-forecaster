@@ -32,9 +32,12 @@ export function dial(d, cx, cy, r, { label, value, was = null, sub = '', id = nu
     d.line([cx + Math.cos(a) * r0, cy + Math.sin(a) * r0],
            [cx + Math.cos(a) * r, cy + Math.sin(a) * r],
            { weight: long ? PEN.thin : PEN.hairline, colour: INK.inkLight });
+    // Scale figures are engraved OUTSIDE the arc at its ends, as on a panel meter. Inside,
+    // they sat on the readout — the audit caught 0/50/100 overprinting the value.
     if (long) {
-      const rt = r * 0.60;
-      d.text([cx + Math.cos(a) * rt, cy + Math.sin(a) * rt - 0.5],
+      const inside = i * 2 === ticks;
+      const rt = inside ? r * 0.62 : r * 1.17;
+      d.text([cx + Math.cos(a) * rt, cy + Math.sin(a) * rt - (inside ? -0.6 : 0.5)],
              String(Math.round(v * 100)),
              { size: 1.5, align: 'center', colour: INK.pencilLight, face: 'figure' });
     }
@@ -63,11 +66,11 @@ export function dial(d, cx, cy, r, { label, value, was = null, sub = '', id = nu
   d.dot([cx, cy], 0.42, { colour: '#f4f1e8' });
   d.text([cx, cy - r * 0.52], (value * 100).toFixed(0) + '%',
          { size: 2.6, align: 'center', colour: c, weight: 700, face: 'figure' });
-  if (label) d.text([cx, cy - r - 2.6], label,
+  if (label) d.text([cx, cy - r - 3.4], label,
                     { size: 1.9, align: 'center', colour: INK.ink, weight: 600, track: 0.14 });
-  if (sub) d.text([cx, cy - r - 5.2], sub,
+  if (sub) d.text([cx, cy - r - 6.0], sub,
                   { size: 1.5, align: 'center', colour: INK.pencilLight, track: 0.10 });
-  if (id) d.region(id, cx - r, cy - r - 6, r * 2, r * 2 + 8);
+  if (id) d.region(id, cx - r * 1.2, cy - r - 7, r * 2.4, r * 2 + 9);
 }
 
 // ── the graduated column ─────────────────────────────────────────────────────
@@ -154,11 +157,13 @@ export function manifold(d, x, y, w, h, series, { id = null, unit = '%' } = {}) 
     d.polyline([[cx + 0.2, y + fh], [cx + tw / 2, y + fh + 1.3], [cx + tw - 0.2, y + fh],
                 [cx + tw / 2, y + fh - 1.3]],
                { close: true, weight: PEN.thin, colour: s.c, fill: 'rgba(244,241,232,0.9)' });
-    d.text([cx + tw / 2, y - 2.4], s.k,
+    // Both legends sit BELOW the tubes. Putting the reading above them ran it into the
+    // panel's own sub-caption, which the audit reported eleven times over.
+    d.text([cx + tw / 2, y - 2.6], s.k,
            { size: 1.6, align: 'center', colour: INK.ink, weight: 700, track: 0.10 });
-    d.text([cx + tw / 2, y + h + 1.2], (s.v * 100).toFixed(0) + unit,
+    d.text([cx + tw / 2, y - 5.4], (s.v * 100).toFixed(0) + unit,
            { size: 1.5, align: 'center', colour: s.c, face: 'figure' });
-    if (id) d.region(`${id}:${s.k}`, cx - 1, y - 3, tw + 2, h + 6, s);
+    if (id) d.region(`${id}:${s.k}`, cx - 1, y - 6.5, tw + 2, h + 8, s);
   });
 }
 

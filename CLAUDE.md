@@ -35,12 +35,25 @@ The AI Atlas forecast drawn as an A1 drafting sheet, in the register of The Syst
 9. **Dev never caches; production always versions.** `build/serve.py` sends `no-store`; the
    build versions every module import in `docs/`.
 
+10. **Run the collision audit before shipping a layout change** — `__FW.auditSweep()` in the
+    console. It draws every plate at four dates plus seven selections with lettering recorded,
+    and reports text/text overlaps, text-on-solid, off-sheet marks and column overflows.
+    **Verify the instrument before trusting its zero**: the sweep prints marks-per-case (expect
+    200–300), and a positive control (two overlapping labels, a label on declared-solid ground,
+    a mark past the frame) must come back with three findings.
+
+11. **Draw once per content change, blit while moving.** A full redraw of this sheet is ~9 ms;
+    a pan changes nothing but the offset, so the last ink is cached and blitted during the
+    gesture and redrawn crisply 170 ms after it settles. Anything that changes what is drawn
+    must be in `contentSig`, or the sheet goes stale under the hand.
+
 ## Commands
 
 ```bash
 python3 build/build_site.py --dev      # pull only
 python3 build/build_site.py            # gate → pull → stamp → docs/
 python3 build/serve.py 8154            # or: preview_start name="forecast-works"
+__FW.auditSweep()                      # in the console: the collision audit
 ```
 
 ## Traps that have cost time here
@@ -51,3 +64,13 @@ python3 build/serve.py 8154            # or: preview_start name="forecast-works"
   non-finite scale that draws nothing and reports no error. `state.fitted` guards it.
 - Canvas 2D is happy to accept a mis-nested arrow body in an options object; `node --check`
   on a `.js` file will not catch an ESM syntax error. Copy to `.mjs` to check.
+- **Tracking by drawing one glyph at a time** cost 22,568 `measureText` and 11,284 `fillText`
+  calls in a single frame (29 ms). Use `ctx.letterSpacing` and one `fillText`; measure each
+  string once at a 100 px reference and cache it. Now 8.6 ms.
+- **Regenerating the paper's noise on every pointer move** is the other half of that lag. The
+  material is generated once into its own canvas and blitted.
+- `wrap()` cannot push an unbreakable token to the next line, so a citation slug wider than
+  the column simply ran off it. Tokens now break on `/ · — -`, then by character, and the
+  audit counts any line still over width.
+- A hidden Browser pane fires no rAF, so a frame-timing probe there hangs. Time the draw path
+  synchronously instead.

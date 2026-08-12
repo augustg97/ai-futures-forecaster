@@ -37,9 +37,10 @@ function chip(d, x, y, w, label, { on = false, id = null, payload = null,
                                    colour = null } = {}) {
   const c = colour ?? INK.ink;
   d.rect(x, y - CHIP.h, w, CHIP.h,
-         { weight: on ? PEN.outline : PEN.thin, colour: c, fill: on ? c : null });
+         { weight: on ? PEN.outline : PEN.thin, colour: c, fill: on ? c : null,
+           solid: true, label: 'chip ' + label });
   d.text([x + w / 2, y - CHIP.h + 2.3], label,
-         { size: 1.9, align: 'center', weight: 600,
+         { size: 1.9, align: 'center', weight: 600, pocket: true,
            colour: on ? 'rgba(238,236,228,0.96)' : c, track: 0.06 });
   if (id) d.region(id, x, y - CHIP.h, w, CHIP.h, payload);
 }

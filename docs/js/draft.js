@@ -43,18 +43,81 @@ const DRAFT_FACE = '"Avenir Next Condensed","Roboto Condensed","Arial Narrow",' 
                    '"Helvetica Neue",sans-serif';
 const FIGURE_FACE = 'ui-monospace,"SF Mono",Menlo,monospace';
 
+// Canvas letter-spacing lets a whole string be drawn in one fillText with tracking applied.
+// Without it we fall back to a per-glyph loop, which is correct and slow.
+const HAS_SPACING = (() => {
+  try {
+    const c = document.createElement('canvas').getContext('2d');
+    return c && 'letterSpacing' in c;
+  } catch (e) { return false; }
+})();
+
 export class Draft {
   constructor(canvas) {
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d');
     this.mmPerPx = 1;
     this.centre = [0, 0];
-    this.wcache = new Map();
+    this.wcache = new Map();      // string → width per mm of cap height
+    this.lcache = new Map();      // paragraph → wrapped lines
     this.font = null; this.tracking = null;
     this.dpr = 1;
     this.ink = INK;
     this.regions = [];
     this.prevRegions = [];
+    this.marks = null;            // lettering boxes, when auditing
+    this.obstacles = null;        // solid marks that lettering must not cross
+  }
+
+  // ── the collision audit ────────────────────────────────────────────────────
+  // Overlapping labels are the commonest defect on a dense sheet and the hardest to catch by
+  // looking, because the eye reads through them. A machine that lists them does not.
+  obstacle(x, y, w, h, label = '') {
+    if (this.obstacles) this.obstacles.push({ x, y, w, h, label });
+  }
+
+  collisions(tol = 0.6) {
+    const out = [];
+    const marks = this.marks || [];
+    const over = (a, b) => {
+      const ox = Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x);
+      const oy = Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y);
+      return ox > tol && oy > tol ? ox * oy : 0;
+    };
+    for (let i = 0; i < marks.length; i++) {
+      if (marks[i].angle) continue;                  // rotated lettering is not boxed
+      for (let j = i + 1; j < marks.length; j++) {
+        if (marks[j].angle) continue;
+        const a = over(marks[i], marks[j]);
+        if (a > 0) out.push({ kind: 'text/text', area: a,
+                              a: marks[i].str, b: marks[j].str,
+                              x: marks[i].x, y: marks[i].y });
+      }
+      if (marks[i].pocket) continue;                 // a label that owns its ground
+      for (const ob of (this.obstacles || [])) {
+        const a = over(marks[i], ob);
+        if (a > 0) out.push({ kind: 'text/solid', area: a,
+                              a: marks[i].str, b: ob.label || 'solid',
+                              x: marks[i].x, y: marks[i].y });
+      }
+    }
+    return out.sort((p, q) => q.area - p.area);
+  }
+
+  // Anything drawn outside the frame line is a defect, except the zone references, which
+  // belong in the margin and say so.
+  offSheet(sheet, margin = 10) {
+    const BX = sheet[0] / 2 - margin, BY = sheet[1] / 2 - margin;
+    const bad = [];
+    for (const m of (this.marks || [])) {
+      if (m.margin) continue;
+      if (m.x < -BX - 0.5 || m.x + m.w > BX + 0.5 ||
+          m.y < -BY - 0.5 || m.y + m.h > BY + 0.5) {
+        bad.push({ str: m.str, x: +m.x.toFixed(1), y: +m.y.toFixed(1),
+                   right: +(m.x + m.w).toFixed(1), top: +(m.y + m.h).toFixed(1) });
+      }
+    }
+    return bad;
   }
 
   // ── regions ────────────────────────────────────────────────────────────────
@@ -77,7 +140,7 @@ export class Draft {
     return best;
   }
 
-  begin({ centre, mmPerPx }) {
+  begin({ centre, mmPerPx, audit = false }) {
     const cv = this.canvas;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const W = cv.clientWidth, H = cv.clientHeight;
@@ -91,7 +154,11 @@ export class Draft {
     this.ctx.lineCap = 'butt'; this.ctx.lineJoin = 'round';
     this.prevRegions = this.regions;
     this.regions = [];
-    this.font = null;
+    this.marks = audit ? [] : null;
+    this.obstacles = audit ? [] : null;
+    this.overflows = audit ? [] : null;
+    if (audit) this.lcache.clear();   // re-wrap, so overflows are recounted honestly
+    this.font = null; this.tracking = null;
   }
 
   // sheet mm → device-independent px
@@ -142,6 +209,10 @@ export class Draft {
   rect(x, y, w, h, opts = {}) {
     this.polyline([[x, y], [x + w, y], [x + w, y + h], [x, y + h]],
                   { close: true, ...opts });
+    // Only ground declared SOLID is ground lettering may not cross. A panel's pale backing
+    // fill is not solid — the sheet is meant to be written on it — so the caller says which
+    // it is, and a label that legitimately sits on solid ground marks itself `pocket`.
+    if (opts.solid) this.obstacle(x, y, w, h, opts.label || 'solid');
   }
 
   dot(c, r, { colour = null, hollow = false } = {}) {
@@ -248,61 +319,114 @@ export class Draft {
   // Sized by CAP HEIGHT in mm, as a stencil is. Below legibility we do not draw mush.
   text(pos, str, {
     size = 2.5, colour = null, align = 'left', track = 0.10,
-    face = 'draft', weight = 500, angle = 0, alpha = 1,
+    face = 'draft', weight = 500, angle = 0, alpha = 1, pocket = false,
   } = {}) {
     const ctx = this.ctx;
     const px = this.s(size) * 1.34;
+    const wMM = this.textWidth(str, { size, track, face, weight });
+    // Recorded BEFORE the legibility cull: a label too small to draw at this zoom is still a
+    // label that will overprint at another, and an audit that could not see it would report a
+    // dense sheet clean.
+    if (this.marks) {
+      this.marks.push({
+        str: String(str), size, angle, margin: !!this.inMargin, pocket,
+        x: align === 'center' ? pos[0] - wMM / 2 : align === 'right' ? pos[0] - wMM : pos[0],
+        y: pos[1] - size * 0.24, w: wMM, h: size * 1.28,
+      });
+    }
     // Below legibility we do not draw mush. The threshold is in DEVICE pixels, so a fitted
     // sheet on a retina panel keeps its small print — measuring it in CSS pixels culled
     // every label under 2.5 mm and emptied the sheet.
-    if (px * this.dpr < 4.2) return 0;
+    if (px * this.dpr < 4.2) return wMM;
     const f = `${weight} ${px.toFixed(2)}px ${face === 'figure' ? FIGURE_FACE : DRAFT_FACE}`;
     if (this.font !== f) { ctx.font = f; this.font = f; }
     ctx.fillStyle = colour ?? this.ink.ink;
     ctx.globalAlpha = alpha;
     ctx.textBaseline = 'alphabetic';
     const s = String(str);
-    const tr = this.s(size) * track;
-    let w = 0;
-    for (const ch of s) w += ctx.measureText(ch).width + tr;
-    w -= tr;
+    const tr = px * track;
+    // Tracking through ctx.letterSpacing and ONE fillText. Setting it per glyph — a loop of
+    // fillText+measureText per character — cost 22,568 measureText and 11,284 fillText calls
+    // in a single frame of this sheet, which is what made it lag.
+    const spaced = HAS_SPACING;
+    if (spaced) {
+      const ls = `${tr.toFixed(3)}px`;
+      if (this.tracking !== ls) { ctx.letterSpacing = ls; this.tracking = ls; }
+    }
+    const w = wMM / this.mmPerPx;
     let [X, Y] = this.p(pos);
     if (align === 'center') X -= w / 2; else if (align === 'right') X -= w;
     if (angle) { ctx.save(); ctx.translate(X, Y); ctx.rotate(-angle); X = 0; Y = 0; }
-    let cx = X;
-    for (const ch of s) {
-      ctx.fillText(ch, cx, Y);
-      cx += ctx.measureText(ch).width + tr;
+    if (spaced) {
+      ctx.fillText(s, X, Y);
+    } else {
+      let cx = X;
+      for (const ch of s) { ctx.fillText(ch, cx, Y); cx += ctx.measureText(ch).width + tr; }
     }
     if (angle) ctx.restore();
     ctx.globalAlpha = 1;
-    return w * this.mmPerPx;      // width in mm, for callers that must not collide
+    return wMM;                   // width in mm, for callers that must not collide
   }
 
+  // Measured ONCE per string at a fixed 100 px reference and cached forever, returned in mm
+  // of sheet per mm of cap height — so it is zoom-independent, and wrap() can cache too.
   textWidth(str, { size = 2.5, track = 0.10, face = 'draft', weight = 500 } = {}) {
     const key = `${face}|${weight}|${track}|${str}`;
     let per = this.wcache.get(key);
     if (per === undefined) {
       const ctx = this.ctx;
-      ctx.font = `${weight} 100px ${face === 'figure' ? FIGURE_FACE : DRAFT_FACE}`;
-      this.font = null;
-      let w = 0;
-      for (const ch of String(str)) w += ctx.measureText(ch).width + 100 * track;
-      per = (w - 100 * track) / 100;
+      const REF = 100;
+      ctx.font = `${weight} ${REF}px ${face === 'figure' ? FIGURE_FACE : DRAFT_FACE}`;
+      if (HAS_SPACING) ctx.letterSpacing = `${REF * track}px`;
+      per = (ctx.measureText(String(str)).width / REF) * 1.34;
+      if (HAS_SPACING) ctx.letterSpacing = '0px';
+      this.font = null; this.tracking = null;
       this.wcache.set(key, per);
     }
     return per * size;
   }
 
+  // Cached, because the notes column fits itself by re-wrapping the whole column up to ten
+  // times per frame at descending sizes. Zoom-independent, so the cache never needs clearing.
   wrap(str, widthMM, opts = {}) {
-    const words = String(str).split(/\s+/);
-    const lines = []; let cur = '';
+    const key = `${opts.face || 'draft'}|${opts.weight || 500}|${opts.track ?? 0.1}|` +
+                `${opts.size ?? 2.5}|${widthMM.toFixed(2)}|${str}`;
+    let lines = this.lcache.get(key);
+    if (lines) return lines;
+    // A token wider than the column — a citation slug like
+    // `analysis/coordinated-slowdown-proposals` — cannot be pushed to the next line, so an
+    // unbroken wrap simply runs it off the column. Break it, preferring the separators the
+    // slug already has, and only then by character.
+    const words = [];
+    for (const raw of String(str).split(/\s+/)) {
+      if (this.textWidth(raw, opts) <= widthMM) { words.push(raw); continue; }
+      let piece = '';
+      for (const part of raw.split(/(?<=[/·—-])/)) {
+        if (this.textWidth(piece + part, opts) <= widthMM) { piece += part; continue; }
+        if (piece) { words.push(piece); piece = ''; }
+        if (this.textWidth(part, opts) <= widthMM) { piece = part; continue; }
+        for (const ch of part) {                       // last resort: by character
+          if (this.textWidth(piece + ch, opts) > widthMM && piece) { words.push(piece); piece = ''; }
+          piece += ch;
+        }
+      }
+      if (piece) words.push(piece);
+    }
+    lines = []; let cur = '';
     for (const word of words) {
       const trial = cur ? cur + ' ' + word : word;
       if (this.textWidth(trial, opts) > widthMM && cur) { lines.push(cur); cur = word; }
       else cur = trial;
     }
     if (cur) lines.push(cur);
+    if (this.marks) {
+      for (const ln of lines) {
+        if (this.textWidth(ln, opts) > widthMM + 0.4) {
+          (this.overflows = this.overflows || []).push({ str: ln, widthMM });
+        }
+      }
+    }
+    this.lcache.set(key, lines);
     return lines;
   }
 
@@ -365,6 +489,13 @@ export class Draft {
 
   // ── the sheet ──────────────────────────────────────────────────────────────
   border(sheet, margin = 10) {
+    // The zone references belong OUTSIDE the frame line — that is what a margin is for — so
+    // they are flagged and the off-sheet check ignores them. Nothing else may be.
+    this.inMargin = true;
+    try { this.#border(sheet, margin); } finally { this.inMargin = false; }
+  }
+
+  #border(sheet, margin = 10) {
     const [W, H] = sheet;
     const x0 = -W / 2 + margin, x1 = W / 2 - margin;
     const y0 = -H / 2 + margin, y1 = H / 2 - margin;
@@ -458,21 +589,21 @@ export class Draft {
 // ── the paper ────────────────────────────────────────────────────────────────
 // Drawn once to its own canvas at 1×: tooth, a faint fibre grain, foxing, and the shadow the
 // sheet casts on the board. The ink layer multiplies into this, so the paper is never covered.
-export function drawPaper(cv, sheetRect) {
+// The sheet's material is generated ONCE, at a fixed resolution, into its own canvas: tooth,
+// foxing and the tonal drift of a long roll. Panning and zooming then blit it. Regenerating a
+// per-pixel noise field on every pointer move — which is what this did first — costs tens of
+// milliseconds a frame and is the whole reason the board felt heavy.
+const PAPER_PX = 1500;                      // texture resolution across the sheet's long edge
+let paperTile = null;
+
+function makePaperTile(aspect) {
+  const w = PAPER_PX, h = Math.round(PAPER_PX / aspect);
+  const cv = document.createElement('canvas');
+  cv.width = w; cv.height = h;
   const ctx = cv.getContext('2d');
-  const W = cv.clientWidth, H = cv.clientHeight;
-  cv.width = W; cv.height = H;
-  ctx.fillStyle = '#e6e2d8';
-  ctx.fillRect(0, 0, W, H);
-  const [sx, sy, sw, sh] = sheetRect;
-  ctx.save();
-  ctx.shadowColor = 'rgba(40,34,24,0.34)';
-  ctx.shadowBlur = 26; ctx.shadowOffsetY = 7;
   ctx.fillStyle = '#f4f1e8';
-  ctx.fillRect(sx, sy, sw, sh);
-  ctx.restore();
-  // tooth: sparse warm speckle, denser near the edges where a sheet handles
-  const img = ctx.getImageData(sx, sy, Math.max(1, sw | 0), Math.max(1, sh | 0));
+  ctx.fillRect(0, 0, w, h);
+  const img = ctx.getImageData(0, 0, w, h);
   const d = img.data;
   let seed = 20260811;
   const rnd = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
@@ -482,14 +613,36 @@ export function drawPaper(cv, sheetRect) {
     d[i + 1] = Math.max(0, Math.min(255, d[i + 1] + n * 0.96));
     d[i + 2] = Math.max(0, Math.min(255, d[i + 2] + n * 0.86));
   }
-  ctx.putImageData(img, sx, sy);
-  // foxing — a few pale age blooms, well under the ink so they read as paper not as marks
+  ctx.putImageData(img, 0, 0);
   for (let i = 0; i < 26; i++) {
-    const fx = sx + rnd() * sw, fy = sy + rnd() * sh, fr = 8 + rnd() * 46;
+    const fx = rnd() * w, fy = rnd() * h, fr = (8 + rnd() * 46) * (w / 900);
     const g = ctx.createRadialGradient(fx, fy, 0, fx, fy, fr);
-    g.addColorStop(0, 'rgba(176,146,96,0.045)');
+    g.addColorStop(0, 'rgba(176,146,96,0.055)');
     g.addColorStop(1, 'rgba(176,146,96,0)');
     ctx.fillStyle = g;
     ctx.beginPath(); ctx.arc(fx, fy, fr, 0, Math.PI * 2); ctx.fill();
   }
+  return cv;
+}
+
+export function drawPaper(cv, sheetRect) {
+  const ctx = cv.getContext('2d');
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const W = cv.clientWidth, H = cv.clientHeight;
+  if (cv.width !== W * dpr || cv.height !== H * dpr) {
+    cv.width = W * dpr; cv.height = H * dpr;
+  }
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.fillStyle = '#e6e2d8';
+  ctx.fillRect(0, 0, W, H);
+  const [sx, sy, sw, sh] = sheetRect;
+  if (!(sw > 0 && sh > 0)) return;
+  if (!paperTile) paperTile = makePaperTile(sw / sh);
+  ctx.save();
+  ctx.shadowColor = 'rgba(40,34,24,0.34)';
+  ctx.shadowBlur = 26; ctx.shadowOffsetY = 7;
+  ctx.fillStyle = '#f4f1e8';
+  ctx.fillRect(sx, sy, sw, sh);
+  ctx.restore();
+  ctx.drawImage(paperTile, sx, sy, sw, sh);
 }
