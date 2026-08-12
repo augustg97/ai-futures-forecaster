@@ -1,6 +1,7 @@
 # The Forecast Works — instructions for Claude sessions
 
-The AI Atlas forecast drawn as an A1 drafting sheet, in the register of The Systems Works.
+The AI Atlas forecast drawn as a vertical drafting document, in the register of The
+Systems Works. Read by scrolling, at one fixed scale.
 
 **Read `README.md` first**, then `HANDOFF.md` for live state.
 
@@ -13,39 +14,58 @@ The AI Atlas forecast drawn as an A1 drafting sheet, in the register of The Syst
 2. **This project owns no forecast data.** If the Atlas has not emitted, this build fails
    rather than drawing something plausible. The Atlas gate runs first and refuses the publish.
 
-3. **Everything is in sheet millimetres.** Pen weights, type sizes (cap height), dash patterns,
+3. **The sheet is a VERTICAL DOCUMENT, one section per canvas.** 300 mm wide, drawn at a
+   fixed scale so nothing is zoomed; `web/js/sections.js` owns the stack and each section
+   states its own height before anything in it is drawn. There is no pan and no zoom.
+
+4. **Measure prose, don't estimate it.** A section that grows with its text gets its height
+   from `measureSections()`, which uses the drawing's own `wrap()`. Character-count estimates
+   left tens of millimetres of blank paper under every prose section.
+
+5. **Everything is in sheet millimetres.** Pen weights, type sizes (cap height), dash patterns,
    region boxes. Nothing is stated in pixels. `s(mm) = mm / mmPerPx` is the whole transform.
 
-4. **Minimums are in DEVICE pixels.** The legibility cull and the hairline floor multiply by
+6. **Minimums are in DEVICE pixels.** The legibility cull and the hairline floor multiply by
    `dpr` — measuring them in CSS pixels culls every small label and empties the sheet (this
    happened; it is why the rule is written down).
 
-5. **Colour is a code with one meaning per token** (README). Blue is probability in motion and
-   nothing else. Publish the code on Plate 5 and never break it.
+7. **Colour is a code with one meaning per token** (README). Blue is probability in motion and
+   nothing else. The code is published in the standing note, on the document itself.
 
-6. **Register a region as you draw the mark**, never afterwards; hit-test the smallest
+8. **Register a region as you draw the mark**, never afterwards; hit-test the smallest
    containing rectangle from the previous frame.
 
-7. **Build the instrument, don't draw the graphic.** Where a real instrument performs the
+9. **Build the instrument, don't draw the graphic.** Where a real instrument performs the
    abstraction — dial, sight glass, manifold, annunciator, strip chart, tally — build that.
 
-8. **The client implements functions against `engine.json` constants.** Never mirror a literal
+10. **The client implements functions against `engine.json` constants.** Never mirror a literal
    from the Atlas into JS; extend the build's extractor instead (see `climate_params()`).
 
-9. **Dev never caches; production always versions.** `build/serve.py` sends `no-store`; the
+11. **Dev never caches; production always versions.** `build/serve.py` sends `no-store`; the
    build versions every module import in `docs/`.
 
-10. **Run the collision audit before shipping a layout change** — `__FW.auditSweep()` in the
-    console. It draws every plate at four dates plus seven selections with lettering recorded,
-    and reports text/text overlaps, text-on-solid, off-sheet marks and column overflows.
-    **Verify the instrument before trusting its zero**: the sweep prints marks-per-case (expect
-    200–300), and a positive control (two overlapping labels, a label on declared-solid ground,
-    a mark past the frame) must come back with three findings.
+12. **Run the collision audit before shipping a layout change** — `__FW.auditSweep()` in the
+    console. It draws every SECTION at four dates, seven selections and five pin sets, and
+    reports text/text overlaps, text-on-solid, off-section marks and column overflows.
+    **The sweep plants its own positive control and reports `controlPasses`** — two overlapping
+    labels, a label on declared-solid ground, and a mark past the frame. A zero with
+    `controlPasses: false` means nothing. Expect ~9,000 marks over 16 cases.
 
-11. **Draw once per content change, blit while moving.** A full redraw of this sheet is ~9 ms;
-    a pan changes nothing but the offset, so the last ink is cached and blitted during the
-    gesture and redrawn crisply 170 ms after it settles. Anything that changes what is drawn
-    must be in `contentSig`, or the sheet goes stale under the hand.
+13. **A section's millimetre space runs from its CORNER, so use `outside(box)`, not
+    `offSheet()`.** `offSheet` assumes the origin is the middle of an A1 sheet; pointed at a
+    section it reports every mark on the document (it reported 6,087 once).
+
+14. **Draw once per content change, and only what is on screen.** Each section carries its own
+    signature; a change that touches one section redraws one section, and an IntersectionObserver
+    keeps the rest unpainted. A full pass over all eleven is ~18 ms. Anything that changes what
+    is drawn must be in the common signature, or the document goes stale under the reader.
+
+15. **Measure a setting's effect with COMMON RANDOM NUMBERS.** `effectsFor()` reuses one fixed
+    matrix of uniforms across every setting, so the only difference between the baseline and the
+    test is the setting. A fresh stream per setting makes the comparison resampling noise, and
+    every button reports the same figure. Measure against all seven tracked quantities and print
+    the one that moves hardest — the 2040 capability median has saturated under half the
+    settings and would report nothing for four of the seven rows.
 
 ## Commands
 
@@ -53,7 +73,7 @@ The AI Atlas forecast drawn as an A1 drafting sheet, in the register of The Syst
 python3 build/build_site.py --dev      # pull only
 python3 build/build_site.py            # gate → pull → stamp → docs/
 python3 build/serve.py 8154            # or: preview_start name="forecast-works"
-__FW.auditSweep()                      # in the console: the collision audit
+__FW.auditSweep()                      # in the console: the audit (check `controlPasses`)
 ```
 
 ## Traps that have cost time here
@@ -74,3 +94,15 @@ __FW.auditSweep()                      # in the console: the collision audit
   audit counts any line still over width.
 - A hidden Browser pane fires no rAF, so a frame-timing probe there hangs. Time the draw path
   synchronously instead.
+
+- **`offSheet()` on a corner-origin section reports the entire document.** Its bounds are
+  ±sheet/2. Use `outside([0, 0, SHEET_W, h])`.
+- **A fresh random stream per condition drowns the effect in noise.** Emissions run to
+  thousands; a few unlucky draws swamped every real difference and all 26 buttons reported the
+  same movement. Common random numbers.
+- **A first sentence usually ends in a full stop already**, so appending one gives ".." and
+  reads as a truncation the drawing did not make (`firstSentence()`).
+- **The parent emits `driver` at exactly 140 characters.** Ending the quotation without a mark
+  reads as an abandoned sentence; the sheet appends "…" when the field is at the cap.
+- **A hidden Browser pane fires no rAF and its screenshots go blank after a scripted scroll.**
+  Verify layout with the Playwright MCP instead, which renders and screenshots reliably.
