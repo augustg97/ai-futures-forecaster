@@ -1,6 +1,6 @@
 # The Forecast Works — live state
 
-**Live:** https://augustg97.github.io/forecast-works/ · build `20260812-0112`
+**Live:** https://augustg97.github.io/forecast-works/ · build `20260812-1129`
 **Local:** `python3 build/serve.py 8154` (serves `web/`, never `docs/`)
 
 ## What it is
@@ -39,9 +39,9 @@ python3 build/build_site.py            # gate → pull → stamp → docs/
 __FW.auditSweep()                      # console; REQUIRE controlPasses: true
 ```
 
-Last sweep: **23 cases · 12,146 lettering marks · 0 collisions · 0 off-section · 0 overflows ·
-control passes.** Full pass over every section: ~18 ms. Effect recalculation on a setting
-change: 22 ms, cached per setting.
+Last sweep: **23 cases · 12,284 lettering marks · 0 collisions · 0 off-section · 0 overflows ·
+control passes** (2026-08-12, run against the live build). Full pass over every section: ~18 ms.
+Effect recalculation on a setting change: 22 ms, cached per setting.
 
 ## Open
 
