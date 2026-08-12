@@ -5,11 +5,11 @@
 // on that instrument. It reads the same emitted data and implements the same functions against
 // the same shipped constants (`engine.json`), so the two surfaces cannot drift apart.
 
-import { Draft, PEN, INK, paperTileURL } from './draft.js?v=20260812-0001';
-import { SECTIONS, SHEET_W, NOTE_COL, CHART, balance } from './sections.js?v=20260812-0001';
-import { column, fmtNum } from './instruments.js?v=20260812-0001';
-import { describe, headline } from './narrative.js?v=20260812-0001';
-import { chooseFigures } from './figures.js?v=20260812-0001';
+import { Draft, PEN, INK, paperTileURL } from './draft.js?v=20260812-0006';
+import { SECTIONS, SHEET_W, NOTE_COL, CHART, balance } from './sections.js?v=20260812-0006';
+import { column, fmtNum } from './instruments.js?v=20260812-0006';
+import { describe, headline } from './narrative.js?v=20260812-0006';
+import { chooseFigures } from './figures.js?v=20260812-0006';
 
 // One build number, injected into index.html at ship time, versions BOTH the data fetches and
 // (via the build's import rewrite) every module. A fresh app.js against a stale draft.js is the
@@ -941,6 +941,15 @@ addEventListener('keydown', (e) => {
     state.yr = Math.min(2100, state.yr + (e.shiftKey ? 5 : 0.5)); writeHash(); redraw(); }
 });
 addEventListener('resize', () => { for (const s of SEC) s.sig = ''; redraw(); });
+// A shared link pasted into a tab that already has this document open changes the hash without
+// reloading, so the state in the link would be ignored. Read it again when it changes.
+addEventListener('hashchange', () => {
+  if (!state.ready) return;
+  state.pin = {}; state.alt = null; state.selected = null; cond = null;
+  readHash();
+  for (const s of SEC) s.sig = '';
+  redraw();
+});
 
 function writeHash() {
   const pins = Object.values(state.pin).join('.');

@@ -941,6 +941,15 @@ addEventListener('keydown', (e) => {
     state.yr = Math.min(2100, state.yr + (e.shiftKey ? 5 : 0.5)); writeHash(); redraw(); }
 });
 addEventListener('resize', () => { for (const s of SEC) s.sig = ''; redraw(); });
+// A shared link pasted into a tab that already has this document open changes the hash without
+// reloading, so the state in the link would be ignored. Read it again when it changes.
+addEventListener('hashchange', () => {
+  if (!state.ready) return;
+  state.pin = {}; state.alt = null; state.selected = null; cond = null;
+  readHash();
+  for (const s of SEC) s.sig = '';
+  redraw();
+});
 
 function writeHash() {
   const pins = Object.values(state.pin).join('.');

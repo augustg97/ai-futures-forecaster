@@ -5,10 +5,10 @@
 // reader never has to zoom. Sections are drawn bottom-up in their own millimetre space:
 // x runs 0 → 300 across, y runs 0 → H up from the section's foot.
 
-import { PEN, INK } from './draft.js?v=20260812-0001';
-import { dial, manifold, strip, tally, fmtNum } from './instruments.js?v=20260812-0001';
-import { describe, headline } from './narrative.js?v=20260812-0001';
-import { chooseFigures, drawFigure } from './figures.js?v=20260812-0001';
+import { PEN, INK } from './draft.js?v=20260812-0006';
+import { dial, manifold, strip, tally, fmtNum } from './instruments.js?v=20260812-0006';
+import { describe, headline } from './narrative.js?v=20260812-0006';
+import { chooseFigures, drawFigure } from './figures.js?v=20260812-0006';
 
 export const SHEET_W = 300;
 const PAD = 13;
