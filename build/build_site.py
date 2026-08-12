@@ -147,6 +147,14 @@ def main():
                       'window.__BUILD = "%s"' % stamp, idx)
     if n != 1:
         sys.exit("__BUILD stamp point not found exactly once in web/index.html")
+    # Version the ENTRY module too. Versioning only the imports leaves index.html loading a
+    # bare `js/app.js`; a cached copy of that one file then pulls in its own old imports, so
+    # the page reports the new stamp (which comes from index.html) while running the previous
+    # build entirely. That is the exact "renders, and renders wrong" failure this guards.
+    idx2, m = re.subn(r'(src=")js/app\.js(")', r'\1js/app.js?v=%s\2' % stamp, idx2)
+    if m != 1:
+        sys.exit("the entry module <script src=\"js/app.js\"> was not found exactly once; "
+                 "an unversioned entry silently serves a stale module graph")
     open(idx_path, "w").write(idx2)
     # Version every module import, so a fresh app.js can never be served against a
     # stale draft.js. Rewritten in docs/ only.
@@ -165,7 +173,7 @@ def main():
         sys.exit("no module imports were versioned — the rewrite pattern no longer "
                  "matches; a stale-module cache failure would be silent")
     open(os.path.join(DOCS, ".nojekyll"), "w").write("")
-    print("built docs/ · __BUILD=%s · %d module imports versioned"
+    print("built docs/ · __BUILD=%s · entry + %d module imports versioned"
           % (stamp, rewrites))
     print("after push, verify the live stamp:")
     print("  curl -s https://augustg97.github.io/forecast-works/ | "
