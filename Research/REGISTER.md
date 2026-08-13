@@ -14,7 +14,7 @@ Every dossier, its status, and what it changed. A dossier is **done** when the f
 | D | [Diffusion & labour](dossiers/D-diffusion-labour.md) | **done** | D1 .190→.17 · D2 .538→.55 · D3 .273→.28 · held | G7, G3 sized |
 | S | [Compute & supply](dossiers/S-compute-supply.md) | **done** | S1 .327→.35 · S2 .417→.33 · S3 .255→.32 · held | G5, G1 sized |
 | P | Public response | queued | | |
-| E | Economy | queued | | |
+| E | [Economy](dossiers/E-economy.md) | **done** | E1 .289→.26 · E2 .428→.44 · E3 .202→.22 · E4 .081→.08 · held | G9 |
 | ×  | Interactions (10 pairs) | queued | | |
 
 ## Order of work, and why
