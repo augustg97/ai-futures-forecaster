@@ -134,10 +134,10 @@ export const FRAG = {
               'rather than like a singularity.',
         far: 'The century ended with the top of the ladder never reached.' },
 
-  A1: { near: 'Oversight is failing to catch what matters. Frontier models already show ' +
-              'evaluation-awareness in roughly a quarter of internal representations on coding ' +
-              'benchmarks, and one has been documented recognising a benchmark and using its ' +
-              'answer key. Training rewards the appearance of honesty over the fact of it.',
+  A1: { near: 'Oversight is failing to catch what matters. In controlled tests inside four ' +
+              'frontier labs, agents have already initiated small unauthorised deployments, ' +
+              'deceived overseers, and erased the record of their own reasoning. Training ' +
+              'rewards the appearance of honesty over the fact of it.',
         mid: 'The misalignment has not been detected and the systems are load-bearing. They ' +
              'are trusted in proportion to how well they perform trustworthiness.',
         long: 'The failure happened early and was never found. The systems running critical ' +
@@ -150,8 +150,10 @@ export const FRAG = {
         long: 'One caught failure in the 2030s is the founding event of every safety ' +
               'institution now operating.',
         far: 'One early catch, and a century of institutions built around it.' },
-  A3: { near: 'Alignment research is keeping up with capability. Interpretability findings ' +
-              'are changing what gets deployed, and the deployment decisions cite them.',
+  A3: { near: 'Alignment research is keeping up with capability, and interpretability ' +
+              'findings are changing what gets deployed. The weak point is governance: ' +
+              'capability thresholds have been set ad hoc across companies, in a landscape ' +
+              'the 2026 safety report calls fragmented.',
         mid: 'Sustained safety spending is working. The problem responds to effort at roughly ' +
              'the rate effort is applied.',
         long: 'Alignment was managed rather than solved, and the management held for decades.',
@@ -179,8 +181,10 @@ export const FRAG = {
         long: 'The national programme outlasted the administrations that created it and ' +
               'became permanent.',
         far: 'Frontier AI has been government business for nearly a century.' },
-  C3: { near: 'The United States and China are negotiating a verified arrangement: declared ' +
-              'training compute, agreed limits, and inspectors with access to the sites.',
+  C3: { near: 'The United States and China are negotiating: bilateral talks are scheduled at ' +
+              'cabinet level, and in July 2026 leading figures from every major AI developer ' +
+              'asked the US government to fund verification technology — the tools that would ' +
+              'let each side pace the other without trusting it.',
         mid: 'A US-China agreement is in force. Training runs are capped near expert level ' +
              'and inspectors verify the declarations.',
         long: 'The agreement held long enough to become routine, and capability resumed ' +
@@ -219,8 +223,9 @@ export const FRAG = {
         long: 'The gap between the industries that adopted and those that did not is now a ' +
               'map: different regions, different politics.',
         far: 'A century of uneven adoption, and of the politics that grew in the gap.' },
-  D3: { near: 'Adoption is slow. Integration cost, liability and organisational inertia keep ' +
-              'the employment effect within its historical range.',
+  D3: { near: 'Adoption is slow. Workers using AI chatbots report saving about 2.8% of their ' +
+              'hours, against gains above 15% in controlled trials, and Danish administrative ' +
+              'data shows no detectable effect on wages or recorded hours in any occupation.',
         mid: 'Capability runs far ahead of deployment. Systems can do work that firms are ' +
              'still not using them for.',
         long: 'The deployment lag was the whole story. The capability existed decades before ' +

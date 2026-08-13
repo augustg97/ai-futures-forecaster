@@ -21,6 +21,7 @@ export const TABS = [
   { id: 'world', label: 'World' },
   { id: 'alternatives', label: 'Alternatives' },
   { id: 'revision', label: 'This morning' },
+  { id: 'research', label: 'Research' },
   { id: 'method', label: 'Method' },
 ];
 
@@ -901,6 +902,103 @@ export function morning(d, S, H) {
 }
 morning.height = (S) => 190 + (S.plateNote ? S.plateNote.h + 22 : 0);
 
+
+// ── 10 · research ────────────────────────────────────────────────────────────
+// The evidence programme, on the sheet. A forecast whose priors rest on one citation each
+// should say so where a reader can see it, beside the number that rests on them.
+export function research(d, S, H) {
+  let y = head(d, H - 8, 'EVIDENCE PROGRAMME',
+    'A dossier stands behind each variable, each answering the same five questions from ' +
+    'sources about the world: a base rate, a mechanism and its weakest step, the 2026 record, ' +
+    'resolution criteria, and what would move the number. Recommendations are held for review ' +
+    'rather than applied — the priors live in the parent engine, and changing one is a ' +
+    'decision. The full dossiers are in the repository under Research/.');
+
+  // the audit that opened it
+  d.rect(PAD, y - 26, CW, 26, { weight: PEN.thin, colour: INK.red, alpha: 0.6 });
+  d.text([PAD + 4, y - 5.4], 'THE AUDIT THAT SET THE MANDATE',
+         { size: 2.4, weight: 700, track: 0.16, colour: INK.red });
+  d.textBlock([PAD + 4, y - 10], 'The engine is grounded in 1,330 wiki pages — but that ' +
+    'number describes the corpus. The priors themselves rested on 55 citations from 31 ' +
+    'sources, with 21 of 26 positions carrying one citation or none, and 19 of those 55 ' +
+    'pointing at four scenario documents. A prior derived mainly from another forecast ' +
+    'inherits its errors without inheriting its reasoning.', CW - 8,
+    { size: 2.0, lead: LEAD, colour: INK.pencil });
+  y -= 32;
+
+  // recommendations, per axis
+  d.text([PAD, y], 'WHAT THE EVIDENCE RECOMMENDS',
+         { size: 2.6, weight: 700, track: 0.14, colour: INK.ink });
+  d.text([PAD + CW, y], 'HELD FOR REVIEW · NONE APPLIED',
+         { size: 1.8, align: 'right', track: 0.14, colour: INK.inkLight });
+  rule(d, y - 2.2, PAD, CW, { weight: PEN.thin, colour: INK.inkLight });
+  y -= 6.4;
+  // Split the axes into two columns FIRST, then draw each independently. Flowing them with a
+  // shared cursor and a switch mid-loop redrew every axis in the second column at the same y.
+  const colW = (CW - 12) / 2;
+  const blocks = S.network.axes.map((a) => ({
+    a, recs: a.positions.map((p) => [p, S.recommend(a.key, p[0])]).filter((r) => r[1]),
+  })).filter((b) => b.recs.length);
+  const hOf = (b) => 3.6 + b.recs.length * 3.4 + 2.6;
+  const total = blocks.reduce((t, b) => t + hOf(b), 0);
+  let run = 0, cut = blocks.length;
+  for (let i = 0; i < blocks.length; i++) {
+    if (run + hOf(blocks[i]) / 2 > total / 2) { cut = i; break; }
+    run += hOf(blocks[i]);
+  }
+  cut = Math.max(1, Math.min(blocks.length - 1, cut));
+  const cols = [blocks.slice(0, cut), blocks.slice(cut)];
+  let deepest = y;
+  cols.forEach((column, ci) => {
+    const x = PAD + ci * (colW + 12);
+    let cy = y;
+    for (const { a, recs } of column) {
+      d.text([x, cy], `${a.key} · ${a.name.toUpperCase()}`,
+             { size: 2.1, weight: 700, track: 0.12, colour: INK.ink });
+      cy -= 3.6;
+      for (const [p, r] of recs) {
+        const up = r.to > r.from;
+        d.text([x, cy], p[1].split(' (')[0].toUpperCase(),
+               { size: 1.85, colour: INK.pencil, track: 0.04 });
+        d.text([x + colW - 30, cy], r.from.toFixed(3),
+               { size: 1.85, align: 'right', face: 'figure', colour: INK.pencilLight });
+        d.polyline([[x + colW - 27, cy + 0.6], [x + colW - 22, cy + 0.6]],
+                   { weight: PEN.hairline, colour: INK.inkLight });
+        d.text([x + colW - 12, cy], r.to.toFixed(3),
+               { size: 1.95, align: 'right', face: 'figure', weight: 700,
+                 colour: Math.abs(r.to - r.from) >= 0.05 ? INK.red : INK.ink });
+        d.text([x + colW, cy], up ? '▲' : '▼',
+               { size: 1.7, align: 'right', colour: up ? INK.green : INK.redLight });
+        cy -= 3.4;
+      }
+      cy -= 2.6;
+    }
+    if (cy < deepest) deepest = cy;
+  });
+  const bodyBottom = deepest;
+
+  // the structural findings
+  const gy = bodyBottom - 6;
+  d.text([PAD, gy], 'THE STRUCTURAL FINDING',
+         { size: 2.6, weight: 700, track: 0.14, colour: INK.ink });
+  rule(d, gy - 2.2, PAD, CW, { weight: PEN.thin, colour: INK.inkLight });
+  const gcol = (CW - 12) / 2;
+  d.textBlock([PAD, gy - 6.4], 'Three axes mix MAGNITUDE with INCIDENCE on one axis, so a ' +
+    'state that is sharp and narrow cannot be said: compute siting diversifying while chip ' +
+    'supply concentrates; entry-level hiring collapsing while aggregate employment is flat; a ' +
+    'public united against its own government. Each is what the 2026 record shows. The model ' +
+    'must round to whichever half is louder, then propagates the rounded state.', gcol,
+    { size: 2.0, lead: LEAD, colour: INK.pencil });
+  d.textBlock([PAD + gcol + 12, gy - 6.4], 'Two variables — capability tempo and diffusion — ' +
+    'have no parent at all. Three of the four published constraints on continued compute ' +
+    'scaling ARE the supply variable, so the model asserts an independence the evidence ' +
+    'denies. Four edges are missing: tempo on supply, diffusion on tempo, diffusion on the ' +
+    'economy, and public response on coordination.', gcol,
+    { size: 2.0, lead: LEAD, colour: INK.pencil });
+  return H;
+}
+research.height = () => 230;
+
 // ── 9 · method ───────────────────────────────────────────────────────────────
 export function sources(d, S, H) {
   const y = head(d, H - 8, 'METHOD AND SOURCES', null);
@@ -919,10 +1017,12 @@ export function sources(d, S, H) {
      'The widely cited finding that 95% of enterprise AI pilots show no profit impact measures ' +
      'the BUYER\'s return, not the seller\'s revenue; the same survey found about 90% of ' +
      'workers using personal AI tools at work against 40% of firms with official ' +
-     'subscriptions. And the capability index on this sheet is benchmark-derived, while ' +
-     'frontier models now show evaluation-awareness in roughly a quarter of internal ' +
-     'representations on coding benchmarks — so the index carries some unknown amount of ' +
-     'evaluation-gaming, and this sheet inherits it.'],
+     'subscriptions. Second, coding benchmarks are contaminated: about a third of successful ' +
+     'patches on the most-cited one involve the solution appearing in the problem text, and ' +
+     'removing that channel costs frontier models 3 to 7 points. The capability index here ' +
+     'rests on a series timed against human professionals instead, whose benchmark-derived ' +
+     'component biases the trend FASTER — so followed through, contamination is a small ' +
+     'argument for later dates rather than an inflated index.'],
     ['WHERE THE PROBABILITIES COME FROM',
      `A documented belief network of ${S.network.axes.length} variables with sub-variables, ` +
      `priors carrying provenance, and cited conditional relationships, sampled into an ` +
@@ -980,5 +1080,6 @@ export const SECTIONS = [
   { id: 'world', fn: world, tab: 'world' },
   { id: 'alternatives', fn: alternatives, tab: 'alternatives' },
   { id: 'morning', fn: morning, tab: 'revision' },
+  { id: 'research', fn: research, tab: 'research' },
   { id: 'sources', fn: sources, tab: 'method' },
 ];

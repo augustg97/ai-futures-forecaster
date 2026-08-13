@@ -5,12 +5,12 @@
 // on that instrument. It reads the same emitted data and implements the same functions against
 // the same shipped constants (`engine.json`), so the two surfaces cannot drift apart.
 
-import { Draft, PEN, INK, paperTileURL } from './draft.js?v=20260813-0136';
+import { Draft, PEN, INK, paperTileURL } from './draft.js?v=20260813-0153';
 import { SECTIONS, SHEET_W, TABS, CHART, COL, CTL_NOTE_W, balance,
-         proseColumns, measureSections, SHEET_CW } from './sections.js?v=20260813-0136';
-import { column, fmtNum } from './instruments.js?v=20260813-0136';
-import { describe, headline } from './narrative.js?v=20260813-0136';
-import { chooseFigures } from './figures.js?v=20260813-0136';
+         proseColumns, measureSections, SHEET_CW } from './sections.js?v=20260813-0153';
+import { column, fmtNum } from './instruments.js?v=20260813-0153';
+import { describe, headline } from './narrative.js?v=20260813-0153';
+import { chooseFigures } from './figures.js?v=20260813-0153';
 
 // One build number, injected into index.html at ship time, versions BOTH the data fetches and
 // (via the build's import rewrite) every module. A fresh app.js against a stale draft.js is the
@@ -728,6 +728,28 @@ function plain(text) {
   return out;
 }
 
+// The evidence programme's standing recommendations (Research/findings/recommendations.md and
+// round-2-addenda.md). These are THIS project's research output, held for review — they are
+// never applied to the network, which lives in the parent Atlas.
+const RECOMMEND = {
+  'T:T1': 0.07, 'T:T2': 0.30, 'T:T3': 0.42, 'T:T4': 0.24,
+  'A:A1': 0.17, 'A:A2': 0.29, 'A:A3': 0.29, 'A:A4': 0.25,
+  'C:C1': 0.36, 'C:C2': 0.27, 'C:C3': 0.12, 'C:C4': 0.29, 'C:C5': 0.01,
+  'D:D1': 0.17, 'D:D2': 0.57, 'D:D3': 0.26,
+  'S:S1': 0.35, 'S:S2': 0.33, 'S:S3': 0.32,
+  'P:P1': 0.38, 'P:P2': 0.28, 'P:P3': 0.34,
+  'E:E1': 0.26, 'E:E2': 0.44, 'E:E3': 0.22, 'E:E4': 0.08,
+};
+function recommend(axis, pos) {
+  const to = RECOMMEND[`${axis}:${pos}`];
+  if (to === undefined) return null;
+  const ax = D.network.axes.find((z) => z.key === axis);
+  const p = ax && ax.positions.find((q) => q[0] === pos);
+  if (!p) return null;
+  const from = p[2];
+  return Math.abs(to - from) < 0.005 ? null : { from, to };
+}
+
 // ── the state handed to the sections ─────────────────────────────────────────
 function sheetState(measure) {
   const wl = activeMain();
@@ -758,7 +780,7 @@ function sheetState(measure) {
     prose: proseColumns(measure, paras),
     headlineH: 0,   // filled below, once the headline string exists
     figures: chooseFigures(wl, state.yr, cap),
-    plain,
+    plain, recommend,
     drawWorld: drawWorldPlate, drawAlts: drawAltsPlate, drawMorning: drawMorningPlate,
   };
   // A note is drawn where the mark that opened it is: an axis entry unfolds inside its own row
