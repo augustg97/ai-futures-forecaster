@@ -24,6 +24,12 @@ document window opens to 1720 px, where 2 mm of cap height renders at about 13 p
 
 ## The passage
 
+**Every clause has to say a checkable thing** — who does what, to what, with what visible
+result. "A reset that left the concrete standing" is a sentence that sounds like it means
+something; "the correction wiped out AI equity values without stopping datacenter construction"
+is the same claim, stated so a reader can disagree with it. That rule governs every string in
+`narrative.js`, and it is the standard a new clause has to meet.
+
 `narrative.js` COMPOSES it: each paragraph is the variable's own state × span, plus a CROSS
 clause naming what a second variable does to it, plus a BAND clause keyed on a quantity at that
 date, plus the figures. 84 CROSS clauses cover the six pairs that interact (E×S, E×D, C×S, A×T,

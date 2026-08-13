@@ -152,6 +152,11 @@ __FW.auditSweep()                      # in the console: the audit (check `contr
   versions the entry too and refuses to publish if it cannot find it exactly once. **Verify a
   deploy by checking something the new build DRAWS, never by checking the stamp alone.**
 
+- **Every clause in the passage says a checkable thing.** Name who does what, to what, with
+  what visible result. Aphorism is the failure mode: "the frontier moves at the speed of
+  substations" is unfalsifiable decoration; "new capacity waits years for a grid connection" is
+  the same claim, checkable. Figures go beside the clause that describes them, and a quantity
+  band compares against something that existed in 2026.
 - **The passage AND THE HEADLINE are composed, never selected.** The headline is the largest
   lettering on the sheet and the sentence a reader tests the model against; it was keyed on one
   position per clause and read identically across every year and every other setting. Clauses
