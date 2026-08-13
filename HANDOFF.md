@@ -75,8 +75,19 @@ standing ones. **26 prior changes and 6 structural proposals, held for review; n
 The client mirrors them in `RECOMMEND` in `app.js`, which is this project's own research output
 and never touches the network.
 
-Round 3, if it happens: size the four missing conditional edges (`T|S`, `D|T`, `D|E`, `P|C`)
-from evidence rather than asserting them.
+Round 3 is done. [`interactions/round-3-edges.md`](Research/interactions/round-3-edges.md)
+sizes three of the four missing edges with multipliers and shows the fourth cannot be sized:
+
+- **`T|S`** — under a constrained build-out, effective compute growth falls to ~60% of baseline,
+  stretching the capability doubling from 212 to ~350 days and moving month-long autonomous work
+  from 2030–31 to 2033–35. A shift from T2/T3 into T3/T4 from the supply variable alone.
+- **`D|E`** — 88% of US routine job losses fall within twelve months of a recession, and never
+  recover. The model carries only the opposite arrow. Adding this closes a feedback loop with
+  the existing `E|D`, so it must be applied once per sample in a stated order.
+- **`D|T`** — sized and small. Capability moves diffusion weakly; the 2.8%-against-15% gap is
+  the size of what it cannot move.
+- **`P|C`** — cannot be sized. Gilens & Page and Bashir disagree about exactly this quantity,
+  so the edge stays out and the sheet says why.
 
 ## Open
 
