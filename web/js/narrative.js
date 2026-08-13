@@ -582,37 +582,171 @@ export function describe(wl, year, tracks, engineY0, trunkCap = null) {
 }
 
 // ── the headline ─────────────────────────────────────────────────────────────
+// The largest lettering on the sheet, so it is the sentence a reader tests the model against.
+// Keying its clauses on one position each made it invariant: the economy read "a correction
+// that spared the build-out" in 2026 and in 2094, under every other setting. Every clause here
+// is keyed on a position AND the span, and the economy clause takes a second key from whichever
+// variable is doing the most to it.
 const RUNG_SHORT = [
-  [5.8, 'past the top of the ladder'],
-  [5.0, 'generally superhuman'],
-  [4.0, 'automating its own research'],
-  [3.0, 'superhuman at software'],
-  [2.4, 'reliably agentic'],
-  [1.6, 'agentic in short bursts'],
-  [0.0, 'assistive'],
+  [5.8, { near: 'already past the top of this ladder', mid: 'past the top of this ladder',
+          long: 'long past the ladder', far: 'off the scale for most of a century' }],
+  [5.0, { near: 'broadly superhuman, and early', mid: 'generally superhuman',
+          long: 'superhuman and thoroughly embedded',
+          far: 'superhuman for longer than most institutions have stood' }],
+  [4.0, { near: 'already automating its own research', mid: 'automating its own research',
+          long: 'running its own research unattended',
+          far: 'a century into automated research' }],
+  [3.0, { near: 'superhuman at software', mid: 'superhuman at software and compounding',
+          long: 'superhuman at software as a commodity',
+          far: 'past the point where coding was human work' }],
+  [2.4, { near: 'reliably agentic', mid: 'reliably agentic and ordinary',
+          long: 'agentic infrastructure', far: 'agentic for two generations' }],
+  [1.6, { near: 'agentic in short bursts', mid: 'still agentic only in bursts',
+          long: 'plateaued at bounded autonomy', far: 'bounded by the length of a task' }],
+  [0.0, { near: 'assistive', mid: 'still assistive', long: 'still instrumental',
+          far: 'a century of tools' }],
 ];
-const GOVERN = { C1: 'an open race', C2: 'a national programme', C3: 'a verified agreement',
-                 C4: 'regional regimes', C5: 'an enforced halt' };
-const ECON = { E1: 'a boom that has held', E2: 'a correction that spared the build-out',
-               E3: 'a build-out that stalled', E4: 'a demand crisis' };
-// A closing clause, so the sentence carries whichever tension is largest on this line.
-function tension(wl, tracks, i) {
-  if (tracks.appr[i] < 25) return 'and consent has run out';
-  if (tracks.jobs[i] < -15) return 'and work has been reorganised at speed';
-  if (wl.A === 'A1') return 'and the oversight failure is still undetected';
-  if (wl.S === 'S3') return 'and the limit is megawatts';
-  if (wl.S === 'S1' && wl.C === 'C1') return 'and the supply chain sits on a contested strait';
-  if (wl.D === 'D3') return 'and deployment lags the capability badly';
-  if (tracks.rev[i] > 8) return 'and the sector now prices like infrastructure';
-  if (wl.P === 'P3') return 'and the public is split down the middle';
-  if (wl.T === 'T4') return 'and the top of the ladder stays out of reach';
-  return 'and the next rung is the open question';
+const GOVERN = {
+  C1: { near: 'an open race', mid: 'a race into the decisive years',
+        long: 'a race that was never called off', far: 'no agreement worth the name' },
+  C2: { near: 'a national programme', mid: 'a national perimeter',
+        long: 'a programme that outlasted its authors', far: 'state control from early on' },
+  C3: { near: 'an agreement being assembled', mid: 'a verified agreement in force',
+        long: 'an agreement that became ordinary', far: 'one durable agreement, renewed' },
+  C4: { near: 'regional regimes', mid: 'blocs as the unit of governance',
+        long: 'three or four durable jurisdictions', far: 'a century of regional regimes' },
+  C5: { near: 'a halt below the researcher line', mid: 'a moratorium that holds',
+        long: 'a freeze that outlasted its architects',
+        far: 'a ceiling meant to be temporary' },
+};
+// Each of these is a PREDICATE, present tense, with no internal comma — a modifier is appended
+// to it, and a base phrase that already ended in a clause produced a three-comma run-on.
+const ECON = {
+  E1: { near: 'is running on a boom the revenue still justifies',
+        mid: 'is running on a boom that outlasted its sceptics',
+        long: 'is still using the capacity that expansion built',
+        far: 'is still running on foundations poured in one long boom' },
+  E2: { near: 'is working through a correction that is clearing weak credit',
+        mid: 'is living off a reset that left the concrete standing',
+        long: 'is still living off what that correction handed on',
+        far: 'is a century past the correction that reshaped it' },
+  E3: { near: 'is watching the capex case fail before the concrete sets',
+        mid: 'is working around a build-out that stalled',
+        long: 'is living under a ceiling the stall set',
+        far: 'is still shaped by capacity that was never built' },
+  E4: { near: 'is losing demand from the labour side',
+        mid: 'is caught in a demand crisis it cannot spend its way out of',
+        long: 'is carrying a consumption shortfall that became structural',
+        far: 'is still short the demand it never replaced' },
+};
+// What the rest of the line is doing TO the economy — the clause that makes two world-lines
+// sharing an economy setting read differently at the top of the sheet. Each attaches after a
+// comma, so each has to be a PHRASE and tense-neutral: a present-continuous modifier hung off
+// a retrospective base ("a century past the correction, with the halls changing hands").
+const ECON_MOD = {
+  'E1|S1': 'over a single chokepoint',
+  'E1|S2': 'across many jurisdictions at once',
+  'E1|S3': 'against a hard power limit',
+  'E1|D1': 'beside a labour shock',
+  'E1|D3': 'the labour market barely touched',
+  'E1|P1': 'with a hostile public',
+  'E1|C3': 'inside a verified agreement',
+  'E1|C5': 'all of it held under a halt',
+  'E2|S1': 'what survived it in very few hands',
+  'E2|S2': 'the capacity spread across many owners',
+  'E2|S3': 'its recovery rationed by megawatts',
+  'E2|D1': 'the jobs gone first',
+  'E2|D2': 'the damage concentrated in the fast sectors',
+  'E2|D3': 'the labour market barely touched',
+  'E2|P1': 'with the politics turning against it',
+  'E2|P3': 'the public split on what it meant',
+  'E2|C5': 'all of it under a halt',
+  'E3|S1': 'where the political risk is worst',
+  'E3|S2': 'as half-finished sites in many countries',
+  'E3|S3': 'with the grid already binding',
+  'E3|D1': 'with nothing to absorb the displaced',
+  'E3|D2': 'the sectoral split frozen in place',
+  'E3|D3': 'the labour market barely touched',
+  'E3|P1': 'with the politics turning against it',
+  'E3|C5': 'all of it under a halt',
+  'E4|S1': 'the largest owners holding the empty halls',
+  'E4|S2': 'with capacity going idle everywhere',
+  'E4|S3': 'the grid no longer the binding limit',
+  'E4|D1': 'feeding on its own displacement',
+  'E4|D2': 'sector by sector',
+  'E4|D3': 'with automation an unlikely culprit',
+  'E4|P1': 'with a politics forming around it',
+  'E4|C5': 'all of it under a halt',
+};
+function econClause(wl, span) {
+  const base = ECON[wl.E][span];
+  for (const k of ['S', 'D', 'P', 'C']) {
+    const m = ECON_MOD[`${wl.E}|${wl[k]}`];
+    if (m) return `${base}, ${m}`;
+  }
+  return base;
+}
+// A closing clause, so the sentence ends on whichever tension is largest on this line, phrased
+// for the era it is read in.
+const TENSION = {
+  consent: { near: 'and consent is running out', mid: 'and consent has run out',
+             long: 'and it has governed without consent for decades',
+             far: 'and the century never recovered its consent' },
+  work: { near: 'and work is being reorganised at speed',
+          mid: 'and work has been reorganised at speed',
+          long: 'and the reorganisation of work is now the settled order',
+          far: 'and the century is still absorbing what work became' },
+  oversight: { near: 'and the oversight failure is still undetected',
+               mid: 'and the oversight failure has yet to surface',
+               long: 'and the failure was never caught',
+               far: 'and it was built on a failure nobody named in time' },
+  power: { near: 'and the limit is megawatts', mid: 'and the limit is still megawatts',
+           long: 'and the physical limit shaped everything built under it',
+           far: 'and physics set the rate for a hundred years' },
+  strait: { near: 'and the supply chain sits on a contested strait',
+            mid: 'and the chokepoint is still where it always was',
+            long: 'and the map of compute decided who mattered',
+            far: 'and geography settled it' },
+  lag: { near: 'and deployment lags the capability badly',
+         mid: 'and the deployment gap is the largest quantity on the line',
+         long: 'and the lag turned out to be the whole story',
+         far: 'and the technology outran its own use' },
+  scale: { near: 'and the sector is starting to price like infrastructure',
+           mid: 'and the sector prices like infrastructure',
+           long: 'and it has been infrastructure for a generation',
+           far: 'and it has been infrastructure longer than anyone remembers' },
+  split: { near: 'and the public is splitting down the middle',
+           mid: 'and the split is the stable state',
+           long: 'and the fracture outlasted its cause',
+           far: 'and the division is older than the argument that started it' },
+  ceiling: { near: 'and the top of the ladder stays out of reach',
+             mid: 'and the discontinuity never comes',
+             long: 'and the ceiling has held for decades',
+             far: 'and the ladder was never climbed' },
+  open: { near: 'and the next rung is the open question',
+          mid: 'and the next rung is still the open question',
+          long: 'and what is scarce now is direction',
+          far: 'and the question stopped being about capability long ago' },
+};
+function tensionKey(wl, tracks, i) {
+  if (tracks.appr[i] < 25) return 'consent';
+  if (tracks.jobs[i] < -15) return 'work';
+  if (wl.A === 'A1') return 'oversight';
+  if (wl.S === 'S3') return 'power';
+  if (wl.S === 'S1' && wl.C === 'C1') return 'strait';
+  if (wl.D === 'D3') return 'lag';
+  if (tracks.rev[i] > 8) return 'scale';
+  if (wl.P === 'P3') return 'split';
+  if (wl.T === 'T4') return 'ceiling';
+  return 'open';
 }
 export function headline(wl, year, tracks, engineY0) {
   const i = Math.max(0, Math.min(tracks.year.length - 1, Math.floor(year) - engineY0));
+  const span = spanOf(year);
   const cap = tracks.cap[i];
   let rung = RUNG_SHORT[RUNG_SHORT.length - 1][1];
   for (const [t, s] of RUNG_SHORT) if (cap >= t) { rung = s; break; }
-  return `In ${Math.floor(year)}, capability is ${rung}, governance runs on ${GOVERN[wl.C]}, ` +
-         `the economy is working through ${ECON[wl.E]}, ${tension(wl, tracks, i)}.`;
+  return `In ${Math.floor(year)}, capability is ${rung[span]}, governance runs on ` +
+         `${GOVERN[wl.C][span]}, the economy ${econClause(wl, span)}, ` +
+         `${TENSION[tensionKey(wl, tracks, i)][span]}.`;
 }
