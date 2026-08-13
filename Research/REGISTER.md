@@ -17,6 +17,15 @@ Every dossier, its status, and what it changed. A dossier is **done** when the f
 | E | [Economy](dossiers/E-economy.md) | **done** | E1 .289→.26 · E2 .428→.44 · E3 .202→.22 · E4 .081→.08 · held | G9 |
 | × | [Interactions](interactions/SYNTHESIS.md) | **first pass** | 4 edges supported · 4 missing · 1 contradicted | — |
 
+## Round 1 complete
+
+All seven axes have a dossier. **[Consolidated recommendations](findings/recommendations.md)** —
+26 prior changes and 6 structural proposals, held for review.
+
+Round 2 should cover: international coordination (the C dossier is partial), the interaction
+pairs one at a time now that both endpoints have dossiers, and the open question of how much
+benchmark recognition contaminates the capability index.
+
 ## Order of work, and why
 
 1. **S** next. G1 says compute supply gates capability and the model has no edge for it; S is

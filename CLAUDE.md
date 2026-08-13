@@ -3,7 +3,8 @@
 The AI Atlas forecast drawn as a vertical drafting document, in the register of The
 Systems Works. Read by scrolling, at one fixed scale.
 
-**Read `README.md` first**, then `HANDOFF.md` for live state.
+**Read `README.md` first**, then `HANDOFF.md` for live state, then `Research/REGISTER.md`
+for what the evidence programme has established.
 
 **The working directory is still `~/Forecast Works`** and the repo is
 `augustg97/ai-futures-forecaster`. The project was renamed 2026-08-12; only the folder kept the
@@ -174,3 +175,16 @@ __FW.auditSweep()                      # in the console: the audit (check `contr
 - **Balance prose columns by trying every set of cuts**, not by filling greedily. With a handful
   of paragraphs the exhaustive partition is free and a greedy fill leaves one column with a
   single line beside one with four.
+
+- **`Research/` is the evidence programme.** A dossier per axis, each answering the same five
+  questions from sources ABOUT THE WORLD: base rate, mechanism and its weakest step, the 2026
+  record, resolution criteria, and what would move the number. Another forecaster's scenario is
+  one input among several and never the base rate.
+- **Recommendations are held, never applied.** Priors live in the parent Atlas. This project
+  produces the case; changing a prior is a decision, not a build step. `findings/recommendations.md`
+  is the standing set.
+- **A claim in the sheet's prose should trace to a dossier.** Where research produced a figure,
+  the prose carries the figure — "13% below comparable unexposed roles", not "hiring goes
+  first". Where it did not, the prose says less.
+- **One axis, one question.** An axis that mixes magnitude with incidence will always have a
+  world it cannot say. Three of the seven currently do (G8).
