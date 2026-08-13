@@ -13,9 +13,12 @@ path. Do not "tidy" it without moving all four together.
 
 ## Standing rules — these override default behaviour
 
-1. **Never modify `~/AI Atlas` or `~/Systems Works` from this project.** The Atlas is read
-   read-only for its staged forecast; the Systems Works is a design reference only. This is a
-   decision of record (2026-08-11).
+1. **Never modify `~/AI Atlas` or `~/Systems Works` from this project without August saying
+   so.** The Atlas is read read-only for its staged forecast; the Systems Works is a design
+   reference only (decision of record, 2026-08-11). **Overridden once, on 2026-08-13**, when he
+   asked for the evidence programme's findings to be applied: registry r3 carries 26 re-set
+   priors, three new conditional edges, and a sampler repair. Any further write to the Atlas
+   needs the same explicit instruction, and the changelog entry must name it.
 
 2. **This project owns no forecast data.** If the Atlas has not emitted, this build fails
    rather than drawing something plausible. The Atlas gate runs first and refuses the publish.

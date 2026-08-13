@@ -137,8 +137,22 @@ that admits the gap.
 | `D\|T` | **sized, small** | capability moves diffusion weakly; the 2.8%-vs-15% gap is what it cannot move |
 | `P\|C` | **cannot be sized** | the literature disagrees about exactly this quantity |
 
-Three of the four should be added to the parent network with the multipliers above. The fourth
-should stay out, and the sheet should say so.
+Three of the four were added to the parent network with the multipliers above on 2026-08-13.
+The fourth stays out, and the sheet says so.
+
+**Applying them found a defect that had been there since the first version.** Conditional tilts
+were applied in one forward pass over the axis order, so a tilt whose parent came later could
+never fire. Three of the fourteen declared relationships had never once acted: `S|E3`, `S|E4`
+and `P|E4`. Measured before the repair, pinning E3 moved S3 by −0.004 against a declared 1.6×,
+while the forward edge `A|T4` moved A4 from 0.324 to 0.576 exactly as declared — so the
+instrument worked and three of the model's own claims were inert. The sampler now re-draws each
+axis against all the others for four sweeps, and the self-test checks that **every** declared
+conditional orders its target as declared, comparing two pins on the same parent axis.
+
+That last detail matters: pinning E2 *lowers* D1 despite a declared ×1.3, because pinning also
+removes E4 and its ×2.40 from the base. A declared multiplier is a local tilt; a marginal is a
+net effect through the whole network. A test that compares against the unpinned ensemble will
+report a false failure.
 
 ## Sources
 

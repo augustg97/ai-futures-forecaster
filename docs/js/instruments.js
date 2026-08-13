@@ -12,7 +12,7 @@
 //
 // Everything is in sheet millimetres and goes through Draft.
 
-import { PEN, INK, PAPER } from './draft.js?v=20260813-0202';
+import { PEN, INK, PAPER } from './draft.js?v=20260813-0226';
 
 // ── the dial ─────────────────────────────────────────────────────────────────
 // An engraved 240° face. The LIVE needle is ink; the GHOST needle is where the same reading

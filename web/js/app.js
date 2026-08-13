@@ -538,7 +538,15 @@ function drawMorningPlate(d, S, box) {
   const [x, y, w, h] = box;
   const ent = (D.delta.entries || []).slice().reverse();
   const today = ent.filter((e) => e.date === D.delta.date);
-  const show = (today.length ? today : ent).slice(0, 14);
+  const all = today.length ? today : ent;
+  // A row needs about 18 mm: rule name, its arithmetic, the movement bars and
+  // two lines of driver. Dividing the available height by however many entries
+  // arrived gives 6.5 mm on a busy morning, and every row then draws through
+  // the one below it. Fit what fits, and say what was left out.
+  const ROW_MIN = 18;
+  const fits = Math.max(1, Math.floor((h * 0.62 - 26) / ROW_MIN));
+  const show = all.slice(0, fits);
+  const dropped = all.length - show.length;
   if (!show.length) {
     d.text([x + 6, y + h - 20], 'NO EVIDENCE APPLICATION IS RECORDED.',
            { size: 2.6, colour: INK.pencil, track: 0.10 });
@@ -548,6 +556,11 @@ function drawMorningPlate(d, S, box) {
     ? `${today.length} APPLICATIONS TODAY` : `LATEST ${show.length} APPLICATIONS ON RECORD`,
     { size: 2.2, colour: INK.red, weight: 700, track: 0.16 });
   const rowH = Math.min(34, (h * 0.62 - 26) / show.length);
+  if (dropped > 0) {
+    d.text([x + w, y + h - 8], `${dropped} FURTHER APPLICATION${dropped > 1 ? 'S' : ''} ` +
+           'TODAY, BELOW THE FOLD OF THIS PLATE',
+           { size: 1.8, align: 'right', colour: INK.red, track: 0.12 });
+  }
   show.forEach((e, i) => {
     const ry = y + h - 16 - (i + 1) * rowH;
     d.line([x, ry + rowH - 1.5], [x + w, ry + rowH - 1.5],
@@ -728,25 +741,34 @@ function plain(text) {
   return out;
 }
 
-// The evidence programme's standing recommendations (Research/findings/recommendations.md and
-// round-2-addenda.md). These are THIS project's research output, held for review — they are
-// never applied to the network, which lives in the parent Atlas.
-const RECOMMEND = {
-  'T:T1': 0.07, 'T:T2': 0.30, 'T:T3': 0.42, 'T:T4': 0.24,
-  'A:A1': 0.17, 'A:A2': 0.29, 'A:A3': 0.29, 'A:A4': 0.25,
-  'C:C1': 0.36, 'C:C2': 0.27, 'C:C3': 0.12, 'C:C4': 0.29, 'C:C5': 0.01,
-  'D:D1': 0.17, 'D:D2': 0.57, 'D:D3': 0.26,
-  'S:S1': 0.35, 'S:S2': 0.33, 'S:S3': 0.32,
-  'P:P1': 0.38, 'P:P2': 0.28, 'P:P3': 0.34,
-  'E:E1': 0.26, 'E:E2': 0.44, 'E:E3': 0.22, 'E:E4': 0.08,
+// The evidence programme's recommendations were APPLIED to the parent network on
+// 2026-08-13 (registry r3), so this table is now the record of what moved and
+// from where. `recommend()` reports a move only while the live prior still
+// differs from the researched figure, which is how a reader can see that the
+// applied network and the research agree.
+const RESEARCHED = {
+  'T:T1': 0.070, 'T:T2': 0.290, 'T:T3': 0.410, 'T:T4': 0.230,
+  'A:A1': 0.170, 'A:A2': 0.290, 'A:A3': 0.290, 'A:A4': 0.250,
+  'C:C1': 0.340, 'C:C2': 0.260, 'C:C3': 0.120, 'C:C4': 0.270, 'C:C5': 0.010,
+  'D:D1': 0.170, 'D:D2': 0.570, 'D:D3': 0.260,
+  'S:S1': 0.350, 'S:S2': 0.330, 'S:S3': 0.320,
+  'P:P1': 0.380, 'P:P2': 0.280, 'P:P3': 0.340,
+  'E:E1': 0.260, 'E:E2': 0.440, 'E:E3': 0.220, 'E:E4': 0.080,
+};
+// What the priors were before the evidence round, so the sheet can show the move.
+const PRIOR_R2 = {
+  'T:T1': 0.099, 'T:T2': 0.302, 'T:T3': 0.387, 'T:T4': 0.211,
+  'A:A1': 0.116, 'A:A2': 0.263, 'A:A3': 0.351, 'A:A4': 0.270,
+  'C:C1': 0.402, 'C:C2': 0.264, 'C:C3': 0.074, 'C:C4': 0.251, 'C:C5': 0.009,
+  'D:D1': 0.177, 'D:D2': 0.559, 'D:D3': 0.264,
+  'S:S1': 0.327, 'S:S2': 0.417, 'S:S3': 0.255,
+  'P:P1': 0.259, 'P:P2': 0.312, 'P:P3': 0.429,
+  'E:E1': 0.289, 'E:E2': 0.441, 'E:E3': 0.196, 'E:E4': 0.074,
 };
 function recommend(axis, pos) {
-  const to = RECOMMEND[`${axis}:${pos}`];
-  if (to === undefined) return null;
-  const ax = D.network.axes.find((z) => z.key === axis);
-  const p = ax && ax.positions.find((q) => q[0] === pos);
-  if (!p) return null;
-  const from = p[2];
+  const key = `${axis}:${pos}`;
+  const from = PRIOR_R2[key], to = RESEARCHED[key];
+  if (from === undefined || to === undefined) return null;
   return Math.abs(to - from) < 0.005 ? null : { from, to };
 }
 

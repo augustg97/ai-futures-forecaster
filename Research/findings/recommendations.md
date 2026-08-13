@@ -5,8 +5,9 @@ open questions and revises C3, D2, D3 and all four A positions. The round-2 figu
 standing ones.
 
 Every prior change the seven dossiers support, in one place, with the evidence that sizes it.
-**None of these has been applied.** The priors live in the parent AI Atlas; this project
-produces the case. Applying them is a decision, and it is August's.
+**Applied 2026-08-13** as registry r3, on August's instruction. What follows is the record of
+what moved and why. Two figures were corrected first: T and C did not sum to 1 as originally
+written, so T3 went to 0.41 and T4 to 0.23, and C1 to 0.34 with C4 at 0.27.
 
 ## Prior changes
 

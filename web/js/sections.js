@@ -910,9 +910,9 @@ export function research(d, S, H) {
   let y = head(d, H - 8, 'EVIDENCE PROGRAMME',
     'A dossier stands behind each variable, each answering the same five questions from ' +
     'sources about the world: a base rate, a mechanism and its weakest step, the 2026 record, ' +
-    'resolution criteria, and what would move the number. Recommendations are held for ' +
-    'review; the priors live in the parent engine, and changing one is a decision. The full ' +
-    'dossiers are in the repository under Research/.');
+    'resolution criteria, and what would move the number. On 13 August 2026 the findings ' +
+    'were applied to the forecast engine itself, as registry revision r3. What follows is ' +
+    'the record of what moved. The full dossiers are in the repository under Research/.');
 
   // the audit that opened it
   d.rect(PAD, y - 26, CW, 26, { weight: PEN.thin, colour: INK.red, alpha: 0.6 });
@@ -927,9 +927,9 @@ export function research(d, S, H) {
   y -= 32;
 
   // recommendations, per axis
-  d.text([PAD, y], 'WHAT THE EVIDENCE RECOMMENDS',
+  d.text([PAD, y], 'WHAT THE EVIDENCE CHANGED',
          { size: 2.6, weight: 700, track: 0.14, colour: INK.ink });
-  d.text([PAD + CW, y], 'HELD FOR REVIEW · NONE APPLIED',
+  d.text([PAD + CW, y], 'APPLIED 13 AUGUST 2026 · REGISTRY r3',
          { size: 1.8, align: 'right', track: 0.14, colour: INK.inkLight });
   rule(d, y - 2.2, PAD, CW, { weight: PEN.thin, colour: INK.inkLight });
   y -= 6.4;
@@ -998,10 +998,27 @@ export function research(d, S, H) {
 
   // the sized edges
   const ey = gy - 26;
-  d.text([PAD, ey], 'THE MISSING EDGES, MEASURED',
+  d.text([PAD, ey], 'THE SAMPLER WAS DROPPING EDGES',
+         { size: 2.6, weight: 700, track: 0.14, colour: INK.red });
+  rule(d, ey - 2.2, PAD, CW, { weight: PEN.thin, colour: INK.red });
+  d.textBlock([PAD, ey - 6.4], 'Sizing the missing edges found a defect in the engine that ' +
+    'had been there since the first version. Conditional tilts were applied in one pass over ' +
+    'the axis order, so a tilt whose parent came later could never fire, and three of the ' +
+    'fourteen relationships this model claims to represent had never once acted: compute ' +
+    'supply given a capital collapse, given a demand crisis, and public response given a ' +
+    'demand crisis. Nothing raised an error, because a dropped edge looks exactly like a ' +
+    'condition that happened not to apply. Measured before the fix: pinning the capital ' +
+    'collapse moved constrained supply by four thousandths against a declared 1.6 times, ' +
+    'while a forward edge moved its target from 0.32 to 0.58 as declared. The sampler now ' +
+    're-draws every variable against all the others, so direction no longer depends on the ' +
+    'order the variables happen to be listed in.', CW,
+    { size: 2.0, lead: LEAD, colour: INK.pencil });
+  const ey2 = ey - 26;
+  d.text([PAD, ey2], 'THE MISSING EDGES, MEASURED',
          { size: 2.6, weight: 700, track: 0.14, colour: INK.ink });
-  rule(d, ey - 2.2, PAD, CW, { weight: PEN.thin, colour: INK.inkLight });
+  rule(d, ey2 - 2.2, PAD, CW, { weight: PEN.thin, colour: INK.inkLight });
   const ew = (CW - 24) / 3;
+  const eyB = ey2;
   const edges = [
     ['TEMPO ON SUPPLY', INK.blue,
      'Effective compute grows about twelvefold a year: fourfold from hardware, the rest from ' +
@@ -1023,12 +1040,12 @@ export function research(d, S, H) {
   ];
   edges.forEach(([h, c, body], i) => {
     const x = PAD + i * (ew + 12);
-    d.text([x, ey - 6.4], h, { size: 2.0, weight: 700, track: 0.12, colour: c });
-    d.textBlock([x, ey - 10.4], body, ew, { size: 1.9, lead: LEAD, colour: INK.pencil });
+    d.text([x, eyB - 6.4], h, { size: 2.0, weight: 700, track: 0.12, colour: c });
+    d.textBlock([x, eyB - 10.4], body, ew, { size: 1.9, lead: LEAD, colour: INK.pencil });
   });
   return H;
 }
-research.height = () => 268;
+research.height = () => 300;
 
 // ── 9 · method ───────────────────────────────────────────────────────────────
 export function sources(d, S, H) {

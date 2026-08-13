@@ -36,8 +36,9 @@ benchmark recognition contaminates the capability index.
 
 ## Rules
 
-- **No recommendation is applied here.** Priors live in the parent Atlas; this project produces
-  the case and holds it for review. Changing them is a decision, not a build step.
+- **A recommendation is held until August says otherwise.** Priors live in the parent Atlas.
+  On 2026-08-13 he asked for these to be applied and they were, as registry r3; the Atlas
+  changelog names the instruction.
 - A recommendation must name the size of the move and the evidence that sizes it.
 - Where research cannot support a prior, the recommendation is to **widen** it. Inherited
   uncertainty beats a number with a footnote.
