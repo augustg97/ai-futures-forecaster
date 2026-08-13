@@ -1,4 +1,4 @@
-// THE FORECAST WORKS — the document
+// AI FUTURES FORECASTER — the document
 //
 // Seven tabs. The first carries the forecast, the passage describing it, and the controls that
 // set it; the rest hold one plate each. Within a tab the drawing is a vertical sheet 300 mm
@@ -204,7 +204,7 @@ export function dateStrip(d, x, y, w, S) {
 // ── 1 · masthead ─────────────────────────────────────────────────────────────
 export function header(d, S, H) {
   const y = H - 8;
-  d.text([PAD, y], 'THE FORECAST WORKS',
+  d.text([PAD, y], 'AI FUTURES FORECASTER',
          { size: 6.0, weight: 700, track: 0.22, colour: INK.ink });
   d.text([PAD + CW, y], S.network.version.toUpperCase() + ' · READ ' + S.network.date,
          { size: 2.0, align: 'right', colour: INK.inkLight, track: 0.14, face: 'figure' });

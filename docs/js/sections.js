@@ -1,13 +1,13 @@
-// THE FORECAST WORKS — the document
+// AI FUTURES FORECASTER — the document
 //
 // Seven tabs. The first carries the forecast, the passage describing it, and the controls that
 // set it; the rest hold one plate each. Within a tab the drawing is a vertical sheet 300 mm
 // wide, drawn at one fixed scale so lettering keeps the size it was drawn at and nothing has to
 // be zoomed. A section's millimetre space runs x 0 → 300 across and y 0 → H up from its foot.
 
-import { PEN, INK, PAPER } from './draft.js?v=20260812-1129';
-import { dial, manifold, strip, tally, fmtNum } from './instruments.js?v=20260812-1129';
-import { drawFigure } from './figures.js?v=20260812-1129';
+import { PEN, INK, PAPER } from './draft.js?v=20260812-1718';
+import { dial, manifold, strip, tally, fmtNum } from './instruments.js?v=20260812-1718';
+import { drawFigure } from './figures.js?v=20260812-1718';
 
 export const SHEET_W = 300;
 const PAD = 13;
@@ -204,7 +204,7 @@ export function dateStrip(d, x, y, w, S) {
 // ── 1 · masthead ─────────────────────────────────────────────────────────────
 export function header(d, S, H) {
   const y = H - 8;
-  d.text([PAD, y], 'THE FORECAST WORKS',
+  d.text([PAD, y], 'AI FUTURES FORECASTER',
          { size: 6.0, weight: 700, track: 0.22, colour: INK.ink });
   d.text([PAD + CW, y], S.network.version.toUpperCase() + ' · READ ' + S.network.date,
          { size: 2.0, align: 'right', colour: INK.inkLight, track: 0.14, face: 'figure' });

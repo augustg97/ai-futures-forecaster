@@ -1,4 +1,4 @@
-// THE FORECAST WORKS — the figures
+// AI FUTURES FORECASTER — the figures
 //
 // Drawn scenes, in the same ink and pen weights as the rest of the document. Each depicts a
 // condition the active world-line is in, and each carries a caption naming what it depicts and

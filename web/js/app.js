@@ -1,4 +1,4 @@
-// THE FORECAST WORKS — state, the engine, and the board
+// AI FUTURES FORECASTER — state, the engine, and the board
 //
 // The forecast engine itself lives in the AI Atlas: the belief network, the evidence layer that
 // moves it every morning, the wiki grounding, the nightly gate. This sheet is a SECOND SURFACE
@@ -1182,7 +1182,7 @@ async function boot() {
   state.ready = true;
   redraw();
   new ResizeObserver(() => { for (const s of SEC) s.sig = ''; redraw(); }).observe(docEl);
-  mast.textContent = 'The Forecast Works · ' + D.network.date;
+  mast.textContent = 'AI Futures Forecaster · ' + D.network.date;
 
   J('exemplars.json').then((d) => { D.exemplars = d; for (const s of SEC) s.sig = ''; redraw(); })
     .catch(() => {});

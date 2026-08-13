@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""build_site.py — The Forecast Works: gate → pull → stamp → docs/.
+"""build_site.py — AI Futures Forecaster: gate → pull → stamp → docs/.
 
 This project is a SECOND SURFACE on the AI Atlas forecast engine, not a fork
 of it. The engine, the wiki grounding, the evidence layer and the nightly

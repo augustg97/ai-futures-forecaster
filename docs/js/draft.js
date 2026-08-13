@@ -1,4 +1,4 @@
-// THE FORECAST WORKS — the drafting instrument
+// AI FUTURES FORECASTER — the drafting instrument
 //
 // Everything on a plate is specified in MILLIMETRES on the sheet, never pixels: a drawing whose
 // line weights are in pixels changes character when you zoom, and a 0.25 pen has to stay a 0.25

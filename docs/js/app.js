@@ -1,16 +1,16 @@
-// THE FORECAST WORKS — state, the engine, and the board
+// AI FUTURES FORECASTER — state, the engine, and the board
 //
 // The forecast engine itself lives in the AI Atlas: the belief network, the evidence layer that
 // moves it every morning, the wiki grounding, the nightly gate. This sheet is a SECOND SURFACE
 // on that instrument. It reads the same emitted data and implements the same functions against
 // the same shipped constants (`engine.json`), so the two surfaces cannot drift apart.
 
-import { Draft, PEN, INK, paperTileURL } from './draft.js?v=20260812-1129';
+import { Draft, PEN, INK, paperTileURL } from './draft.js?v=20260812-1718';
 import { SECTIONS, SHEET_W, TABS, CHART, COL, CTL_NOTE_W, balance,
-         proseColumns, measureSections, SHEET_CW } from './sections.js?v=20260812-1129';
-import { column, fmtNum } from './instruments.js?v=20260812-1129';
-import { describe, headline } from './narrative.js?v=20260812-1129';
-import { chooseFigures } from './figures.js?v=20260812-1129';
+         proseColumns, measureSections, SHEET_CW } from './sections.js?v=20260812-1718';
+import { column, fmtNum } from './instruments.js?v=20260812-1718';
+import { describe, headline } from './narrative.js?v=20260812-1718';
+import { chooseFigures } from './figures.js?v=20260812-1718';
 
 // One build number, injected into index.html at ship time, versions BOTH the data fetches and
 // (via the build's import rewrite) every module. A fresh app.js against a stale draft.js is the
@@ -1182,7 +1182,7 @@ async function boot() {
   state.ready = true;
   redraw();
   new ResizeObserver(() => { for (const s of SEC) s.sig = ''; redraw(); }).observe(docEl);
-  mast.textContent = 'The Forecast Works · ' + D.network.date;
+  mast.textContent = 'AI Futures Forecaster · ' + D.network.date;
 
   J('exemplars.json').then((d) => { D.exemplars = d; for (const s of SEC) s.sig = ''; redraw(); })
     .catch(() => {});

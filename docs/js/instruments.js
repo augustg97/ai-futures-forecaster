@@ -1,4 +1,4 @@
-// THE FORECAST WORKS — the instruments
+// AI FUTURES FORECASTER — the instruments
 //
 // The house rule this project inherits: BUILD THE INSTRUMENT, DON'T DRAW THE GRAPHIC. Where a
 // real instrument already performs the abstraction, build that instead of a chart of it.
@@ -12,7 +12,7 @@
 //
 // Everything is in sheet millimetres and goes through Draft.
 
-import { PEN, INK, PAPER } from './draft.js?v=20260812-1129';
+import { PEN, INK, PAPER } from './draft.js?v=20260812-1718';
 
 // ── the dial ─────────────────────────────────────────────────────────────────
 // An engraved 240° face. The LIVE needle is ink; the GHOST needle is where the same reading

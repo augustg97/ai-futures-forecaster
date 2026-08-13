@@ -2,7 +2,7 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "forecast-works",
+      "name": "ai-futures-forecaster",
       "runtimeExecutable": "/usr/bin/python3",
       "runtimeArgs": [
         "/Users/augustgweon/Forecast Works/build/serve.py",

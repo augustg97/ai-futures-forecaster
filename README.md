@@ -1,4 +1,4 @@
-# The Forecast Works
+# AI Futures Forecaster
 
 The AI Atlas forecast, drawn as a document.
 
@@ -8,7 +8,7 @@ specified in sheet millimetres, and — where a real instrument already performs
 the instrument built rather than the graphic drawn.
 
 - **Live:** https://augustg97.github.io/forecast-works/ (Pages serves `main:/docs`)
-- **Dev server:** `forecast-works`, port 8154 (`build/serve.py`, no-store)
+- **Dev server:** `ai-futures-forecaster`, port 8154 (`build/serve.py`, no-store)
 
 ## What this is, and what it is not
 

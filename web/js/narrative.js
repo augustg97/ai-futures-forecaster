@@ -1,4 +1,4 @@
-// THE FORECAST WORKS — the description of the future being forecast
+// AI FUTURES FORECASTER — the description of the future being forecast
 //
 // Composed at read time from the active world-line and the date on the index. Every fragment is
 // authored here and keyed to one axis position and one span of years, so the passage changes

@@ -1,4 +1,4 @@
-# The Forecast Works — instructions for Claude sessions
+# AI Futures Forecaster — instructions for Claude sessions
 
 The AI Atlas forecast drawn as a vertical drafting document, in the register of The
 Systems Works. Read by scrolling, at one fixed scale.
@@ -85,7 +85,7 @@ Systems Works. Read by scrolling, at one fixed scale.
 ```bash
 python3 build/build_site.py --dev      # pull only
 python3 build/build_site.py            # gate → pull → stamp → docs/
-python3 build/serve.py 8154            # or: preview_start name="forecast-works"
+python3 build/serve.py 8154            # or: preview_start name="ai-futures-forecaster"
 __FW.auditSweep()                      # in the console: the audit (check `controlPasses`)
 ```
 

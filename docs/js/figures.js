@@ -1,4 +1,4 @@
-// THE FORECAST WORKS — the figures
+// AI FUTURES FORECASTER — the figures
 //
 // Drawn scenes, in the same ink and pen weights as the rest of the document. Each depicts a
 // condition the active world-line is in, and each carries a caption naming what it depicts and
@@ -8,7 +8,7 @@
 // outlines on built form, hatching for material, wash for water and sky, warm ink for anything
 // carrying energy, green for anything verified, red for anything contested.
 
-import { PEN, INK } from './draft.js?v=20260812-1129';
+import { PEN, INK } from './draft.js?v=20260812-1718';
 
 // A deterministic jitter, so a scene is the same drawing every time it is redrawn.
 function rnd(seed) {
