@@ -176,7 +176,7 @@ def main():
     print("built docs/ · __BUILD=%s · entry + %d module imports versioned"
           % (stamp, rewrites))
     print("after push, verify the live stamp:")
-    print("  curl -s https://augustg97.github.io/forecast-works/ | "
+    print("  curl -s https://augustg97.github.io/ai-futures-forecaster/ | "
           "grep -o '__BUILD = \"[^\"]*\"'")
 
 

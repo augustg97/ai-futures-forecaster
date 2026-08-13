@@ -5,9 +5,9 @@
 // wide, drawn at one fixed scale so lettering keeps the size it was drawn at and nothing has to
 // be zoomed. A section's millimetre space runs x 0 → 300 across and y 0 → H up from its foot.
 
-import { PEN, INK, PAPER } from './draft.js?v=20260812-1718';
-import { dial, manifold, strip, tally, fmtNum } from './instruments.js?v=20260812-1718';
-import { drawFigure } from './figures.js?v=20260812-1718';
+import { PEN, INK, PAPER } from './draft.js?v=20260812-1720';
+import { dial, manifold, strip, tally, fmtNum } from './instruments.js?v=20260812-1720';
+import { drawFigure } from './figures.js?v=20260812-1720';
 
 export const SHEET_W = 300;
 const PAD = 13;

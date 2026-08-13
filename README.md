@@ -7,7 +7,7 @@ in the register established by **The Systems Works**: paper and ink, ISO pen wei
 specified in sheet millimetres, and — where a real instrument already performs an abstraction —
 the instrument built rather than the graphic drawn.
 
-- **Live:** https://augustg97.github.io/forecast-works/ (Pages serves `main:/docs`)
+- **Live:** https://augustg97.github.io/ai-futures-forecaster/ (Pages serves `main:/docs`)
 - **Dev server:** `ai-futures-forecaster`, port 8154 (`build/serve.py`, no-store)
 
 ## What this is, and what it is not
@@ -57,7 +57,7 @@ revision, including whatever the evidence moved this morning · `green` goals an
 python3 build/build_site.py --dev     # pull the Atlas's staged forecast into web/data
 python3 build/build_site.py           # Atlas gate → pull → stamp → docs/
 git add -A && git commit && git push  # Pages serves main:/docs
-curl -s https://augustg97.github.io/forecast-works/ | grep -o '__BUILD = "[^"]*"'
+curl -s https://augustg97.github.io/ai-futures-forecaster/ | grep -o '__BUILD = "[^"]*"'
 ```
 
 The build refuses to publish if the AI Atlas gate fails, stamps `window.__BUILD` into the built

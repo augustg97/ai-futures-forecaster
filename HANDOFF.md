@@ -1,6 +1,6 @@
 # AI Futures Forecaster — live state
 
-**Live:** https://augustg97.github.io/forecast-works/ · build `20260812-1129`
+**Live:** https://augustg97.github.io/ai-futures-forecaster/ · build `20260812-1129`
 **Local:** `python3 build/serve.py 8154` (serves `web/`, never `docs/`)
 
 ## What it is
