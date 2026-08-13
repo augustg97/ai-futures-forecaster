@@ -29,8 +29,11 @@ clause naming what a second variable does to it, plus a BAND clause keyed on a q
 date, plus the figures. 84 CROSS clauses cover the six pairs that interact (E×S, E×D, C×S, A×T,
 P×D, T×C). Holding the economy fixed and moving only supply, labour and the year gives 36
 distinct economy paragraphs out of 36; 400 random world-line/year samples give 400 distinct
-passages. If you add a position to an axis in the parent, add its FRAG row for all four spans
-and its CROSS row against whichever axis its paragraph pairs with, or the clause silently drops.
+passages. **The headline is composed the same way** — every clause keyed on a position AND the
+span, with the economy clause taking a second key from `ECON_MOD`; 780 of 800 samples distinct.
+If you add a position to an axis in the parent, add its FRAG row for all four spans, its CROSS
+row against whichever axis its paragraph pairs with, and (for E) its ECON and ECON_MOD rows, or
+the clause silently drops.
 
 ## The colour of the sheet
 

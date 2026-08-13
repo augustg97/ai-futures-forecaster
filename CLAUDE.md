@@ -152,7 +152,14 @@ __FW.auditSweep()                      # in the console: the audit (check `contr
   versions the entry too and refuses to publish if it cannot find it exactly once. **Verify a
   deploy by checking something the new build DRAWS, never by checking the stamp alone.**
 
-- **The passage is composed, never selected.** A paragraph that reads the same for every other
+- **The passage AND THE HEADLINE are composed, never selected.** The headline is the largest
+  lettering on the sheet and the sentence a reader tests the model against; it was keyed on one
+  position per clause and read identically across every year and every other setting. Clauses
+  are keyed on position × span, and the economy clause takes a second key from `ECON_MOD`.
+  A modifier appended after a comma must be a tense-neutral PHRASE — a present-continuous
+  modifier on a retrospective base gives "a century past the correction, with the halls changing
+  hands" — and must not repeat a noun the base already used.
+- **The paragraphs are composed, never selected.** A paragraph that reads the same for every other
   setting of every other variable is a bug in `narrative.js`, not a style choice. Each one takes
   its own FRAG (position × span), a CROSS clause against a second variable, a BAND clause keyed
   on a tracked quantity, and the figures.
