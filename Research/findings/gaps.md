@@ -63,3 +63,30 @@ inheriting its reasoning.
 
 **To close:** a dossier per position, each answering the five questions in `QUESTIONS.md` from
 sources that are about the world. This register tracks that work.
+
+## G5 · The S axis conflates two variables moving in opposite directions
+
+**Opened:** 2026-08-12, from `dossiers/S-compute-supply.md`
+**Severity:** high — it makes the most likely actual world inexpressible
+
+Data-centre **siting** is diversifying: sovereign clouds, Gulf capacity, second-tier hubs. Chip
+**supply** is concentrating: one packaging process, one country, one buyer holding the majority
+of 2026-27 capacity, no qualified second source before 2028.
+
+Both are true at once. The axis has one position for "diversified" and one for "concentrated",
+so it cannot say *capacity everywhere, dependency on one island* — which the 2026 record
+suggests is where the world actually is.
+
+**To close:** split S into siting and supply, or add a sub-axis for the chokepoint. Until then
+S2's prior is carrying a story the evidence only half supports.
+
+## G6 · The energy track ignores the interconnection queue
+
+**Opened:** 2026-08-12, from `dossiers/S-compute-supply.md`
+**Severity:** medium
+
+`tracks()` grows installed GW from `COMPUTE_G` damped by a fixed economy constant. The 2026
+record has **$162B of US projects blocked or delayed** and the first proposed statewide
+moratorium. Refusal is a real, measurable rate and the model represents it as nothing.
+
+**To close:** damp compute growth under S3 by an observed refusal rate rather than a constant.

@@ -12,7 +12,7 @@ Every dossier, its status, and what it changed. A dossier is **done** when the f
 | A | Alignment outcome | queued | | |
 | C | Coordination | queued | | |
 | D | Diffusion & labour | queued | | |
-| S | Compute & supply | queued | | |
+| S | [Compute & supply](dossiers/S-compute-supply.md) | **done** | S1 .327→.35 · S2 .417→.33 · S3 .255→.32 · held | G5, G1 sized |
 | P | Public response | queued | | |
 | E | Economy | queued | | |
 | ×  | Interactions (10 pairs) | queued | | |
