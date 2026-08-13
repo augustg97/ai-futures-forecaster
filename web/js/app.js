@@ -22,7 +22,7 @@ const TRUNK = [[2012, 0.15], [2016, 0.45], [2019, 0.8], [2022, 1.1], [2022.92, 1
 // The document is drawn at one fixed width, so 2 mm of cap height is always the same number of
 // pixels and nothing has to be zoomed to be read. Below the minimum the page scrolls sideways
 // rather than shrinking the type past legibility.
-const DOC_MIN = 1000, DOC_MAX = 1380;
+const DOC_MIN = 1180, DOC_MAX = 1720;
 
 const docEl = document.getElementById('doc');
 const chipEl = document.getElementById('chip');
@@ -736,7 +736,7 @@ function sheetState(measure) {
   const idx = Math.max(0, Math.min(tr.year.length - 1, Math.floor(state.yr) - D.engine.y0));
   const cap = state.yr < NOW_Y ? trunkCap(state.yr) : tr.cap[idx];
   const eff = effectsFor(state.pin);
-  const paras = describe(wl, state.yr, tr, D.engine.y0);
+  const paras = describe(wl, state.yr, tr, D.engine.y0, trunkCap);
   const S = {
     yr: state.yr, NOW: NOW_Y, TRUNK, pin: state.pin, obs: state.obs, build: DATA_V,
     engine: D.engine, network: D.network, crisis: D.crisis, grounding: D.grounding,

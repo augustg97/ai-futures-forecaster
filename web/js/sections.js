@@ -9,7 +9,7 @@ import { PEN, INK, PAPER } from './draft.js';
 import { dial, manifold, strip, tally, fmtNum } from './instruments.js';
 import { drawFigure } from './figures.js';
 
-export const SHEET_W = 300;
+export const SHEET_W = 340;
 const PAD = 13;
 const CW = SHEET_W - PAD * 2;
 export const SHEET_CW = CW;
@@ -56,18 +56,32 @@ export const PROSE_N = 3;
 export const PROSE_COL = (CW - (PROSE_N - 1) * 10) / PROSE_N;
 export function proseColumns(d, paras, colW = PROSE_COL, n = PROSE_N, size = 2.0) {
   const hs = paras.map((p) => measureProse(d, [p], colW, size));
-  const total = hs.reduce((a, b) => a + b, 0), target = total / n;
-  const cols = [];
-  let cur = [], run = 0;
-  for (let i = 0; i < paras.length; i++) {
-    const left = paras.length - i, need = n - cols.length;
-    if (cur.length && run + hs[i] / 2 > target && cols.length < n - 1 && left > need - 1) {
-      cols.push(cur); cur = []; run = 0;
+  // Order has to be preserved, so the only choice is where to cut. With a handful of
+  // paragraphs every set of cuts can be tried, and the one with the shortest tallest column
+  // wins — a greedy fill left one column with a single line and another with four paragraphs.
+  const m = paras.length;
+  let best = null;
+  const cuts = [];
+  const walk = (start, depth) => {
+    if (depth === n - 1) {
+      const bounds = [0, ...cuts, m];
+      let tallest = 0;
+      for (let c = 0; c < n; c++) {
+        let sum = 0;
+        for (let k = bounds[c]; k < bounds[c + 1]; k++) sum += hs[k];
+        if (sum > tallest) tallest = sum;
+      }
+      if (best === null || tallest < best.tallest) {
+        best = { tallest, bounds: bounds.slice() };
+      }
+      return;
     }
-    cur.push(paras[i]); run += hs[i];
-  }
-  cols.push(cur);
-  while (cols.length < n) cols.push([]);
+    for (let c = start; c <= m; c++) { cuts.push(c); walk(c, depth + 1); cuts.pop(); }
+  };
+  if (m === 0) return { cols: Array.from({ length: n }, () => []), h: 0 };
+  walk(0, 0);
+  const cols = [];
+  for (let c = 0; c < n; c++) cols.push(paras.slice(best.bounds[c], best.bounds[c + 1]));
   return { cols, h: Math.max(...cols.map((c) => measureProse(d, c, colW, size))) };
 }
 // Split a run of sections into two columns of roughly equal drawn height.
@@ -223,10 +237,12 @@ header.height = () => 26;
 // Three columns. The instruments and the behaviour recorders stand to the left of the chart so
 // the readings and the forecast are in the eye at once; the controls are a panel on the right
 // with one tab per variable, so a row of buttons and its entry fit without scrolling.
+// 13 + 80 + 4 + 152 + 4 + 74 + 13 = 340. The extra width over the old 300 mm sheet goes to the
+// chart, and buys the left column a second file of recorders, which is where the scroll was.
 export const COL = {
-  left: { x: PAD, w: 66 },
-  mid: { x: PAD + 70, w: 132 },
-  right: { x: PAD + 206, w: 68 },
+  left: { x: PAD, w: 80 },
+  mid: { x: PAD + 84, w: 152 },
+  right: { x: PAD + 240, w: 74 },
 };
 export const CTL_NOTE_W = COL.right.w - 8;
 
@@ -264,7 +280,7 @@ function instrumentColumn(d, S, top) {
   const T = S.network.axes.find((a) => a.key === 'T');
   const m = S.marginals.T || {}, was = S.marginals30.T || {};
   T.positions.forEach((p, i) => {
-    dial(d, x + 8 + (i % 2) * 33, y - 12 - Math.floor(i / 2) * 27, 7.6, {
+    dial(d, x + 9 + (i % 2) * 40, y - 12 - Math.floor(i / 2) * 27, 8.2, {
       label: p[0] + ' · ' + p[1].split(' (')[0].toUpperCase().slice(0, 9),
       value: m[p[0]] || 0, was: was[p[0]] ?? null, id: `pos:T:${p[0]}`, colour: INK.blue,
     });
@@ -315,15 +331,18 @@ function instrumentColumn(d, S, top) {
   d.text([x, y], '2026 TO 2100 ON THE ACTIVE LINE · PEN AT THE DATE',
          { size: 1.6, track: 0.10, colour: INK.pencilLight });
   y -= 4;
-  for (const p of behaviourPanels(S)) {
+  const half = (w - 4) / 2;
+  behaviourPanels(S).forEach((p, i) => {
     const lo = Math.min(...p.d), hi = Math.max(...p.d);
     const pad = (hi - lo) * 0.08 || 1;
-    strip(d, x + 8, y - 17, w - 9, 16, {
+    const px = x + (i % 2) * (half + 4);
+    const py = y - 17 - Math.floor(i / 2) * 20.5;
+    strip(d, px + 7, py, half - 8, 16, {
       data: p.d, years: S.tracks.year, y0: lo - pad, y1: hi + pad, colour: p.c,
       label: p.label, unit: p.unit, now: Math.max(S.engine.y0, S.yr), id: p.id, fmt: p.fmt,
     });
-    y -= 20.5;
-  }
+  });
+  y -= 20.5 * Math.ceil(behaviourPanels(S).length / 2) + 2;
   return top - y;
 }
 
@@ -647,7 +666,7 @@ export function board(d, S, H) {
 }
 board.height = (S) => {
   const left = 34 + Math.ceil(4 / 2) * 27 + 34 + 6 + S.engine.domains.length * 7.2 + 24 +
-               18 + 6 * 20.5;
+               18 + 3 * 20.5;
   const mid = 30 + CHART_H + 21 + NOTE_BAND + (S.chartNote ? S.chartNote.h + 12 : 0);
   const n = (S.network.axes.find((q) => q.key === S.ctlAxis) || S.network.axes[0])
     .positions.length;
@@ -700,22 +719,22 @@ function behaviourPanels(S) {
       fmt: (v) => fmtNum(v),
       note: 'Modelled global AI capacity. Growth is set by the supply variable and damped by ' +
             'the economy variable.' },
-    { d: tr.rev, label: 'AI REVENUE', unit: 'USD TN/YR', c: INK.blue, id: 'trk:rev',
+    { d: tr.rev, label: 'REVENUE', unit: '$TN/YR', c: INK.blue, id: 'trk:rev',
       fmt: (v) => v.toFixed(1),
       note: 'Run-rate revenue grown by diffusion and capability, saturating against world ' +
             'output.' },
     { d: tr.jobs, label: 'EMPLOYMENT', unit: '% CUM.', c: INK.red, id: 'trk:jobs',
       fmt: (v) => v.toFixed(0),
       note: 'Cumulative employment effect. The shock rate follows the published crisis path.' },
-    { d: tr.laws, label: 'MEASURES IN FORCE', unit: 'COUNT', c: INK.green, id: 'trk:laws',
+    { d: tr.laws, label: 'MEASURES', unit: 'COUNT', c: INK.green, id: 'trk:laws',
       fmt: (v) => fmtNum(v),
       note: 'Tracked statutes and regulations. The fragmented-blocs setting legislates ' +
             'fastest.' },
-    { d: tr.appr, label: 'PUBLIC APPROVAL', unit: '%', c: INK.ochre, id: 'trk:appr',
+    { d: tr.appr, label: 'APPROVAL', unit: '%', c: INK.ochre, id: 'trk:appr',
       fmt: (v) => v.toFixed(0),
       note: 'Approval under the public-response setting, depressed by displacement and ' +
             'steadied by a durable agreement.' },
-    { d: tr.co2, label: 'AI EMISSIONS', unit: 'MT CO2/YR', c: INK.pencil, id: 'trk:co2',
+    { d: tr.co2, label: 'EMISSIONS', unit: 'MT/YR', c: INK.pencil, id: 'trk:co2',
       fmt: (v) => fmtNum(v),
       note: 'Load times grid intensity, which falls faster where the build-out is ' +
             'coordinated or diversified.' },
