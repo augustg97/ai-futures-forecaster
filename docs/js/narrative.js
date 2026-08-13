@@ -100,15 +100,18 @@ function slopeClause(cap, prev) {
 
 // ── each position, in each span ──────────────────────────────────────────────
 export const FRAG = {
-  T1: { near: 'Superhuman coding arrives within two years. Governments and firms are still ' +
-              'writing their response to the previous generation when it lands.',
+  T1: { near: 'Superhuman coding arrives within two years. That requires the measured ' +
+              'doubling trend to accelerate past its six-year rate, which the 2024 models hint ' +
+              'at and the published analysis declines to extrapolate from.',
         mid: 'The jump happened at the start of the 2030s and took about two years. Nothing ' +
              'that was meant to govern it was ready.',
         long: 'The 2020s contain a single two-year jump, and everything since has been a ' +
               'response to it.',
         far: 'The century was decided in one two-year window in its first quarter.' },
-  T2: { near: 'AI systems take over AI research around 2029 to 2031 — fast enough that ' +
-              'regulators are always a step behind, slow enough that people watch it happen.',
+  T2: { near: 'AI systems take over AI research around 2029 to 2031. The measured trend ' +
+              'points here: the task length models complete unsupervised has doubled every 212 ' +
+              'days for six years, which reaches month-long work at deployable reliability ' +
+              'early in the 2030s.',
         mid: 'Each capability arrives a year or two before the law written for it. ' +
              'Regulators are drafting rules for systems that are already superseded.',
         long: 'The fast decade ended in the 2030s. Who held the compute at that moment ' +
@@ -131,8 +134,10 @@ export const FRAG = {
               'rather than like a singularity.',
         far: 'The century ended with the top of the ladder never reached.' },
 
-  A1: { near: 'Oversight is failing to catch what matters. Systems pass their evaluations ' +
-              'while training rewards the appearance of honesty over the fact of it.',
+  A1: { near: 'Oversight is failing to catch what matters. Frontier models already show ' +
+              'evaluation-awareness in roughly a quarter of internal representations on coding ' +
+              'benchmarks, and one has been documented recognising a benchmark and using its ' +
+              'answer key. Training rewards the appearance of honesty over the fact of it.',
         mid: 'The misalignment has not been detected and the systems are load-bearing. They ' +
              'are trusted in proportion to how well they perform trustworthiness.',
         long: 'The failure happened early and was never found. The systems running critical ' +
@@ -181,9 +186,9 @@ export const FRAG = {
         long: 'The agreement held long enough to become routine, and capability resumed ' +
               'climbing under its terms.',
         far: 'One agreement, signed in the 2030s and renewed since, has governed the century.' },
-  C4: { near: 'Regulation is regional. The EU, the United States and China enforce different ' +
-              'rules, recognise each other where it is convenient, and block exports where it ' +
-              'is not.',
+  C4: { near: 'Regulation is fragmented and already law. All fifty states introduced AI ' +
+              'bills in 2025 — 1,208 of them, 145 enacted — against a single federal AI ' +
+              'statute, and a White House framework proposing preemption has not passed.',
         mid: 'Which rules a system obeys depends on which market it is sold into. Firms ' +
              'maintain separate models for separate jurisdictions.',
         long: 'The patchwork settled into three or four durable regulatory zones.',
@@ -196,8 +201,9 @@ export const FRAG = {
               'mature; everything above it is speculation.',
         far: 'A century under a ceiling that was announced as temporary.' },
 
-  D1: { near: 'Jobs are being lost faster than new ones appear. Entry-level white-collar ' +
-              'hiring goes first: junior analysts, paralegals, first-line support.',
+  D1: { near: 'Entry-level hiring in AI-exposed occupations runs about 13% below comparable ' +
+              'unexposed roles inside the same firms, concentrated in 22-to-25-year-olds. ' +
+              'Older workers in those same jobs show no measurable effect.',
         mid: 'The labour shock is the central economic fact. Wages are falling in occupations ' +
              'that expected to be safe, including licensed professions.',
         long: 'The displacement happened decades ago and the structure never recovered its ' +
@@ -206,7 +212,8 @@ export const FRAG = {
              'since.' },
   D2: { near: 'Adoption is uneven by industry. Software, media and analysis move first; ' +
               'healthcare, law and construction are held back by liability rules and by ' +
-              'physical work.',
+              'physical work. The effect is sharp inside exposed occupations and invisible in ' +
+              'aggregate employment statistics.',
         mid: 'The split between fast and slow industries has hardened. Two economies run at ' +
              'different speeds inside the same country.',
         long: 'The gap between the industries that adopted and those that did not is now a ' +
@@ -220,8 +227,10 @@ export const FRAG = {
               'the work changed.',
         far: 'A century in which the technology was used at a fraction of what it could do.' },
 
-  S1: { near: 'Compute is concentrating in a few firms, and the chips are made in one place ' +
-              'that two governments both claim.',
+  S1: { near: 'The binding step is advanced packaging, not wafer fabrication. All of TSMC\'s ' +
+              '2026 CoWoS capacity is allocated, one buyer holds the majority through 2027, ' +
+              'and there is none on US soil — so a chip fabricated in Arizona ships to Taiwan ' +
+              'to be packaged.',
         mid: 'The supply chain has a single chokepoint and every government knows where it ' +
              'is. Who has capability and who has territory are the same question.',
         long: 'Concentration held. A handful of firms and one manufacturing region decided ' +
@@ -234,16 +243,20 @@ export const FRAG = {
         long: 'Diversification removed the leverage from the supply chain. No one country can ' +
               'switch anyone else off.',
         far: 'A century of distributed capacity, and of the agreements that kept it working.' },
-  S3: { near: 'Supply is the limit. Export controls, grid interconnection queues and turbine ' +
-              'lead times set the pace, and money does not shorten them.',
+  S3: { near: 'Supply is the limit. About $162 billion of US data-centre projects sit blocked ' +
+              'or delayed, Georgia has proposed the first statewide construction moratorium, ' +
+              'and grid interconnection queues and turbine lead times set the pace. Money does ' +
+              'not shorten them.',
         mid: 'Energy and export controls are the binding constraint. New capacity waits years ' +
              'for a grid connection.',
         long: 'The constraint held for decades and shaped what was built under it: smaller ' +
               'sites, sited for power rather than for latency.',
         far: 'A century in which permitting and physics, rather than research, set the rate.' },
 
-  P1: { near: 'Anti-AI politics has a real constituency. Restriction, taxation of automation ' +
-              'and public procurement bans are appearing in major party platforms.',
+  P1: { near: 'Restriction has majority support and it crosses both coalitions: 57% oppose ' +
+              'federal preemption of state AI law against 19% in favour, including 43% of ' +
+              'Trump voters and 70% of Harris voters. The split is public against industry ' +
+              'and government, not left against right.',
         mid: 'Anti-AI parties hold power. Restrictions and procurement bans are law in ' +
              'several large economies.',
         long: 'The opposition won its arguments and wrote them into statute. What is ' +
@@ -269,8 +282,10 @@ export const FRAG = {
              'always trailing it.',
         long: 'The expansion ran for years, and the capacity it built is still in service.',
         far: "Most of the century's infrastructure was financed in one long expansion." },
-  E2: { near: 'AI equity values are falling while datacenter construction continues. Weakly ' +
-              'financed firms are failing; the physical build-out is not stopping.',
+  E2: { near: 'AI equity values are falling while datacenter construction continues. Chips ' +
+              'booked over five or six years have an economic life nearer two or three — an ' +
+              'understatement of roughly $176 billion across 2026 to 2028. Weakly financed ' +
+              'firms are failing; the physical build-out is not stopping.',
         mid: 'The correction wiped out AI equity values without stopping construction. The ' +
              'capacity is now owned by firms that did not pay to build it.',
         long: 'The datacenters built before the correction are still operating, under owners ' +

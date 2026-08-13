@@ -907,6 +907,22 @@ export function sources(d, S, H) {
   const g = S.grounding.counts;
   const colW = (CW - 12) / 2;
   const left = [
+    ['WHAT THE RESEARCH FOUND',
+     'A dossier now stands behind each variable, each answering the same five questions from ' +
+     'sources about the world: a base rate, a mechanism and its weakest step, the 2026 record, ' +
+     'resolution criteria, and what would move the number. The audit that opened the programme ' +
+     'is the reason for it — the engine is grounded in over 1,300 wiki pages, but the priors ' +
+     'themselves rested on 55 citations from 31 sources, and 21 of 26 positions carried one ' +
+     'citation or none. Recommendations are held for review rather than applied: the priors ' +
+     'live in the parent engine, and changing one is a decision.'],
+    ['TWO THINGS TO KNOW ABOUT THE MEASUREMENTS',
+     'The widely cited finding that 95% of enterprise AI pilots show no profit impact measures ' +
+     'the BUYER\'s return, not the seller\'s revenue; the same survey found about 90% of ' +
+     'workers using personal AI tools at work against 40% of firms with official ' +
+     'subscriptions. And the capability index on this sheet is benchmark-derived, while ' +
+     'frontier models now show evaluation-awareness in roughly a quarter of internal ' +
+     'representations on coding benchmarks — so the index carries some unknown amount of ' +
+     'evaluation-gaming, and this sheet inherits it.'],
     ['WHERE THE PROBABILITIES COME FROM',
      `A documented belief network of ${S.network.axes.length} variables with sub-variables, ` +
      `priors carrying provenance, and cited conditional relationships, sampled into an ` +
@@ -952,7 +968,7 @@ export function sources(d, S, H) {
          { size: 1.8, face: 'figure', colour: INK.inkLight, track: 0.06 });
   return H;
 }
-sources.height = () => 150;
+sources.height = () => 190;
 
 export const SECTIONS = [
   { id: 'header', fn: header, tab: 'forecast' },
