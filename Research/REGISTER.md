@@ -11,7 +11,7 @@ Every dossier, its status, and what it changed. A dossier is **done** when the f
 | T | [Capability tempo](dossiers/T-capability-tempo.md) | **done** | T1 0.099→0.07 · T4 0.211→0.24 · T3 up · held for review | G1, G2 |
 | A | Alignment outcome | queued | | |
 | C | Coordination | queued | | |
-| D | Diffusion & labour | queued | | |
+| D | [Diffusion & labour](dossiers/D-diffusion-labour.md) | **done** | D1 .190→.17 · D2 .538→.55 · D3 .273→.28 · held | G7, G3 sized |
 | S | [Compute & supply](dossiers/S-compute-supply.md) | **done** | S1 .327→.35 · S2 .417→.33 · S3 .255→.32 · held | G5, G1 sized |
 | P | Public response | queued | | |
 | E | Economy | queued | | |

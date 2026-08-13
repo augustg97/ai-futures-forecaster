@@ -90,3 +90,36 @@ record has **$162B of US projects blocked or delayed** and the first proposed st
 moratorium. Refusal is a real, measurable rate and the model represents it as nothing.
 
 **To close:** damp compute growth under S3 by an observed refusal rate rather than a constant.
+
+## G7 · The labour effect is age-graded and the axis is not
+
+**Opened:** 2026-08-12, from `dossiers/D-diffusion-labour.md`
+**Severity:** high — and it propagates into P
+
+Measured: **−13% entry-level hiring** in AI-exposed occupations within firms, concentrated in
+**22–25 year olds**, with **statistically insignificant** effects on older workers in the same
+occupations. Aggregate employment shows nothing.
+
+The axis has three positions about how the effect spreads across *sectors* and none about which
+*cohort* absorbs it. A world where the entry rung disappears and incumbents are untouched reads
+as D2 in the model and as a crisis in the politics — and **P is downstream of D**, so the model
+routes a political shock through a variable that cannot see it.
+
+**To close:** a sub-axis on D for incidence (entry-level / broad / incumbent-protected).
+
+## G8 · A pattern, not two bugs: the model cannot express "sharp and narrow"
+
+**Opened:** 2026-08-12, from S and D dossiers together
+**Severity:** high — this is a design finding
+
+Twice now the record has shown two things being true at once that the model gives one axis:
+
+- **S:** siting diversifying **and** chip supply concentrating
+- **D:** entry-level hiring collapsing **and** aggregate employment flat
+
+In both cases the model's positions are alternatives, so the true state is inexpressible and
+gets rounded to whichever half is louder. The forecast then propagates the rounded state.
+
+**Proposed:** wherever an axis mixes *magnitude* with *incidence*, split it. The design rule to
+adopt: **one axis, one question.** An axis that answers "how big" and "where" at once will
+always have a world it cannot say.
