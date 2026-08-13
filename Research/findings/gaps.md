@@ -64,6 +64,22 @@ inheriting its reasoning.
 **To close:** a dossier per position, each answering the five questions in `QUESTIONS.md` from
 sources that are about the world. This register tracks that work.
 
+## G12 · Benchmark contamination — QUANTIFIED, severity downgraded to medium
+
+**Opened:** 2026-08-12 · **Bounded:** 2026-08-13, `findings/round-2-addenda.md`
+
+32.67% of successful SWE-bench patches involve solution leakage; removing leakage channels costs
+3–7 pass@1 points; ~12% of tasks are contaminated for one frontier model; OpenAI's audit found
+59.4% of its o3 failures were test flaws, and it recommends discontinuing the benchmark.
+
+**Why this sheet is less exposed than that implies:** the T evidence is METR's time-horizon
+series, built on human-timed HCAST and RE-Bench tasks. Its SWE-bench-derived component is
+flagged by METR as likely *underestimating* shorter-horizon models, which biases the doubling
+time shorter. **Followed through, the contamination argument is a small argument for LONGER
+timelines**, not for a capability index that is too high.
+
+Severity high → **medium**. The Method section should carry the numbers.
+
 ## G5 · The S axis conflates two variables moving in opposite directions
 
 **Opened:** 2026-08-12, from `dossiers/S-compute-supply.md`

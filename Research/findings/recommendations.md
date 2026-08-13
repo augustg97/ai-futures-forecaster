@@ -1,4 +1,8 @@
-# Recommendations — round 1, held for review
+# Recommendations — held for review
+
+**Superseded in part by [round-2-addenda.md](round-2-addenda.md)**, which closes the three
+open questions and revises C3, D2, D3 and all four A positions. The round-2 figures are the
+standing ones.
 
 Every prior change the seven dossiers support, in one place, with the evidence that sizes it.
 **None of these has been applied.** The priors live in the parent AI Atlas; this project
@@ -59,12 +63,23 @@ Ordered by what they would improve most.
 6. **Damp compute growth under S3 by an observed refusal rate** (G6) rather than a constant.
    $162B of blocked projects is a measurable rate that the model represents as nothing.
 
-## What this round could not settle
+## What round 1 could not settle — all three now closed
 
-- **International coordination evidence is thin.** The C dossier is strong on the US domestic
-  record and weak on the US–China channel, the EU AI Act's implementation record, and
-  compute-declaration proposals. Marked partial.
-- **Causality in the labour data.** The strongest result is observational, has a live
-  confounder (the Fed's policy shift preceded ChatGPT), and has a contradicting Danish study.
-- **Whether benchmark recognition contaminates the capability index, and by how much** (G12).
-  The rate is measured; the transfer to the index is not.
+See [round-2-addenda.md](round-2-addenda.md).
+
+1. **International coordination.** Closed. Talks scheduled September 2026 at cabinet level; the
+   industry itself asked for verification technology on 28 July 2026; the EU held its deadline
+   against Meta, Google, ASML and Mistral. **C3 revised 0.08 → 0.12.**
+2. **The labour contradiction.** Closed, and it *dissolves*: Humlum & Vestergaard measure
+   incumbent wages and hours, Brynjolfsson et al. measure hiring of entrants. Both are the same
+   world. **D3's round-1 increase is withdrawn; D2 rises to 0.57.**
+3. **Benchmark contamination.** Bounded: 32.67% of successful SWE-bench patches involve solution
+   leakage; removing leakage costs 3–7 pass@1 points; OpenAI has stopped reporting the
+   benchmark. But METR's series is human-timed rather than issue-scraped, and its SWE-bench
+   component biases the doubling *shorter* — so the contamination argument, followed through,
+   is a small argument for **longer** timelines. **G12 downgraded high → medium.**
+
+## The one remaining open question
+
+Whether the four missing conditional edges (`T|S`, `D|T`, `D|E`, `P|C`) can be *sized* from
+evidence rather than merely asserted. Round 3.
