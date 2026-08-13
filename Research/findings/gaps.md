@@ -8,7 +8,14 @@ reason. This project does not change the Atlas; it produces the case.
 
 ---
 
-## G1 · Compute supply gates capability, and no conditional says so
+## G1 · Compute supply gates capability, and no conditional says so — SIZED
+
+**Closed as research, open as a change:** `interactions/round-3-edges.md` sizes the edge.
+Under S3 the effective-compute growth rate falls to ~60% of baseline, which stretches METR's
+212-day doubling to ~350 days and moves the one-month horizon from 2030–31 to 2033–35.
+Multipliers are in that file.
+
+
 
 **Opened:** 2026-08-12, from `dossiers/T-capability-tempo.md`
 **Severity:** high — this is the model's most load-bearing missing edge

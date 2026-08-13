@@ -911,12 +911,12 @@ export function research(d, S, H) {
     'A dossier stands behind each variable, each answering the same five questions from ' +
     'sources about the world: a base rate, a mechanism and its weakest step, the 2026 record, ' +
     'resolution criteria, and what would move the number. Recommendations are held for review ' +
-    'rather than applied — the priors live in the parent engine, and changing one is a ' +
+    'and held for review; the priors live in the parent engine, and changing one is a ' +
     'decision. The full dossiers are in the repository under Research/.');
 
   // the audit that opened it
   d.rect(PAD, y - 26, CW, 26, { weight: PEN.thin, colour: INK.red, alpha: 0.6 });
-  d.text([PAD + 4, y - 5.4], 'THE AUDIT THAT SET THE MANDATE',
+  d.text([PAD + 4, y - 5.4], 'WHAT THE AUDIT FOUND',
          { size: 2.4, weight: 700, track: 0.16, colour: INK.red });
   d.textBlock([PAD + 4, y - 10], 'The engine is grounded in 1,330 wiki pages — but that ' +
     'number describes the corpus. The priors themselves rested on 55 citations from 31 ' +
@@ -983,7 +983,7 @@ export function research(d, S, H) {
          { size: 2.6, weight: 700, track: 0.14, colour: INK.ink });
   rule(d, gy - 2.2, PAD, CW, { weight: PEN.thin, colour: INK.inkLight });
   const gcol = (CW - 12) / 2;
-  d.textBlock([PAD, gy - 6.4], 'Three axes mix MAGNITUDE with INCIDENCE on one axis, so a ' +
+  d.textBlock([PAD, gy - 6.4], 'Three axes mix how big an effect is with where it lands, so a ' +
     'state that is sharp and narrow cannot be said: compute siting diversifying while chip ' +
     'supply concentrates; entry-level hiring collapsing while aggregate employment is flat; a ' +
     'public united against its own government. Each is what the 2026 record shows. The model ' +
@@ -991,7 +991,7 @@ export function research(d, S, H) {
     { size: 2.0, lead: LEAD, colour: INK.pencil });
   d.textBlock([PAD + gcol + 12, gy - 6.4], 'Two variables — capability tempo and diffusion — ' +
     'have no parent at all. Three of the four published constraints on continued compute ' +
-    'scaling ARE the supply variable, so the model asserts an independence the evidence ' +
+    'scaling are the supply variable, so the model asserts an independence the evidence ' +
     'denies. Four edges are missing: tempo on supply, diffusion on tempo, diffusion on the ' +
     'economy, and public response on coordination.', gcol,
     { size: 2.0, lead: LEAD, colour: INK.pencil });
@@ -1011,18 +1011,18 @@ export function sources(d, S, H) {
      'resolution criteria, and what would move the number. The audit that opened the programme ' +
      'is the reason for it — the engine is grounded in over 1,300 wiki pages, but the priors ' +
      'themselves rested on 55 citations from 31 sources, and 21 of 26 positions carried one ' +
-     'citation or none. Recommendations are held for review rather than applied: the priors ' +
-     'live in the parent engine, and changing one is a decision.'],
+     'citation or none. Recommendations are held for review; the priors live in the parent ' +
+     'engine, and changing one is a decision.'],
     ['TWO THINGS TO KNOW ABOUT THE MEASUREMENTS',
      'The widely cited finding that 95% of enterprise AI pilots show no profit impact measures ' +
-     'the BUYER\'s return, not the seller\'s revenue; the same survey found about 90% of ' +
+     'what the buyer got back, and not what the seller sold; the same survey found about 90% of ' +
      'workers using personal AI tools at work against 40% of firms with official ' +
      'subscriptions. Second, coding benchmarks are contaminated: about a third of successful ' +
      'patches on the most-cited one involve the solution appearing in the problem text, and ' +
      'removing that channel costs frontier models 3 to 7 points. The capability index here ' +
      'rests on a series timed against human professionals instead, whose benchmark-derived ' +
-     'component biases the trend FASTER — so followed through, contamination is a small ' +
-     'argument for later dates rather than an inflated index.'],
+     'component biases the trend faster. Followed through, contamination is a small ' +
+     'argument for later dates, and no argument at all for an index that reads too high.'],
     ['WHERE THE PROBABILITIES COME FROM',
      `A documented belief network of ${S.network.axes.length} variables with sub-variables, ` +
      `priors carrying provenance, and cited conditional relationships, sampled into an ` +

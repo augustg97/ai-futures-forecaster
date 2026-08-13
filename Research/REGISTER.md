@@ -15,7 +15,7 @@ Every dossier, its status, and what it changed. A dossier is **done** when the f
 | S | [Compute & supply](dossiers/S-compute-supply.md) | **done** | S1 .327→.35 · S2 .417→.33 · S3 .255→.32 · held | G5, G1 sized |
 | P | [Public response](dossiers/P-public-response.md) | **done** | **P1 .262→.38 · P3 .426→.34** · held — largest change | G11 |
 | E | [Economy](dossiers/E-economy.md) | **done** | E1 .289→.26 · E2 .428→.44 · E3 .202→.22 · E4 .081→.08 · held | G9 |
-| × | [Interactions](interactions/SYNTHESIS.md) | **first pass** | 4 edges supported · 4 missing · 1 contradicted | — |
+| × | [Interactions](interactions/SYNTHESIS.md) + [round 3](interactions/round-3-edges.md) | **done** | 3 of 4 missing edges sized with multipliers; `P\|C` cannot be sized | — |
 
 ## Round 1 complete
 
