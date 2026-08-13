@@ -702,7 +702,7 @@ const GOVERN = {
         mid: 'a verified US-China agreement caps training runs',
         long: 'the agreement held and capability resumed under its terms',
         far: 'one agreement from the 2030s has governed the century' },
-  C4: { near: 'European and American and Chinese rules differ',
+  C4: { near: 'the EU enforces one set of rules and the US and China enforce others',
         mid: 'which rules apply depends on which market a system is sold into',
         long: 'three or four regulatory zones settled into place',
         far: 'a century of regional rules and firms arbitraging between them' },
