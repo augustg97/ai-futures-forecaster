@@ -5,6 +5,11 @@ Systems Works. Read by scrolling, at one fixed scale.
 
 **Read `README.md` first**, then `HANDOFF.md` for live state.
 
+**The working directory is still `~/Forecast Works`** and the repo is
+`augustg97/ai-futures-forecaster`. The project was renamed 2026-08-12; only the folder kept the
+old name, because the nightly task, both `launch.json` entries and `nightly.sh` point at that
+path. Do not "tidy" it without moving all four together.
+
 ## Standing rules — these override default behaviour
 
 1. **Never modify `~/AI Atlas` or `~/Systems Works` from this project.** The Atlas is read

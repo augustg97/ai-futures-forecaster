@@ -1,7 +1,11 @@
 # AI Futures Forecaster — live state
 
 **Live:** https://augustg97.github.io/ai-futures-forecaster/ · build `20260812-1129`
-**Local:** `python3 build/serve.py 8154` (serves `web/`, never `docs/`)
+**Local:** `python3 build/serve.py 8154` (serves `web/`, never `docs/`) · working
+directory `~/Forecast Works`, repo `augustg97/ai-futures-forecaster`
+
+**The old Pages path `augustg97.github.io/forecast-works/` now 404s.** Renaming a
+GitHub repo redirects the repository page but NOT its Pages URL.
 
 ## What it is
 
