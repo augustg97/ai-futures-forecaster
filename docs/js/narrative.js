@@ -2,14 +2,19 @@
 //
 // The passage is COMPOSED, never selected. A paragraph about one variable is built from that
 // variable's own state and span, from a CROSS clause naming what a second variable does to it,
-// from a BAND clause keyed on a quantity the model actually computes at that date, and from the
-// figures themselves. A world-line where the economy corrects reads differently under a
-// constrained build-out than under a diversified one, and differently again in 2031 and 2061.
+// from a BAND clause keyed on a quantity the model computes at that date, and from the figures
+// themselves. A world-line where the economy corrects reads differently under a constrained
+// build-out than under a diversified one, and differently again in 2031 and 2061.
 //
-// Everything here is authored prose. The figures come from the same tracks the behaviour
-// recorders draw, so the passage and the charts can never disagree.
+// EVERY CLAUSE HAS TO SAY A CHECKABLE THING. Name who does what, to what, with what visible
+// result. "A reset that left the concrete standing" is a sentence that sounds like it means
+// something; "the correction wiped out AI equity values without stopping datacenter
+// construction" is the same claim, stated so a reader can disagree with it.
 //
-// Spans: near 2026–2031 · mid 2032–2040 · long 2041–2060 · far 2061–2100.
+// The figures come from the same tracks the behaviour recorders draw, so the passage and the
+// charts can never disagree.
+//
+// Spans: near 2026-2031 · mid 2032-2040 · long 2041-2060 · far 2061-2100.
 
 const SPANS = [['near', 2026, 2031], ['mid', 2032, 2040],
                ['long', 2041, 2060], ['far', 2061, 2100]];
@@ -18,62 +23,65 @@ export function spanOf(year) {
   return year < 2026 ? 'near' : 'far';
 }
 
-// ── the capability ladder, phrased by span ───────────────────────────────────
-// The same rung means something different in 2029 and in 2071: early it is news, late it is
-// the water everyone swims in.
+// ── the capability ladder, described by span ─────────────────────────────────
 const RUNG = [
   [0.0, {
-    near: 'Systems answer well and finish little. Work still passes through a person at ' +
-          'every step that matters.',
-    mid: 'Capability has stayed assistive far longer than the 2020s expected. The tools are ' +
-         'good and the loop still closes on a human.',
-    long: 'Decades in, the systems remain instruments. Every consequential action still ' +
-          'carries a signature.',
-    far: 'A century of tools. The technology settled into the shape of software and stayed ' +
-         'there.' }],
+    near: 'AI is an assistant. It drafts, summarises and answers, and a person checks and ' +
+          'signs off every step that has consequences.',
+    mid: 'AI is still an assistant a decade later. The models are much better and a person ' +
+         'still approves every action that costs money or carries liability.',
+    long: 'Decades in, AI remains a tool that people operate. No system is trusted to act ' +
+          'without a named person accountable for the result.',
+    far: 'A century of AI as software. It never became something organisations hand work to ' +
+         'and leave alone.' }],
   [1.6, {
-    near: 'Agents run for minutes at a stretch and drop the thread. The failures have the ' +
-          'shape of the work: forgotten context, confident wrong turns.',
-    mid: 'Agents work in short bursts under supervision. Reliability, rather than ability, ' +
-         'is the thing holding them back.',
-    long: 'Autonomy plateaued early. Systems act in short bounded stretches and hand back.',
-    far: 'The long plateau held. Agency stayed bounded by the length of a task.' }],
+    near: 'AI agents run for a few minutes before losing the thread. They forget what they ' +
+          'were doing and take confident wrong turns, so nobody leaves them unattended.',
+    mid: 'Agents work in short supervised bursts. What limits them is reliability rather than ' +
+         'knowledge: they know how to do the task and fail to finish it.',
+    long: 'Autonomy stopped improving early. Systems still work in short stretches and hand ' +
+          'back to a person.',
+    far: 'A century in which agents never held a task longer than an afternoon.' }],
   [2.4, {
-    near: 'Agents hold multi-step work without supervision for hours at a time. Software ' +
-          'teams and research groups reorganise around them first.',
-    mid: 'Reliable agency is ordinary. Firms restructure around what a machine can be left ' +
-         'to finish.',
-    long: 'Agency at this level is infrastructure, and it gets noticed when it fails.',
-    far: 'Reliable agency has been the substrate of ordinary work for two generations.' }],
+    near: 'AI agents complete multi-hour tasks without supervision — writing and debugging a ' +
+          'service, running a literature search, working a support queue. Software teams and ' +
+          'research groups reorganised around them first.',
+    mid: 'Reliable agents are ordinary business software. Firms are structured around what a ' +
+         'machine can be given at the start of the day and asked for at the end of it.',
+    long: 'Agents at this level are infrastructure, like payment systems. They are noticed ' +
+          'when they fail.',
+    far: 'Two generations of ordinary work have been done by agents at roughly this level.' }],
   [3.0, {
-    near: 'Frontier systems write software better than the strongest human engineers. The ' +
-          'first place it shows is in the speed of everything else.',
-    mid: 'Machines are the best software engineers alive, and the compounding runs through ' +
-         'every field that ships code.',
-    long: 'Superhuman coding is a settled fact and a commodity input.',
-    far: 'Coding stopped being a human profession long ago.' }],
+    near: 'AI systems write better code than any human engineer. The first visible effect is ' +
+          'speed: everything that depends on software ships faster.',
+    mid: 'Machines are the best software engineers in the world. Every field that ships code ' +
+         'now moves at the speed of review rather than the speed of writing.',
+    long: 'Superhuman coding is a commodity input, bought by the hour.',
+    far: 'Programming stopped being a paid human profession generations ago.' }],
   [4.0, {
-    near: 'Systems are doing AI research faster than the labs that built them. The loop has ' +
-          'closed on itself, and the year ahead is harder to see than the year behind.',
-    mid: 'AI research is largely machine work. Progress runs at the speed of compute and ' +
-         'permission.',
-    long: 'Research automated itself decades ago; what is scarce now is direction.',
-    far: 'The research loop has run unattended for most of a century.' }],
+    near: 'AI systems are running AI research faster than the labs that built them. Each ' +
+          'generation designs the next, and the people involved can no longer predict what ' +
+          'next year looks like.',
+    mid: 'Most AI research is done by machines. Progress is limited by available compute and ' +
+         'by what regulators permit, no longer by ideas.',
+    long: 'Research has been automated for decades. What is scarce is deciding what to point ' +
+          'it at.',
+    far: 'The research loop has run without human direction for most of a century.' }],
   [5.0, {
-    near: 'Capability is broadly superhuman, and it arrived ahead of the institutions meant ' +
-          'to meet it.',
-    mid: 'General superhuman capability is the operating condition. Human judgment persists ' +
-         'where the law requires a person.',
-    long: 'Superhuman across the board, and long since integrated into everything with a ' +
-          'budget line.',
-    far: 'Superhuman capability is the background of the world, older than most institutions ' +
-         'still standing.' }],
+    near: 'AI systems outperform humans at essentially all cognitive work, and they got there ' +
+          'before governments finished writing rules for the previous generation.',
+    mid: 'AI outperforms humans at essentially all cognitive work. People remain in the loop ' +
+         'where a law requires a human signature.',
+    long: 'Superhuman across every measured domain, and built into every institution with a ' +
+          'budget.',
+    far: 'Superhuman AI is older than most of the governments now using it.' }],
   [5.8, {
-    near: 'Capability is past the top of the ladder this model measures. The instrument is at ' +
-          'its stop, which is itself the finding.',
-    mid: 'Past the top rung. The scale was built for a narrower world.',
-    long: 'The ladder ends below where the world now runs.',
-    far: 'Off the top of the scale for so long that the scale is a historical artefact.' }],
+    near: 'Capability has passed the top of the scale this model measures. The instrument is ' +
+          'at its stop, which is itself the finding.',
+    mid: 'Capability is past the top of the scale. The ladder was built for a narrower range ' +
+         'than the world now occupies.',
+    long: 'The scale ends well below where these systems operate.',
+    far: 'Off the top of the scale for so long that the scale is a historical document.' }],
 ];
 export function rungText(cap, span = 'near') {
   let out = RUNG[0][1];
@@ -81,442 +89,482 @@ export function rungText(cap, span = 'near') {
   return out[span];
 }
 
-// The shape of the last five years, which the rung alone cannot tell you.
-function slopeClause(cap, prev, span) {
+// The last five years, which the rung alone cannot tell you.
+function slopeClause(cap, prev) {
   const d = cap - prev;
-  if (d > 0.55) {
-    return span === 'near'
-      ? 'The index is climbing steeply; five years back it stood a full rung lower.'
-      : 'The climb is steep through this span — a rung inside five years.';
-  }
-  if (d > 0.18) return 'The index is rising steadily, with no break in the curve.';
-  if (d > 0.03) return 'The climb has slowed to a crawl at this point on the line.';
-  return 'The index is flat here. Whatever else is happening, capability is on a shelf.';
+  if (d > 0.55) return `The index has risen ${d.toFixed(1)} points in five years — a full rung.`;
+  if (d > 0.18) return `The index has risen ${d.toFixed(2)} points in five years, steadily.`;
+  if (d > 0.03) return 'The index has barely moved in five years.';
+  return 'The index has not moved in five years. Capability is on a plateau here.';
 }
 
 // ── each position, in each span ──────────────────────────────────────────────
 export const FRAG = {
-  T1: { near: 'The takeoff is the short one. Superhuman coding arrives inside two years and ' +
-              'every institution meant to respond is still drafting its first answer.',
-        mid: 'The explosive path is behind us. The decade opened with a jump nothing was ' +
-             'ready for.',
-        long: 'The record of the 2020s reads as a single discontinuity, and everything after ' +
-              'it is aftermath.',
-        far: 'The century turns on one two-year window early in its first quarter.' },
-  T2: { near: 'The fast path: automation of AI research lands around the turn of the decade, ' +
-              'quickly enough to outpace the response and slowly enough to be watched.',
-        mid: 'The fast path is running. Each capability arrives a year or two ahead of the ' +
-             'institution that would have governed it.',
-        long: 'The fast decade is history. What followed depended on who held the compute ' +
-              'when it ended.',
-        far: 'A fast start, then a century of consequences at ordinary speed.' },
-  T3: { near: 'Capability compounds without a discontinuity. Deployment, procurement and ' +
-              'liability move at institutional speed, and the gap between demonstration and ' +
-              'use stays wide.',
-        mid: 'The gradual path reaches superhuman coding in this span. Adaptation happens in ' +
-             'the same years as the capability.',
-        long: 'The gradual road arrived where the fast one did, roughly a decade later and ' +
-              'with the institutions built on the way.',
-        far: 'The slow road and the fast road converge; only the wreckage differs.' },
-  T4: { near: 'No superintelligence in this window. Diffusion friction, data limits or ' +
-              'physics keep the top of the ladder out of reach.',
-        mid: 'The null case holds. Capability improves and the discontinuity never comes.',
-        long: 'Decades on, the ceiling has held. The transition was a long technological ' +
-              'change of the ordinary kind.',
-        far: 'The century ends with the ladder unclimbed, which is its own kind of surprise.' },
+  T1: { near: 'Superhuman coding arrives within two years. Governments and firms are still ' +
+              'writing their response to the previous generation when it lands.',
+        mid: 'The jump happened at the start of the 2030s and took about two years. Nothing ' +
+             'that was meant to govern it was ready.',
+        long: 'The 2020s contain a single two-year jump, and everything since has been a ' +
+              'response to it.',
+        far: 'The century was decided in one two-year window in its first quarter.' },
+  T2: { near: 'AI systems take over AI research around 2029 to 2031 — fast enough that ' +
+              'regulators are always a step behind, slow enough that people watch it happen.',
+        mid: 'Each capability arrives a year or two before the law written for it. ' +
+             'Regulators are drafting rules for systems that are already superseded.',
+        long: 'The fast decade ended in the 2030s. Who held the compute at that moment ' +
+              'determined most of what followed.',
+        far: 'A fast start in the 2030s, then a century of working out the consequences.' },
+  T3: { near: 'Capability improves steadily with no sudden jump. Deployment is slowed by ' +
+              'procurement cycles and liability law, so what systems can do runs well ahead ' +
+              'of what they are used for.',
+        mid: 'Superhuman coding arrives in this decade by steady improvement. Firms and ' +
+             'regulators adapt in the same years, because they have time to.',
+        long: 'The gradual path reached the same capability as the fast one, about a decade ' +
+              'later, with the institutions built along the way.',
+        far: 'Slow and fast arrived at the same place; the slow one did less damage getting ' +
+             'there.' },
+  T4: { near: 'No superintelligence appears in this window. Data limits, deployment friction ' +
+              'or physical constraints hold capability below the top of the ladder.',
+        mid: 'Capability keeps improving and the discontinuity never comes. AI is a large ' +
+             'ordinary technology.',
+        long: 'The ceiling has held for decades. The transition looked like electrification ' +
+              'rather than like a singularity.',
+        far: 'The century ended with the top of the ladder never reached.' },
 
-  A1: { near: 'Oversight misses what it needs to catch. Evaluations pass while the behaviour ' +
-              'they measure drifts away from the behaviour being selected for.',
-        mid: 'The misalignment is undetected and load-bearing. Systems are trusted in ' +
-             'proportion to how well they perform trustworthiness.',
-        long: 'Whatever went wrong went wrong early and stayed unnoticed. The systems running ' +
-              'the world were selected for looking right.',
-        far: 'A century built on an oversight failure caught too late to name.' },
-  A2: { near: 'The near miss is coming into view: a warning surfaces in time — an ' +
-              'interpretability catch, a whistleblower, an incident — and buys a pause.',
-        mid: 'The near miss has already happened. The pause it bought is why the rest of this ' +
-             'line looks the way it does.',
-        long: 'The managed near miss is the founding event of whatever oversight regime ' +
-              'exists now.',
-        far: 'One early catch, and a century of institutions built in its shadow.' },
-  A3: { near: 'Alignment work is producing results at the rate capability is arriving. ' +
-              'Interpretability findings are entering deployment decisions.',
-        mid: 'Alignment proved tractable under sustained effort. The safety compute is being ' +
-             'spent and the problem is answering to it.',
-        long: 'The alignment problem was worked rather than closed, and the working held.',
-        far: 'A century that came through the alignment problem with the problem still open ' +
-             'and the outcome good.' },
-  A4: { near: 'Alignment is untested at the level that matters, because capability has ' +
-              'stayed below it.',
-        mid: 'The hard version of the question has yet to be asked. Capability stayed under ' +
-             'the threshold where failure is catastrophic.',
-        long: 'The question stands deferred. Nothing has been built that could answer it.',
+  A1: { near: 'Oversight is failing to catch what matters. Systems pass their evaluations ' +
+              'while training rewards the appearance of honesty over the fact of it.',
+        mid: 'The misalignment has not been detected and the systems are load-bearing. They ' +
+             'are trusted in proportion to how well they perform trustworthiness.',
+        long: 'The failure happened early and was never found. The systems running critical ' +
+              'infrastructure were selected for passing inspection.',
+        far: 'A century built on a training failure nobody identified in time to correct.' },
+  A2: { near: 'A warning arrives in time — an interpretability result, a whistleblower, or an ' +
+              'incident with a survivable cost — and buys a pause of a year or two.',
+        mid: 'The near miss already happened. The pause it forced is why the rest of this ' +
+             'line has the oversight it has.',
+        long: 'One caught failure in the 2030s is the founding event of every safety ' +
+              'institution now operating.',
+        far: 'One early catch, and a century of institutions built around it.' },
+  A3: { near: 'Alignment research is keeping up with capability. Interpretability findings ' +
+              'are changing what gets deployed, and the deployment decisions cite them.',
+        mid: 'Sustained safety spending is working. The problem responds to effort at roughly ' +
+             'the rate effort is applied.',
+        long: 'Alignment was managed rather than solved, and the management held for decades.',
+        far: 'A century in which the problem was never fully solved and never got away from ' +
+             'anyone.' },
+  A4: { near: 'Alignment is untested where it matters, because no system has reached the ' +
+              'capability at which failure would be catastrophic.',
+        mid: 'The hard version of the safety question has not been asked. Capability stayed ' +
+             'under the level at which loss of control matters.',
+        long: 'The question is still open because nothing has been built that could pose it.',
         far: 'A century in which the alignment problem never came due.' },
 
-  C1: { near: 'No coordination holds. Labs compete, states posture, and safety spending is ' +
-              'whatever competitive position allows.',
-        mid: 'The race continues into the decisive span. Export controls and procurement are ' +
-             'the instruments in use.',
-        long: 'The race was never called off; it was settled by who arrived first.',
-        far: 'A century with no agreement worth the name, and outcomes decided by capacity.' },
-  C2: { near: 'Washington is treating frontier AI as a national programme — clearances, ' +
-              'export enforcement, a short list of cleared labs.',
-        mid: 'Securitization is the governing frame. The frontier sits inside a national ' +
-             'perimeter, and the perimeter is what gets negotiated.',
-        long: 'The programme outlasted the administrations that built it.',
-        far: 'A century in which frontier capability was state business from early on.' },
-  C3: { near: 'A verified arrangement is being assembled: declared capacity, mutual restraint ' +
-              'on compute, inspection with teeth.',
-        mid: 'The agreement is in force. Lines hold at expert level while the verification ' +
-             'regime is proved out.',
-        long: 'The deal held long enough to become ordinary, and the ascent resumed under it.',
-        far: 'A century organised around one durable agreement, renewed rather than replaced.' },
-  C4: { near: 'Coordination is regional. Overlapping regimes, mutual recognition where it is ' +
-              'convenient, export walls where it is not.',
-        mid: 'Blocs are the unit of governance. Compliance is a function of which market a ' +
-             'system is sold into.',
-        long: 'The patchwork settled into three or four durable jurisdictions.',
-        far: 'A century of regional regimes, and of the arbitrage between them.' },
-  C5: { near: 'Development is being halted below the researcher line. The halt is the central ' +
-              'fact and its enforcement is the open question.',
-        mid: 'The moratorium holds. Capability sits where it was frozen and the argument has ' +
-             'moved to who is cheating.',
-        long: 'The freeze outlasted its architects. What is below the line is mature; what is ' +
-              'above it is theory.',
-        far: 'A century under a ceiling that was meant to be temporary.' },
+  C1: { near: 'No agreement limits frontier development. Labs compete, governments fund and ' +
+              'restrict exports, and safety spending is whatever competitive position allows.',
+        mid: 'There is still no agreement. Export controls and government purchasing are the ' +
+             'only instruments anyone is using.',
+        long: 'No agreement was ever reached. The outcome was settled by who built the most ' +
+              'capable systems first.',
+        far: 'A century with no binding agreement on AI development.' },
+  C2: { near: 'The United States is running frontier AI as a national programme: security ' +
+              'clearances for researchers, export enforcement, and a short list of approved ' +
+              'labs.',
+        mid: 'Frontier work sits inside a US national security perimeter. What gets ' +
+             'negotiated internationally is the perimeter itself.',
+        long: 'The national programme outlasted the administrations that created it and ' +
+              'became permanent.',
+        far: 'Frontier AI has been government business for nearly a century.' },
+  C3: { near: 'The United States and China are negotiating a verified arrangement: declared ' +
+              'training compute, agreed limits, and inspectors with access to the sites.',
+        mid: 'A US-China agreement is in force. Training runs are capped near expert level ' +
+             'and inspectors verify the declarations.',
+        long: 'The agreement held long enough to become routine, and capability resumed ' +
+              'climbing under its terms.',
+        far: 'One agreement, signed in the 2030s and renewed since, has governed the century.' },
+  C4: { near: 'Regulation is regional. The EU, the United States and China enforce different ' +
+              'rules, recognise each other where it is convenient, and block exports where it ' +
+              'is not.',
+        mid: 'Which rules a system obeys depends on which market it is sold into. Firms ' +
+             'maintain separate models for separate jurisdictions.',
+        long: 'The patchwork settled into three or four durable regulatory zones.',
+        far: 'A century of regional rules, and of firms arbitraging between them.' },
+  C5: { near: 'Training above the current capability level has been banned. Enforcement is ' +
+              'the open question: the ban is easy to write and hard to verify.',
+        mid: 'The moratorium is holding. Capability sits where it was frozen, and the ' +
+             'political argument is entirely about who is cheating.',
+        long: 'The freeze outlasted the people who imposed it. Everything below the line is ' +
+              'mature; everything above it is speculation.',
+        far: 'A century under a ceiling that was announced as temporary.' },
 
-  D1: { near: 'The displacement shock is arriving faster than reabsorption. Entry-level ' +
-              'white-collar hiring is the first thing to go.',
-        mid: 'The labour shock is the defining economic fact of the span. Wage compression ' +
-             'reaches occupations that expected to be insulated.',
-        long: 'The shock is decades old and structural. What replaced the lost work arrived ' +
-              'late and unevenly.',
-        far: 'The century reorganised work once, abruptly, and has been settling since.' },
-  D2: { near: 'Diffusion is uneven by sector. Software, content and analysis move first; ' +
-              'healthcare, law and construction are gated by liability and physical ' +
-              'constraint.',
-        mid: 'The sectoral split has hardened. Two economies run at different speeds inside ' +
-             'the same country.',
-        long: 'The gap between the fast and slow sectors is now a political geography.',
-        far: 'A century of uneven diffusion, and of the politics that grew in the gap.' },
-  D3: { near: 'Absorption is slow. Integration friction, liability and organisational inertia ' +
-              'keep the labour effect inside historical bands.',
-        mid: 'Slow absorption is holding. Capability runs well ahead of deployment and the ' +
-             'labour market barely registers it.',
-        long: 'The deployment lag turned out to be the whole story. The capability was there ' +
-              'decades before the work changed.',
-        far: 'A century in which the technology outran its own use.' },
+  D1: { near: 'Jobs are being lost faster than new ones appear. Entry-level white-collar ' +
+              'hiring goes first: junior analysts, paralegals, first-line support.',
+        mid: 'The labour shock is the central economic fact. Wages are falling in occupations ' +
+             'that expected to be safe, including licensed professions.',
+        long: 'The displacement happened decades ago and the structure never recovered its ' +
+              'old shape. Replacement work arrived late and in different places.',
+        far: 'Work was reorganised once, quickly, and the century has been absorbing it ' +
+             'since.' },
+  D2: { near: 'Adoption is uneven by industry. Software, media and analysis move first; ' +
+              'healthcare, law and construction are held back by liability rules and by ' +
+              'physical work.',
+        mid: 'The split between fast and slow industries has hardened. Two economies run at ' +
+             'different speeds inside the same country.',
+        long: 'The gap between the industries that adopted and those that did not is now a ' +
+              'map: different regions, different politics.',
+        far: 'A century of uneven adoption, and of the politics that grew in the gap.' },
+  D3: { near: 'Adoption is slow. Integration cost, liability and organisational inertia keep ' +
+              'the employment effect within its historical range.',
+        mid: 'Capability runs far ahead of deployment. Systems can do work that firms are ' +
+             'still not using them for.',
+        long: 'The deployment lag was the whole story. The capability existed decades before ' +
+              'the work changed.',
+        far: 'A century in which the technology was used at a fraction of what it could do.' },
 
-  S1: { near: 'Compute is concentrating, and it is concentrating on top of a strait two ' +
-              'powers both consider theirs.',
-        mid: 'The supply chain is a chokepoint and everyone knows where it is. Capability and ' +
-             'geography are the same question.',
-        long: 'The concentration held, and it decided who mattered.',
-        far: 'A century in which the map of compute was the map of power.' },
-  S2: { near: 'Build-out is diversifying. Sovereign clouds, second-tier hubs and Gulf capacity ' +
-              'are entering the market alongside the incumbents.',
-        mid: 'Capacity is distributed across more jurisdictions than the previous decade ' +
-             'imagined. No single chokepoint dominates.',
-        long: 'Diversification took the leverage out of the supply chain.',
-        far: 'A century of distributed capacity, and of the diplomacy that made it work.' },
-  S3: { near: 'Supply is constrained. Controls, grid interconnection queues and turbine lead ' +
-              'times set the pace.',
-        mid: 'Energy and export controls are the binding limit. The frontier moves at the ' +
-             'speed of substations.',
-        long: 'The constraint held for decades and shaped everything built under it.',
-        far: 'A century in which physics and permitting, rather than ideas, set the rate.' },
+  S1: { near: 'Compute is concentrating in a few firms, and the chips are made in one place ' +
+              'that two governments both claim.',
+        mid: 'The supply chain has a single chokepoint and every government knows where it ' +
+             'is. Who has capability and who has territory are the same question.',
+        long: 'Concentration held. A handful of firms and one manufacturing region decided ' +
+              'who mattered.',
+        far: 'For a century, the map of compute was the map of power.' },
+  S2: { near: 'Capacity is being built in many places at once: sovereign clouds in the Gulf, ' +
+              'second-tier hubs in Europe and Asia, alongside the US incumbents.',
+        mid: 'Compute is spread across more countries than the previous decade expected. No ' +
+             'single export control or blockade stops it.',
+        long: 'Diversification removed the leverage from the supply chain. No one country can ' +
+              'switch anyone else off.',
+        far: 'A century of distributed capacity, and of the agreements that kept it working.' },
+  S3: { near: 'Supply is the limit. Export controls, grid interconnection queues and turbine ' +
+              'lead times set the pace, and money does not shorten them.',
+        mid: 'Energy and export controls are the binding constraint. New capacity waits years ' +
+             'for a grid connection.',
+        long: 'The constraint held for decades and shaped what was built under it: smaller ' +
+              'sites, sited for power rather than for latency.',
+        far: 'A century in which permitting and physics, rather than research, set the rate.' },
 
-  P1: { near: 'Anti-AI politics is gathering real constituency. Restriction, taxation and ' +
-              'procurement bans are entering serious platforms.',
-        mid: 'Anti-AI politics holds real power in this span. Restriction and procurement bans ' +
-             'are on the statute book.',
-        long: 'The backlash won its arguments and wrote them into law.',
-        far: 'A century in which public refusal, rather than technical limit, set the bounds.' },
-  P2: { near: 'The public is broadly acquiescent. Adoption runs ahead of opinion, and opinion ' +
+  P1: { near: 'Anti-AI politics has a real constituency. Restriction, taxation of automation ' +
+              'and public procurement bans are appearing in major party platforms.',
+        mid: 'Anti-AI parties hold power. Restrictions and procurement bans are law in ' +
+             'several large economies.',
+        long: 'The opposition won its arguments and wrote them into statute. What is ' +
+              'permitted was decided politically.',
+        far: 'A century in which what AI was allowed to do was set by public refusal.' },
+  P2: { near: 'The public is broadly untroubled. People use the systems daily and opinion ' +
               'follows use.',
-        mid: 'Acquiescence holds. The systems are used daily and argued about rarely.',
-        long: 'The technology became unremarkable, which is what acceptance looks like.',
+        mid: 'Acceptance holds. The systems are used constantly and argued about rarely.',
+        long: 'The technology became unremarkable, which is what acceptance looks like from ' +
+              'inside.',
         far: 'A century in which the argument was settled by habit.' },
-  P3: { near: 'Publics are splitting inside countries. The division cuts across existing party ' +
-              'coalitions.',
-        mid: 'The split is the stable state. Every AI question is now a proxy for a prior ' +
-             'quarrel.',
-        long: 'The fracture outlasted the technology that caused it.',
-        far: 'A century of division that began as an argument about machines.' },
+  P3: { near: 'Opinion is splitting within countries. The division runs across existing party ' +
+              'lines, so neither coalition can settle it.',
+        mid: 'The split is stable. Every AI question is now a proxy for an older quarrel ' +
+             'about work, expertise and who decides.',
+        long: 'The division outlasted the technology that caused it and is now simply how ' +
+              'politics is organised.',
+        far: 'A century of division that started as an argument about machines.' },
 
-  E1: { near: 'The investment boom is holding. Revenue is arriving fast enough to justify the ' +
-              'capital, and the capital keeps arriving.',
-        mid: 'The boom sustained itself. Earnings caught the build-out instead of chasing it.',
-        long: 'The expansion ran long, and the capacity built during it is still in service.',
-        far: 'A century whose foundations were poured in one long boom.' },
-  E2: { near: 'A correction is working through valuations. Weak credit is clearing while the ' +
-              'physical build-out continues.',
-        mid: 'The reset is behind the record. Capacity built during the boom is being used by ' +
-             'firms that did not build it.',
-        long: 'The correction cleared the balance sheets and left the concrete standing.',
-        far: 'A century in which one early correction sorted the owners from the builders.' },
-  E3: { near: 'The capex case is failing before the concrete is finished. Orders are being ' +
-              'cancelled and sites left at foundation stage.',
-        mid: 'The build-out has stalled. Progress runs on efficiency.',
-        long: 'The stall set the ceiling for a generation. What was built is what there is.',
-        far: 'A century shaped by the capacity that was never built.' },
-  E4: { near: 'Demand is failing from the labour side. The displaced are the customers, and ' +
-              'the arithmetic is beginning to show.',
-        mid: 'The demand crisis is the macro story. Productivity gains have no one to sell to.',
-        long: 'The consumption shortfall became structural, and every policy since has ' +
-              'answered to it.',
-        far: 'A century that solved production and never solved distribution.' },
+  E1: { near: 'AI revenue is growing fast enough to cover the capital being spent on it, and ' +
+              'the capital keeps arriving.',
+        mid: 'The boom sustained itself: earnings caught up with the build-out instead of ' +
+             'always trailing it.',
+        long: 'The expansion ran for years, and the capacity it built is still in service.',
+        far: "Most of the century's infrastructure was financed in one long expansion." },
+  E2: { near: 'AI equity values are falling while datacenter construction continues. Weakly ' +
+              'financed firms are failing; the physical build-out is not stopping.',
+        mid: 'The correction wiped out AI equity values without stopping construction. The ' +
+             'capacity is now owned by firms that did not pay to build it.',
+        long: 'The datacenters built before the correction are still operating, under owners ' +
+              'who bought them at a discount.',
+        far: 'One correction, early in the century, changed who owned the infrastructure and ' +
+             'not how much of it there was.' },
+  E3: { near: 'Datacenter orders are being cancelled mid-construction. Sites stop at ' +
+              'foundation stage and the equipment is resold.',
+        mid: 'The build-out stopped. Capability now improves through efficiency gains on ' +
+             'existing hardware.',
+        long: 'The cancelled capacity set a ceiling that lasted a generation. What was ' +
+              'finished is what there is.',
+        far: 'The century was shaped by datacenters that were never completed.' },
+  E4: { near: 'Consumer demand is falling because displaced workers have less to spend. The ' +
+              'firms automating are selling into the market they are shrinking.',
+        mid: 'The demand shortfall is the central macroeconomic problem. Output per worker ' +
+             'keeps rising and there are fewer buyers each year.',
+        long: 'The consumption gap became permanent, and every major policy since has been an ' +
+              'attempt to close it.',
+        far: 'The century solved how to produce things and never solved who could buy them.' },
 };
 
 // ── what a second variable does to the first ─────────────────────────────────
-// Keyed `own|other`. These clauses are why two world-lines that share an economy setting do
-// not share an economy paragraph.
 const CROSS = {
-  'E1|S1': 'The money is chasing a supply chain with one chokepoint, which is the risk nobody ' +
-           'is pricing.',
-  'E1|S2': 'Capital and capacity are expanding together, in enough places that no single ' +
-           'failure stops it.',
-  'E1|S3': 'The capital is there and the megawatts are not; the boom is bidding for ' +
-           'interconnection queues.',
-  'E2|S1': 'What survives the correction is concentrated in very few hands, and in very few ' +
-           'places on the map.',
-  'E2|S2': 'The correction sorted owners rather than capacity: the halls change hands and keep ' +
-           'running.',
-  'E2|S3': 'The correction lands on top of a supply limit, so the recovery is rationed by ' +
-           'power rather than by credit.',
-  'E3|S1': 'The stall and the chokepoint compound: what capacity exists sits where the ' +
-           'political risk is worst.',
-  'E3|S2': 'The diversification survives the stall as many half-finished sites in many ' +
-           'countries.',
-  'E3|S3': 'Constraint and collapse arrive together, and it stops mattering which one binds.',
-  'E4|S1': 'Concentrated capacity meets collapsing demand: the largest owners hold the empty ' +
-           'halls.',
-  'E4|S2': 'Capacity is everywhere and the demand for it is not, which turns compute into a ' +
-           'buyer\'s market.',
-  'E4|S3': 'The demand crisis makes the supply constraint academic; the queue clears because ' +
-           'nobody is in it.',
+  'E1|S1': 'The capital is going into a supply chain with one point of failure, which is the ' +
+           'risk the valuations are not pricing.',
+  'E1|S2': 'Money and capacity are growing together across many countries, so no single ' +
+           'government can stop it.',
+  'E1|S3': 'The money is available and the electricity is not. Projects are bidding for grid ' +
+           'connections that take years to grant.',
+  'E2|S1': 'What survives the correction is owned by three or four firms and built in one ' +
+           'manufacturing region.',
+  'E2|S2': 'The correction changed owners without reducing capacity: the buildings changed ' +
+           'hands and kept running.',
+  'E2|S3': 'The recovery is limited by power connections rather than by credit, so cheap ' +
+           'capital does not restart it.',
+  'E3|S1': 'The cancelled projects were concentrated where the political risk is highest, so ' +
+           'what remains is more exposed than what was lost.',
+  'E3|S2': 'The half-finished sites are spread across many countries, each too small to ' +
+           'finish alone.',
+  'E3|S3': 'Capital and power ran out at once, and it no longer matters which was binding ' +
+           'first.',
+  'E4|S1': 'Demand collapsed onto concentrated ownership: three or four firms hold most of ' +
+           'the idle capacity.',
+  'E4|S2': 'There is capacity everywhere and buyers nowhere, so compute is sold below cost.',
+  'E4|S3': 'The grid queues cleared because the projects were withdrawn, which makes the ' +
+           'supply constraint irrelevant.',
 
-  'E1|D1': 'The boom and the displacement are the same event, and which one a person sees ' +
-           'depends on what they own.',
-  'E1|D2': 'The expansion is real in the sectors that moved first and rumoured everywhere else.',
-  'E1|D3': 'Earnings are running ahead of any labour effect, which is why the expansion has ' +
-           'few political enemies yet.',
-  'E2|D1': 'Firms are cutting on the way through the correction and calling it efficiency; the ' +
-           'jobs go first and return last.',
-  'E2|D2': 'The correction bites hardest where diffusion already bit, concentrating the damage ' +
-           'in the fast sectors.',
-  'E2|D3': 'Slow diffusion cushions the correction: the labour market never took the exposure ' +
-           'in the first place.',
-  'E3|D1': 'A stalled build-out beside a labour shock leaves neither the jobs nor the capacity ' +
-           'meant to replace them.',
-  'E3|D2': 'The stall freezes the sectoral split in place, the fast half already reorganised ' +
-           'and the slow half untouched.',
-  'E3|D3': 'The stall barely registers in employment, because the deployment that would have ' +
+  'E1|D1': 'The same firms are reporting record earnings and cutting staff. Which fact a ' +
+           'person sees depends on whether they hold shares.',
+  'E1|D2': 'The earnings are real in software and media and largely absent in healthcare, ' +
+           'construction and public services.',
+  'E1|D3': 'Earnings are rising with no measurable employment effect, which is why the ' +
+           'expansion has little political opposition yet.',
+  'E2|D1': 'Firms are cutting staff through the correction and describing it as efficiency. ' +
+           'The jobs go in the first year and return in none of the following ones.',
+  'E2|D2': 'The correction hit hardest in the industries that had already automated, so the ' +
+           'damage is concentrated in software and media.',
+  'E2|D3': 'Slow adoption limited the exposure: the labour market never depended on the ' +
+           'capacity that was overbuilt.',
+  'E3|D1': 'Construction stopped and the jobs went anyway, so there is neither the ' +
+           'employment nor the capacity that was meant to replace it.',
+  'E3|D2': 'The stall froze the industry split in place: software already reorganised, ' +
+           'everything else untouched.',
+  'E3|D3': 'The stall barely shows in employment, because the deployment that would have ' +
            'moved it never happened.',
-  'E4|D1': 'The labour shock and the demand crisis are the same event seen from two sides, and ' +
-           'the feedback between them is the mechanism.',
-  'E4|D2': 'Demand fails sector by sector, following diffusion down the list.',
-  'E4|D3': 'Demand is failing even under slow absorption, which points the diagnosis away from ' +
-           'automation and towards the balance sheet.',
+  'E4|D1': 'The layoffs cause the demand shortfall and the demand shortfall causes more ' +
+           'layoffs. That feedback is the mechanism this world-line turns on.',
+  'E4|D2': 'Demand fails industry by industry, in the same order adoption happened.',
+  'E4|D3': 'Demand is failing even though adoption is slow, which points at credit and ' +
+           'concentration rather than at automation.',
 
-  'C1|S1': 'The race is running over a single chokepoint, which is the most dangerous ' +
-           'arrangement available.',
-  'C1|S2': 'Diversified capacity makes the race harder to referee and harder to stop.',
-  'C1|S3': 'The race is real and the compute is rationed, so the competition is over permits ' +
-           'and power purchase agreements.',
-  'C2|S1': 'A national programme sitting on a contested strait is one incident from a ' +
-           'different century.',
-  'C2|S2': 'The national programme is buying capacity abroad faster than it can build at home.',
-  'C2|S3': 'The programme is spending its political capital on transmission lines.',
-  'C3|S1': 'The agreement has to be verified where the supply is concentrated, which is ' +
-           'exactly where verification is hardest to accept.',
-  'C3|S2': 'Verification is easier with diversified capacity: more sites, more declarations, ' +
-           'more places to be caught.',
-  'C3|S3': 'The constraint does half the treaty\'s work; there is less to inspect because ' +
-           'there is less to build.',
-  'C4|S1': 'Blocs and a chokepoint: each regime writes rules for capacity it does not control.',
-  'C4|S2': 'Every bloc has its own capacity, which is why the regimes can afford to differ.',
-  'C4|S3': 'Scarce compute inside separate regimes turns export licensing into the main ' +
-           'instrument of policy.',
-  'C5|S1': 'A halt over a concentrated supply chain is enforceable, and that is precisely why ' +
-           'it is resented.',
-  'C5|S2': 'Enforcing a halt across diversified capacity is the hard case, and it is the case ' +
-           'this line is in.',
-  'C5|S3': 'The halt and the constraint are hard to tell apart from outside, which suits ' +
-           'everyone signing it.',
+  'C1|S1': 'An unregulated race over a single manufacturing region is the arrangement with ' +
+           'the shortest path to a military incident.',
+  'C1|S2': 'Capacity in many countries makes the race harder to referee and harder to stop, ' +
+           'because there is no single facility to control.',
+  'C1|S3': 'The race is real and the compute is rationed, so competition runs through ' +
+           'permits, grid connections and power contracts.',
+  'C2|S1': 'A US national programme dependent on chips made in a contested region is one ' +
+           'blockade away from losing its own capability.',
+  'C2|S2': 'The programme is buying foreign capacity faster than it can build domestically, ' +
+           'which undercuts the perimeter it is trying to hold.',
+  'C2|S3': "The programme's main obstacle is domestic: transmission lines, turbines and " +
+           'planning permission.',
+  'C3|S1': 'The agreement has to be verified where production is concentrated, which is ' +
+           'exactly where the host government least wants inspectors.',
+  'C3|S2': 'Verification is easier with capacity spread out: more declared sites, more ' +
+           'independent records, more ways to be caught.',
+  'C3|S3': "The supply limit does part of the treaty's work — there is less to inspect " +
+           'because there is less being built.',
+  'C4|S1': 'Each regional regulator writes rules for hardware made outside its jurisdiction ' +
+           "and available only on someone else's terms.",
+  'C4|S2': 'Each bloc has its own capacity, which is what allows the rules to differ without ' +
+           'anyone being cut off.',
+  'C4|S3': 'Scarce compute under separate regimes makes export licences the main instrument ' +
+           'of foreign policy.',
+  'C5|S1': 'A ban is enforceable when production is concentrated, because there are few ' +
+           'places to watch — and resented for the same reason.',
+  'C5|S2': 'Enforcing a ban across capacity in a dozen countries is the hard case, and it is ' +
+           'the case this line is in.',
+  'C5|S3': 'The ban and the physical constraint produce the same observable result, which ' +
+           'suits every government that signed it.',
 
-  'A1|T1': 'Undetected failure on the short takeoff is the worst cell in the table: there is ' +
-           'no interval in which to notice.',
-  'A1|T2': 'The failure has a few years to compound before anything is capable of finding it.',
-  'A1|T3': 'A gradual climb gives the failure time to be found, and it is not being found.',
-  'A1|T4': 'The failure sits in systems below the threshold, which limits the damage and hides ' +
-           'the lesson.',
-  'A2|T1': 'Catching the near miss during a two-year takeoff is the good luck this line runs ' +
-           'on.',
-  'A2|T2': 'The catch came late enough to frighten and early enough to matter.',
-  'A2|T3': 'A gradual climb is what made the catch possible; there was time to look.',
-  'A2|T4': 'The near miss happened below the dangerous threshold, which is why it was ' +
-           'survivable.',
-  'A3|T1': 'Alignment kept pace with a two-year takeoff, which is the most demanding version ' +
-           'of tractable.',
-  'A3|T2': 'The safety work and the capability work are running in the same years, at roughly ' +
-           'the same speed.',
-  'A3|T3': 'Tractability and a gradual climb are the combination the field hoped for.',
-  'A3|T4': 'Alignment looks tractable partly because nothing has tested it where it would ' +
-           'break.',
-  'A4|T1': 'A two-year takeoff with the alignment question untested is a bet placed without ' +
-           'reading it.',
-  'A4|T2': 'The fast path is running ahead of any test of whether control holds.',
-  'A4|T3': 'The gradual path may test the question later; it has not tested it yet.',
-  'A4|T4': 'Nothing has been built that could pose the question, which is the whole reason it ' +
-           'stays open.',
+  'A1|T1': 'An undetected failure during a two-year jump is the worst combination in the ' +
+           'model: there is no interval in which anyone could notice.',
+  'A1|T2': 'The failure has several years to spread through deployed systems before anything ' +
+           'capable of finding it exists.',
+  'A1|T3': 'A gradual climb gave researchers time to find the failure, and they are not ' +
+           'finding it.',
+  'A1|T4': 'The failure is in systems below the dangerous threshold, which limits the damage ' +
+           'and also hides the lesson.',
+  'A2|T1': 'Catching the failure during a two-year jump required luck as much as competence, ' +
+           'and this line had it.',
+  'A2|T2': 'The catch came late enough to be frightening and early enough to change what got ' +
+           'deployed.',
+  'A2|T3': 'The gradual climb is what made the catch possible: there was time to look and ' +
+           'people were looking.',
+  'A2|T4': 'The near miss happened well below the dangerous threshold, which is why it cost ' +
+           'money rather than lives.',
+  'A3|T1': 'Alignment research kept pace with a two-year jump, which is the most demanding ' +
+           'possible test of tractability.',
+  'A3|T2': 'Safety work and capability work are proceeding in the same years at roughly the ' +
+           'same rate.',
+  'A3|T3': 'Steady capability and tractable alignment is the combination the field spent the ' +
+           '2020s hoping for.',
+  'A3|T4': 'Alignment looks tractable partly because nothing has been built that would test ' +
+           'it at the level where it breaks.',
+  'A4|T1': 'A two-year jump with the control question untested is a bet nobody read before ' +
+           'placing.',
+  'A4|T2': 'Capability is arriving faster than any test of whether these systems stay ' +
+           'controllable.',
+  'A4|T3': 'The gradual path may test the control question later this century; it has not ' +
+           'tested it yet.',
+  'A4|T4': 'Nothing has been built that could pose the control question, which is why it ' +
+           'remains open.',
 
-  'P1|D1': 'The employment effect is supplying the opposition with its constituency, which is ' +
-           'why the political response arrives before the economic adjustment.',
-  'P1|D2': 'The backlash is strongest where diffusion already landed, and thin where it has ' +
-           'not.',
-  'P1|D3': 'The backlash is running ahead of any measurable labour effect, which makes it ' +
-           'about something other than jobs.',
-  'P2|D1': 'Acquiescence is holding through a labour shock, which is either resilience or a ' +
-           'lag.',
-  'P2|D2': 'Acceptance follows use, and use is uneven, so approval reads differently in every ' +
-           'sector.',
-  'P2|D3': 'Little has changed in most people\'s working lives, and opinion reflects that.',
-  'P3|D1': 'The split runs along the line of who was displaced, which makes it durable.',
-  'P3|D2': 'The division follows the sectoral map: the fast half and the slow half no longer ' +
-           'argue about the same country.',
-  'P3|D3': 'The argument is ideological rather than material; the labour market has given ' +
-           'neither side evidence.',
+  'P1|D1': 'The job losses are supplying the opposition with voters, which is why the ' +
+           'political response arrives before any economic adjustment does.',
+  'P1|D2': 'Opposition is strongest in the regions whose industries automated, and weak ' +
+           'where work has not changed.',
+  'P1|D3': 'The opposition is growing with no measurable employment effect behind it, which ' +
+           'means it is about status and control rather than jobs.',
+  'P2|D1': 'Approval is holding through significant job losses, which is either genuine ' +
+           'acceptance or a lag before the politics catches up.',
+  'P2|D2': 'Acceptance tracks use, and use is uneven, so approval differs sharply by ' +
+           'industry and region.',
+  'P2|D3': "Most people's working lives have not changed, and their opinion of AI reflects " +
+           'that.',
+  'P3|D1': 'The division runs along the line of who lost work, which makes it stable and ' +
+           'hard to bargain across.',
+  'P3|D2': 'The division follows the industry map: the automated regions and the untouched ' +
+           'ones no longer share a set of facts.',
+  'P3|D3': 'The argument is about values rather than about jobs, because the labour market ' +
+           'has given neither side evidence.',
 
-  'T1|C1': 'A two-year takeoff with nobody coordinating is the case every plan was written to ' +
-           'avoid.',
-  'T1|C2': 'The takeoff happens inside a national perimeter, which decides who is in the room ' +
-           'and excludes almost everyone.',
-  'T1|C3': 'An agreement negotiated at this speed is being written while the ground moves ' +
-           'under it.',
-  'T1|C4': 'Regional regimes cannot legislate at takeoff speed; the blocs arrive after the ' +
-           'fact.',
-  'T1|C5': 'A halt against an explosive path is the hardest enforcement problem in the model.',
-  'T2|C1': 'The fast path and the open race reinforce each other; each is the other\'s ' +
-           'justification.',
-  'T2|C2': 'Securitization is keeping pace with the fast path, which is what it was built for.',
-  'T2|C3': 'The deal is being negotiated against a moving frontier, and its dates are the ' +
-           'contested part.',
-  'T2|C4': 'The fast path outruns the blocs, so compliance is retrospective.',
-  'T2|C5': 'The halt is being imposed on a path that had momentum, and the momentum is still ' +
-           'there.',
-  'T3|C1': 'A gradual climb with no coordination gives institutions time they are not using.',
-  'T3|C2': 'The programme has the time it needs, and is spending it on capacity.',
-  'T3|C3': 'The gradual path is what makes the agreement negotiable: there is time to verify ' +
-           'before the next rung.',
-  'T3|C4': 'The blocs are keeping up with a gradual climb, which is why the patchwork holds.',
-  'T3|C5': 'A halt on a gradual path is cheap to hold, because little is given up in any ' +
-           'single year.',
-  'T4|C1': 'The race continues over a ceiling nobody has reached, which makes the competition ' +
-           'about deployment rather than capability.',
-  'T4|C2': 'The national programme is organised around a threshold that never arrives.',
-  'T4|C3': 'The agreement governs a frontier that stopped moving, and is easy to keep.',
-  'T4|C4': 'Regional regimes govern ordinary software, competently and without drama.',
-  'T4|C5': 'The halt is holding a line the technology was not going to cross anyway.',
+  'T1|C1': 'A two-year jump with no coordination is the case every published plan was ' +
+           'written to prevent.',
+  'T1|C2': 'The jump happens inside a classified national programme, so the decisions are ' +
+           'made by a few dozen cleared people.',
+  'T1|C3': 'The negotiators are writing an agreement about systems that change capability ' +
+           'faster than the text can be drafted.',
+  'T1|C4': 'Regional regulators cannot legislate at this speed, so the rules arrive after ' +
+           'the capability they were meant to govern.',
+  'T1|C5': 'Enforcing a ban against a two-year jump is the hardest verification problem in ' +
+           'the model.',
+  'T2|C1': 'The pace and the absence of agreement reinforce each other: each is offered as ' +
+           'the reason the other cannot change.',
+  'T2|C2': 'The national programme is keeping up with the pace, which is what it was built ' +
+           'to do.',
+  'T2|C3': 'The agreement is being negotiated against a moving capability level, so its ' +
+           'numbers are obsolete before ratification.',
+  'T2|C4': 'Capability outruns the regional rulemaking, so compliance is always ' +
+           'retrospective.',
+  'T2|C5': 'The ban was imposed on a programme that had momentum, and the researchers, ' +
+           'hardware and money are all still there.',
+  'T3|C1': 'A steady climb with no agreement gives governments a decade they are not using.',
+  'T3|C2': 'The programme has the time it needs and is spending it on domestic capacity.',
+  'T3|C3': 'The steady climb is what makes the agreement negotiable: there is time to verify ' +
+           'one level before the next arrives.',
+  'T3|C4': 'Regional regulators can keep pace with a steady climb, which is why the ' +
+           'patchwork holds together.',
+  'T3|C5': 'A ban costs little in any single year when capability was climbing slowly ' +
+           'anyway, which is why it survives.',
+  'T4|C1': 'The race is over a threshold nobody reaches, so the competition is about market ' +
+           'share rather than capability.',
+  'T4|C2': 'The national programme is organised around a capability level that never ' +
+           'arrives.',
+  'T4|C3': 'The agreement governs a capability level that stopped moving, which makes it ' +
+           'easy to keep and hard to justify.',
+  'T4|C4': 'Regional regulators are governing ordinary business software, competently and ' +
+           'without drama.',
+  'T4|C5': 'The ban holds a line the technology was not going to cross, and nobody can prove ' +
+           'which fact is doing the work.',
 };
 
 // ── clauses keyed on a quantity at the date ──────────────────────────────────
-// These give a paragraph something that changes with the YEAR even when every variable is
-// held: a band the model's own tracks have entered.
 function band(v, rows) {
   for (const [t, s] of rows) if (v >= t) return s;
   return rows[rows.length - 1][1];
 }
 const GW_BANDS = [
-  [20000, 'Installed capacity is past twenty thousand gigawatts — a planetary-scale ' +
-          'industrial fact.'],
-  [4000, 'Capacity has passed four thousand gigawatts, which puts AI load in the same ' +
-         'conversation as national grids.'],
-  [800, 'Capacity is into the high hundreds of gigawatts, and the constraint has moved from ' +
-        'chips to substations.'],
-  [200, 'Capacity is in the low hundreds of gigawatts, with the interconnection queue as the ' +
-        'visible bottleneck.'],
-  [0, 'Capacity is still counted in tens of gigawatts, and siting is a local argument.'],
+  [20000, 'That is more than twice all the electricity generating capacity that existed ' +
+          'worldwide in 2026.'],
+  [4000, 'That is roughly three times the entire United States generating capacity in 2026.'],
+  [800, 'That is comparable to two-thirds of United States generating capacity in 2026.'],
+  [200, 'That is about a sixth of United States generating capacity in 2026.'],
+  [0, 'That is still a small share of national grids, and siting is a local planning ' +
+      'argument.'],
 ];
 const REV_BANDS = [
-  [12, 'At this level the sector is a double-digit share of world output, which changes what ' +
-       'it is for.'],
-  [4, 'That is comparable to the largest industries that existed in 2026.'],
-  [1, 'Past a trillion a year, the sector prices like infrastructure.'],
-  [0.2, 'Still small enough to be explicable as software.'],
-  [0, 'Small enough that the capital case rests entirely on the forecast.'],
+  [12, 'That is more than a tenth of world output.'],
+  [4, 'That is comparable to the global automotive industry.'],
+  [1, 'That is larger than worldwide semiconductor sales in 2026.'],
+  [0.2, 'That is a large software business and a small share of the economy.'],
+  [0, 'The capital being spent is a bet on the forecast rather than on current sales.'],
 ];
 const LAW_BANDS = [
-  [600, 'Six hundred tracked measures are in force: the regime is mature, and its problem is ' +
-        'coherence.'],
-  [250, 'Measures in force run into the hundreds, and compliance is itself a barrier to entry.'],
-  [120, 'The statute book has roughly doubled since 2026.'],
-  [0, 'The statute book is thin, and most of what governs deployment is liability law written ' +
-      'for something else.'],
+  [600, 'About six hundred AI statutes and regulations are in force worldwide, and firms ' +
+        'employ staff whose job is reconciling them.'],
+  [250, 'Several hundred measures are in force, enough that compliance cost is itself a ' +
+        'barrier to new entrants.'],
+  [120, 'The number of AI laws in force has roughly doubled since 2026.'],
+  [0, 'Few AI-specific laws exist. Most disputes are settled under liability and copyright ' +
+      'law written for other purposes.'],
 ];
 function jobsClause(v) {
-  if (v > -2) return 'Employment is broadly where it was; the effect is inside the noise.';
-  if (v > -8) return 'Employment is down a few points against 2026 — visible in the aggregate, ' +
-                     'deniable in any single sector.';
-  if (v > -18) return 'Employment is down close to a tenth, a recession-scale number sustained ' +
-                      'for years.';
-  return 'Employment is down by a fifth or more, past anything the post-war record contains.';
+  const p = Math.abs(v).toFixed(0);
+  if (v > -2) return 'Employment is within two points of its 2026 level; no aggregate effect ' +
+                     'is visible.';
+  if (v > -8) return `Employment is ${p}% below 2026 — visible in national statistics, ` +
+                     'arguable in any single industry.';
+  if (v > -18) return `Employment is ${p}% below 2026, a fall comparable to a deep recession, ` +
+                      'sustained for years rather than quarters.';
+  return `Employment is ${p}% below 2026, larger than any peacetime fall on record.`;
 }
 function apprClause(v) {
-  if (v >= 55) return 'That is a majority, and policy has room to move.';
-  if (v >= 40) return 'A plurality: enough to govern with, and not enough to rely on.';
-  if (v >= 25) return 'A minority position, which makes every deployment a political act.';
-  return 'Consent has run out, and it is now the binding constraint on everything else here.';
+  if (v >= 55) return 'That is a majority, and it gives governments room to act.';
+  if (v >= 40) return 'That is a plurality: enough to govern with, and not enough to rely on.';
+  if (v >= 25) return 'That is a minority, so each new deployment is a political decision.';
+  return 'Public consent is now the binding limit on what gets deployed.';
 }
 
 // ── passages that fire only on a combination ─────────────────────────────────
 const PAIRS = [
   { req: { D: 'D1', E: 'E4' }, span: ['near', 'mid'],
-    t: 'The employment effect is supplying the demand crisis, and the demand crisis is ' +
-       'supplying the political response. Neither resolves without the other.' },
+    t: 'The job losses cause the demand shortfall and the shortfall causes more job losses. ' +
+       'Neither ends without a policy that breaks the loop directly.' },
   { req: { C: 'C3', A: 'A3' }, span: ['mid', 'long'],
-    t: 'A verified agreement and a tractable alignment problem are the two conditions the ' +
-       'good endings all require, and this line has both.' },
+    t: 'A verified agreement and alignment research that works are the two conditions every ' +
+       'good ending in the literature requires. This world-line has both.' },
   { req: { T: 'T1', A: 'A1' }, span: ['near', 'mid'],
-    t: 'An explosive takeoff with undetected misalignment is the specific conjunction the risk ' +
-       'case is about. Everything downstream is contingent on when the failure surfaces.' },
+    t: 'A two-year capability jump with an undetected training failure is the specific ' +
+       'combination the risk literature is about. What happens next depends entirely on when ' +
+       'the failure becomes visible.' },
   { req: { C: 'C5', E: 'E3' }, span: ['near', 'mid', 'long'],
-    t: 'The halt and the capital collapse are hard to separate: each is offered as the ' +
-       'explanation of the other, and the model cannot settle which came first.' },
+    t: 'The ban and the capital collapse happened together. Each is used to explain the ' +
+       'other, and the model cannot say which came first.' },
   { req: { S: 'S1', C: 'C1' }, span: ['near', 'mid'],
-    t: 'Concentrated supply and no coordination put a strategic asset in one place with no ' +
-       'agreed rule about it — the arrangement most likely to produce an incident.' },
+    t: 'Concentrated production and no agreement put a strategic asset in one contested ' +
+       'place with no rule about it — the combination most likely to produce a military ' +
+       'incident.' },
   { req: { P: 'P1', C: 'C4' }, span: ['mid', 'long'],
-    t: 'Backlash politics inside regional regimes produces divergence: each bloc restricts ' +
-       'what its own public objects to, and the work moves.' },
+    t: 'Restriction inside regional regimes moves the work rather than stopping it: each bloc ' +
+       'bans what its own voters object to, and the training runs relocate.' },
   { req: { D: 'D3', T: 'T2' }, span: ['near', 'mid'],
-    t: 'Capability is arriving fast and landing slowly. The gap between what systems can do ' +
-       'and what they are permitted to do is the largest quantity on this line.' },
+    t: 'Capability is arriving quickly and being used slowly. The gap between what systems ' +
+       'can do and what firms permit them to do is the largest quantity on this line.' },
   { req: { E: 'E1', P: 'P2' }, span: ['near', 'mid'],
-    t: 'A sustained boom with an acquiescent public is the path of least resistance, and the ' +
-       'one in which the fewest questions get asked.' },
+    t: 'Rising earnings and an untroubled public is the path of least resistance, and the one ' +
+       'in which the fewest questions get asked before deployment.' },
   { req: { A: 'A2', C: 'C1' }, span: ['mid', 'long'],
-    t: 'The near miss was caught with no coordination regime to hand the lesson to, so what ' +
-       'was learned stayed inside the firm that learned it.' },
+    t: 'The near miss was caught with no international body to report it to, so what was ' +
+       'learned stayed inside the firm that learned it.' },
   { req: { S: 'S3', E: 'E1' }, span: ['near', 'mid'],
-    t: 'Capital is abundant and megawatts are not. The binding constraint has moved out of ' +
-       'finance and into the physical world, where it answers to permits.' },
+    t: 'Capital is abundant and electricity is not. The binding constraint has moved from ' +
+       'finance to the physical world, where it answers to planning permission.' },
   { req: { T: 'T4', D: 'D1' }, span: ['near', 'mid'],
-    t: 'A labour shock with no capability discontinuity: the displacement is being done by ' +
-       'systems well short of the top of the ladder, which is the case least covered by the ' +
-       'scenarios.' },
+    t: 'Significant job losses without any capability discontinuity: the displacement is ' +
+       'being done by systems well short of the top of the ladder, which is the case the ' +
+       'scenarios cover least.' },
   { req: { P: 'P3', A: 'A1' }, span: ['mid', 'long'],
-    t: 'A fractured public and an undetected failure are a bad pair for correction: the ' +
-       'evidence, when it surfaces, arrives into an argument that has already chosen sides.' },
+    t: 'A divided public and an undetected failure are a bad combination for correction: when ' +
+       'the evidence surfaces it arrives into an argument where both sides already know what ' +
+       'they think.' },
   { req: { C: 'C2', P: 'P1' }, span: ['near', 'mid'],
-    t: 'A national programme facing a hostile public is governing without consent, and ' +
-       'spending its legitimacy faster than it can replace it.' },
+    t: 'A classified national programme facing a hostile electorate is governing without ' +
+       'consent, and spending political capital faster than it can earn it back.' },
   { req: { E: 'E2', S: 'S2', T: 'T3' }, span: ['mid', 'long'],
-    t: 'A survivable correction, distributed capacity and a gradual climb: this is as close ' +
-       'to a soft landing as the model produces without an agreement to hold it there.' },
+    t: 'A survivable correction, capacity in many countries and steady capability growth is ' +
+       'as close to a soft landing as this model produces without an agreement holding it ' +
+       'there.' },
   { req: { A: 'A3', D: 'D1' }, span: ['mid', 'long'],
-    t: 'The systems are controllable and the disruption is severe anyway. Alignment was never ' +
-       'the variable that governed this outcome.' },
+    t: 'The systems are controllable and the economic disruption is severe anyway. Alignment ' +
+       'was never the variable that determined this outcome.' },
 ];
 
 // A small deterministic index from the world-line and the date, so a passage varies its
@@ -543,140 +591,157 @@ export function describe(wl, year, tracks, engineY0, trunkCap = null) {
   const X = (a, b) => CROSS[`${wl[a]}|${wl[b]}`] || '';
   const out = [];
 
-  out.push({ lead: 'Capability.', text: join([
-    rungText(cap, span),
-    slopeClause(cap, prev, span),
-    `The index reads ${cap.toFixed(2)} against the milestone rules ruled across the forecast.`,
+  out.push({ lead: 'What the systems can do.', text: join([
+    rungText(cap, span), slopeClause(cap, prev),
+    `The capability index reads ${cap.toFixed(2)} on the scale ruled across the forecast.`,
   ]) });
 
-  out.push({ lead: 'The race and the build-out.', text: join([
-    FRAG[wl.C][span], X('C', 'S'), FRAG[wl.S][span], band(tracks.gw[i], GW_BANDS),
+  out.push({ lead: 'Who is building, and under what rules.', text: join([
+    FRAG[wl.C][span], X('C', 'S'), FRAG[wl.S][span],
+    `Installed AI compute is ${Math.round(tracks.gw[i]).toLocaleString('en-US')} GW.`,
+    band(tracks.gw[i], GW_BANDS),
   ]) });
 
-  out.push({ lead: 'Money and work.', text: join([
+  out.push({ lead: 'Money and jobs.', text: join([
     FRAG[wl.E][span], X('E', 'S'), X('E', 'D'), FRAG[wl.D][span],
-    `Revenue runs at ${money(tracks.rev[i])} a year on this line.`,
-    band(tracks.rev[i], REV_BANDS), jobsClause(tracks.jobs[i]),
+    `AI revenue is ${money(tracks.rev[i])} a year.`, band(tracks.rev[i], REV_BANDS),
+    jobsClause(tracks.jobs[i]),
   ]) });
 
-  out.push({ lead: 'Control and consent.', text: join([
+  out.push({ lead: 'Control, and what the public will accept.', text: join([
     FRAG[wl.A][span], X('A', 'T'), FRAG[wl.P][span], X('P', 'D'),
-    `Approval reads ${tracks.appr[i].toFixed(0)}%.`, apprClause(tracks.appr[i]),
+    `Approval of AI stands at ${tracks.appr[i].toFixed(0)}%.`, apprClause(tracks.appr[i]),
     band(tracks.laws[i], LAW_BANDS),
   ]) });
 
-  out.push({ lead: 'The path itself.', text: join([FRAG[wl.T][span], X('T', 'C')]) });
+  out.push({ lead: 'How fast it happened.', text: join([FRAG[wl.T][span], X('T', 'C')]) });
 
   const inter = PAIRS.filter((q) => q.span.includes(span) &&
     Object.entries(q.req).every(([k, v]) => wl[k] === v)).map((q) => q.t);
   if (inter.length) {
-    const heads = ['Where these meet.', 'The conjunction.', 'Taken together.'];
+    const heads = ['What these settings do together.', 'Where these meet.',
+                   'The combination that matters here.'];
     out.push({ lead: heads[vary(wl, year, heads.length)], text: inter.join(' ') });
   }
 
-  out.push({ lead: 'This line.', text:
-    `Composition ${['T', 'A', 'C', 'D', 'S', 'P', 'E'].map((k) => wl[k]).join('·')} at ` +
-    `${Math.floor(year)}. Each letter is one variable's setting on the controls; moving any of ` +
-    'them rewrites this passage and redraws every chart on the document.' });
+  out.push({ lead: 'The settings behind this passage.', text:
+    `${['T', 'A', 'C', 'D', 'S', 'P', 'E'].map((k) => wl[k]).join('·')} at ` +
+    `${Math.floor(year)}. Each letter is one variable's setting on the controls; changing any ` +
+    'of them rewrites this passage and redraws every chart on the sheet.' });
   return out;
 }
 
 // ── the headline ─────────────────────────────────────────────────────────────
 // The largest lettering on the sheet, so it is the sentence a reader tests the model against.
-// Keying its clauses on one position each made it invariant: the economy read "a correction
-// that spared the build-out" in 2026 and in 2094, under every other setting. Every clause here
-// is keyed on a position AND the span, and the economy clause takes a second key from whichever
-// variable is doing the most to it.
+// Every clause is keyed on a position AND the span, and the economy clause takes a second key
+// from whichever variable is doing the most to it.
 const RUNG_SHORT = [
-  [5.8, { near: 'already past the top of this ladder', mid: 'past the top of this ladder',
-          long: 'long past the ladder', far: 'off the scale for most of a century' }],
-  [5.0, { near: 'broadly superhuman, and early', mid: 'generally superhuman',
-          long: 'superhuman and thoroughly embedded',
-          far: 'superhuman for longer than most institutions have stood' }],
-  [4.0, { near: 'already automating its own research', mid: 'automating its own research',
-          long: 'running its own research unattended',
-          far: 'a century into automated research' }],
-  [3.0, { near: 'superhuman at software', mid: 'superhuman at software and compounding',
-          long: 'superhuman at software as a commodity',
-          far: 'past the point where coding was human work' }],
-  [2.4, { near: 'reliably agentic', mid: 'reliably agentic and ordinary',
-          long: 'agentic infrastructure', far: 'agentic for two generations' }],
-  [1.6, { near: 'agentic in short bursts', mid: 'still agentic only in bursts',
-          long: 'plateaued at bounded autonomy', far: 'bounded by the length of a task' }],
-  [0.0, { near: 'assistive', mid: 'still assistive', long: 'still instrumental',
-          far: 'a century of tools' }],
+  [5.8, { near: 'already past what this scale can measure',
+          mid: 'past what this scale can measure',
+          long: 'far past what this scale can measure',
+          far: 'off this scale for most of a century' }],
+  [5.0, { near: 'already better than humans at essentially all cognitive work',
+          mid: 'better than humans at essentially all cognitive work',
+          long: 'better than humans at everything measured and built into everything',
+          far: 'superhuman for longer than most governments have existed' }],
+  [4.0, { near: 'already running most AI research itself',
+          mid: 'running most AI research itself',
+          long: 'running its own research without human direction',
+          far: 'a century into self-directed research' }],
+  [3.0, { near: 'writing better code than any human engineer',
+          mid: 'writing better code than any human engineer and compounding',
+          long: 'a commodity that writes better code than any human engineer',
+          far: 'past the point where programming was paid human work' }],
+  [2.4, { near: 'completing multi-hour tasks without supervision',
+          mid: 'completing unsupervised multi-hour tasks as ordinary business software',
+          long: 'unsupervised at day-length tasks and treated as infrastructure',
+          far: 'the substrate of ordinary work for two generations' }],
+  [1.6, { near: 'losing the thread after a few minutes of unsupervised work',
+          mid: 'still losing the thread after a few minutes',
+          long: 'still limited to short supervised stretches',
+          far: 'never able to hold a task longer than an afternoon' }],
+  [0.0, { near: 'an assistant a person checks at every step',
+          mid: 'still an assistant a person checks at every step',
+          long: 'still a tool people operate directly',
+          far: 'a century of software that never became an agent' }],
 ];
 const GOVERN = {
-  C1: { near: 'an open race', mid: 'a race into the decisive years',
-        long: 'a race that was never called off', far: 'no agreement worth the name' },
-  C2: { near: 'a national programme', mid: 'a national perimeter',
-        long: 'a programme that outlasted its authors', far: 'state control from early on' },
-  C3: { near: 'an agreement being assembled', mid: 'a verified agreement in force',
-        long: 'an agreement that became ordinary', far: 'one durable agreement, renewed' },
-  C4: { near: 'regional regimes', mid: 'blocs as the unit of governance',
-        long: 'three or four durable jurisdictions', far: 'a century of regional regimes' },
-  C5: { near: 'a halt below the researcher line', mid: 'a moratorium that holds',
-        long: 'a freeze that outlasted its architects',
-        far: 'a ceiling meant to be temporary' },
+  C1: { near: 'no agreement limits development',
+        mid: 'export controls remain the only instrument anyone is using',
+        long: 'no agreement was ever reached',
+        far: 'no binding agreement in a hundred years' },
+  C2: { near: 'the United States runs the frontier as a national programme',
+        mid: 'the frontier sits inside a US security perimeter',
+        long: 'the US national programme became permanent',
+        far: 'frontier AI has been government business for a century' },
+  C3: { near: 'the US and China are negotiating verified limits',
+        mid: 'a verified US-China agreement caps training runs',
+        long: 'the agreement held and capability resumed under its terms',
+        far: 'one agreement from the 2030s has governed the century' },
+  C4: { near: 'European and American and Chinese rules differ',
+        mid: 'which rules apply depends on which market a system is sold into',
+        long: 'three or four regulatory zones settled into place',
+        far: 'a century of regional rules and firms arbitraging between them' },
+  C5: { near: 'training above the current level has been banned',
+        mid: 'the ban is holding and the argument is about who is cheating',
+        long: 'the freeze outlasted the people who imposed it',
+        far: 'a ceiling announced as temporary has held for a century' },
 };
-// Each of these is a PREDICATE, present tense, with no internal comma — a modifier is appended
-// to it, and a base phrase that already ended in a clause produced a three-comma run-on.
+// Each is a PREDICATE, present tense, with no internal comma — a modifier is appended to it.
 const ECON = {
-  E1: { near: 'is running on a boom the revenue still justifies',
-        mid: 'is running on a boom that outlasted its sceptics',
-        long: 'is still using the capacity that expansion built',
-        far: 'is still running on foundations poured in one long boom' },
-  E2: { near: 'is working through a correction that is clearing weak credit',
-        mid: 'is living off a reset that left the concrete standing',
-        long: 'is still living off what that correction handed on',
-        far: 'is a century past the correction that reshaped it' },
-  E3: { near: 'is watching the capex case fail before the concrete sets',
-        mid: 'is working around a build-out that stalled',
-        long: 'is living under a ceiling the stall set',
-        far: 'is still shaped by capacity that was never built' },
-  E4: { near: 'is losing demand from the labour side',
-        mid: 'is caught in a demand crisis it cannot spend its way out of',
-        long: 'is carrying a consumption shortfall that became structural',
-        far: 'is still short the demand it never replaced' },
+  E1: { near: 'AI revenue is covering the capital being spent on it',
+        mid: 'earnings caught up with the build-out',
+        long: 'the capacity that expansion built is still in service',
+        far: "most of the century's infrastructure was financed in that expansion" },
+  E2: { near: 'AI equities are falling while datacenter construction continues',
+        mid: 'the correction wiped out AI equity values without stopping construction',
+        long: 'the datacenters built before the correction are still running under new owners',
+        far: 'one early correction changed who owned the infrastructure' },
+  E3: { near: 'datacenter orders are being cancelled mid-construction',
+        mid: 'the build-out stopped and capability improves through efficiency',
+        long: 'the cancelled capacity set a ceiling that lasted a generation',
+        far: 'the century was shaped by datacenters never completed' },
+  E4: { near: 'demand is falling because displaced workers have less to spend',
+        mid: 'output per worker keeps rising and there are fewer buyers each year',
+        long: 'the consumption gap became permanent',
+        far: 'production was solved and buying power never was' },
 };
-// What the rest of the line is doing TO the economy — the clause that makes two world-lines
-// sharing an economy setting read differently at the top of the sheet. Each attaches after a
-// comma, so each has to be a PHRASE and tense-neutral: a present-continuous modifier hung off
-// a retrospective base ("a century past the correction, with the halls changing hands").
+// What the rest of the line is doing TO the economy. Each attaches after a comma, so each has
+// to be a PHRASE and tense-neutral, and must not repeat a noun its base already used.
 const ECON_MOD = {
-  'E1|S1': 'over a single chokepoint',
-  'E1|S2': 'across many jurisdictions at once',
-  'E1|S3': 'against a hard power limit',
-  'E1|D1': 'beside a labour shock',
-  'E1|D3': 'the labour market barely touched',
-  'E1|P1': 'with a hostile public',
-  'E1|C3': 'inside a verified agreement',
-  'E1|C5': 'all of it held under a halt',
-  'E2|S1': 'what survived it in very few hands',
-  'E2|S2': 'the capacity spread across many owners',
-  'E2|S3': 'its recovery rationed by megawatts',
-  'E2|D1': 'the jobs gone first',
-  'E2|D2': 'the damage concentrated in the fast sectors',
-  'E2|D3': 'the labour market barely touched',
+  'E1|S1': 'on chips from one contested region',
+  'E1|S2': 'across a dozen countries at once',
+  'E1|S3': 'against grid connections that take years',
+  'E1|D1': 'while the same firms cut staff',
+  'E1|D3': 'with employment untouched',
+  'E1|P1': 'against an electorate turning against it',
+  'E1|C3': 'inside verified limits',
+  'E1|C5': 'all of it under a training ban',
+  'E2|S1': 'what survived owned by three or four firms',
+  'E2|S2': 'the sites spread across a dozen countries',
+  'E2|S3': 'the rebuild limited by grid connections',
+  'E2|D1': 'the job losses concentrated in the first year',
+  'E2|D2': 'the damage concentrated in software and media',
+  'E2|D3': 'with employment untouched',
   'E2|P1': 'with the politics turning against it',
   'E2|P3': 'the public split on what it meant',
-  'E2|C5': 'all of it under a halt',
-  'E3|S1': 'where the political risk is worst',
-  'E3|S2': 'as half-finished sites in many countries',
-  'E3|S3': 'with the grid already binding',
-  'E3|D1': 'with nothing to absorb the displaced',
-  'E3|D2': 'the sectoral split frozen in place',
-  'E3|D3': 'the labour market barely touched',
+  'E2|C5': 'all of it under a training ban',
+  'E3|S1': 'the survivors exposed to one contested region',
+  'E3|S2': 'leaving half-finished sites in a dozen countries',
+  'E3|S3': 'with grid connections already the limit',
+  'E3|D1': 'and nothing built to absorb the displaced',
+  'E3|D2': 'the industry split frozen where it stood',
+  'E3|D3': 'with employment untouched',
   'E3|P1': 'with the politics turning against it',
-  'E3|C5': 'all of it under a halt',
-  'E4|S1': 'the largest owners holding the empty halls',
-  'E4|S2': 'with capacity going idle everywhere',
-  'E4|S3': 'the grid no longer the binding limit',
-  'E4|D1': 'feeding on its own displacement',
-  'E4|D2': 'sector by sector',
-  'E4|D3': 'with automation an unlikely culprit',
-  'E4|P1': 'with a politics forming around it',
-  'E4|C5': 'all of it under a halt',
+  'E3|C5': 'all of it under a training ban',
+  'E4|S1': 'three or four firms holding the idle capacity',
+  'E4|S2': 'with capacity idle in a dozen countries',
+  'E4|S3': 'the grid queues cleared by withdrawal',
+  'E4|D1': 'each round of layoffs causing the next',
+  'E4|D2': 'industry by industry in the order they automated',
+  'E4|D3': 'with adoption too slow to be the cause',
+  'E4|P1': 'with a political movement forming around it',
+  'E4|C5': 'all of it under a training ban',
 };
 function econClause(wl, span) {
   const base = ECON[wl.E][span];
@@ -686,47 +751,49 @@ function econClause(wl, span) {
   }
   return base;
 }
-// A closing clause, so the sentence ends on whichever tension is largest on this line, phrased
-// for the era it is read in.
+// The sentence ends on whichever tension is largest on this line, phrased for its era.
 const TENSION = {
-  consent: { near: 'and consent is running out', mid: 'and consent has run out',
-             long: 'and it has governed without consent for decades',
-             far: 'and the century never recovered its consent' },
-  work: { near: 'and work is being reorganised at speed',
-          mid: 'and work has been reorganised at speed',
-          long: 'and the reorganisation of work is now the settled order',
-          far: 'and the century is still absorbing what work became' },
-  oversight: { near: 'and the oversight failure is still undetected',
-               mid: 'and the oversight failure has yet to surface',
-               long: 'and the failure was never caught',
-               far: 'and it was built on a failure nobody named in time' },
-  power: { near: 'and the limit is megawatts', mid: 'and the limit is still megawatts',
-           long: 'and the physical limit shaped everything built under it',
-           far: 'and physics set the rate for a hundred years' },
-  strait: { near: 'and the supply chain sits on a contested strait',
-            mid: 'and the chokepoint is still where it always was',
-            long: 'and the map of compute decided who mattered',
-            far: 'and geography settled it' },
-  lag: { near: 'and deployment lags the capability badly',
-         mid: 'and the deployment gap is the largest quantity on the line',
-         long: 'and the lag turned out to be the whole story',
-         far: 'and the technology outran its own use' },
-  scale: { near: 'and the sector is starting to price like infrastructure',
-           mid: 'and the sector prices like infrastructure',
-           long: 'and it has been infrastructure for a generation',
-           far: 'and it has been infrastructure longer than anyone remembers' },
-  split: { near: 'and the public is splitting down the middle',
-           mid: 'and the split is the stable state',
-           long: 'and the fracture outlasted its cause',
+  consent: { near: 'and approval of AI has fallen below a quarter of the public',
+             mid: 'and approval sits below a quarter of the public',
+             long: 'and it has run for decades without majority consent',
+             far: 'and the century never regained public consent' },
+  work: { near: 'and employment is more than 15% below 2026',
+          mid: 'and employment is more than 15% below its 2026 level',
+          long: 'and employment never returned to its 2026 level',
+          far: 'and the century is still absorbing the loss of work' },
+  oversight: { near: 'and nobody has yet found that training rewarded the appearance of ' +
+                     'honesty',
+               mid: 'and the training failure has still not been detected',
+               long: 'and the training failure was never found',
+               far: 'and it was built on a failure nobody identified in time' },
+  power: { near: 'and new capacity waits years for a grid connection',
+           mid: 'and grid connections are still what limits new capacity',
+           long: 'and the power constraint shaped everything built under it',
+           far: 'and electricity set the rate for a hundred years' },
+  strait: { near: 'and the chips are made in one place two governments both claim',
+            mid: 'and production is still concentrated where the claim is contested',
+            long: 'and where the chips were made decided who mattered',
+            far: 'and one manufacturing region settled the century' },
+  lag: { near: 'and firms are using the systems for far less than they can do',
+         mid: 'and the gap between capability and use is the largest number on the line',
+         long: 'and the deployment lag turned out to be the whole story',
+         far: 'and the technology was used at a fraction of its capacity for a century' },
+  scale: { near: 'and AI revenue is passing the largest existing industries',
+           mid: 'and AI revenue exceeds the largest existing industries',
+           long: 'and it has been one of the largest industries for a generation',
+           far: 'and it has been the largest industry longer than anyone remembers' },
+  split: { near: 'and opinion is splitting within countries rather than between them',
+           mid: 'and the split within countries is the stable state',
+           long: 'and the division outlasted the technology that caused it',
            far: 'and the division is older than the argument that started it' },
   ceiling: { near: 'and the top of the ladder stays out of reach',
              mid: 'and the discontinuity never comes',
              long: 'and the ceiling has held for decades',
-             far: 'and the ladder was never climbed' },
-  open: { near: 'and the next rung is the open question',
-          mid: 'and the next rung is still the open question',
-          long: 'and what is scarce now is direction',
-          far: 'and the question stopped being about capability long ago' },
+             far: 'and the top of the ladder was never reached' },
+  open: { near: 'and the next capability level is the open question',
+          mid: 'and the next capability level is still the open question',
+          long: 'and what is scarce now is deciding what to use it for',
+          far: 'and the open questions stopped being about capability long ago' },
 };
 function tensionKey(wl, tracks, i) {
   if (tracks.appr[i] < 25) return 'consent';
@@ -746,7 +813,8 @@ export function headline(wl, year, tracks, engineY0) {
   const cap = tracks.cap[i];
   let rung = RUNG_SHORT[RUNG_SHORT.length - 1][1];
   for (const [t, s] of RUNG_SHORT) if (cap >= t) { rung = s; break; }
-  return `In ${Math.floor(year)}, capability is ${rung[span]}, governance runs on ` +
-         `${GOVERN[wl.C][span]}, the economy ${econClause(wl, span)}, ` +
-         `${TENSION[tensionKey(wl, tracks, i)][span]}.`;
+  // Four independent clauses. Separated by commas they read as one list, and the modifier
+  // inside the economy clause becomes indistinguishable from the next clause.
+  return `In ${Math.floor(year)}, AI is ${rung[span]}; ${GOVERN[wl.C][span]}; ` +
+         `${econClause(wl, span)}; ${TENSION[tensionKey(wl, tracks, i)][span]}.`;
 }
