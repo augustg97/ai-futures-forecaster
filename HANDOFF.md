@@ -20,6 +20,7 @@ document window opens to 1720 px, where 2 mm of cap height renders at about 13 p
 | World | world | the active line on the ground |
 | Alternatives | alternatives | twelve sampled world-lines across the spread |
 | This morning | morning | today's evidence applications with their arithmetic, and the net drift |
+| Research | research | the evidence programme: the audit, all 26 recommended priors against their current values, and the structural finding |
 | Method | sources | method, grounding counts, the literature, and what this surface is |
 
 ## The passage
@@ -66,12 +67,27 @@ Last sweep: **23 cases · 12,284 lettering marks · 0 collisions · 0 off-sectio
 control passes** (2026-08-12, run against the live build). Full pass over every section: ~18 ms.
 Effect recalculation on a setting change: 22 ms, cached per setting.
 
+## The evidence programme
+
+`Research/` holds a dossier per axis, two rounds deep. Read `Research/REGISTER.md` first, then
+`findings/recommendations.md` and `findings/round-2-addenda.md` — the round-2 figures are the
+standing ones. **26 prior changes and 6 structural proposals, held for review; none applied.**
+The client mirrors them in `RECOMMEND` in `app.js`, which is this project's own research output
+and never touches the network.
+
+Round 3, if it happens: size the four missing conditional edges (`T|S`, `D|T`, `D|E`, `P|C`)
+from evidence rather than asserting them.
+
 ## Open
 
 - The A axis (alignment outcome) reports NO MEASURED EFFECT BY 2040 on all four positions. That
   is true of the model as built — nothing downstream in `tracks()` reads A, and no conditional
   links it to T. Whether that is a modelling gap or a property of the axis is worth a look in
   the Atlas.
+- **Six structural proposals stand unimplemented**, because they are changes to the parent
+  Atlas: split the three axes that mix magnitude with incidence, add the four missing edges,
+  re-cast P3 as elite–public divergence, give D an incidence sub-axis, give E a correction-channel
+  sub-axis, and damp compute growth under S3 by an observed refusal rate.
 - The `driver` field arrives from the parent cut at 140 characters. The sheet marks the cut with
   an ellipsis; lifting the cap is a change to the Atlas emitter, which this project does not
   make.
