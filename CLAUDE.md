@@ -129,6 +129,12 @@ __FW.auditSweep()                      # in the console: the audit (check `contr
 - **Titles carry no article** — CONTROLS, INSTRUMENTS, FORECAST, WORLD, METHOD AND SOURCES.
 - **Say what a thing is, never what it is not.** No "X, not Y", no "rather than", no "instead
   of" in any authored string. This applies to the drawing's own lettering as much as to prose.
+- **No capitals for emphasis in an authored string.** "compute scaling ARE the supply variable"
+  and "the BUYER's return" are shouting. If a distinction needs emphasis, write the sentence so
+  the distinction carries it. Capitals are for headings and acronyms.
+- **A heading names its contents and claims nothing.** "What the audit found", never "The audit
+  that set the mandate". A heading that sounds like the title of an essay about the work is a
+  heading doing the work's job badly.
 - **The parent writes provenance into its variable descriptions.** `plain()` drops the clauses
   and parentheses naming a source document and re-punctuates what is left; the citations stay in
   Method and in the grounding line of a selected entry. Dropping a dash clause without

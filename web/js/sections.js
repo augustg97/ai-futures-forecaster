@@ -910,9 +910,9 @@ export function research(d, S, H) {
   let y = head(d, H - 8, 'EVIDENCE PROGRAMME',
     'A dossier stands behind each variable, each answering the same five questions from ' +
     'sources about the world: a base rate, a mechanism and its weakest step, the 2026 record, ' +
-    'resolution criteria, and what would move the number. Recommendations are held for review ' +
-    'and held for review; the priors live in the parent engine, and changing one is a ' +
-    'decision. The full dossiers are in the repository under Research/.');
+    'resolution criteria, and what would move the number. Recommendations are held for ' +
+    'review; the priors live in the parent engine, and changing one is a decision. The full ' +
+    'dossiers are in the repository under Research/.');
 
   // the audit that opened it
   d.rect(PAD, y - 26, CW, 26, { weight: PEN.thin, colour: INK.red, alpha: 0.6 });
@@ -995,9 +995,40 @@ export function research(d, S, H) {
     'denies. Four edges are missing: tempo on supply, diffusion on tempo, diffusion on the ' +
     'economy, and public response on coordination.', gcol,
     { size: 2.0, lead: LEAD, colour: INK.pencil });
+
+  // the sized edges
+  const ey = gy - 26;
+  d.text([PAD, ey], 'THE MISSING EDGES, MEASURED',
+         { size: 2.6, weight: 700, track: 0.14, colour: INK.ink });
+  rule(d, ey - 2.2, PAD, CW, { weight: PEN.thin, colour: INK.inkLight });
+  const ew = (CW - 24) / 3;
+  const edges = [
+    ['TEMPO ON SUPPLY', INK.blue,
+     'Effective compute grows about twelvefold a year: fourfold from hardware, the rest from ' +
+     'algorithms doing the same work on a third less. Cap the hardware under a constrained ' +
+     'build-out and the rate falls to about 60% of baseline, which stretches the capability ' +
+     'doubling from 212 days to about 350 and moves month-long autonomous work from 2030 out ' +
+     'to the mid-2030s.'],
+    ['DIFFUSION ON THE ECONOMY', INK.red,
+     'Across three recessions in thirty years, 88% of American job losses in routine ' +
+     'occupations fell inside a twelve-month window around the downturn, and those jobs never ' +
+     'came back. Firms defer the reorganisation while demand holds and carry it out when ' +
+     'demand falls. The model carries this arrow only in the other direction.'],
+    ['PUBLIC RESPONSE ON GOVERNMENT', INK.pencil,
+     'This edge is left out on purpose. Whether public opinion changes what governments enact ' +
+     'is exactly the quantity the political science literature disagrees about: one study of ' +
+     '1,779 policy issues finds ordinary preferences have almost no independent effect, and a ' +
+     're-examination of the same data finds they prevail about as often as elite preferences ' +
+     'do. So a three-to-one majority against a policy predicts nothing here.'],
+  ];
+  edges.forEach(([h, c, body], i) => {
+    const x = PAD + i * (ew + 12);
+    d.text([x, ey - 6.4], h, { size: 2.0, weight: 700, track: 0.12, colour: c });
+    d.textBlock([x, ey - 10.4], body, ew, { size: 1.9, lead: LEAD, colour: INK.pencil });
+  });
   return H;
 }
-research.height = () => 230;
+research.height = () => 268;
 
 // ── 9 · method ───────────────────────────────────────────────────────────────
 export function sources(d, S, H) {

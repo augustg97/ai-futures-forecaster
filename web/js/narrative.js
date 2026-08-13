@@ -352,13 +352,17 @@ const CROSS = {
   'E2|D3': 'Slow adoption limited the exposure: the labour market never depended on the ' +
            'capacity that was overbuilt.',
   'E3|D1': 'Construction stopped and the jobs went anyway, so there is neither the ' +
-           'employment nor the capacity that was meant to replace it.',
+           'employment nor the capacity that was meant to replace it. Across three recessions ' +
+           'in thirty years, 88% of American routine job losses fell inside a twelve-month ' +
+           'window around the downturn, and none of them came back.',
   'E3|D2': 'The stall froze the industry split in place: software already reorganised, ' +
            'everything else untouched.',
   'E3|D3': 'The stall barely shows in employment, because the deployment that would have ' +
            'moved it never happened.',
   'E4|D1': 'The layoffs cause the demand shortfall and the demand shortfall causes more ' +
-           'layoffs. That feedback is the mechanism this world-line turns on.',
+           'layoffs. That feedback is the mechanism this world-line turns on, and the historical ' +
+           'record says the losses arrive in the downturn: 88% of routine job losses across ' +
+           'three recessions fell within a year of one.',
   'E4|D2': 'Demand fails industry by industry, in the same order adoption happened.',
   'E4|D3': 'Demand is failing even though adoption is slow, which points at credit and ' +
            'concentration, and away from automation.',

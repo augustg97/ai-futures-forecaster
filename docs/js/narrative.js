@@ -37,7 +37,7 @@ const RUNG = [
   [1.6, {
     near: 'AI agents run for a few minutes before losing the thread. They forget what they ' +
           'were doing and take confident wrong turns, so nobody leaves them unattended.',
-    mid: 'Agents work in short supervised bursts. What limits them is reliability rather than ' +
+    mid: 'Agents work in short supervised bursts. Reliability is what limits them, and not ' +
          'knowledge: they know how to do the task and fail to finish it.',
     long: 'Autonomy stopped improving early. Systems still work in short stretches and hand ' +
           'back to a person.',
@@ -55,7 +55,7 @@ const RUNG = [
     near: 'AI systems write better code than any human engineer. The first visible effect is ' +
           'speed: everything that depends on software ships faster.',
     mid: 'Machines are the best software engineers in the world. Every field that ships code ' +
-         'now moves at the speed of review rather than the speed of writing.',
+         'now moves at the speed of review, and no longer at the speed of writing.',
     long: 'Superhuman coding is a commodity input, bought by the hour.',
     far: 'Programming stopped being a paid human profession generations ago.' }],
   [4.0, {
@@ -130,8 +130,8 @@ export const FRAG = {
               'or physical constraints hold capability below the top of the ladder.',
         mid: 'Capability keeps improving and the discontinuity never comes. AI is a large ' +
              'ordinary technology.',
-        long: 'The ceiling has held for decades. The transition looked like electrification ' +
-              'rather than like a singularity.',
+        long: 'The ceiling has held for decades. The transition looked like electrification: ' +
+              'broad, slow and total.',
         far: 'The century ended with the top of the ladder never reached.' },
 
   A1: { near: 'Oversight is failing to catch what matters. In controlled tests inside four ' +
@@ -156,7 +156,7 @@ export const FRAG = {
               'the 2026 safety report calls fragmented.',
         mid: 'Sustained safety spending is working. The problem responds to effort at roughly ' +
              'the rate effort is applied.',
-        long: 'Alignment was managed rather than solved, and the management held for decades.',
+        long: 'Alignment was managed and never solved, and the management held for decades.',
         far: 'A century in which the problem was never fully solved and never got away from ' +
              'anyone.' },
   A4: { near: 'Alignment is untested where it matters, because no system has reached the ' +
@@ -255,8 +255,8 @@ export const FRAG = {
         mid: 'Energy and export controls are the binding constraint. New capacity waits years ' +
              'for a grid connection.',
         long: 'The constraint held for decades and shaped what was built under it: smaller ' +
-              'sites, sited for power rather than for latency.',
-        far: 'A century in which permitting and physics, rather than research, set the rate.' },
+              'sites, sited for power ahead of latency.',
+        far: 'A century in which permitting and physics set the rate, and research waited on them.' },
 
   P1: { near: 'Restriction has majority support and it crosses both coalitions: 57% oppose ' +
               'federal preemption of state AI law against 19% in favour, including 43% of ' +
@@ -325,8 +325,8 @@ const CROSS = {
            'manufacturing region.',
   'E2|S2': 'The correction changed owners without reducing capacity: the buildings changed ' +
            'hands and kept running.',
-  'E2|S3': 'The recovery is limited by power connections rather than by credit, so cheap ' +
-           'capital does not restart it.',
+  'E2|S3': 'Power connections limit the recovery, and credit does not, so cheap capital fails to ' +
+           'restart it.',
   'E3|S1': 'The cancelled projects were concentrated where the political risk is highest, so ' +
            'what remains is more exposed than what was lost.',
   'E3|S2': 'The half-finished sites are spread across many countries, each too small to ' +
@@ -352,16 +352,20 @@ const CROSS = {
   'E2|D3': 'Slow adoption limited the exposure: the labour market never depended on the ' +
            'capacity that was overbuilt.',
   'E3|D1': 'Construction stopped and the jobs went anyway, so there is neither the ' +
-           'employment nor the capacity that was meant to replace it.',
+           'employment nor the capacity that was meant to replace it. Across three recessions ' +
+           'in thirty years, 88% of American routine job losses fell inside a twelve-month ' +
+           'window around the downturn, and none of them came back.',
   'E3|D2': 'The stall froze the industry split in place: software already reorganised, ' +
            'everything else untouched.',
   'E3|D3': 'The stall barely shows in employment, because the deployment that would have ' +
            'moved it never happened.',
   'E4|D1': 'The layoffs cause the demand shortfall and the demand shortfall causes more ' +
-           'layoffs. That feedback is the mechanism this world-line turns on.',
+           'layoffs. That feedback is the mechanism this world-line turns on, and the historical ' +
+           'record says the losses arrive in the downturn: 88% of routine job losses across ' +
+           'three recessions fell within a year of one.',
   'E4|D2': 'Demand fails industry by industry, in the same order adoption happened.',
   'E4|D3': 'Demand is failing even though adoption is slow, which points at credit and ' +
-           'concentration rather than at automation.',
+           'concentration, and away from automation.',
 
   'C1|S1': 'An unregulated race over a single manufacturing region is the arrangement with ' +
            'the shortest path to a military incident.',
@@ -409,7 +413,7 @@ const CROSS = {
   'A2|T3': 'The gradual climb is what made the catch possible: there was time to look and ' +
            'people were looking.',
   'A2|T4': 'The near miss happened well below the dangerous threshold, which is why it cost ' +
-           'money rather than lives.',
+           'money and no lives.',
   'A3|T1': 'Alignment research kept pace with a two-year jump, which is the most demanding ' +
            'possible test of tractability.',
   'A3|T2': 'Safety work and capability work are proceeding in the same years at roughly the ' +
@@ -432,7 +436,7 @@ const CROSS = {
   'P1|D2': 'Opposition is strongest in the regions whose industries automated, and weak ' +
            'where work has not changed.',
   'P1|D3': 'The opposition is growing with no measurable employment effect behind it, which ' +
-           'means it is about status and control rather than jobs.',
+           'means it is about status and control, and not about jobs.',
   'P2|D1': 'Approval is holding through significant job losses, which is either genuine ' +
            'acceptance or a lag before the politics catches up.',
   'P2|D2': 'Acceptance tracks use, and use is uneven, so approval differs sharply by ' +
@@ -443,8 +447,8 @@ const CROSS = {
            'hard to bargain across.',
   'P3|D2': 'The division follows the industry map: the automated regions and the untouched ' +
            'ones no longer share a set of facts.',
-  'P3|D3': 'The argument is about values rather than about jobs, because the labour market ' +
-           'has given neither side evidence.',
+  'P3|D3': 'The argument is about values, because the labour market has given neither side ' +
+           'evidence about jobs.',
 
   'T1|C1': 'A two-year jump with no coordination is the case every published plan was ' +
            'written to prevent.',
@@ -475,7 +479,7 @@ const CROSS = {
   'T3|C5': 'A ban costs little in any single year when capability was climbing slowly ' +
            'anyway, which is why it survives.',
   'T4|C1': 'The race is over a threshold nobody reaches, so the competition is about market ' +
-           'share rather than capability.',
+           'share, and no longer about capability.',
   'T4|C2': 'The national programme is organised around a capability level that never ' +
            'arrives.',
   'T4|C3': 'The agreement governs a capability level that stopped moving, which makes it ' +
@@ -505,7 +509,7 @@ const REV_BANDS = [
   [4, 'That is comparable to the global automotive industry.'],
   [1, 'That is larger than worldwide semiconductor sales in 2026.'],
   [0.2, 'That is a large software business and a small share of the economy.'],
-  [0, 'The capital being spent is a bet on the forecast rather than on current sales.'],
+  [0, 'The capital being spent is a bet on the forecast, and not on current sales.'],
 ];
 const LAW_BANDS = [
   [600, 'About six hundred AI statutes and regulations are in force worldwide, and firms ' +
@@ -523,7 +527,7 @@ function jobsClause(v) {
   if (v > -8) return `Employment is ${p}% below 2026 — visible in national statistics, ` +
                      'arguable in any single industry.';
   if (v > -18) return `Employment is ${p}% below 2026, a fall comparable to a deep recession, ` +
-                      'sustained for years rather than quarters.';
+                      'sustained for years, and not for quarters.';
   return `Employment is ${p}% below 2026, larger than any peacetime fall on record.`;
 }
 function apprClause(v) {
@@ -553,8 +557,8 @@ const PAIRS = [
        'place with no rule about it — the combination most likely to produce a military ' +
        'incident.' },
   { req: { P: 'P1', C: 'C4' }, span: ['mid', 'long'],
-    t: 'Restriction inside regional regimes moves the work rather than stopping it: each bloc ' +
-       'bans what its own voters object to, and the training runs relocate.' },
+    t: 'Restriction inside regional regimes moves the work and fails to stop it: each bloc bans ' +
+       'what its own voters object to, and the training runs relocate.' },
   { req: { D: 'D3', T: 'T2' }, span: ['near', 'mid'],
     t: 'Capability is arriving quickly and being used slowly. The gap between what systems ' +
        'can do and what firms permit them to do is the largest quantity on this line.' },
@@ -802,7 +806,7 @@ const TENSION = {
            mid: 'and AI revenue exceeds the largest existing industries',
            long: 'and it has been one of the largest industries for a generation',
            far: 'and it has been the largest industry longer than anyone remembers' },
-  split: { near: 'and opinion is splitting within countries rather than between them',
+  split: { near: 'and opinion is splitting inside countries more than between them',
            mid: 'and the split within countries is the stable state',
            long: 'and the division outlasted the technology that caused it',
            far: 'and the division is older than the argument that started it' },
