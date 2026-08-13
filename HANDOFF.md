@@ -9,8 +9,8 @@ GitHub repo redirects the repository page but NOT its Pages URL.
 
 ## What it is
 
-Seven tabs. Within a tab the drawing is a vertical sheet 300 mm wide at one fixed scale, so
-2 mm of cap height renders at about 11 px and nothing has to be zoomed.
+Seven tabs. Within a tab the drawing is a vertical sheet **340 mm** wide at one fixed scale; the
+document window opens to 1720 px, where 2 mm of cap height renders at about 13 px.
 
 | tab | sections | what it carries |
 |-----|----------|-----------------|
@@ -21,6 +21,16 @@ Seven tabs. Within a tab the drawing is a vertical sheet 300 mm wide at one fixe
 | Alternatives | alternatives | twelve sampled world-lines across the spread |
 | This morning | morning | today's evidence applications with their arithmetic, and the net drift |
 | Method | sources | method, grounding counts, the literature, and what this surface is |
+
+## The passage
+
+`narrative.js` COMPOSES it: each paragraph is the variable's own state × span, plus a CROSS
+clause naming what a second variable does to it, plus a BAND clause keyed on a quantity at that
+date, plus the figures. 84 CROSS clauses cover the six pairs that interact (E×S, E×D, C×S, A×T,
+P×D, T×C). Holding the economy fixed and moving only supply, labour and the year gives 36
+distinct economy paragraphs out of 36; 400 random world-line/year samples give 400 distinct
+passages. If you add a position to an axis in the parent, add its FRAG row for all four spans
+and its CROSS row against whichever axis its paragraph pairs with, or the clause silently drops.
 
 ## The colour of the sheet
 

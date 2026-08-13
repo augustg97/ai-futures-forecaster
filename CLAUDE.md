@@ -151,3 +151,14 @@ __FW.auditSweep()                      # in the console: the audit (check `contr
   while `window.__BUILD` — read from the fresh index.html — reports the new stamp. The build now
   versions the entry too and refuses to publish if it cannot find it exactly once. **Verify a
   deploy by checking something the new build DRAWS, never by checking the stamp alone.**
+
+- **The passage is composed, never selected.** A paragraph that reads the same for every other
+  setting of every other variable is a bug in `narrative.js`, not a style choice. Each one takes
+  its own FRAG (position × span), a CROSS clause against a second variable, a BAND clause keyed
+  on a tracked quantity, and the figures.
+- **Five years before the first forecast year is RECORD.** Comparing the run against itself
+  reported the index flat in 2026, the year it had just climbed a rung; the lookback reads the
+  trunk when the window predates the forecast.
+- **Balance prose columns by trying every set of cuts**, not by filling greedily. With a handful
+  of paragraphs the exhaustive partition is free and a greedy fill leaves one column with a
+  single line beside one with four.
