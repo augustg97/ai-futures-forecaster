@@ -246,20 +246,34 @@ function activeLayers() {
   }
   return best ? best.layers : (D.mainline.layers || {});
 }
-function marginals30() {
+// The lookback is picked BY DATE, never by row count: the history carries repeated dates
+// (a registry re-set writes a second row for the same day), so the nth row back is not n days
+// back. Whatever row it lands on, `days` is the span actually measured — the drawing states
+// that number rather than the 30 it was asking for.
+const LOOKBACK_D = 30;
+function daysBetween(a, b) { return Math.round((Date.parse(b) - Date.parse(a)) / 864e5); }
+function lookback() {
   const h = D.marginals.history;
-  if (!h || h.length < 2 || cond) return {};
-  return h[Math.max(0, h.length - 31)].marginals || {};
+  if (!h || h.length < 2 || cond) return { m: {}, days: null };
+  const to = h[h.length - 1].date;
+  const want = new Date(Date.parse(to) - LOOKBACK_D * 864e5).toISOString().slice(0, 10);
+  let pick = h[0];
+  for (const r of h) if (r.date <= want) pick = r;      // newest row at or before the target
+  const days = daysBetween(pick.date, to);
+  return { m: pick.marginals || {}, days: days > 0 ? days : null };
 }
+function marginals30() { return lookback().m; }
 
 // ── the notes: what a selected mark says ────────────────────────────────────
 function axisNotes(a) {
-  const m = activeMarginals()[a.key] || {}, w30 = marginals30()[a.key] || {};
+  const lb = lookback();
+  const m = activeMarginals()[a.key] || {}, w30 = lb.m[a.key] || {};
   const secs = [{ h: a.name, p: [a.desc || ''] }];
   const rows = a.positions.map((p) => {
-    const now = (m[p[0]] || 0) * 100, was = (w30[p[0]] ?? null);
+    const now = (m[p[0]] || 0) * 100, was = lb.days === null ? null : (w30[p[0]] ?? null);
     const dr = was === null ? '' :
-      ` (${(now - was * 100) >= 0 ? '+' : ''}${(now - was * 100).toFixed(1)}pp in 30 days)`;
+      ` (${(now - was * 100) >= 0 ? '+' : ''}${(now - was * 100).toFixed(1)}pp in ` +
+      `${lb.days} day${lb.days === 1 ? '' : 's'})`;
     return `${p[0]} · ${p[1]} — ${now.toFixed(1)}%${dr}. ${p[4] || ''}`;
   });
   secs.push({ h: 'The positions', p: rows });
@@ -785,6 +799,7 @@ function sheetState(measure) {
     yr: state.yr, NOW: NOW_Y, TRUNK, pin: state.pin, obs: state.obs, build: DATA_V,
     engine: D.engine, network: D.network, crisis: D.crisis, grounding: D.grounding,
     delta: D.delta, marginals: activeMarginals(), marginals30: marginals30(),
+    lookbackDays: lookback().days,
     priors: D.marginals.today,
     bands: activeBands(), tracks: tr, events: activeEvents(),
     layers: activeLayers(), main: wl, idx, cap,

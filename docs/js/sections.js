@@ -5,9 +5,9 @@
 // wide, drawn at one fixed scale so lettering keeps the size it was drawn at and nothing has to
 // be zoomed. A section's millimetre space runs x 0 → 300 across and y 0 → H up from its foot.
 
-import { PEN, INK, PAPER } from './draft.js?v=20260814-1130';
-import { dial, manifold, strip, tally, fmtNum } from './instruments.js?v=20260814-1130';
-import { drawFigure } from './figures.js?v=20260814-1130';
+import { PEN, INK, PAPER } from './draft.js?v=20260814-1138';
+import { dial, manifold, strip, tally, fmtNum } from './instruments.js?v=20260814-1138';
+import { drawFigure } from './figures.js?v=20260814-1138';
 
 export const SHEET_W = 340;
 const PAD = 13;
@@ -274,7 +274,8 @@ function instrumentColumn(d, S, top) {
   d.text([x, y], 'INSTRUMENTS', { size: 3.0, weight: 700, track: 0.16, colour: INK.ink });
   rule(d, y - 2.2, x, w, { weight: PEN.thin, colour: INK.inkLight });
   y -= 6.4;
-  d.text([x, y], 'CAPABILITY TEMPO · WEIGHT AND ITS 30-DAY DRIFT',
+  d.text([x, y], 'CAPABILITY TEMPO · WEIGHT' +
+         (S.lookbackDays ? ` AND ITS ${S.lookbackDays}-DAY DRIFT` : ''),
          { size: 1.6, track: 0.10, colour: INK.pencilLight });
   y -= 4;
 
@@ -754,8 +755,10 @@ export function details(d, S, H) {
 
   d.text([PAD, tops], 'A   CAPABILITY TEMPO',
          { size: 2.8, weight: 700, track: 0.14, colour: INK.ink });
-  d.textBlock([PAD, tops - 3.6], 'One face per setting. The pale needle stands where the ' +
-    'reading stood thirty days ago, so the movement is an angle.', colW,
+  d.textBlock([PAD, tops - 3.6], 'One face per setting. ' + (S.lookbackDays
+    ? `The pale needle stands where the reading stood ${S.lookbackDays} ` +
+      `day${S.lookbackDays === 1 ? '' : 's'} ago, so the movement is an angle.`
+    : 'A single needle: this setting holds one reading, so there is no gap to draw.'), colW,
     { size: 1.8, lead: 1.4, colour: INK.pencil });
   const T = S.network.axes.find((a) => a.key === 'T');
   const m = S.marginals.T || {}, was = S.marginals30.T || {};

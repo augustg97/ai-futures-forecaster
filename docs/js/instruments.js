@@ -12,12 +12,13 @@
 //
 // Everything is in sheet millimetres and goes through Draft.
 
-import { PEN, INK, PAPER } from './draft.js?v=20260814-1130';
+import { PEN, INK, PAPER } from './draft.js?v=20260814-1138';
 
 // ── the dial ─────────────────────────────────────────────────────────────────
 // An engraved 240° face. The LIVE needle is ink; the GHOST needle is where the same reading
-// stood 30 days ago, drawn in the erase grey a draughtsman leaves behind a moved part. The gap
-// between them is the drift — an angle, not a signed number in small print.
+// stood one lookback ago, drawn in the erase grey a draughtsman leaves behind a moved part. The
+// gap between them is the drift — an angle, held clear of small print. The caller states the
+// span, because the history is shorter than the 30 days the lookback asks for.
 export function dial(d, cx, cy, r, { label, value, was = null, sub = '', id = null,
                                      colour = null, ticks = 5 } = {}) {
   const A0 = Math.PI * 1.20, A1 = -Math.PI * 0.20;      // sweep, ccw from lower-left

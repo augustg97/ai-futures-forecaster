@@ -274,7 +274,8 @@ function instrumentColumn(d, S, top) {
   d.text([x, y], 'INSTRUMENTS', { size: 3.0, weight: 700, track: 0.16, colour: INK.ink });
   rule(d, y - 2.2, x, w, { weight: PEN.thin, colour: INK.inkLight });
   y -= 6.4;
-  d.text([x, y], 'CAPABILITY TEMPO · WEIGHT AND ITS 30-DAY DRIFT',
+  d.text([x, y], 'CAPABILITY TEMPO · WEIGHT' +
+         (S.lookbackDays ? ` AND ITS ${S.lookbackDays}-DAY DRIFT` : ''),
          { size: 1.6, track: 0.10, colour: INK.pencilLight });
   y -= 4;
 
@@ -754,8 +755,10 @@ export function details(d, S, H) {
 
   d.text([PAD, tops], 'A   CAPABILITY TEMPO',
          { size: 2.8, weight: 700, track: 0.14, colour: INK.ink });
-  d.textBlock([PAD, tops - 3.6], 'One face per setting. The pale needle stands where the ' +
-    'reading stood thirty days ago, so the movement is an angle.', colW,
+  d.textBlock([PAD, tops - 3.6], 'One face per setting. ' + (S.lookbackDays
+    ? `The pale needle stands where the reading stood ${S.lookbackDays} ` +
+      `day${S.lookbackDays === 1 ? '' : 's'} ago, so the movement is an angle.`
+    : 'A single needle: this setting holds one reading, so there is no gap to draw.'), colW,
     { size: 1.8, lead: 1.4, colour: INK.pencil });
   const T = S.network.axes.find((a) => a.key === 'T');
   const m = S.marginals.T || {}, was = S.marginals30.T || {};
