@@ -1,6 +1,6 @@
 # AI Futures Forecaster — live state
 
-**Live:** https://augustg97.github.io/ai-futures-forecaster/ · build `20260812-1129`
+**Live:** https://augustg97.github.io/ai-futures-forecaster/ · build `20260814-1138`
 **Local:** `python3 build/serve.py 8154` (serves `web/`, never `docs/`) · working
 directory `~/Forecast Works`, repo `augustg97/ai-futures-forecaster`
 
@@ -63,9 +63,23 @@ python3 build/build_site.py            # gate → pull → stamp → docs/
 __FW.auditSweep()                      # console; REQUIRE controlPasses: true
 ```
 
-Last sweep: **23 cases · 12,284 lettering marks · 0 collisions · 0 off-section · 0 overflows ·
-control passes** (2026-08-12, run against the live build). Full pass over every section: ~18 ms.
+Last sweep: **23 cases · 15,421 lettering marks · 0 collisions · 0 off-section · 0 overflows ·
+control passes** (2026-08-14, run against the live build). Full pass over every section: ~18 ms.
 Effect recalculation on a setting change: 22 ms, cached per setting.
+
+## The lookback states its own span
+
+The drift comparison is picked **by date**, never by row count, and every label letters the
+span it actually measured — `(+3.3pp in 14 days)`, `WEIGHT AND ITS 14-DAY DRIFT`. The history
+began 2026-07-31, so it is short of the 30 days the lookback asks for, and it carries a
+**duplicated date** (`2026-08-13` twice, from the r3 re-set), so the nth row back is not n days
+back. Until 2026-08-30 these read under 30 and that is correct. See
+[`Research/nightly-2026-08-14.md`](Research/nightly-2026-08-14.md).
+
+**The gap on the dials is mostly the r3 re-set, not the world.** 2026-08-13 drifted 0.869
+against a typical night's 0.010, and it sits inside the window. The instrument cannot yet
+distinguish a prior change from a world change; a registry channel beside `evidence` and
+`grounding` in `delta.json`'s `moved` field is the proposal, held.
 
 ## The evidence programme
 
