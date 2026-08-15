@@ -903,7 +903,19 @@ export function morning(d, S, H) {
                              { title: S.plateNote.title });
   return H;
 }
-morning.height = (S) => 190 + (S.plateNote ? S.plateNote.h + 22 : 0);
+// The plate held three rows whatever the morning brought. Six applications arrived on
+// 2026-08-15 and half the day's work sat below the fold — the plate said so, but a reader who
+// wants today's revision should not have to take the count on trust. The sheet grows with the
+// day, to a cap: past MORN_MAX the fold note carries the remainder rather than the plate
+// running the length of the tab.
+const MORN_MAX = 8;
+morning.rowsToday = (S) => {
+  const dl = S.delta || {};
+  const n = (dl.entries || []).filter((e) => e.date === dl.date).length;
+  return Math.max(1, Math.min(n || 1, MORN_MAX));
+};
+morning.height = (S) => 190 + Math.max(0, morning.rowsToday(S) - 3) * 29 +
+                        (S.plateNote ? S.plateNote.h + 22 : 0);
 
 
 // ── 10 · research ────────────────────────────────────────────────────────────

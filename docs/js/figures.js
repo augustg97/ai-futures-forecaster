@@ -8,7 +8,7 @@
 // outlines on built form, hatching for material, wash for water and sky, warm ink for anything
 // carrying energy, green for anything verified, red for anything contested.
 
-import { PEN, INK } from './draft.js?v=20260815-1129';
+import { PEN, INK } from './draft.js?v=20260815-1141';
 
 // A deterministic jitter, so a scene is the same drawing every time it is redrawn.
 function rnd(seed) {

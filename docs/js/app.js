@@ -5,12 +5,12 @@
 // on that instrument. It reads the same emitted data and implements the same functions against
 // the same shipped constants (`engine.json`), so the two surfaces cannot drift apart.
 
-import { Draft, PEN, INK, paperTileURL } from './draft.js?v=20260815-1129';
+import { Draft, PEN, INK, paperTileURL } from './draft.js?v=20260815-1141';
 import { SECTIONS, SHEET_W, TABS, CHART, COL, CTL_NOTE_W, balance,
-         proseColumns, measureSections, SHEET_CW } from './sections.js?v=20260815-1129';
-import { column, fmtNum } from './instruments.js?v=20260815-1129';
-import { describe, headline } from './narrative.js?v=20260815-1129';
-import { chooseFigures } from './figures.js?v=20260815-1129';
+         proseColumns, measureSections, SHEET_CW } from './sections.js?v=20260815-1141';
+import { column, fmtNum } from './instruments.js?v=20260815-1141';
+import { describe, headline } from './narrative.js?v=20260815-1141';
+import { chooseFigures } from './figures.js?v=20260815-1141';
 
 // One build number, injected into index.html at ship time, versions BOTH the data fetches and
 // (via the build's import rewrite) every module. A fresh app.js against a stale draft.js is the
@@ -548,6 +548,29 @@ function drawAltsPlate(d, S, box) {
   });
 }
 
+// "A.A3" is the parent's key for it; "tractable with effort" is what it says. Built once from
+// the registry the parent emitted, so a new axis or position carries its own name with no edit
+// here.
+let posNameMap = null;
+function posName(key) {
+  if (!posNameMap) {
+    posNameMap = {};
+    for (const a of D.network.axes) {
+      for (const p of a.positions) posNameMap[`${a.key}.${p[0]}`] = p[1];
+    }
+  }
+  return posNameMap[key] || null;
+}
+
+// Cut a string to the room it has and MARK the cut. A label trimmed silently reads as the whole
+// name of something narrower than it is.
+function elide(d, str, roomMM, size) {
+  let s = String(str);
+  if (roomMM <= 1 || d.textWidth(s, { size }) <= roomMM) return s;
+  while (s.length > 1 && d.textWidth(s + '…', { size }) > roomMM) s = s.slice(0, -1);
+  return s.replace(/[ (·,-]+$/, '') + '…';
+}
+
 function drawMorningPlate(d, S, box) {
   const [x, y, w, h] = box;
   const ent = (D.delta.entries || []).slice().reverse();
@@ -585,17 +608,29 @@ function drawMorningPlate(d, S, box) {
            `${(e.impact_class || '').toUpperCase()} · ×${(e.magnitude || 0).toFixed(4)} · ` +
            `${e.sources || 1} SOURCE(S) · k=${(e.repeat_k ?? 0)}`,
            { size: 1.5, colour: INK.pencilLight, face: 'figure' });
-    // the movement, drawn as a bar per axis position
-    let bx = x + 96;
-    for (const [k, v] of Object.entries(e.applied || {})) {
+    // The movement, drawn as a bar per axis position, each lettered with what the position
+    // MEANS. A row read "A.A3 +0.04pp" beside a driver about rising misalignment risk, and a
+    // reader had no way to see that the model had been moved toward "tractable with effort" by
+    // a development that says the opposite. The arithmetic is only checkable against its driver
+    // once the key is spelled out.
+    const applied = Object.entries(e.applied || {});
+    const stride = Math.min(86, (w - 98) / Math.max(1, applied.length));
+    applied.forEach(([k, v], j) => {
+      const bx = x + 96 + j * stride;
       const mag = Math.min(20, Math.abs(v) * 900);
       d.rect(bx, ry + rowH - 8.4, mag, 2.2,
              { weight: PEN.hairline, colour: v >= 0 ? INK.green : INK.red,
                fill: v >= 0 ? INK.greenWash : 'rgba(150,44,38,0.18)' });
-      d.text([bx, ry + rowH - 10.8], `${k} ${v >= 0 ? '+' : ''}${(v * 100).toFixed(2)}pp`,
+      const fig = `${k} ${v >= 0 ? '+' : ''}${(v * 100).toFixed(2)}pp`;
+      d.text([bx, ry + rowH - 10.8], fig,
              { size: 1.4, colour: v >= 0 ? INK.green : INK.red, face: 'figure' });
-      bx += Math.max(26, mag + 8);
-    }
+      const nm = posName(k);
+      if (nm) {
+        const lead = d.textWidth(fig + '  ', { size: 1.4, face: 'figure' });
+        d.text([bx + lead, ry + rowH - 10.8], elide(d, nm, stride - lead - 3, 1.4),
+               { size: 1.4, colour: INK.pencil });
+      }
+    });
     if (e.driver) {
       // The parent emits the driver at a fixed 140 characters. Ending the quotation without
       // a mark would read as a sentence the draughtsman wrote and then abandoned.
@@ -626,7 +661,7 @@ function drawMorningPlate(d, S, box) {
   D.network.axes.forEach((a, i) => {
     column(d, x + 4 + i * colGap, netY - 22, 8, 20, {
       value: Math.min(1, (drift[a.key] || 0) / 0.02),
-      label: a.key + ' · ' + a.name.toUpperCase().slice(0, 20),
+      label: a.key + ' · ' + a.name.toUpperCase(),
       sub: ((drift[a.key] || 0) * 100).toFixed(2) + 'pp',
       colour: (drift[a.key] || 0) > 0 ? INK.red : INK.inkLight,
       id: `axis:${a.key}`,

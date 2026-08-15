@@ -12,7 +12,7 @@
 //
 // Everything is in sheet millimetres and goes through Draft.
 
-import { PEN, INK, PAPER } from './draft.js?v=20260815-1129';
+import { PEN, INK, PAPER } from './draft.js?v=20260815-1141';
 
 // ── the dial ─────────────────────────────────────────────────────────────────
 // An engraved 240° face. The LIVE needle is ink; the GHOST needle is where the same reading
@@ -100,9 +100,18 @@ export function column(d, x, y, w, h, { value, label, sub = '', id = null,
   d.text([x + w / 2, y - 2.4], (value * 100).toFixed(0) + '%',
          { size: 2.0, align: 'center', colour: c, weight: 700, face: 'figure' });
   if (label) {
-    const lines = d.wrap(label, h - 2, { size: 1.6 });
-    d.text([x - 1.6, y + h - 0.4], lines[0], { size: 1.6, colour: INK.ink,
-                                               align: 'left', angle: Math.PI / 2, track: 0.12 });
+    // The label runs ALONG the column, so its room is the column's height. Taking wrap()'s
+    // first line and dropping the rest lettered "D · DIFFUSION &" on one glass and "C ·" —
+    // naming nothing at all — on another. Shrink to fit, then mark the cut.
+    const opt = { size: 1.6, track: 0.12 };
+    while (opt.size > 1.25 && d.textWidth(label, opt) > h - 2) opt.size -= 0.05;
+    let txt = String(label);
+    if (d.textWidth(txt, opt) > h - 2) {
+      while (txt.length > 1 && d.textWidth(txt + '…', opt) > h - 2) txt = txt.slice(0, -1);
+      txt = txt.replace(/[ (·,&-]+$/, '') + '…';
+    }
+    d.text([x - 1.6, y + h - 0.4], txt, { ...opt, colour: INK.ink,
+                                          align: 'left', angle: Math.PI / 2 });
   }
   if (sub) d.text([x + w / 2, y - 5.0], sub,
                   { size: 1.4, align: 'center', colour: INK.pencilLight });

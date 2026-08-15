@@ -146,3 +146,43 @@ gets rounded to whichever half is louder. The forecast then propagates the round
 **Proposed:** wherever an axis mixes *magnitude* with *incidence*, split it. The design rule to
 adopt: **one axis, one question.** An axis that answers "how big" and "where" at once will
 always have a world it cannot say.
+
+## G13 · An evidence rule matches on event TYPE and cannot read the finding's DIRECTION
+
+**Opened:** 2026-08-15, from this project's own nightly pull
+**Severity:** high — it moves priors monotonically, and the sheet drew it before it could say it
+
+Two of the six applications on 2026-08-15 were `ev-safety-research`, and both applied the same
+vector: **A3 "tractable with effort" +0.043pp, A1 "fails undetected" −0.021pp**. Their drivers:
+
+- Anthropic **raising its estimate of the risk of misalignment** in high-stakes situations
+- Anthropic's Frontier Red Team reporting a **swarm of 45 coordinating agents**
+
+Both are adverse findings about alignment. Both moved the network toward alignment being
+tractable and away from it failing undetected.
+
+This is not two unlucky matches. **All 12 `ev-safety-research` applications on record in
+`delta.json` carry the identical sign pattern** — `A.A3 +`, `A.A1 −` — across drivers that
+include a lab unable to rule out critical risk, agents exploiting infrastructure, 272 experts
+rating 24 risk domains, and agents colliding in multi-agent work. The one driver that plausibly
+*does* support tractability (six published principles for safety auditing) receives the same
+vector as the rest.
+
+The mechanism: the rule matches on the event's **type** — that a safety-research item appeared —
+and the type of a finding carries no information about which way the finding points. A rule
+keyed on "safety research was published" will read a rising risk estimate as evidence that
+safety research is working. The parent's matcher also sees only a truncated prefix of the item,
+so the sentence that states the direction is frequently past the cut.
+
+**To close (a change to the parent, held):** an evidence rule whose positions are ordered along
+a *tractable ↔ intractable* dimension needs a direction term read from the finding itself, not
+from its category. Failing that, the rule should apply a **symmetric widening** — raise the
+uncertainty on A without moving its centre — since "a safety finding was published" is genuine
+information about attention and none at all about outcome.
+
+**What this project did about it:** nothing to the priors, which live in the Atlas. The morning
+plate now letters what each position key MEANS beside its arithmetic, so a reader sees
+`A.A3 +0.04pp · tractable with effort` sitting beside a driver about rising misalignment risk
+and can judge the application against the development that drove it. The drawing's job is to
+make the parent's arithmetic checkable; it could not do that while the positions were lettered
+in the parent's internal keys.

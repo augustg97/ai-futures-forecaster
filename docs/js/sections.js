@@ -5,9 +5,9 @@
 // wide, drawn at one fixed scale so lettering keeps the size it was drawn at and nothing has to
 // be zoomed. A section's millimetre space runs x 0 → 300 across and y 0 → H up from its foot.
 
-import { PEN, INK, PAPER } from './draft.js?v=20260815-1129';
-import { dial, manifold, strip, tally, fmtNum } from './instruments.js?v=20260815-1129';
-import { drawFigure } from './figures.js?v=20260815-1129';
+import { PEN, INK, PAPER } from './draft.js?v=20260815-1141';
+import { dial, manifold, strip, tally, fmtNum } from './instruments.js?v=20260815-1141';
+import { drawFigure } from './figures.js?v=20260815-1141';
 
 export const SHEET_W = 340;
 const PAD = 13;
@@ -903,7 +903,19 @@ export function morning(d, S, H) {
                              { title: S.plateNote.title });
   return H;
 }
-morning.height = (S) => 190 + (S.plateNote ? S.plateNote.h + 22 : 0);
+// The plate held three rows whatever the morning brought. Six applications arrived on
+// 2026-08-15 and half the day's work sat below the fold — the plate said so, but a reader who
+// wants today's revision should not have to take the count on trust. The sheet grows with the
+// day, to a cap: past MORN_MAX the fold note carries the remainder rather than the plate
+// running the length of the tab.
+const MORN_MAX = 8;
+morning.rowsToday = (S) => {
+  const dl = S.delta || {};
+  const n = (dl.entries || []).filter((e) => e.date === dl.date).length;
+  return Math.max(1, Math.min(n || 1, MORN_MAX));
+};
+morning.height = (S) => 190 + Math.max(0, morning.rowsToday(S) - 3) * 29 +
+                        (S.plateNote ? S.plateNote.h + 22 : 0);
 
 
 // ── 10 · research ────────────────────────────────────────────────────────────
