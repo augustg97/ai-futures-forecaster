@@ -1,6 +1,6 @@
 # AI Futures Forecaster — live state
 
-**Live:** https://augustg97.github.io/ai-futures-forecaster/ · build `20260814-1138`
+**Live:** https://augustg97.github.io/ai-futures-forecaster/ · build `20260815-1141`
 **Local:** `python3 build/serve.py 8154` (serves `web/`, never `docs/`) · working
 directory `~/Forecast Works`, repo `augustg97/ai-futures-forecaster`
 
@@ -63,9 +63,20 @@ python3 build/build_site.py            # gate → pull → stamp → docs/
 __FW.auditSweep()                      # console; REQUIRE controlPasses: true
 ```
 
-Last sweep: **23 cases · 15,421 lettering marks · 0 collisions · 0 off-section · 0 overflows ·
-control passes** (2026-08-14, run against the live build). Full pass over every section: ~18 ms.
+Last sweep: **23 cases · 16,019 lettering marks · 0 collisions · 0 off-section · 0 overflows ·
+control passes** (2026-08-15, run against the live build). Full pass over every section: ~18 ms.
 Effect recalculation on a setting change: 22 ms, cached per setting.
+
+## The morning plate letters what a position MEANS
+
+A row reads `A.A3 +0.04pp · tractable with effort`, the name taken from the registry the parent
+emitted. It lettered the bare key until 2026-08-15, which meant the plate whose whole job is
+letting a reader check an application against its driver could not be checked: a lab **raising**
+its misalignment risk estimate moved the model **toward** alignment being tractable, and nothing
+on the sheet showed it. The plate also grows with the day's application count now (cap 8, then the
+fold note), and `column()` shrinks a label to fit and marks its own cut rather than dropping
+`wrap()`'s later lines — that silent drop lettered one sight glass `C ·`. See
+[`Research/nightly-2026-08-15.md`](Research/nightly-2026-08-15.md).
 
 ## The lookback states its own span
 
@@ -105,6 +116,10 @@ sizes three of the four missing edges with multipliers and shows the fourth cann
 
 ## Open
 
+- **[G13](Research/findings/gaps.md): an evidence rule matches on event TYPE and cannot read the
+  finding's DIRECTION.** All 12 `ev-safety-research` applications on record apply the identical
+  vector — A3 up, A1 down — across drivers that are mostly adverse. The fix is the parent's, and
+  the recommendation is a direction term or a symmetric widening of A. Held.
 - The A axis (alignment outcome) reports NO MEASURED EFFECT BY 2040 on all four positions. That
   is true of the model as built — nothing downstream in `tracks()` reads A, and no conditional
   links it to T. Whether that is a modelling gap or a property of the axis is worth a look in
