@@ -5,12 +5,12 @@
 // on that instrument. It reads the same emitted data and implements the same functions against
 // the same shipped constants (`engine.json`), so the two surfaces cannot drift apart.
 
-import { Draft, PEN, INK, paperTileURL } from './draft.js?v=20260816-1129';
+import { Draft, PEN, INK, paperTileURL } from './draft.js?v=20260816-1139';
 import { SECTIONS, SHEET_W, TABS, CHART, COL, CTL_NOTE_W, balance,
-         proseColumns, measureSections, SHEET_CW } from './sections.js?v=20260816-1129';
-import { column, fmtNum } from './instruments.js?v=20260816-1129';
-import { describe, headline } from './narrative.js?v=20260816-1129';
-import { chooseFigures } from './figures.js?v=20260816-1129';
+         proseColumns, measureSections, SHEET_CW } from './sections.js?v=20260816-1139';
+import { column, fmtNum } from './instruments.js?v=20260816-1139';
+import { describe, headline } from './narrative.js?v=20260816-1139';
+import { chooseFigures } from './figures.js?v=20260816-1139';
 
 // One build number, injected into index.html at ship time, versions BOTH the data fetches and
 // (via the build's import rewrite) every module. A fresh app.js against a stale draft.js is the
@@ -598,6 +598,17 @@ function drawMorningPlate(d, S, box) {
            'TODAY, BELOW THE FOLD OF THIS PLATE',
            { size: 1.8, align: 'right', colour: INK.red, track: 0.12 });
   }
+  // The cloud ringed the last element of the parent's array and the caption called it the
+  // newest. Every application in one morning carries the same application date, so the only
+  // date that separates them is the development's own — and the array is not ordered by it.
+  // On three of the nine mornings on record the last element was not the most recent
+  // development, and on 2026-08-16 it was the OLDEST of eight: a working paper nine days old,
+  // ringed while a development from that morning sat unringed two rows below. Rank by the
+  // dates the entry actually carries, and letter each row's event date so the ring is
+  // something a reader can check rather than take.
+  const rank = (e) => `${e.date || ''}#${e.event_date || ''}`;
+  let ring = 0;
+  show.forEach((e, i) => { if (rank(e) > rank(show[ring])) ring = i; });
   show.forEach((e, i) => {
     const ry = y + h - 16 - (i + 1) * rowH;
     d.line([x, ry + rowH - 1.5], [x + w, ry + rowH - 1.5],
@@ -606,7 +617,8 @@ function drawMorningPlate(d, S, box) {
            { size: 2.1, weight: 700, colour: INK.ink, track: 0.06 });
     d.text([x + 1, ry + rowH - 9.4],
            `${(e.impact_class || '').toUpperCase()} · ×${(e.magnitude || 0).toFixed(4)} · ` +
-           `${e.sources || 1} SOURCE(S) · k=${(e.repeat_k ?? 0)}`,
+           `${e.sources || 1} SOURCE(S) · k=${(e.repeat_k ?? 0)}` +
+           (e.event_date ? ` · EVENT ${e.event_date}` : ''),
            { size: 1.5, colour: INK.pencilLight, face: 'figure' });
     // The movement, drawn as a bar per axis position, each lettered with what the position
     // MEANS. A row read "A.A3 +0.04pp" beside a driver about rising misalignment risk, and a
@@ -639,7 +651,7 @@ function drawMorningPlate(d, S, box) {
                   { size: 1.55, lead: 1.4, colour: INK.pencil, max: 2 });
     }
     d.region(`delta:${(D.delta.entries || []).indexOf(e)}`, x, ry, w, rowH, e);
-    if (i === 0) d.revisionCloud(x - 2, ry + 0.5, w + 4, rowH - 1);
+    if (i === ring) d.revisionCloud(x - 2, ry + 0.5, w + 4, rowH - 1);
   });
 
   // NET MOVEMENT — the day's total absolute drift per axis, as a bank of sight glasses.

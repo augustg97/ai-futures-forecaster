@@ -5,9 +5,9 @@
 // wide, drawn at one fixed scale so lettering keeps the size it was drawn at and nothing has to
 // be zoomed. A section's millimetre space runs x 0 → 300 across and y 0 → H up from its foot.
 
-import { PEN, INK, PAPER } from './draft.js?v=20260816-1129';
-import { dial, manifold, strip, tally, fmtNum } from './instruments.js?v=20260816-1129';
-import { drawFigure } from './figures.js?v=20260816-1129';
+import { PEN, INK, PAPER } from './draft.js?v=20260816-1139';
+import { dial, manifold, strip, tally, fmtNum } from './instruments.js?v=20260816-1139';
+import { drawFigure } from './figures.js?v=20260816-1139';
 
 export const SHEET_W = 340;
 const PAD = 13;
@@ -893,10 +893,20 @@ alternatives.height = (S) => 232 + (S.plateNote ? S.plateNote.h + 22 : 0);
 
 // ── 8 · this morning ─────────────────────────────────────────────────────────
 export function morning(d, S, H) {
+  // Two dates run through this plate and they are not the same date: when the engine applied
+  // the evidence, and when the development it read actually happened. On a busy morning every
+  // row shares the first and spreads over a week of the second, so the caption has to say
+  // which one the ring follows, and the plate has to letter it.
+  const dl = S.delta || {};
+  const nToday = (dl.entries || []).filter((e) => e.date === dl.date).length;
   const y = head(d, H - 8, "THIS MORNING'S REVISION",
     'What the evidence moved on the network today, with the arithmetic that moved it: impact ' +
-    'class, corroborating sources, novelty decay, the positions changed and the development ' +
-    'that drove them. The newest application is ringed in a revision cloud.');
+    'class, corroborating sources, novelty decay, the positions changed, and the development ' +
+    'that drove them with the date it happened. ' +
+    (nToday ? 'Every application here was applied this morning, to developments spanning ' +
+              'several days. ' : 'This morning applied nothing, so the plate carries the ' +
+              'latest applications on record. ') +
+    'The row whose development is the most recent is ringed in a revision cloud.');
   const foot = S.plateNote ? S.plateNote.h + 22 : 14;
   S.drawMorning(d, S, [PAD, foot, CW, y - foot - 6]);
   if (S.plateNote) noteBlock(d, PAD, S.plateNote.h + 11, CW, S.plateNote,
