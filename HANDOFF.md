@@ -1,6 +1,6 @@
 # AI Futures Forecaster — live state
 
-**Live:** https://augustg97.github.io/ai-futures-forecaster/ · build `20260815-1141`
+**Live:** https://augustg97.github.io/ai-futures-forecaster/ · build `20260816-1139`
 **Local:** `python3 build/serve.py 8154` (serves `web/`, never `docs/`) · working
 directory `~/Forecast Works`, repo `augustg97/ai-futures-forecaster`
 
@@ -63,9 +63,25 @@ python3 build/build_site.py            # gate → pull → stamp → docs/
 __FW.auditSweep()                      # console; REQUIRE controlPasses: true
 ```
 
-Last sweep: **23 cases · 16,019 lettering marks · 0 collisions · 0 off-section · 0 overflows ·
-control passes** (2026-08-15, run against the live build). Full pass over every section: ~18 ms.
+Last sweep: **23 cases · 16,410 lettering marks · 0 collisions · 0 off-section · 0 overflows ·
+control passes** (2026-08-16, run against the live build). Full pass over every section: ~18 ms.
 Effect recalculation on a setting change: 22 ms, cached per setting.
+
+**Verify a deploy in a browser that is not holding the old `index.html`.** After the 08-16 push
+`curl` read the new stamp while the Playwright tab still ran the previous build and reported the
+previous drawing. A cache-busting query on the URL settled it.
+
+## The morning plate carries two dates, and they are not the same date
+
+`date` is when the engine applied the evidence; `event_date` is when the development happened. Every
+row on one morning shares the first, so only the second can order them — and the parent's array is
+not ordered by it. The revision cloud ringed the last array element and the caption called it the
+newest: wrong on three of the nine mornings in the window, and on 2026-08-16 it ringed a working
+paper nine days old while that morning's own development sat unringed below it. The ring now takes
+the row ranked highest on `(date, event_date)`, every row letters its `EVENT` date so the ring is
+checkable, and the caption states the rule it follows. `delta.json` is a **rolling window of 40
+entries** — every count drawn from it is a count over the last 40 applications. See
+[`Research/nightly-2026-08-16.md`](Research/nightly-2026-08-16.md).
 
 ## The morning plate letters what a position MEANS
 
@@ -117,9 +133,11 @@ sizes three of the four missing edges with multipliers and shows the fourth cann
 ## Open
 
 - **[G13](Research/findings/gaps.md): an evidence rule matches on event TYPE and cannot read the
-  finding's DIRECTION.** All 12 `ev-safety-research` applications on record apply the identical
-  vector — A3 up, A1 down — across drivers that are mostly adverse. The fix is the parent's, and
-  the recommendation is a direction term or a symmetric widening of A. Held.
+  finding's DIRECTION.** Every `ev-safety-research` application applies the identical vector — A3
+  up, A1 down — across drivers that are mostly adverse; 14 distinct incidents across the 08-15 and
+  08-16 windows, one sign pattern. A3 has risen on every night it moved since the r3 re-set, and E1
+  likewise. The fix is the parent's, and the recommendation is a direction term or a symmetric
+  widening of A. Held.
 - The A axis (alignment outcome) reports NO MEASURED EFFECT BY 2040 on all four positions. That
   is true of the model as built — nothing downstream in `tracks()` reads A, and no conditional
   links it to T. Whether that is a modelling gap or a property of the axis is worth a look in
