@@ -212,3 +212,70 @@ what it is doing.
 - Nuclear-for-data-centre deal trackers — 9.8 GW across 13 deals as of May 2026; GEH BWRX-300 at
   Darlington from 2029; Google/Kairos 500 MW from 2030.
   https://smrintel.com/nuclear-data-center-deals/
+
+## Addendum 2 · the calendar in four lanes (2026-08-16)
+
+One lane gave a year at most one dated fact, and it always landed in the same sentence about
+build-out. The calendar now runs in **four lanes**, one per paragraph that takes a marker, so a
+year can carry a supply commitment, a statutory date, a spending figure and a scrutiny milestone
+independently of each other. At 2027 all four fire and land in four different paragraphs.
+
+| lane | paragraph | entries |
+|---|---|---|
+| supply | Build-out and governance | 2026, 2027, 2028, 2029, 2030, 2035 |
+| law | Build-out and governance | 2026, 2027, 2028 |
+| capital | Capital and employment | 2026, 2027 |
+| oversight | Oversight and public opinion | 2026, 2027 |
+
+The public record thins after 2030, so the later lanes are empty and those years say nothing
+dated. An empty lane draws nothing.
+
+### Two rules the first draft broke
+
+**Every entry stands alone.** Only one entry per lane is ever drawn, so an entry that refers to
+another has no antecedent on the sheet. The draft had "Analysts covering those same five
+companies", "The next government-led session", and an "SMR fleet" whose abbreviation was expanded
+only in a sibling entry that never appears beside it.
+
+**No deictic words, and no retrospective prefix.** A prefix has to agree in tense with an entry it
+cannot see: "a year back: the summit convenes in New York in May 2027". Every entry now states its
+own date and reads correctly from any year, and the prefix is gone.
+
+### Law and governance
+
+- EU AI Act: transparency obligations apply from **2 August 2026**; watermarking from **2 December
+  2026**; standalone Annex III high-risk obligations from **2 December 2027** (deferred sixteen
+  months by the Digital Omnibus, politically agreed 7 May 2026, approved by Parliament 16 June
+  2026); high-risk inside regulated products from **2 August 2028** (deferred twelve months). The
+  Commission begins enforcing the general-purpose code of practice in **August 2026**.
+- **1 January 2026**: California's frontier transparency statute and the Texas responsible-AI act
+  take effect. **1 January 2027**: Colorado's narrowed replacement statute, signed 14 May 2026,
+  covering automated decisions that materially influence consequential ones.
+- **20 March 2026**: White House framework calling on Congress to preempt state AI law; a
+  moratorium is being attempted through the 2026 NDAA after the Senate voted 99–1 to strip the
+  earlier reconciliation version.
+
+### Capital
+
+- 2026 guidance from the five largest US cloud and AI infrastructure providers: **$660–690 bn**,
+  close to double 2025, roughly three-quarters of it AI infrastructure.
+- 2027: analyst coverage of the same five puts capital spending **above $1 trillion**.
+
+### Oversight
+
+- **February 2026**: second International AI Safety Report — 100+ authors, 30+ governments.
+- **June 2026**: executive order directing frontier developers to give the federal government
+  early access to new models.
+- **May 2027**: the summit series convenes in New York, alongside the Global Digital Compact
+  high-level review.
+
+## Sources
+
+- Travers Smith, Morgan Lewis, Gibson Dunn and Jones Walker on the Digital Omnibus deferral.
+  https://www.traverssmith.com/knowledge/knowledge-container/eu-agrees-to-delay-key-ai-act-compliance-deadlines/
+- Hunton and Norton Rose Fulbright on the amended Colorado act.
+  https://www.hunton.com/privacy-and-cybersecurity-law-blog/colorado-ai-act-amended-and-effective-date-delayed
+- StateScoop and Morgan Lewis on the preemption attempts.
+  https://statescoop.com/gop-lawmakers-state-ai-law-moratorium/
+- International AI Safety Report 2026. https://internationalaisafetyreport.org/publication/international-ai-safety-report-2026
+- Hyperscaler capex guidance. https://futurumgroup.com/insights/ai-capex-2026-the-690b-infrastructure-sprint/

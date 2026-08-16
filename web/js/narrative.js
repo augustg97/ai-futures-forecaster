@@ -636,33 +636,67 @@ function crossingClause(tracks, year, engineY0) {
 // Dated commitments already on the public record, so a given year can carry
 // what is actually scheduled around it. Each is a fact with a date, not a
 // forecast; the passage says which are behind and which are ahead.
+//
+// FOUR LANES, one per paragraph that takes a marker. A single lane gave a year
+// at most one dated fact and put every one of them in the same sentence; four
+// let a year carry a supply commitment, a statutory date, a spending figure and
+// a scrutiny milestone independently. The record thins after 2030, so the later
+// lanes are empty and those years say nothing dated. Sources: Research/.
 const MARKERS = [
-  [2026, 'grid', 'A FERC transmission waiver in June 2026 cleared the last regulatory ' +
-                 'obstacle to restarting Three Mile Island Unit 1 for data-centre load.'],
-  [2027, 'grid', 'The first nuclear electricity generated for an AI data centre arrives this ' +
-                 'year, from the restarted Three Mile Island Unit 1, a year ahead of its ' +
-                 'original schedule.'],
-  [2028, 'grid', 'The Department of Energy projected data centres would reach about 12% of US ' +
-                 'electricity demand by now, against roughly 4% in 2026.'],
-  [2029, 'grid', 'The first Western small modular reactors begin deployment around now, ' +
-                 'starting with the BWRX-300 at Darlington.'],
-  [2030, 'grid', 'The first corporate SMR fleet contracted in the 2020s — 500 MW between ' +
-                 'Google and Kairos Power — is due to deliver from about now.'],
-  [2035, 'grid', 'Small modular reactor deployment reaches broad commercial use around this ' +
-                 'point on the schedules written in the 2020s.'],
+  [2026, 'supply', 'A FERC transmission waiver in June 2026 cleared the last regulatory ' +
+                   'obstacle to restarting Three Mile Island Unit 1 for data-centre load.'],
+  [2027, 'supply', 'The restarted Three Mile Island Unit 1 generates the first nuclear ' +
+                   'electricity for an AI data centre in 2027, a year ahead of its original ' +
+                   'schedule.'],
+  [2028, 'supply', 'The Department of Energy projected data centres at about 12% of US ' +
+                   'electricity demand by 2028, against roughly 4% in 2026.'],
+  [2029, 'supply', 'The first Western small modular reactors begin deployment from 2029, ' +
+                   'starting with the BWRX-300 at Darlington.'],
+  [2030, 'supply', 'The first corporate small modular reactor fleet contracted in the 2020s — ' +
+                   '500 MW between Google and Kairos Power — is due to deliver from 2030.'],
+  [2035, 'supply', 'Small modular reactor deployment reaches broad commercial use around 2035 ' +
+                   'on the schedules written in the 2020s.'],
+
+  [2026, 'law', "California's frontier transparency statute and the Texas responsible-AI act " +
+                "took effect on 1 January 2026. The AI Act's transparency obligations apply " +
+                'across the EU from 2 August 2026, and the Commission begins enforcing its ' +
+                'general-purpose code of practice the same month.'],
+  [2027, 'law', "Colorado's narrowed AI statute, which repealed and replaced the act passed " +
+                'there in 2024, takes effect on 1 January 2027 and covers automated decisions ' +
+                "that materially influence consequential ones. The EU's standalone high-risk " +
+                'obligations follow on 2 December 2027, sixteen months later than the act ' +
+                'first set.'],
+  [2028, 'law', "The EU's high-risk rules for AI built into regulated products apply from " +
+                '2 August 2028, twelve months later than the act first set.'],
+
+  [2026, 'capital', 'The five largest US cloud and AI infrastructure providers guided to between ' +
+                    '$660 and $690 billion of capital spending in 2026, close to double the year ' +
+                    'before, with roughly three-quarters of it going to AI infrastructure.'],
+  [2027, 'capital', 'Analysts covering the five largest US cloud and AI infrastructure providers ' +
+                    'put their 2027 capital spending above a trillion dollars.'],
+
+  [2026, 'oversight', 'The second International AI Safety Report, written by more than a hundred ' +
+                      'researchers and backed by over thirty governments, was published in ' +
+                      'February 2026. A June executive order directed frontier developers to give ' +
+                      'the federal government early access to new models.'],
+  [2027, 'oversight', 'The government-led international AI summit series, which produced the ' +
+                      'safety report, convenes again in New York in May 2027, alongside the ' +
+                      'high-level review of the Global Digital Compact.'],
 ];
-function markerClause(year) {
+function markerClause(year, lane) {
   const yr = Math.floor(year);
   let best = null, gap = 99;
-  for (const [my, , text] of MARKERS) {
+  for (const [my, ln, text] of MARKERS) {
+    if (ln !== lane) continue;
     const g = Math.abs(my - yr);
     if (g < gap) { gap = g; best = [my, text]; }
   }
   if (!best || gap > 2) return '';
-  return gap === 0 ? best[1]
-    : best[0] < yr ? `Looking back ${gap} year${gap === 1 ? '' : 's'}: ` +
-        best[1].charAt(0).toLowerCase() + best[1].slice(1)
-    : best[1];
+  // No retrospective prefix, and no deictic words inside an entry. Every entry
+  // states its own date, so it reads correctly from any year the reader is on;
+  // a prefix would have to agree in tense with an entry it cannot see, and
+  // "a year back: the summit convenes in May 2027" is what that produces.
+  return best[1];
 }
 
 // A rate for any track: what it did over the previous five years, in words the
@@ -675,8 +709,9 @@ function rateClause(tracks, i, key, noun, { pct = false } = {}) {
   if (pct) {
     const d = b - a;
     if (Math.abs(d) < 0.6) return `${noun} has been flat for five years.`;
-    return `${noun} has moved ${d > 0 ? 'up' : 'down'} ${Math.abs(d).toFixed(0)} points in ` +
-           'five years.';
+    const pts = Math.abs(d).toFixed(0);
+    return `${noun} has moved ${d > 0 ? 'up' : 'down'} ${pts} point${pts === '1' ? '' : 's'} ` +
+           'in five years.';
   }
   const mult = b / a;
   if (mult > 3) return `${noun} has more than tripled in five years.`;
@@ -720,7 +755,7 @@ export function describe(wl, year, tracks, engineY0, trunkCap = null) {
     FRAG[wl.C][span], X('C', 'S'), FRAG[wl.S][span],
     `Installed AI compute is ${Math.round(tracks.gw[i]).toLocaleString('en-US')} GW.`,
     band(tracks.gw[i], GW_BANDS), rateClause(tracks, i, 'gw', 'Capacity'),
-    markerClause(year),
+    markerClause(year, 'law'), markerClause(year, 'supply'),
   ]) });
 
   out.push({ lead: 'Capital and employment.', text: join([
@@ -728,6 +763,7 @@ export function describe(wl, year, tracks, engineY0, trunkCap = null) {
     `AI revenue is ${money(tracks.rev[i])} a year.`, band(tracks.rev[i], REV_BANDS),
     rateClause(tracks, i, 'rev', 'Revenue'), jobsClause(tracks.jobs[i]),
     rateClause(tracks, i, 'jobs', 'Employment', { pct: true }),
+    markerClause(year, 'capital'),
   ]) });
 
   out.push({ lead: 'Oversight and public opinion.', text: join([
@@ -735,6 +771,7 @@ export function describe(wl, year, tracks, engineY0, trunkCap = null) {
     `Approval of AI stands at ${tracks.appr[i].toFixed(0)}%.`, apprClause(tracks.appr[i]),
     rateClause(tracks, i, 'appr', 'Approval', { pct: true }),
     band(tracks.laws[i], LAW_BANDS), rateClause(tracks, i, 'laws', 'The statute book'),
+    markerClause(year, 'oversight'),
   ]) });
 
   out.push({ lead: 'Capability trajectory.', text: join([FRAG[wl.T][span], X('T', 'C')]) });
