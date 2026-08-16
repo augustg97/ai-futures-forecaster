@@ -6,7 +6,7 @@
 // be zoomed. A section's millimetre space runs x 0 → 300 across and y 0 → H up from its foot.
 
 import { PEN, INK, PAPER } from './draft.js';
-import { dial, manifold, strip, tally, fmtNum } from './instruments.js';
+import { dial, manifold, strip, collectives, fmtNum } from './instruments.js';
 import { drawFigure } from './figures.js';
 
 export const SHEET_W = 340;
@@ -323,8 +323,10 @@ function instrumentColumn(d, S, top) {
     y -= 7.2;
   });
   y -= 2;
-  tally(d, x, y, w, { n: tr.copies[i0], speed: tr.speed[i0], id: 'tally' });
-  y -= 15;
+  y -= collectives(d, x, y, w, {
+    n: tr.copies[i0], speed: tr.speed[i0], id: 'tally',
+    prev: tr.copies[Math.max(0, i0 - 5)],
+  }) + 3;
 
   // ── behaviour, six recorders at reading size ───────────────────────────────
   d.text([x, y], 'BEHAVIOUR OVER TIME', { size: 3.0, weight: 700, track: 0.16, colour: INK.ink });
@@ -629,7 +631,7 @@ function controlColumn(d, S, top) {
 
   // how a choice is applied
   y -= 4;
-  d.text([x, y], 'HOW A CHOICE IS APPLIED',
+  d.text([x, y], 'CONDITIONING MODE',
          { size: 2.0, weight: 700, track: 0.12, colour: INK.ink });
   rule(d, y - 2.0, x, w, { weight: PEN.hairline, colour: INK.inkLight });
   y -= 5.4;
@@ -668,7 +670,7 @@ export function board(d, S, H) {
 }
 board.height = (S) => {
   const left = 34 + Math.ceil(4 / 2) * 27 + 34 + 6 + S.engine.domains.length * 7.2 + 24 +
-               18 + 3 * 20.5;
+               40 + 3 * 20.5;
   const mid = 30 + CHART_H + 21 + NOTE_BAND + (S.chartNote ? S.chartNote.h + 12 : 0);
   const n = (S.network.axes.find((q) => q.key === S.ctlAxis) || S.network.axes[0])
     .positions.length;
@@ -816,11 +818,14 @@ export function details(d, S, H) {
     d.region(`dom:${i}`, cx, dy - 8.6, colW, 8.2, dm);
     dy -= 9.4;
   });
-  tally(d, cx, dy - 4.0, colW, { n: tr.copies[i0], speed: tr.speed[i0], id: 'tally' });
+  collectives(d, cx, dy - 4.0, colW, {
+    n: tr.copies[i0], speed: tr.speed[i0], id: 'tally',
+    prev: tr.copies[Math.max(0, i0 - 5)],
+  });
   if (S.plateNote) noteBlock(d, PAD, 44, CW, S.plateNote, { title: S.plateNote.title });
   return H;
 }
-details.height = (S) => 48 + Math.max(100, S.engine.domains.length * 9.4 + 30) +
+details.height = (S) => 48 + Math.max(126, S.engine.domains.length * 9.4 + 56) +
   (S.plateNote ? S.plateNote.h + 22 : 0);
 
 // ── 5 · behaviour over time ──────────────────────────────────────────────────
@@ -941,7 +946,7 @@ export function research(d, S, H) {
 
   // the audit that opened it
   d.rect(PAD, y - 26, CW, 26, { weight: PEN.thin, colour: INK.red, alpha: 0.6 });
-  d.text([PAD + 4, y - 5.4], 'WHAT THE AUDIT FOUND',
+  d.text([PAD + 4, y - 5.4], 'GROUNDING AUDIT',
          { size: 2.4, weight: 700, track: 0.16, colour: INK.red });
   d.textBlock([PAD + 4, y - 10], 'The engine is grounded in 1,330 wiki pages — but that ' +
     'number describes the corpus. The priors themselves rested on 55 citations from 31 ' +
@@ -952,7 +957,7 @@ export function research(d, S, H) {
   y -= 32;
 
   // recommendations, per axis
-  d.text([PAD, y], 'WHAT THE EVIDENCE CHANGED',
+  d.text([PAD, y], 'PRIOR REVISIONS',
          { size: 2.6, weight: 700, track: 0.14, colour: INK.ink });
   d.text([PAD + CW, y], 'APPLIED 13 AUGUST 2026 · REGISTRY r3',
          { size: 1.8, align: 'right', track: 0.14, colour: INK.inkLight });
@@ -1004,7 +1009,7 @@ export function research(d, S, H) {
 
   // the structural findings
   const gy = bodyBottom - 6;
-  d.text([PAD, gy], 'THE STRUCTURAL FINDING',
+  d.text([PAD, gy], 'STRUCTURAL DEFECTS',
          { size: 2.6, weight: 700, track: 0.14, colour: INK.ink });
   rule(d, gy - 2.2, PAD, CW, { weight: PEN.thin, colour: INK.inkLight });
   const gcol = (CW - 12) / 2;
@@ -1023,7 +1028,7 @@ export function research(d, S, H) {
 
   // the sized edges
   const ey = gy - 26;
-  d.text([PAD, ey], 'THE SAMPLER WAS DROPPING EDGES',
+  d.text([PAD, ey], 'SAMPLER DEFECT',
          { size: 2.6, weight: 700, track: 0.14, colour: INK.red });
   rule(d, ey - 2.2, PAD, CW, { weight: PEN.thin, colour: INK.red });
   d.textBlock([PAD, ey - 6.4], 'Sizing the missing edges found a defect in the engine that ' +
@@ -1039,24 +1044,24 @@ export function research(d, S, H) {
     'order the variables happen to be listed in.', CW,
     { size: 2.0, lead: LEAD, colour: INK.pencil });
   const ey2 = ey - 26;
-  d.text([PAD, ey2], 'THE MISSING EDGES, MEASURED',
+  d.text([PAD, ey2], 'CONDITIONAL EDGES',
          { size: 2.6, weight: 700, track: 0.14, colour: INK.ink });
   rule(d, ey2 - 2.2, PAD, CW, { weight: PEN.thin, colour: INK.inkLight });
   const ew = (CW - 24) / 3;
   const eyB = ey2;
   const edges = [
-    ['TEMPO ON SUPPLY', INK.blue,
+    ['CAPABILITY GIVEN SUPPLY', INK.blue,
      'Effective compute grows about twelvefold a year: fourfold from hardware, the rest from ' +
      'algorithms doing the same work on a third less. Cap the hardware under a constrained ' +
      'build-out and the rate falls to about 60% of baseline, which stretches the capability ' +
      'doubling from 212 days to about 350 and moves month-long autonomous work from 2030 out ' +
      'to the mid-2030s.'],
-    ['DIFFUSION ON THE ECONOMY', INK.red,
+    ['DIFFUSION GIVEN THE ECONOMY', INK.red,
      'Across three recessions in thirty years, 88% of American job losses in routine ' +
      'occupations fell inside a twelve-month window around the downturn, and those jobs never ' +
      'came back. Firms defer the reorganisation while demand holds and carry it out when ' +
      'demand falls. The model carries this arrow only in the other direction.'],
-    ['PUBLIC RESPONSE ON GOVERNMENT', INK.pencil,
+    ['PUBLIC RESPONSE GIVEN POLICY', INK.pencil,
      'This edge is left out on purpose. Whether public opinion changes what governments enact ' +
      'is exactly the quantity the political science literature disagrees about: one study of ' +
      '1,779 policy issues finds ordinary preferences have almost no independent effect, and a ' +
@@ -1078,7 +1083,7 @@ export function sources(d, S, H) {
   const g = S.grounding.counts;
   const colW = (CW - 12) / 2;
   const left = [
-    ['WHAT THE RESEARCH FOUND',
+    ['EVIDENCE PROGRAMME',
      'A dossier now stands behind each variable, each answering the same five questions from ' +
      'sources about the world: a base rate, a mechanism and its weakest step, the 2026 record, ' +
      'resolution criteria, and what would move the number. The audit that opened the programme ' +
@@ -1086,7 +1091,7 @@ export function sources(d, S, H) {
      'themselves rested on 55 citations from 31 sources, and 21 of 26 positions carried one ' +
      'citation or none. Recommendations are held for review; the priors live in the parent ' +
      'engine, and changing one is a decision.'],
-    ['TWO THINGS TO KNOW ABOUT THE MEASUREMENTS',
+    ['MEASUREMENT CAVEATS',
      'The widely cited finding that 95% of enterprise AI pilots show no profit impact measures ' +
      'what the buyer got back, and not what the seller sold; the same survey found about 90% of ' +
      'workers using personal AI tools at work against 40% of firms with official ' +
@@ -1096,14 +1101,14 @@ export function sources(d, S, H) {
      'rests on a series timed against human professionals instead, whose benchmark-derived ' +
      'component biases the trend faster. Followed through, contamination is a small ' +
      'argument for later dates, and no argument at all for an index that reads too high.'],
-    ['WHERE THE PROBABILITIES COME FROM',
+    ['PROBABILITY DERIVATION',
      `A documented belief network of ${S.network.axes.length} variables with sub-variables, ` +
      `priors carrying provenance, and cited conditional relationships, sampled into an ` +
      `ensemble of world-lines. ${g.direct} wiki pages ground the engine directly and ` +
      `${g.corpus} more feed the recorded past. Variables with thin grounding get wider ` +
      `priors, so uncertainty is inherited and stated. These are the model's structured ` +
      `judgments, documented and adjustable, and scored in public as registered claims resolve.`],
-    ['THE DAILY UPDATE',
+    ['DAILY UPDATE',
      'Each morning the day\'s developments are classified against cited evidence rules under ' +
      'a tiered impact methodology, scaled by corroboration and damped by repetition. Every ' +
      'application logs its arithmetic and its driver. A quiet morning leaves residue, which ' +
@@ -1111,13 +1116,13 @@ export function sources(d, S, H) {
      'additions are marked provisional wherever they appear.'],
   ];
   const right = [
-    ['THE LITERATURE QUARRIED',
+    ['SOURCE LITERATURE',
      'AI 2027 and its endings · AI 2040 Plan A and the plan family scored beside it · ' +
      'Situational Awareness · Europe 2031 · Machines of Loving Grace · AI as Normal ' +
      'Technology · The 2028 Global Intelligence Crisis · Anthropic\'s 2028 scenarios. Each is ' +
      'quarried for positions, parameters and event templates, and cited where its parts are ' +
      'used. Each scenario contributes parts.'],
-    ['THIS DOCUMENT',
+    ['DOCUMENT PROVENANCE',
      'A second surface on the AI Atlas forecast engine, which holds the network, the evidence ' +
      'layer and the nightly gate. This document reads that engine\'s emitted forecast and ' +
      'publishes only when its gate passes. The drafting conventions follow The Systems Works.'],

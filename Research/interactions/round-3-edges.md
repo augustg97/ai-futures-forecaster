@@ -169,3 +169,46 @@ report a false failure.
   Research & Politics. https://journals.sagepub.com/doi/10.1177/2053168015608896
 - Humlum & Vestergaard (2.8% realised time saving); MIT NANDA (95%, organisational); WEF 2026
   (16% doing systematic redesign) — carried forward from rounds 1 and 2.
+
+---
+
+# Addendum · per-year variation and the dated calendar (2026-08-16)
+
+The passage varied by *span* — four states across 74 years — so a fixed world-line read
+identically for up to nine consecutive years. Three sources of continuous variation were added,
+and a fixed line now reads differently in **74 of 74** years.
+
+**1 · Crossing clauses.** Where the current year sits against *this line's own* capability
+crossings, computed from its own track: "this line reached superhuman coding in 2032, one year
+ago; automated AI research is two years ahead, in 2035." The dates differ per world-line, so the
+same calendar year reads differently on each.
+
+**2 · A dated calendar.** Commitments already on the public record, so a year can carry what is
+actually scheduled around it. Each is a fact with a date, and the clause says whether it is
+behind or ahead.
+
+| year | marker |
+|---|---|
+| 2026 | FERC transmission waiver in June clears the last regulatory obstacle to restarting Three Mile Island Unit 1 for data-centre load |
+| 2027 | first nuclear electricity generated for an AI data centre, from the restarted TMI Unit 1 — a year ahead of its original schedule |
+| 2028 | DOE projected data centres at about 12% of US electricity demand, against roughly 4% in 2026 |
+| 2029 | first Western small modular reactors begin deployment, starting with the BWRX-300 at Darlington |
+| 2030 | the first corporate SMR fleet contracted in the 2020s — 500 MW, Google and Kairos Power — due to deliver |
+| 2035 | SMR deployment reaches broad commercial use on the schedules written in the 2020s |
+
+Context for the calendar: hyperscalers had committed **9.8 GW of nuclear capacity across 13
+announced deals** as of May 2026, and over $10 billion by late 2025.
+
+**3 · Rate clauses.** Every quantity now carries its five-year rate beside its level — capacity,
+revenue, employment, approval, the statute book. A level says where the world is; a rate says
+what it is doing.
+
+## Sources
+
+- Datacenter Dynamics — Three Mile Island restart and the Microsoft 835 MW, 20-year PPA.
+  https://www.datacenterdynamics.com/en/news/three-mile-island-nuclear-power-plant-to-return-as-microsoft-signs-20-year-835mw-ai-data-center-ppa/
+- FERC transmission waiver, 1 June 2026; TMI Unit 1 to full power H2 2027.
+- US Department of Energy — data-centre share of US electricity demand, ~4% to ~12% by 2028.
+- Nuclear-for-data-centre deal trackers — 9.8 GW across 13 deals as of May 2026; GEH BWRX-300 at
+  Darlington from 2029; Google/Kairos 500 MW from 2030.
+  https://smrintel.com/nuclear-data-center-deals/

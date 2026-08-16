@@ -12,7 +12,7 @@
 //
 // Everything is in sheet millimetres and goes through Draft.
 
-import { PEN, INK, PAPER } from './draft.js?v=20260816-1139';
+import { PEN, INK, PAPER } from './draft.js?v=20260816-1547';
 
 // ── the dial ─────────────────────────────────────────────────────────────────
 // An engraved 240° face. The LIVE needle is ink; the GHOST needle is where the same reading
@@ -234,23 +234,125 @@ export function strip(d, x, y, w, h, { data, years, y0, y1, colour = null, label
 // ── tally squares ────────────────────────────────────────────────────────────
 // A count drawn as a count. Each square is a decade of copies on a log tally, so the block
 // grows the way the number does and the reader sees an order of magnitude as an area.
-export function tally(d, x, y, w, { n, speed, id = null }) {
-  const cell = 1.5, gap = 0.5, cols = Math.floor(w / (cell + gap));
-  const units = n > 0 ? Math.max(1, Math.round(Math.log10(n + 1) * 9)) : 0;
-  for (let i = 0; i < units; i++) {
-    const cx = x + (i % cols) * (cell + gap), cy = y - Math.floor(i / cols) * (cell + gap);
-    d.rect(cx, cy - cell, cell, cell,
-           { weight: PEN.hairline, colour: INK.ink, fill: 'rgba(24,28,38,0.55)' });
+// ── the agent collectives counting frame ────────────────────────────────────
+// The old tally drew a handful of squares on a log scale and printed two
+// numbers. It could not show what matters: the population and the clock rate
+// are separate quantities, and their PRODUCT is the one with economic meaning —
+// human-equivalent working years delivered per calendar year. A reader needs
+// all three, and needs to see the population's order of magnitude directly.
+//
+// So: a decade ladder for the population, a graduated scale for the clock rate
+// with a pointer, and the product engraved against the size of the human
+// workforce. Every part moves with the date and the settings.
+
+const WORLD_LABOUR = 3.6e9;         // ILO global labour force, order of magnitude
+
+export function collectives(d, x, y, w, { n, speed, id = null, prev = null }) {
+  const top = y;
+  d.text([x, y], 'AGENT COLLECTIVES',
+         { size: 2.0, weight: 700, track: 0.14, colour: INK.ink });
+  y -= 3.6;
+
+  if (!(n > 0)) {
+    d.text([x, y], 'BELOW THE AUTONOMY THRESHOLD',
+           { size: 1.7, track: 0.12, colour: INK.pencilLight });
+    y -= 3.4;
+    y -= d.textBlock([x, y], 'No population is modelled until the capability index passes ' +
+      '3.0, the level at which a system completes work unsupervised.', w,
+      { size: 1.6, lead: 1.38, colour: INK.pencilLight });
+    if (id) d.region(id, x, y - 2, w, top - y + 4, { n, speed });
+    return top - y + 4;
   }
-  const rows = Math.ceil(units / cols) || 1;
-  const h = rows * (cell + gap);
-  d.text([x, y - h - 1.4], n > 0
-    ? `${fmtNum(n)} copies · ${speed}× human speed`
-    : 'agent collectives: below threshold',
-    { size: 1.7, colour: n > 0 ? INK.ink : INK.pencilLight, weight: 600, track: 0.06 });
-  if (id) d.region(id, x, y - h - 3, w, h + 4);
-  return h + 3;
+
+  const bw = w, bx = x;
+
+  // ── population, on a decade ladder ────────────────────────────────────────
+  d.text([x, y], 'CONCURRENT INSTANCES',
+         { size: 1.5, track: 0.10, colour: INK.pencilLight });
+  d.text([x + w, y], fmtNum(n),
+         { size: 2.3, align: 'right', face: 'figure', weight: 700, colour: INK.ink });
+  y -= 4.4;
+
+  const DEC = [3, 4, 5, 6, 7, 8];
+  const lo = DEC[0], hi = DEC[DEC.length - 1];
+  const lg = Math.max(lo, Math.min(hi, Math.log10(n)));
+  const frac = (lg - lo) / (hi - lo);
+  const cell = 1.3, gapc = 0.4;
+  const cols = Math.max(1, Math.floor(bw / (cell + gapc)));
+  const filled = Math.max(1, Math.round(frac * cols));
+  for (let c = 0; c < cols; c++) {
+    d.rect(bx + c * (cell + gapc), y, cell, 2.4, {
+      weight: PEN.hairline, colour: c < filled ? INK.ink : INK.inkLight,
+      fill: c < filled ? 'rgba(16,19,26,0.62)' : null, alpha: c < filled ? 1 : 0.4 });
+  }
+  y -= 1.0;
+  d.line([bx, y], [bx + bw, y], { weight: PEN.thin, colour: INK.ink });
+  DEC.forEach((e, k) => {
+    const tx = bx + (k / (DEC.length - 1)) * bw;
+    d.line([tx, y], [tx, y - 1.4], { weight: PEN.hairline, colour: INK.inkLight });
+    d.text([tx, y - 4.2], `10${['³', '⁴', '⁵', '⁶', '⁷', '⁸'][k]}`,
+           { size: 1.35, align: 'center', colour: INK.pencilLight });
+  });
+  if (prev && prev > 0 && Math.abs(Math.log10(prev) - lg) > 0.15) {
+    const pf = (Math.max(lo, Math.min(hi, Math.log10(prev))) - lo) / (hi - lo);
+    const gx = bx + pf * bw;
+    d.polyline([[gx, y + 0.2], [gx - 0.9, y - 1.4], [gx + 0.9, y - 1.4]],
+               { close: true, weight: PEN.hairline, colour: INK.erase });
+  }
+  y -= 7.4;
+
+  // ── clock rate ───────────────────────────────────────────────────────────
+  d.text([x, y], 'CLOCK RATE AGAINST A HUMAN',
+         { size: 1.5, track: 0.10, colour: INK.pencilLight });
+  d.text([x + w, y], `${fmtNum(speed)}×`,
+         { size: 2.3, align: 'right', face: 'figure', weight: 700, colour: INK.warm });
+  y -= 5.4;
+  const SP = [1, 10, 100, 1000];
+  const slg = Math.max(0, Math.min(3, Math.log10(Math.max(1, speed))));
+  d.line([bx, y], [bx + bw, y], { weight: PEN.thin, colour: INK.warm });
+  SP.forEach((v, k) => {
+    const tx = bx + (k / (SP.length - 1)) * bw;
+    d.line([tx, y], [tx, y - 1.4], { weight: PEN.hairline, colour: INK.warm, alpha: 0.7 });
+    d.text([tx, y - 4.2], `${v}×`,
+           { size: 1.35, align: 'center', face: 'figure', colour: INK.pencilLight });
+  });
+  const sx = bx + (slg / 3) * bw;
+  d.polyline([[sx, y + 0.2], [sx - 1.4, y + 2.8], [sx + 1.4, y + 2.8]],
+             { close: true, weight: PEN.thin, colour: INK.warm, fill: INK.warm });
+  y -= 7.4;
+
+  // ── the product, which is the quantity with economic meaning ─────────────
+  const equiv = n * speed;
+  const ratio = equiv / WORLD_LABOUR;
+  d.line([x, y + 2.2], [x + w, y + 2.2], { weight: PEN.hairline, colour: INK.inkLight });
+  d.text([x, y - 1.6], 'HUMAN-EQUIVALENT YEARS OF WORK, PER YEAR',
+         { size: 1.5, track: 0.10, colour: INK.pencilLight });
+  y -= 4.6;
+  d.text([x + w, y], fmtNum(equiv),
+         { size: 2.8, align: 'right', face: 'figure', weight: 700, colour: INK.blue });
+  const eng = equiv / 3.4e7;          // world professional software engineers
+  const cmp = ratio >= 1
+    ? `${ratio < 10 ? ratio.toFixed(1) : fmtNum(ratio)} times the world's human labour force`
+    : ratio >= 0.02
+      ? `${(ratio * 100).toFixed(0)}% of the world's human labour force`
+      : eng >= 1
+        ? `${eng < 10 ? eng.toFixed(1) : fmtNum(eng)} times the world's professional software ` +
+          'engineers'
+        : `${(eng * 100).toFixed(0)}% of the world's professional software engineers`;
+  y -= 0.4;
+  y -= d.textBlock([x, y], cmp.charAt(0).toUpperCase() + cmp.slice(1) +
+    ', against a global labour force near 3.6 billion.', w - 22,
+    { size: 1.6, lead: 1.38, colour: INK.pencil });
+  y -= 1.6;
+  if (id) d.region(id, x, y - 2, w, top - y + 4, { n, speed, equiv, ratio });
+  return top - y + 4;
 }
+
+// Kept for any caller that wants the older compact form.
+export function tally(d, x, y, w, opts) {
+  return collectives(d, x, y, w, opts);
+}
+
 
 export function fmtNum(v) {
   if (v >= 1e6) return (v / 1e6).toFixed(1) + 'M';

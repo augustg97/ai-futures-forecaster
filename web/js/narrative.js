@@ -591,6 +591,101 @@ const PAIRS = [
        'was never the variable that determined this outcome.' },
 ];
 
+// ── per-year variation ───────────────────────────────────────────────────────
+// Four spans give a paragraph four states. These give it one per year.
+
+// Where this year sits against THIS line's own capability crossings. The dates
+// differ per world-line, so the same year reads differently on each of them.
+const DATUMS = [[3.0, 'superhuman coding'], [4.0, 'automated AI research'],
+                [5.0, 'general superhuman capability']];
+function crossingClause(tracks, year, engineY0) {
+  const yr = Math.floor(year);
+  const out = [];
+  for (const [th, name] of DATUMS) {
+    let cross = null;
+    for (let i = 0; i < tracks.cap.length; i++) {
+      if (tracks.cap[i] >= th) { cross = tracks.year[i]; break; }
+    }
+    if (cross === null) { out.push([null, name]); continue; }
+    out.push([cross - yr, name, cross]);
+  }
+  const past = out.filter((o) => o[0] !== null && o[0] <= 0);
+  const ahead = out.filter((o) => o[0] !== null && o[0] > 0);
+  const never = out.filter((o) => o[0] === null);
+  const bits = [];
+  if (past.length) {
+    const last = past[past.length - 1];
+    const ago = -last[0];
+    bits.push(ago === 0
+      ? `This line reaches ${last[1]} this year.`
+      : `This line reached ${last[1]} in ${last[2]}, ${ago} year${ago === 1 ? '' : 's'} ago.`);
+  }
+  if (ahead.length) {
+    const next = ahead[0];
+    bits.push(`${next[1].charAt(0).toUpperCase()}${next[1].slice(1)} is ${next[0]} year` +
+              `${next[0] === 1 ? '' : 's'} ahead, in ${next[2]}.`);
+  } else if (never.length && !past.length) {
+    bits.push('No capability datum on the ladder is reached on this line inside the window.');
+  } else if (never.length) {
+    bits.push(`${never[0][1].charAt(0).toUpperCase()}${never[0][1].slice(1)} is never reached ` +
+              'on this line.');
+  }
+  return bits.join(' ');
+}
+
+// Dated commitments already on the public record, so a given year can carry
+// what is actually scheduled around it. Each is a fact with a date, not a
+// forecast; the passage says which are behind and which are ahead.
+const MARKERS = [
+  [2026, 'grid', 'A FERC transmission waiver in June 2026 cleared the last regulatory ' +
+                 'obstacle to restarting Three Mile Island Unit 1 for data-centre load.'],
+  [2027, 'grid', 'The first nuclear electricity generated for an AI data centre arrives this ' +
+                 'year, from the restarted Three Mile Island Unit 1, a year ahead of its ' +
+                 'original schedule.'],
+  [2028, 'grid', 'The Department of Energy projected data centres would reach about 12% of US ' +
+                 'electricity demand by now, against roughly 4% in 2026.'],
+  [2029, 'grid', 'The first Western small modular reactors begin deployment around now, ' +
+                 'starting with the BWRX-300 at Darlington.'],
+  [2030, 'grid', 'The first corporate SMR fleet contracted in the 2020s — 500 MW between ' +
+                 'Google and Kairos Power — is due to deliver from about now.'],
+  [2035, 'grid', 'Small modular reactor deployment reaches broad commercial use around this ' +
+                 'point on the schedules written in the 2020s.'],
+];
+function markerClause(year) {
+  const yr = Math.floor(year);
+  let best = null, gap = 99;
+  for (const [my, , text] of MARKERS) {
+    const g = Math.abs(my - yr);
+    if (g < gap) { gap = g; best = [my, text]; }
+  }
+  if (!best || gap > 2) return '';
+  return gap === 0 ? best[1]
+    : best[0] < yr ? `Looking back ${gap} year${gap === 1 ? '' : 's'}: ` +
+        best[1].charAt(0).toLowerCase() + best[1].slice(1)
+    : best[1];
+}
+
+// A rate for any track: what it did over the previous five years, in words the
+// level alone cannot give.
+function rateClause(tracks, i, key, noun, { pct = false } = {}) {
+  const j = Math.max(0, i - 5);
+  if (j === i) return '';
+  const a = tracks[key][j], b = tracks[key][i];
+  if (!(a > 0) && !pct) return '';
+  if (pct) {
+    const d = b - a;
+    if (Math.abs(d) < 0.6) return `${noun} has been flat for five years.`;
+    return `${noun} has moved ${d > 0 ? 'up' : 'down'} ${Math.abs(d).toFixed(0)} points in ` +
+           'five years.';
+  }
+  const mult = b / a;
+  if (mult > 3) return `${noun} has more than tripled in five years.`;
+  if (mult > 1.6) return `${noun} is up ${((mult - 1) * 100).toFixed(0)}% in five years.`;
+  if (mult > 1.08) return `${noun} is up modestly over five years.`;
+  if (mult > 0.95) return `${noun} has been flat for five years.`;
+  return `${noun} is down ${((1 - mult) * 100).toFixed(0)}% in five years.`;
+}
+
 // A small deterministic index from the world-line and the date, so a passage varies its
 // connective tissue between states while staying identical for any one state.
 function vary(wl, year, n) {
@@ -615,40 +710,44 @@ export function describe(wl, year, tracks, engineY0, trunkCap = null) {
   const X = (a, b) => CROSS[`${wl[a]}|${wl[b]}`] || '';
   const out = [];
 
-  out.push({ lead: 'What the systems can do.', text: join([
+  out.push({ lead: 'System capabilities.', text: join([
     rungText(cap, span), slopeClause(cap, prev),
     `The capability index reads ${cap.toFixed(2)} on the scale ruled across the forecast.`,
+    crossingClause(tracks, year, engineY0),
   ]) });
 
-  out.push({ lead: 'Who is building, and under what rules.', text: join([
+  out.push({ lead: 'Build-out and governance.', text: join([
     FRAG[wl.C][span], X('C', 'S'), FRAG[wl.S][span],
     `Installed AI compute is ${Math.round(tracks.gw[i]).toLocaleString('en-US')} GW.`,
-    band(tracks.gw[i], GW_BANDS),
+    band(tracks.gw[i], GW_BANDS), rateClause(tracks, i, 'gw', 'Capacity'),
+    markerClause(year),
   ]) });
 
-  out.push({ lead: 'Money and jobs.', text: join([
+  out.push({ lead: 'Capital and employment.', text: join([
     FRAG[wl.E][span], X('E', 'S'), X('E', 'D'), FRAG[wl.D][span],
     `AI revenue is ${money(tracks.rev[i])} a year.`, band(tracks.rev[i], REV_BANDS),
-    jobsClause(tracks.jobs[i]),
+    rateClause(tracks, i, 'rev', 'Revenue'), jobsClause(tracks.jobs[i]),
+    rateClause(tracks, i, 'jobs', 'Employment', { pct: true }),
   ]) });
 
-  out.push({ lead: 'Control, and what the public will accept.', text: join([
+  out.push({ lead: 'Oversight and public opinion.', text: join([
     FRAG[wl.A][span], X('A', 'T'), FRAG[wl.P][span], X('P', 'D'),
     `Approval of AI stands at ${tracks.appr[i].toFixed(0)}%.`, apprClause(tracks.appr[i]),
-    band(tracks.laws[i], LAW_BANDS),
+    rateClause(tracks, i, 'appr', 'Approval', { pct: true }),
+    band(tracks.laws[i], LAW_BANDS), rateClause(tracks, i, 'laws', 'The statute book'),
   ]) });
 
-  out.push({ lead: 'How fast it happened.', text: join([FRAG[wl.T][span], X('T', 'C')]) });
+  out.push({ lead: 'Capability trajectory.', text: join([FRAG[wl.T][span], X('T', 'C')]) });
 
   const inter = PAIRS.filter((q) => q.span.includes(span) &&
     Object.entries(q.req).every(([k, v]) => wl[k] === v)).map((q) => q.t);
   if (inter.length) {
-    const heads = ['What these settings do together.', 'Where these meet.',
-                   'The combination that matters here.'];
+    const heads = ['Interacting conditions.', 'Compound effects.',
+                   'Joint conditions.'];
     out.push({ lead: heads[vary(wl, year, heads.length)], text: inter.join(' ') });
   }
 
-  out.push({ lead: 'The settings behind this passage.', text:
+  out.push({ lead: 'Composition.', text:
     `${['T', 'A', 'C', 'D', 'S', 'P', 'E'].map((k) => wl[k]).join('·')} at ` +
     `${Math.floor(year)}. Each letter is one variable's setting on the controls; changing any ` +
     'of them rewrites this passage and redraws every chart on the sheet.' });
