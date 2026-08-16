@@ -128,6 +128,13 @@ __FW.auditSweep()                      # in the console: the audit (check `contr
   reads as an abandoned sentence; the sheet appends "…" when the field is at the cap.
 - **A hidden Browser pane fires no rAF and its screenshots go blank after a scripted scroll.**
   Verify layout with the Playwright MCP instead, which renders and screenshots reliably.
+- **`redraw()` schedules a rAF, so a synchronous read after it measures the PREVIOUS frame.**
+  Setting `state.yr` and reading `SEC.h` in the same tick reported one constant height for every
+  year and looked exactly like a section that had stopped tracking its prose. Await two animation
+  frames before measuring anything `layout()` computes. `sheetState()` is synchronous and safe.
+- **Normalising punctuation across a source file breaks single-quoted strings.** Rewriting `’` to
+  `'` turned `'The AI Act’s transparency'` into a syntax error. Any sweep over quotes runs through
+  the ESM check afterwards: `cp x.js /tmp/chk.mjs && node --check /tmp/chk.mjs`.
 
 - **Titles carry no article** — CONTROLS, INSTRUMENTS, FORECAST, WORLD, METHOD AND SOURCES.
 - **Say what a thing is, never what it is not.** No "X, not Y", no "rather than", no "instead
@@ -184,6 +191,21 @@ __FW.auditSweep()                      # in the console: the audit (check `contr
 - **Balance prose columns by trying every set of cuts**, not by filling greedily. With a handful
   of paragraphs the exhaustive partition is free and a greedy fill leaves one column with a
   single line beside one with four.
+- **A year gets its variation from its own arithmetic and from a dated calendar.** The passage
+  varied by SPAN, four states over 74 years, so a fixed world-line read identically for up to nine
+  consecutive years. Three continuous sources fixed it: crossing clauses placing the year against
+  this line's own capability crossings, a five-year rate beside every level, and `MARKERS`.
+  Measure it — hold one world-line and count distinct passages across every year.
+- **`MARKERS` runs in LANES, one per paragraph that takes a marker.** A single lane gives a year
+  at most one dated fact and puts every one of them in the same sentence.
+- **Only one entry per lane is ever drawn, so EVERY ENTRY MUST STAND ALONE.** An entry that leans
+  on a sibling has no antecedent on the sheet: "those same five companies", "the next
+  government-led session", an abbreviation expanded only in the entry for a different year. Same
+  family as every other defect this project has found — a surface whose meaning depends on
+  context it does not show.
+- **No deictic words in a calendar entry, and no retrospective prefix.** A prefix has to agree in
+  tense with an entry it cannot see, which is how "a year back: the summit convenes in New York in
+  May 2027" happens. Each entry carries its own date and reads correctly from any year.
 
 - **`Research/` is the evidence programme.** A dossier per axis, each answering the same five
   questions from sources ABOUT THE WORLD: base rate, mechanism and its weakest step, the 2026

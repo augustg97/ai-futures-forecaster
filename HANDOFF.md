@@ -1,6 +1,6 @@
 # AI Futures Forecaster — live state
 
-**Live:** https://augustg97.github.io/ai-futures-forecaster/ · build `20260816-1139`
+**Live:** https://augustg97.github.io/ai-futures-forecaster/ · build `20260816-1600`
 **Local:** `python3 build/serve.py 8154` (serves `web/`, never `docs/`) · working
 directory `~/Forecast Works`, repo `augustg97/ai-futures-forecaster`
 
@@ -36,7 +36,23 @@ clause naming what a second variable does to it, plus a BAND clause keyed on a q
 date, plus the figures. 84 CROSS clauses cover the six pairs that interact (E×S, E×D, C×S, A×T,
 P×D, T×C). Holding the economy fixed and moving only supply, labour and the year gives 36
 distinct economy paragraphs out of 36; 400 random world-line/year samples give 400 distinct
-passages. **The headline is composed the same way** — every clause keyed on a position AND the
+passages.
+
+**Per-YEAR variation (2026-08-16).** The paragraphs varied by SPAN — four states across 74 years —
+so a fixed world-line read identically for up to nine consecutive years. Three continuous sources
+now: `crossingClause` places the year against this line's own capability crossings ("reached
+superhuman coding in 2032, one year ago; automated AI research is two years ahead, in 2035"),
+`rateClause` puts a five-year rate beside every level, and `MARKERS` is a calendar of dated
+commitments already on the public record. **Holding one world-line and moving only the year gives
+75 distinct passages out of 75.**
+
+`MARKERS` runs in **four lanes**, one per paragraph that takes a marker — supply and law into
+build-out and governance, capital into capital and employment, oversight into oversight and public
+opinion. At 2027 all four fire. The record thins after 2030, so the later lanes are empty and
+those years say nothing dated. Two rules govern an entry: **it stands alone**, because only one
+entry per lane is ever drawn and a sibling it refers to is never beside it; and **it carries its
+own date with no deictic words**, because a retrospective prefix would have to agree in tense with
+an entry it cannot see. **The headline is composed the same way** — every clause keyed on a position AND the
 span, with the economy clause taking a second key from `ECON_MOD`; 780 of 800 samples distinct.
 If you add a position to an axis in the parent, add its FRAG row for all four spans, its CROSS
 row against whichever axis its paragraph pairs with, and (for E) its ECON and ECON_MOD rows, or
