@@ -224,6 +224,25 @@ __FW.auditSweep()                      # in the console: the audit (check `contr
   paragraph sharing more than half their content words.
 - **Do not announce the drawing.** "A drawn scene of X" describes the artefact; the caption should
   describe X. Same defect as a heading that says what the section is.
+- **THE HEADLINE IS FOUR SENTENCES, and every noun in it is introduced.** Semicolons made one long
+  list in which the economy clause's own modifier read as a fifth item. Worse, each clause used a
+  definite article for something the sheet never named: "the correction", "the discontinuity", "the
+  build-out". A reader meeting "the correction" in the largest lettering on the sheet has been
+  handed a pointer to nothing. Introduce it — "a market correction wiped out AI equity values
+  without stopping datacenter construction".
+- **A FRAGMENT OPENS ITS PARAGRAPH, so it must introduce its own subject.** "The jump", "The near
+  miss", "The misalignment", "The labour shock", "The moratorium" all assumed a sentence the reader
+  never saw. A CROSS may say "the correction" because its FRAG always precedes it in the same
+  paragraph and always names it; a FRAG may not. Sweep it: take the first sentence of every
+  paragraph across all 8,640 lines and flag any opening on "The " that its own words do not define.
+- **ECON_MOD entries are CLAUSES, joined with "and".** As phrases hung off a comma they produced
+  "the correction wiped out AI equity values, the survivors bought by the firms that already held
+  the chips". Subject and verb, every time.
+- **After any scripted edit, sweep the composed output for splices.** Replacing the first physical
+  line of a two-line concatenation leaves the second attached: "doing the work alignment research
+  was meant to remains open", "standards written before they all written ahead of the need". Both
+  passed `node --check`. The regex that catches them is a doubled word or a stranded participle in
+  the COMPOSED text, never in the source.
 - **Setting `state.pin` does not resample the line.** A sweep that pins axes and reads
   `sheetState()` gets the default world-line every time and reports whatever that one line says.
   To exercise the authored strings, import `narrative.js` in the page and call `describe()` and

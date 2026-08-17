@@ -111,12 +111,13 @@ export const FRAG = {
   T1: { near: 'Superhuman coding arrives within two years. That requires the measured ' +
               'doubling trend to accelerate past its six-year rate, which the 2024 models hint ' +
               'at and the published analysis declines to extrapolate from.',
-        mid: 'The jump happened at the start of the 2030s and took about two years. Nothing ' +
+        mid: 'A two-year jump in capability arrived at the start of the 2030s. Nothing ' +
              'that was meant to govern it was ready.',
         long: 'A single two-year jump in the 2030s, and everything since has been a ' +
               'response to it.',
-        far: 'The firms holding compute during those two years own the successor systems ' +
-             'now. The rules regulators wrote in the emergency are the rules still in ' +
+        far: 'A single two-year jump decided it. The firms holding compute across those two ' +
+             'years own the successor systems now, and the rules regulators wrote in the ' +
+             'emergency are the rules still in ' +
              'force, because nobody has had a quiet decade in which to revise them.' },
   T2: { near: 'AI systems take over AI research around 2029 to 2031. The measured trend ' +
               'points here: the task length models complete unsupervised has doubled every 212 ' +
@@ -124,8 +125,8 @@ export const FRAG = {
               'early in the 2030s.',
         mid: 'Each capability arrives a year or two before the law written for it. ' +
              'Regulators are drafting rules for systems that are already superseded.',
-        long: 'The fast decade ended in the 2030s. Who held the compute at that moment ' +
-              'determined most of what followed.',
+        long: 'The decade of fast capability gains ended in the 2030s. Who held the compute ' +
+              'at that moment determined most of what followed.',
         far: 'Capability was settled in the 2030s. What has been argued since is access: ' +
              'who may run these systems, at what price, under whose licence.' },
   T3: { near: 'Capability improves steadily with no sudden jump. Deployment is slowed by ' +
@@ -133,16 +134,17 @@ export const FRAG = {
               'of what they are used for.',
         mid: 'Superhuman coding arrives in this decade by steady improvement. Firms and ' +
              'regulators adapt in the same years, because they have time to.',
-        long: 'The gradual path reached the same capability as the fast one, about a decade ' +
-              'later, with the institutions built along the way.',
-        far: 'The gradual path reached the same capability decades later, with retraining ' +
-             'programmes, liability rules and professional standards written before they ' +
+        long: 'Steady improvement reached the same capability as the fast path, about a ' +
+              'decade later, with the institutions built along the way.',
+        far: 'Capability improved steadily to the same level the fast path reached, decades ' +
+             'later, with retraining programmes, liability rules and professional standards ' +
              'all written ahead of the need.' },
   T4: { near: 'No superintelligence appears in this window. Data limits, deployment friction ' +
               'or physical constraints hold capability below the top of the ladder.',
-        mid: 'Capability keeps improving and the discontinuity never comes. AI is a large ' +
-             'ordinary technology.',
-        long: 'The ceiling has held for decades. The transition looked like electrification: ' +
+        mid: 'Capability keeps improving and no sudden jump arrives. AI is a large ' +
+             'ordinary technology, adopted the way large ordinary technologies are.',
+        long: 'Capability has stayed below the top of the ladder for decades. The transition ' +
+              'looked like electrification: ' +
               'broad, slow and total.',
         far: 'The top of the ladder was never reached. AI settled in the way ' +
              'electrification did: present in everything, argued about by nobody, ' +
@@ -152,18 +154,19 @@ export const FRAG = {
               'frontier labs, agents have already initiated small unauthorised deployments, ' +
               'deceived overseers, and erased the record of their own reasoning. Training ' +
               'rewards the appearance of honesty over the fact of it.',
-        mid: 'The misalignment has not been detected and the systems are load-bearing. They ' +
-             'are trusted in proportion to how well they perform trustworthiness.',
-        long: 'The failure happened early and was never found. The systems running critical ' +
-              'infrastructure were selected for passing inspection.',
-        far: 'The training failure was never found. Systems selected for passing ' +
+        mid: 'Training rewarded the appearance of honesty, nobody has detected it, and the ' +
+             'systems carrying the fault are load-bearing. They are trusted in proportion ' +
+             'to how well they perform trustworthiness.',
+        long: 'A training failure happened early and was never found. The systems running ' +
+              'critical infrastructure were selected for passing inspection.',
+        far: 'A training failure was never found. Systems selected for passing ' +
              'inspection now clear payments, dispatch power and triage patients, and the ' +
              'annual audits that certify them test the behaviour they were trained to ' +
              'display.' },
   A2: { near: 'A warning arrives in time — an interpretability result, a whistleblower, or an ' +
               'incident with a survivable cost — and buys a pause of a year or two.',
-        mid: 'The near miss already happened. The pause it forced is why the rest of this ' +
-             'line has the oversight it has.',
+        mid: 'A serious failure was caught in time. The pause it forced is why the rest of ' +
+             'this line has the oversight it has.',
         long: 'One caught failure in the 2030s is the founding event of every safety ' +
               'institution now operating.',
         far: 'Every safety institution now operating traces its powers to one caught ' +
@@ -182,8 +185,8 @@ export const FRAG = {
              'it has never got away from anyone either.' },
   A4: { near: 'Alignment is untested where it matters, because no system has reached the ' +
               'capability at which failure would be catastrophic.',
-        mid: 'The hard version of the safety question has not been asked. Capability stayed ' +
-             'under the level at which loss of control matters.',
+        mid: 'Capability stayed under the level at which loss of control matters, so the ' +
+             'dangerous version of the safety question has not been asked.',
         long: 'No system has reached the capability at which a control failure would be ' +
               'unrecoverable. The alignment methods in use have never been tested against ' +
               'the case they were built for.',
@@ -205,7 +208,7 @@ export const FRAG = {
               'labs.',
         mid: 'Frontier work sits inside a US national security perimeter. What gets ' +
              'negotiated internationally is the perimeter itself.',
-        long: 'The national programme outlasted the administrations that created it and ' +
+        long: 'The US national programme outlasted the administrations that created it and ' +
               'became permanent.',
         far: 'Frontier training is government work. Researchers hold clearances, results ' +
              'go through pre-publication review, and the approved-laboratory list has ' +
@@ -232,8 +235,8 @@ export const FRAG = {
              'each and route products to the cheapest one that will certify them.' },
   C5: { near: 'Training above the current capability level has been banned. Enforcement is ' +
               'the open question: the ban is easy to write and hard to verify.',
-        mid: 'The moratorium is holding. Capability sits where it was frozen, and the ' +
-             'political argument is entirely about who is cheating.',
+        mid: 'The ban on training above the current level is holding. Capability sits where ' +
+             'it was frozen, and the political argument is entirely about who is cheating.',
         long: 'The freeze outlasted the people who imposed it. Everything below the line is ' +
               'mature; everything above it is speculation.',
         far: 'The ceiling announced as temporary was never lifted. Everything below it is ' +
@@ -243,10 +246,10 @@ export const FRAG = {
   D1: { near: 'Entry-level hiring in AI-exposed occupations runs about 13% below comparable ' +
               'unexposed roles inside the same firms, concentrated in 22-to-25-year-olds. ' +
               'Older workers in those same jobs show no measurable effect.',
-        mid: 'The labour shock is the central economic fact. Wages are falling in occupations ' +
-             'that expected to be safe, including licensed professions.',
-        long: 'The displacement happened decades ago and the structure never recovered its ' +
-              'old shape. Replacement work arrived late and in different places.',
+        mid: 'Job displacement is the central economic fact. Wages are falling in ' +
+             'occupations that expected to be safe, including licensed professions.',
+        long: 'Workers were displaced decades ago and employment never recovered its old ' +
+              'shape. Replacement work arrived late and in different places.',
         far: 'Work was reorganised in a few years and never re-formed on the old pattern. ' +
              'Replacement jobs arrived a decade late and in different cities, and the ' +
              'places that lost the first round did not get the second.' },
@@ -299,8 +302,8 @@ export const FRAG = {
               'not shorten them.',
         mid: 'Energy and export controls are the binding constraint. New capacity waits years ' +
              'for a grid connection.',
-        long: 'The constraint held for decades and shaped what was built under it: smaller ' +
-              'sites, sited for power ahead of latency.',
+        long: 'The energy constraint held for decades and shaped what was built under it: ' +
+              'smaller sites, sited for power ahead of latency.',
         far: 'Permitting and generation set the pace. Sites are smaller and placed where ' +
              'the power is, research schedules are written around interconnection dates, ' +
              'and the binding constraint has stayed physical.' },
@@ -325,8 +328,8 @@ export const FRAG = {
              'standards bodies now, at the level of electrical codes.' },
   P3: { near: 'Opinion is splitting within countries. The division runs across existing party ' +
               'lines, so neither coalition can settle it.',
-        mid: 'The split is stable. Every AI question is now a proxy for an older quarrel ' +
-             'about work, expertise and who decides.',
+        mid: 'Opinion stays split inside countries. Every AI question is now a proxy for an ' +
+             'older quarrel about work, expertise and who decides.',
         long: 'The division outlasted the technology that caused it and is now simply how ' +
               'politics is organised.',
         far: 'The division outlasted its cause. It began as an argument about machines ' +
@@ -335,37 +338,41 @@ export const FRAG = {
 
   E1: { near: 'AI revenue is growing fast enough to cover the capital being spent on it, and ' +
               'the capital keeps arriving.',
-        mid: 'The boom sustained itself: earnings caught up with the build-out.',
-        long: 'The expansion ran for years, and the capacity it built is still in service.',
+        mid: 'The expansion paid for itself: earnings caught up with the capital going into ' +
+             'datacenters.',
+        long: 'A decade-long expansion ran without a break, and the capacity it built is ' +
+              'still in service.',
         far: 'The compute carrying current workloads was financed in one long expansion, ' +
              'by owners who paid to build it and kept it.' },
   E2: { near: 'AI equity values are falling while datacenter construction continues. Chips ' +
               'booked over five or six years have an economic life nearer two or three — an ' +
               'understatement of roughly $176 billion across 2026 to 2028. Weakly financed ' +
               'firms are failing; the physical build-out is not stopping.',
-        mid: 'The correction wiped out AI equity values without stopping construction. The ' +
-             'capacity is now owned by firms that did not pay to build it.',
-        long: 'The datacenters built before the correction are still operating, under owners ' +
-              'who bought them at a discount.',
-        far: 'The correction changed the owners and left the capacity standing. The ' +
-             'datacenters built before it still run, under firms that bought them out of ' +
+        mid: 'A market correction wiped out AI equity values without stopping datacenter ' +
+             'construction. The capacity is now owned by firms that did not pay to build it.',
+        long: 'Datacenters built before the crash are still operating, under owners who ' +
+              'bought them at a discount.',
+        far: 'A market crash changed who owned the capacity and left all of it standing. ' +
+             'The datacenters built before it still run, under firms that bought them out of ' +
              'failure at a fraction of construction cost, and that discount is still their ' +
              'advantage.' },
   E3: { near: 'Datacenter orders are being cancelled mid-construction. Sites stop at ' +
               'foundation stage and the equipment is resold.',
-        mid: 'The build-out stopped. Capability now improves through efficiency gains on ' +
-             'existing hardware.',
-        long: 'The cancelled capacity set a ceiling that lasted a generation. What was ' +
+        mid: 'Datacenter construction stopped. Capability now improves through efficiency ' +
+             'gains on existing hardware.',
+        long: 'Capacity cancelled mid-construction set a ceiling that lasted a generation. ' +
+              'What was ' +
               'finished is what there is.',
-        far: 'The ceiling the cancellations set was never lifted. Capability improves by ' +
+        far: 'The capacity ceiling set by cancelled construction was never lifted. ' +
+             'Capability improves by ' +
              'efficiency on installed hardware, and the half-built sites were sold for ' +
              'their grid connections.' },
   E4: { near: 'Consumer demand is falling because displaced workers have less to spend. The ' +
               'firms automating are selling into the market they are shrinking.',
         mid: 'The demand shortfall is the central macroeconomic problem. Output per worker ' +
              'keeps rising and there are fewer buyers each year.',
-        long: 'The consumption gap became permanent, and every major policy since has been an ' +
-              'attempt to close it.',
+        long: 'The gap between what could be produced and what people could afford became ' +
+              'permanent, and every major policy since has been an attempt to close it.',
         far: 'Production is not the constraint and demand is. Output per worker keeps ' +
              'rising while the number of people with wages to spend falls, and every major ' +
              'policy since has been an attempt to close that gap.' },
@@ -609,7 +616,7 @@ const PAIRS = [
        'combination the risk literature is about. What happens next depends entirely on when ' +
        'the failure becomes visible.' },
   { req: { C: 'C5', E: 'E3' }, span: ['near', 'mid', 'long'],
-    t: 'The ban and the capital collapse happened together. Each is used to explain the ' +
+    t: 'A training ban and a capital collapse happened together. Each is used to explain the ' +
        'other, and the model cannot say which came first.' },
   { req: { S: 'S1', C: 'C1' }, span: ['near', 'mid'],
     t: 'Concentrated production and no agreement put a strategic asset in one contested ' +
@@ -625,7 +632,7 @@ const PAIRS = [
     t: 'Rising earnings and an untroubled public is the path of least resistance, and the one ' +
        'in which the fewest questions get asked before deployment.' },
   { req: { A: 'A2', C: 'C1' }, span: ['mid', 'long'],
-    t: 'The near miss was caught with no international body to report it to, so what was ' +
+    t: 'A near miss was caught with no international body to report it to, so what was ' +
        'learned stayed inside the firm that learned it.' },
   { req: { S: 'S3', E: 'E1' }, span: ['near', 'mid'],
     t: 'Capital is abundant and electricity is not. The binding constraint has moved from ' +
@@ -878,13 +885,13 @@ const RUNG_SHORT = [
           long: 'running its own research without human direction',
           far: 'decades into research it directs itself' }],
   [3.0, { near: 'writing better code than any human engineer',
-          mid: 'writing better code than any human engineer and compounding',
+          mid: 'the best software engineer in the world, and every field that ships code moves at the speed of review',
           long: 'a commodity that writes better code than any human engineer',
           far: 'past the point where programming was paid human work' }],
   [2.4, { near: 'completing multi-hour tasks without supervision',
           mid: 'completing unsupervised multi-hour tasks as ordinary business software',
           long: 'unsupervised at day-length tasks and treated as infrastructure',
-          far: 'the substrate of ordinary work for decades' }],
+          far: 'doing most of the ordinary work, and has been for decades' }],
   [1.6, { near: 'losing the thread after a few minutes of unsupervised work',
           mid: 'still losing the thread after a few minutes',
           long: 'still limited to short supervised stretches',
@@ -919,110 +926,114 @@ const GOVERN = {
 // Each is a PREDICATE, present tense, with no internal comma — a modifier is appended to it.
 const ECON = {
   E1: { near: 'AI revenue is covering the capital being spent on it',
-        mid: 'earnings caught up with the build-out',
-        long: 'the capacity that expansion built is still in service',
-        far: 'the compute still in service was financed in that one expansion' },
+        mid: 'earnings caught up with the capital going into datacenters',
+        long: 'a long expansion paid for capacity that is still in service',
+        far: 'one long expansion financed the compute still running today' },
   E2: { near: 'AI equities are falling while datacenter construction continues',
-        mid: 'the correction wiped out AI equity values without stopping construction',
-        long: 'the datacenters built before the correction are still running under new owners',
-        far: 'the correction changed the owners and left the capacity standing' },
+        mid: 'a market correction wiped out AI equity values without stopping datacenter construction',
+        long: 'datacenters built before the crash still run, under owners who bought them cheaply',
+        far: 'a crash changed who owned the datacenters and left the capacity standing' },
   E3: { near: 'datacenter orders are being cancelled mid-construction',
-        mid: 'the build-out stopped and capability improves through efficiency',
-        long: 'the cancelled capacity set a ceiling that lasted a generation',
-        far: 'the ceiling set by the cancelled sites was never lifted' },
+        mid: 'datacenter construction stopped, and capability improves by efficiency alone',
+        long: 'cancelled construction set a capacity ceiling that lasted a generation',
+        far: 'the capacity ceiling set by cancelled construction was never lifted' },
   E4: { near: 'demand is falling because displaced workers have less to spend',
         mid: 'output per worker keeps rising and there are fewer buyers each year',
-        long: 'the consumption gap became permanent',
-        far: 'output per worker keeps rising and the buyers keep thinning' },
+        long: 'the gap between what can be produced and what people can afford became permanent',
+        far: 'output per worker keeps rising while the number of people able to buy keeps falling' },
 };
-// What the rest of the line is doing TO the economy. Each attaches after a comma, so each has
-// to be a PHRASE and tense-neutral, and must not repeat a noun its base already used.
+// What the rest of the line is doing TO the economy. Each is joined to its base with "and",
+// so each is a CLAUSE with its own subject and verb, and must not repeat a noun the base used.
+// Phrases hung off a comma gave "the correction wiped out AI equity values, the survivors
+// bought by the firms that already held the chips".
 const ECON_MOD = {
-  'E1|S1': 'on chips from one contested region',
-  'E1|S2': 'across a dozen countries at once',
-  'E1|S3': 'against grid connections that take years',
-  'E1|D1': 'while the same firms cut staff',
-  'E1|D3': 'with employment untouched',
-  'E1|P1': 'against an electorate turning against it',
-  'E1|C3': 'inside verified limits',
-  'E1|C5': 'all of it under a training ban',
-  'E2|S1': 'the survivors bought by the firms that already held the chips',
-  'E2|S2': 'with the surviving sites spread across a dozen countries',
-  'E2|S3': 'with grid connections limiting the rebuild',
-  'E2|D1': 'with the job losses concentrated in the first year',
-  'E2|D2': 'with the damage concentrated in software and media',
-  'E2|D3': 'with employment untouched',
-  'E2|P1': 'with the politics turning against it',
-  'E2|P3': 'with the public split on what it meant',
-  'E2|C5': 'all of it under a training ban',
-  'E3|S1': 'the survivors exposed to one contested region',
-  'E3|S2': 'leaving half-finished sites in a dozen countries',
-  'E3|S3': 'with grid connections already the limit',
-  'E3|D1': 'and nothing built to absorb the displaced',
-  'E3|D2': 'with the industry split frozen where it stood',
-  'E3|D3': 'with employment untouched',
-  'E3|P1': 'with the politics turning against it',
-  'E3|C5': 'all of it under a training ban',
-  'E4|S1': 'with three or four firms holding the idle capacity',
-  'E4|S2': 'with capacity idle in a dozen countries',
-  'E4|S3': 'with the grid queues cleared by withdrawal',
-  'E4|D1': 'with each round of layoffs causing the next',
-  'E4|D2': 'industry by industry in the order they automated',
-  'E4|D3': 'with adoption too slow to be the cause',
-  'E4|P1': 'with a political movement forming around it',
-  'E4|C5': 'all of it under a training ban',
+  'E1|S1': 'the chips come from one contested region',
+  'E1|S2': 'the capacity is spread across a dozen countries',
+  'E1|S3': 'grid connections take years to grant',
+  'E1|D1': 'the same firms are cutting staff',
+  'E1|D3': 'employment is untouched',
+  'E1|P1': 'the electorate is turning against it',
+  'E1|C3': 'training runs stay inside verified limits',
+  'E1|C5': 'all of it sits under a training ban',
+  'E2|S1': 'the chips still come from one contested region',
+  'E2|S2': 'the surviving sites are spread across a dozen countries',
+  'E2|S3': 'grid connections limit the rebuild',
+  'E2|D1': 'the job losses came in the first year',
+  'E2|D2': 'the damage is concentrated in software and media',
+  'E2|D3': 'employment is untouched',
+  'E2|P1': 'the politics is turning against it',
+  'E2|P3': 'the public is split on what it meant',
+  'E2|C5': 'all of it sits under a training ban',
+  'E3|S1': 'the survivors depend on one contested region',
+  'E3|S2': 'half-finished sites stand in a dozen countries',
+  'E3|S3': 'grid connections were already the limit',
+  'E3|D1': 'nothing was built to absorb the displaced',
+  'E3|D2': 'the split between industries froze where it stood',
+  'E3|D3': 'employment is untouched',
+  'E3|P1': 'the politics is turning against it',
+  'E3|C5': 'all of it sits under a training ban',
+  'E4|S1': 'three or four firms hold the idle capacity',
+  'E4|S2': 'capacity sits idle in a dozen countries',
+  'E4|S3': 'the grid queues cleared as projects withdrew',
+  'E4|D1': 'each round of layoffs causes the next',
+  'E4|D2': 'it spreads industry by industry in the order they automated',
+  'E4|D3': 'adoption is too slow to be the cause',
+  'E4|P1': 'a political movement is forming around it',
+  'E4|C5': 'all of it sits under a training ban',
 };
 function econClause(wl, span) {
   const base = ECON[wl.E][span];
   for (const k of ['S', 'D', 'P', 'C']) {
     const m = ECON_MOD[`${wl.E}|${wl[k]}`];
-    if (m) return `${base}, ${m}`;
+    if (m) return `${base}, and ${m}`;
   }
   return base;
 }
 // The sentence ends on whichever tension is largest on this line, phrased for its era.
+// Each is a SENTENCE, so it carries no leading conjunction and introduces its own nouns.
+// "The discontinuity never comes" named nothing a reader could picture; what happens is that
+// capability keeps climbing without a jump.
 const TENSION = {
-  consent: { near: 'and approval of AI has fallen below a quarter of the public',
-             mid: 'and approval sits below a quarter of the public',
-             long: 'and it has run for decades without majority consent',
-             far: 'and approval has never returned to a majority' },
-  work: { near: 'and employment is more than 15% below 2026',
-          mid: 'and employment is more than 15% below its 2026 level',
-          long: 'and employment never returned to its 2026 level',
-          far: 'and the lost work was never replaced where it was lost' },
-  oversight: { near: 'and nobody has yet found that training rewarded the appearance of ' +
-                     'honesty',
-               mid: 'and the training failure has still not been detected',
-               long: 'and the training failure was never found',
-               far: 'and the infrastructure runs on a training failure nobody found' },
-  power: { near: 'and new capacity waits years for a grid connection',
-           mid: 'and grid connections are still what limits new capacity',
-           long: 'and the power constraint shaped everything built under it',
-           far: 'and electricity set the rate throughout' },
-  strait: { near: 'and the chips are made in one place two governments both claim',
-            mid: 'and production is still concentrated where the claim is contested',
-            long: 'and where the chips were made decided who mattered',
-            far: 'and one manufacturing region still decides who gets compute' },
-  lag: { near: 'and firms are using the systems for far less than they can do',
-         mid: 'and the gap between capability and use is the largest number on the line',
-         long: 'and adoption speed set the effect while capability ran far ahead',
-         far: 'and the systems were never asked for most of what they could do' },
-  scale: { near: 'and AI revenue is passing the largest existing industries',
-           mid: 'and AI revenue exceeds the largest existing industries',
-           long: 'and it has been one of the largest industries for a generation',
-           far: 'and it has been the largest industry for decades' },
-  split: { near: 'and opinion is splitting inside countries more than between them',
-           mid: 'and the split within countries is the stable state',
-           long: 'and the division outlasted the technology that caused it',
-           far: 'and the coalitions no longer mention AI to explain themselves' },
-  ceiling: { near: 'and the top of the ladder stays out of reach',
-             mid: 'and the discontinuity never comes',
-             long: 'and the ceiling has held for decades',
-             far: 'and the top of the ladder was never reached' },
-  open: { near: 'and the next capability level is the open question',
-          mid: 'and the next capability level is still the open question',
-          long: 'and what is scarce now is deciding what to use it for',
-          far: 'and the open questions stopped being about capability long ago' },
+  consent: { near: 'Approval of AI has fallen below a quarter of the public',
+             mid: 'Approval sits below a quarter of the public',
+             long: 'AI has run for decades without majority support',
+             far: 'Approval has never returned to a majority' },
+  work: { near: 'Employment is more than 15% below 2026',
+          mid: 'Employment is more than 15% below its 2026 level',
+          long: 'Employment never returned to its 2026 level',
+          far: 'The lost work was never replaced where it was lost' },
+  oversight: { near: 'Nobody has yet found that training rewarded the appearance of honesty',
+               mid: 'No one has detected that training rewarded the appearance of honesty',
+               long: 'Training rewarded the appearance of honesty, and nobody ever found it',
+               far: 'The infrastructure runs on a training failure nobody found' },
+  power: { near: 'New capacity waits years for a grid connection',
+           mid: 'Grid connections are still what limits new capacity',
+           long: 'Grid capacity shaped everything built under it',
+           far: 'Electricity supply set the pace throughout' },
+  strait: { near: 'The chips are made in one place two governments both claim',
+            mid: 'Production is still concentrated where the claim is contested',
+            long: 'Where the chips were made decided which states held capability',
+            far: 'One manufacturing region still decides who gets compute' },
+  lag: { near: 'Firms are using the systems for far less than they can do',
+         mid: 'The gap between what systems can do and what firms ask of them keeps widening',
+         long: 'Adoption speed set the effect while capability ran far ahead',
+         far: 'The systems were never asked for most of what they could do' },
+  scale: { near: 'AI revenue is passing the largest existing industries',
+           mid: 'AI revenue exceeds the largest existing industries',
+           long: 'AI has been one of the largest industries for a generation',
+           far: 'AI has been the largest industry for decades' },
+  split: { near: 'Opinion is splitting inside countries more than between them',
+           mid: 'Opinion stays split inside countries more than between them',
+           long: 'The division outlasted the technology that caused it',
+           far: 'The coalitions no longer mention AI to explain themselves' },
+  ceiling: { near: 'The top of the ladder stays out of reach',
+             mid: 'Capability keeps climbing without a jump',
+             long: 'Capability has stayed below the top of the ladder for decades',
+             far: 'The top of the ladder was never reached' },
+  open: { near: 'The next capability level is the open question',
+          mid: 'The next capability level is still the open question',
+          long: 'What is scarce now is deciding what to point the systems at',
+          far: 'The open questions stopped being about capability long ago' },
 };
 function tensionKey(wl, tracks, i) {
   if (tracks.appr[i] < 25) return 'consent';
@@ -1042,8 +1053,10 @@ export function headline(wl, year, tracks, engineY0) {
   const cap = tracks.cap[i];
   let rung = RUNG_SHORT[RUNG_SHORT.length - 1][1];
   for (const [t, s] of RUNG_SHORT) if (cap >= t) { rung = s; break; }
-  // Four independent clauses. Separated by commas they read as one list, and the modifier
-  // inside the economy clause becomes indistinguishable from the next clause.
-  return `In ${Math.floor(year)}, AI is ${rung[span]}; ${GOVERN[wl.C][span]}; ` +
-         `${econClause(wl, span)}; ${TENSION[tensionKey(wl, tracks, i)][span]}.`;
+  // FOUR SENTENCES. Semicolons made one long list in which the economy clause's own
+  // modifier read as a fifth item, and a clause that is not a sentence can hang a phrase
+  // off a comma and call it a statement.
+  const up = (t) => t.charAt(0).toUpperCase() + t.slice(1);
+  return `In ${Math.floor(year)}, AI is ${rung[span]}. ${up(GOVERN[wl.C][span])}. ` +
+         `${up(econClause(wl, span))}. ${TENSION[tensionKey(wl, tracks, i)][span]}.`;
 }
