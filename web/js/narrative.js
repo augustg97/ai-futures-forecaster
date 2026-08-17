@@ -121,8 +121,9 @@ export const FRAG = {
              'force, because nobody has had a quiet decade in which to revise them.' },
   T2: { near: 'AI systems take over AI research around 2029 to 2031. The measured trend ' +
               'points here: the task length models complete unsupervised has doubled every 212 ' +
-              'days for six years, which reaches month-long work at deployable reliability ' +
-              'early in the 2030s.',
+              'days across 2019 to 2025, and every four months across 2024 to 2025 alone, ' +
+              'running from four seconds to more than sixteen hours. The slower figure reaches ' +
+              'month-long work early in the 2030s and the faster one reaches it in 2027.',
         mid: 'Each capability arrives a year or two before the law written for it. ' +
              'Regulators are drafting rules for systems that are already superseded.',
         long: 'The decade of fast capability gains ended in the 2030s. Who held the compute ' +

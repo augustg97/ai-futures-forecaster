@@ -1124,6 +1124,34 @@ export function research(d, S, H) {
     { size: 2.0, lead: LEAD, colour: INK.pencil });
   y -= 32;
 
+  // ── the source register, which answers the audit ──────────────────────────
+  d.rect(PAD, y - 30, CW, 30, { weight: PEN.thin, colour: INK.green, alpha: 0.6 });
+  d.text([PAD + 4, y - 5.4], 'SOURCE REGISTER',
+         { size: 2.4, weight: 700, track: 0.16, colour: INK.green });
+  d.text([PAD + CW - 4, y - 5.4], 'ALL 26 POSITIONS · 17 AUGUST 2026',
+         { size: 1.8, align: 'right', track: 0.14, colour: INK.inkLight });
+  d.textBlock([PAD + 4, y - 10], 'Every position now carries at least one source about the ' +
+    'world — a measurement, a statute, a filing, a poll or market data — independent of any ' +
+    'scenario document. Thirteen positions rested wholly on a scenario document before this ' +
+    'pass: T1, T2, T4, A1, A2, A4, C2, C3, C5, D1, D3, P3 and E4. None does now. Thirty-one ' +
+    'independent world-sources stand behind the twenty-six positions. The register itself is ' +
+    'in the repository at Research/findings/source-register.md.', CW - 8,
+    { size: 2.0, lead: LEAD, colour: INK.pencil });
+  y -= 36;
+
+  // The one finding from the register that argues with a prior now in force.
+  d.rect(PAD, y - 26, CW, 26, { weight: PEN.thin, colour: INK.red, alpha: 0.6 });
+  d.text([PAD + 4, y - 5.4], 'OPEN CALIBRATION FINDING',
+         { size: 2.4, weight: 700, track: 0.16, colour: INK.red });
+  d.textBlock([PAD + 4, y - 10], "This sheet quotes METR's task-horizon doubling time as 212 " +
+    'days, which is the average across 2019 to 2025. Across the 2024 to 2025 window alone it ' +
+    'is about four months — roughly twice as fast — and the horizon itself has run from four ' +
+    'seconds in 2019 to more than sixteen hours in 2026. The faster figure argues for raising ' +
+    'T1 and T2 against T3 and T4. It is recorded and held: priors live in the parent engine, ' +
+    "and METR's own caution is that one year of data is a weak estimate.", CW - 8,
+    { size: 2.0, lead: LEAD, colour: INK.pencil });
+  y -= 32;
+
   // recommendations, per axis
   d.text([PAD, y], 'PRIOR REVISIONS',
          { size: 2.6, weight: 700, track: 0.14, colour: INK.ink });
@@ -1243,7 +1271,7 @@ export function research(d, S, H) {
   });
   return H;
 }
-research.height = () => 300;
+research.height = () => 368;
 
 // ── 9 · method ───────────────────────────────────────────────────────────────
 export function sources(d, S, H) {
