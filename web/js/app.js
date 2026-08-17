@@ -84,7 +84,11 @@ function tracksJS(wl) {
   let gw = 62.0, us = 0.58, cn = 0.22, eu = 0.05, rev = 0.14, jobs = 0.0,
       laws = 61, appr = P.APPROVAL0[wl.P];
   let intensity = C.intensity0;
-  let decline = C.decline[wl.S] - (wl.C === 'C3' ? C.c3_bonus : 0);
+  // The axis the decline map is indexed by, and the positions that earn the bonus, are
+  // extracted with the constants — this read carried a `wl.C === 'C3'` literal until r5
+  // moved the condition to C4/C5, where it would have gone on computing the wrong number.
+  let decline = C.decline[wl[C.decline_axis]]
+              - (C.bonus.positions.includes(wl[C.bonus.axis]) ? C.bonus.amount : 0);
   const out = { year: [], cap: [], gw: [], us: [], cn: [], eu: [], rev: [], jobs: [],
                 laws: [], appr: [], copies: [], speed: [], twh: [], co2: [] };
   for (let y = D.engine.y0; y <= D.engine.y1; y++) {
@@ -92,6 +96,11 @@ function tracksJS(wl) {
     let g = P.COMPUTE_G[wl.S] * P.E_DAMP[wl.E];
     g = 1.0 + (g - 1.0) * (1.0 / (1.0 + Math.max(0, gw / 8000.0)));
     gw = Math.min(60000.0, gw * g);
+    // KEYED TO r4. The parent's r5 tracks() drives the share drifts from R (R4 lifts the US,
+    // R2 lifts the EU) and the concentration from C4/C5, and it takes LAWS_RATE on R and the
+    // approval shock on D4. These six reads are the r5 re-key, and `LAWS_RATE[wl.C]` against an
+    // R-keyed map is undefined, so the laws recorder runs on NaN until they move. The coverage
+    // gate in build_site.py refuses to publish while this stands.
     if (wl.C === 'C2') us = Math.min(0.72, us + 0.004);
     if (wl.C === 'C3') { us = Math.max(0.44, us - 0.003); cn = Math.min(0.30, cn + 0.002); }
     if (wl.C === 'C4') eu = Math.min(0.16, eu + 0.0025);

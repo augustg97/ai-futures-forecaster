@@ -1,11 +1,16 @@
 #!/bin/bash
 # nightly.sh — redraw the sheet after the AI Atlas has emitted.
-# Exit codes: 0 published+verified · 1 the Atlas gate refused · 2 pull failed · 3 push/verify.
+# Exit codes: 0 published+verified · 1 the Atlas gate refused · 2 pull or extractor failed ·
+# 3 push/verify · 4 the parent's registry moved past what the drawing can letter.
+# The code comes from build_site.py and is passed through. Collapsing them to 1 reported a
+# broken climate extractor as a gate refusal on 2026-08-17; the two have different remedies
+# and the gate's belongs to a different project.
 set -u
 ROOT="/Users/augustgweon/Forecast Works"
 cd "$ROOT" || exit 2
 
-python3 build/build_site.py || exit 1     # the Atlas gate runs inside this
+python3 build/build_site.py; rc=$?        # the Atlas gate runs inside this
+[ "$rc" -eq 0 ] || exit "$rc"
 git add -A
 git commit -q -m "Sheet redrawn $(date +%F)" || true
 git push -q origin main || exit 3

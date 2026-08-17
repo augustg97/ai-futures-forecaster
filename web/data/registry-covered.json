@@ -1,0 +1,74 @@
+{
+ "_what": "What the drawing's authored layer can letter and compose. Every FRAG, CROSS, ECON and ECON_MOD row in narrative.js and every position literal in figures.js and app.js is keyed on these. Position letters are stable across a parent rebuild and their meanings are not, so both are declared: the build refuses to publish a registry whose positions this does not cover, or whose meanings moved under a letter this project still uses.",
+ "version": "r4-2026-08-17",
+ "axes": {
+  "T": [
+   "T1",
+   "T2",
+   "T3",
+   "T4"
+  ],
+  "A": [
+   "A1",
+   "A2",
+   "A3",
+   "A4"
+  ],
+  "C": [
+   "C1",
+   "C2",
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "D": [
+   "D1",
+   "D2",
+   "D3"
+  ],
+  "S": [
+   "S1",
+   "S2",
+   "S3"
+  ],
+  "P": [
+   "P1",
+   "P2",
+   "P3"
+  ],
+  "E": [
+   "E1",
+   "E2",
+   "E3",
+   "E4"
+  ]
+ },
+ "meanings": {
+  "T1": "explosive (SC 2027-28)",
+  "T2": "fast (2029-31)",
+  "T3": "gradual (2032-36)",
+  "T4": "continuous-normal (no SC in window)",
+  "A1": "fails undetected",
+  "A2": "near-miss, managed",
+  "A3": "tractable with effort",
+  "A4": "untested in window",
+  "C1": "none / race",
+  "C2": "US securitization",
+  "C3": "US-CN transparency deal",
+  "C4": "fragmented blocs",
+  "C5": "moratorium / shutdown",
+  "D1": "shock",
+  "D2": "uneven by sector",
+  "D3": "slow absorption",
+  "S1": "concentration + flashpoint",
+  "S2": "diversified build-out",
+  "S3": "constrained (controls + energy)",
+  "P1": "populist backlash",
+  "P2": "adoption/acquiescence",
+  "P3": "polarized-fractured",
+  "E1": "boom sustained",
+  "E2": "bubble corrects, build-out survives",
+  "E3": "deflates hard (capex-led)",
+  "E4": "displacement-led demand crisis"
+ }
+}

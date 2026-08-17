@@ -1,6 +1,15 @@
 # AI Futures Forecaster — live state
 
-**Live:** https://augustg97.github.io/ai-futures-forecaster/ · build `20260816-1600`
+> **HELD at r4 since 2026-08-17.** The parent rebuilt its registry to `r5-2026-08-17` — 7 axes and
+> 26 positions became 9 and 49, two axes are new (K takeoff shape, R regulatory architecture), and
+> **every position that kept its letter changed its meaning**, four of them to roughly the opposite
+> (P1 backlash → acquiescence, D1 shock → delivery stalls, E2 correction → margin squeeze, A3
+> tractable → catch buys pause). The authored layer is keyed to r4, so the build now refuses to
+> publish (exit 4) and the sheet keeps serving the last coherent drawing. The re-key, and the
+> staged r5 material that feeds it, are in
+> [`Research/nightly-2026-08-17.md`](Research/nightly-2026-08-17.md).
+
+**Live:** https://augustg97.github.io/ai-futures-forecaster/ · build `20260817-0020` (registry r4)
 **Local:** `python3 build/serve.py 8154` (serves `web/`, never `docs/`) · working
 directory `~/Forecast Works`, repo `augustg97/ai-futures-forecaster`
 
@@ -75,9 +84,17 @@ pressed.
 ## Standing checks
 
 ```bash
-python3 build/build_site.py            # gate → pull → stamp → docs/
+python3 build/build_site.py            # gate → pull → coverage → stamp → docs/
 __FW.auditSweep()                      # console; REQUIRE controlPasses: true
 ```
+
+**The coverage gate stands between the pull and the stamp.** `web/data/registry-covered.json`
+declares which axes, positions and meanings the authored strings are keyed to; the build compares
+the pulled registry against it and refuses on any difference. Restate the declaration in the same
+commit as the prose that covers the new positions, never before it. Exit codes now separate the
+four ways a night can fail: 1 the Atlas gate refused · 2 pull or extractor · 3 push or verify ·
+4 the registry moved. They were all 1 until 2026-08-17, which reported a broken climate extractor
+as a gate refusal and pointed the diagnosis at the wrong project.
 
 Last sweep: **23 cases · 16,410 lettering marks · 0 collisions · 0 off-section · 0 overflows ·
 control passes** (2026-08-16, run against the live build). Full pass over every section: ~18 ms.
