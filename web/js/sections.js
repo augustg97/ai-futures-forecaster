@@ -717,35 +717,87 @@ const LANE_INK = { capability: INK.blue, buildout: INK.green,
                    capital: INK.warm, oversight: INK.red };
 const LANE_NAME = { capability: 'CAPABILITY', buildout: 'BUILD-OUT & GOVERNANCE',
                     capital: 'CAPITAL', oversight: 'OVERSIGHT' };
+// The record windows. Fourteen years across 152 mm puts the last eight months inside 5 mm,
+// so the steps that matter most to a reader now are the ones drawn smallest. Each window
+// re-scales BOTH axes: the capability range is taken from the trunk inside the window, so a
+// narrow window is a magnification and not a crop.
+const RWINDOWS = [
+  { k: 'all', name: '2012', y0: 2012 },
+  { k: 'd20', name: '2020', y0: 2020 },
+  { k: 'd24', name: '2024', y0: 2024 },
+  { k: 'y1', name: '12 MONTHS', y0: null, span: 1 },
+];
+function windowOf(S) {
+  const w = RWINDOWS.find((q) => q.k === (S.recordWindow || 'all')) || RWINDOWS[0];
+  const y1 = Math.ceil(S.NOW * 4) / 4;
+  return { y0: w.span ? +(y1 - w.span).toFixed(2) : w.y0, y1, k: w.k };
+}
+
 function recordColumn(d, S, top) {
   const { x, w } = COL.mid;
+  const win = windowOf(S);
   let y = head(d, top, 'RECORD',
-    'What actually happened, 2012 to today, against the capability index it produced. Each ' +
-    'step is drawn at the height the index had reached when it arrived, so the rise beside a ' +
-    'step is what followed it. Click any step for what it established.', { x, w });
+    `What actually happened, ${Math.floor(win.y0)} to today, against the capability index it ` +
+    'produced. Each step is drawn at the height the index had reached when it arrived, so the ' +
+    'rise beside a step is what followed it. Click any step for what it established.',
+    { x, w });
   viewSwitch(d, S, x, w, top);
 
+  // the window switch, on its own line under the caption
+  d.text([x, y - 0.6], 'WINDOW', { size: 1.5, track: 0.14, colour: INK.pencilLight });
+  const ww = 20, wh = 5.2, wgap = 1.4;
+  const wtot = RWINDOWS.length * ww + (RWINDOWS.length - 1) * wgap;
+  RWINDOWS.forEach((q, i) => {
+    const qx = x + w - wtot + i * (ww + wgap);
+    const on = win.k === q.k;
+    d.rect(qx, y - 2.6, ww, wh, {
+      weight: on ? PEN.medium : PEN.hairline, colour: on ? INK.blue : INK.inkLight,
+      fill: on ? 'rgba(38,118,214,0.14)' : null,
+    });
+    d.text([qx + ww / 2, y - 1.0], q.name,
+           { size: 1.5, align: 'center', track: 0.06, weight: on ? 700 : 500,
+             colour: on ? INK.blue : INK.pencil });
+    d.region(`ctl:rwin:${q.k}`, qx, y - 2.6, ww, wh, null);
+  });
+  y -= 7.4;
+
   const bx = CHART.bx, bw = CHART.bw, bh = 96, by = y - bh;
-  const R0 = 2012, R1 = Math.ceil(S.NOW * 4) / 4;
+  const R0 = win.y0, R1 = win.y1;
   const RX = (yy) => bx + ((yy - R0) / (R1 - R0)) * bw;
-  const CAP_MAX = 3.2;
-  const Yv = (v) => by + Math.max(0, Math.min(CAP_MAX, v)) / CAP_MAX * bh;
+  // The capability range follows the window, so a narrow window magnifies the rise inside it
+  // instead of drawing it as a flat line at the top of a fixed scale.
+  let lo = Infinity, hi = -Infinity;
+  for (let yy = R0; yy <= R1 + 1e-9; yy += 0.05) {
+    const v = S.trunkCap(yy); if (v < lo) lo = v; if (v > hi) hi = v;
+  }
+  const padv = Math.max(0.08, (hi - lo) * 0.18);
+  const CAP_LO = Math.max(0, lo - padv), CAP_HI = hi + padv;
+  const Yv = (v) => by + (Math.max(CAP_LO, Math.min(CAP_HI, v)) - CAP_LO) /
+                          (CAP_HI - CAP_LO) * bh;
 
   d.rect(bx, by, bw, bh, { weight: PEN.thin, colour: INK.ink });
-  for (let yy = R0; yy <= R1; yy += 1) {
+  // The tick interval follows the window: a one-year window ruled at one year draws a single
+  // line, and a fourteen-year window ruled at a month draws 168.
+  const yrSpan = R1 - R0;
+  const tick = yrSpan > 10 ? 1 : yrSpan > 5 ? 0.5 : yrSpan > 2 ? 0.25 : 1 / 12;
+  for (let yy = Math.ceil(R0 / tick) * tick; yy <= R1 + 1e-9; yy += tick) {
+    const major = Math.abs(yy - Math.round(yy)) < 1e-6;
     d.line([RX(yy), by], [RX(yy), by + bh],
            { weight: PEN.hairline, colour: INK.pencilLight,
-             dash: yy % 2 ? [0.8, 1.6] : null, alpha: yy % 2 ? 0.3 : 0.45 });
+             dash: major ? null : [0.8, 1.6], alpha: major ? 0.45 : 0.28 });
   }
-  for (let v = 0.5; v < CAP_MAX; v += 0.5) {
+  const vStep = (CAP_HI - CAP_LO) > 2 ? 0.5 : (CAP_HI - CAP_LO) > 0.8 ? 0.25 : 0.1;
+  for (let v = Math.ceil(CAP_LO / vStep) * vStep; v < CAP_HI; v += vStep) {
     d.line([bx, Yv(v)], [bx + bw, Yv(v)],
            { weight: PEN.hairline, colour: INK.pencilLight, dash: [0.8, 1.6], alpha: 0.35 });
-    d.text([bx - 1.6, Yv(v) - 0.8], v.toFixed(1),
+    d.text([bx - 1.6, Yv(v) - 0.8], v.toFixed(vStep < 0.25 ? 2 : 1),
            { size: 1.5, align: 'right', face: 'figure', colour: INK.pencilLight });
   }
   // the trunk: the recorded index itself
   const pts = [];
-  for (let yy = R0; yy <= R1 + 0.001; yy += 0.25) pts.push([RX(yy), Yv(S.trunkCap(yy))]);
+  const tstep = Math.min(0.25, (R1 - R0) / 240);
+  for (let yy = R0; yy <= R1 + 1e-9; yy += tstep) pts.push([RX(yy), Yv(S.trunkCap(yy))]);
+  pts.push([RX(R1), Yv(S.trunkCap(R1))]);
   d.polyline(pts, { weight: PEN.outline, colour: INK.ink });
 
   // the steps, each standing on the trunk at its own date
@@ -794,13 +846,24 @@ function recordColumn(d, S, top) {
   // the date index, on the record's own scale
   const sy = by - 12;
   d.line([bx, sy], [bx + bw, sy], { weight: PEN.medium, colour: INK.ink });
-  for (let yy = R0; yy <= R1; yy += 1) {
-    const major = yy % 2 === 0;
-    d.line([RX(yy), sy], [RX(yy), sy - (major ? 3.0 : 1.8)],
+  const lblStep = yrSpan > 10 ? 2 : yrSpan > 5 ? 1 : yrSpan > 2 ? 0.5 : 1 / 6;
+  const MON = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN',
+               'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+  for (let yy = Math.ceil(R0 / lblStep) * lblStep; yy <= R1 + 1e-9; yy += lblStep) {
+    const whole = Math.abs(yy - Math.round(yy)) < 1e-6;
+    d.line([RX(yy), sy], [RX(yy), sy - (whole ? 3.0 : 1.8)],
            { weight: PEN.hairline, colour: INK.inkLight });
-    if (major) {
-      d.text([RX(yy), sy - 6.0], String(yy),
-             { size: 1.6, align: 'center', face: 'figure', colour: INK.pencil });
+    // A half-year tick lettered by rounding gave "2024 2025 2025 2026 2026 2027": two ticks
+    // to a year, and a tick at mid-2026 called 2027. Under three years the fractional ticks
+    // are lettered by MONTH, which is the question a reader zoomed that far in is asking;
+    // above that they carry no lettering and only the whole years are named.
+    const label = whole ? String(Math.round(yy))
+      : yrSpan <= 3 ? MON[Math.min(11, Math.max(0, Math.floor((yy % 1) * 12)))]
+      : null;
+    if (label) {
+      d.text([RX(yy), sy - 6.0], label,
+             { size: whole ? 1.6 : 1.4, align: 'center', face: 'figure',
+               colour: whole ? INK.pencil : INK.pencilLight });
     }
   }
   d.polyline([[RX(Math.min(R1, Math.max(R0, S.yr))), sy],

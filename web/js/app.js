@@ -34,6 +34,7 @@ const SEC = [];                       // { id, fn, el, cv, draft, h, sig }
 const state = {
   tab: 'forecast', ctlAxis: 'T', yr: NOW_Y, pin: {}, obs: false, alt: null,
   chartView: 'forecast',   // 'forecast' | 'record' — which drawing the middle column carries
+  recordWindow: 'all',     // which span the record view magnifies
   mmPerPx: 0.25, hovered: null, selected: null, touched: null,
   ready: false, fitted: false,
 };
@@ -980,6 +981,7 @@ function sheetState(measure) {
     headline: isRecord ? headlineRecord(state.yr, trunkCap)
                        : headline(wl, state.yr, tr, D.engine.y0),
     record: RECORD, recordAt, chartView: state.chartView,
+    recordWindow: state.recordWindow,
     prose: proseColumns(measure, paras),
     headlineH: 0,   // filled below, once the headline string exists
     figures: chooseFigures(wl, state.yr, cap),
@@ -1121,6 +1123,9 @@ function applyControl(id) {
   } else if (kind === 'mode') {
     state.obs = arg === 'obs';
     recondition();
+  } else if (kind === 'rwin') {
+    state.recordWindow = arg;
+    state.selected = null;
   } else if (kind === 'view') {
     state.chartView = arg;
     state.selected = null;
