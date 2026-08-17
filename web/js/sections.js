@@ -706,8 +706,8 @@ readout.height = (S) => 22 + (S.headlineH || 12) + S.prose.h;
 // ── the drawn scenes ────────────────────────────────────────────────────────
 export function scenes(d, S, H) {
   const y = head(d, H - 8, 'SCENES',
-    'Two drawings of the future the settings and the date describe. Each caption states what ' +
-    'the scene depicts and which setting selected it.');
+    'The world these settings describe, at this date: what is standing, who is operating it, ' +
+    'and what is stopping it. The left scene is physical and the right is political.');
   const fw = (CW - 14) / 2, fh = y - 12;
   S.figures.forEach((f, i) => {
     drawFigure(d, f.key, PAD + i * (fw + 14), 8, fw, fh);

@@ -207,6 +207,28 @@ __FW.auditSweep()                      # in the console: the audit (check `contr
   tense with an entry it cannot see, which is how "a year back: the summit convenes in New York in
   May 2027" happens. Each entry carries its own date and reads correctly from any year.
 
+- **NO STATIC TEXT MAY NAME A DURATION.** The long span opens 15 years after the record and the
+  far span closes 74 years after it, so one string has to be true across a 40-year window. 42 of
+  them called the far span "a century" — wrong by 65 years at its start. Durations are computed
+  (`distanceClause`) or written as "decades". A duration in a literal is a defect.
+- **"A century of X, and of Y" is a formula, and the formula was the disease.** It let a clause
+  assert scale while naming nothing, and it produced every vague line in the document: "a century
+  of regional rules and firms arbitraging between them", "one early correction changed", "the
+  century never regained public consent". A long-span text says what the world LOOKS like — who
+  does what work, what an institution does, what a person encounters. The near texts were always
+  concrete and the far ones were not; that gradient is the thing to check.
+- **A clause may not restate its neighbour.** FRAG A4 and CROSS A4|T4 said the same thing twice,
+  each circularly ("the question is open because nothing could pose it" / "nothing could pose it,
+  which is why it remains open"). A CROSS earns its place by adding what the SECOND variable does.
+  Sweep for it: compose all 8,640 world-lines at four spans and flag any two sentences in one
+  paragraph sharing more than half their content words.
+- **Do not announce the drawing.** "A drawn scene of X" describes the artefact; the caption should
+  describe X. Same defect as a heading that says what the section is.
+- **Setting `state.pin` does not resample the line.** A sweep that pins axes and reads
+  `sheetState()` gets the default world-line every time and reports whatever that one line says.
+  To exercise the authored strings, import `narrative.js` in the page and call `describe()` and
+  `headline()` with synthetic world-lines.
+
 - **`Research/` is the evidence programme.** A dossier per axis, each answering the same five
   questions from sources ABOUT THE WORLD: base rate, mechanism and its weakest step, the 2026
   record, resolution criteria, and what would move the number. Another forecaster's scenario is

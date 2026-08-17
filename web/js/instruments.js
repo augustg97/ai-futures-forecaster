@@ -330,18 +330,21 @@ export function collectives(d, x, y, w, { n, speed, id = null, prev = null }) {
   y -= 4.6;
   d.text([x + w, y], fmtNum(equiv),
          { size: 2.8, align: 'right', face: 'figure', weight: 700, colour: INK.blue });
+  // Each comparison carries its OWN denominator, stated once. A fixed tail naming the
+  // labour force appended to a comparison already made against the labour force read
+  // "2% of the world's human labour force, against a global labour force near 3.6 billion".
   const eng = equiv / 3.4e7;          // world professional software engineers
   const cmp = ratio >= 1
-    ? `${ratio < 10 ? ratio.toFixed(1) : fmtNum(ratio)} times the world's human labour force`
+    ? `${ratio < 10 ? ratio.toFixed(1) : fmtNum(ratio)} times the world's human labour ` +
+      'force of 3.6 billion people'
     : ratio >= 0.02
-      ? `${(ratio * 100).toFixed(0)}% of the world's human labour force`
+      ? `${(ratio * 100).toFixed(0)}% of the world's human labour force of 3.6 billion people`
       : eng >= 1
-        ? `${eng < 10 ? eng.toFixed(1) : fmtNum(eng)} times the world's professional software ` +
-          'engineers'
-        : `${(eng * 100).toFixed(0)}% of the world's professional software engineers`;
+        ? `${eng < 10 ? eng.toFixed(1) : fmtNum(eng)} times the world's 34 million ` +
+          'professional software engineers'
+        : `${(eng * 100).toFixed(0)}% of the world's 34 million professional software engineers`;
   y -= 0.4;
-  y -= d.textBlock([x, y], cmp.charAt(0).toUpperCase() + cmp.slice(1) +
-    ', against a global labour force near 3.6 billion.', w - 22,
+  y -= d.textBlock([x, y], cmp.charAt(0).toUpperCase() + cmp.slice(1) + '.', w - 22,
     { size: 1.6, lead: 1.38, colour: INK.pencil });
   y -= 1.6;
   if (id) d.region(id, x, y - 2, w, top - y + 4, { n, speed, equiv, ratio });

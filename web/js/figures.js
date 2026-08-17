@@ -412,25 +412,28 @@ function square(d, b) {
 
 const FIGURES = {
   offshore: { draw: offshore, title: 'Compute beyond the border',
-    sub: 'A drawn scene of capacity sited outside any national jurisdiction — a route around ' +
-         'export control that appears throughout the scenario literature. Selected when ' +
-         'coordination is absent or blocs have fragmented.' },
-  campus: { draw: campus, title: 'The gigawatt campus',
-    sub: 'A drawn scene of the build-out this forecast models in aggregate: halls, substation, ' +
-         'transmission and cooling at the scale the compute track implies. Selected while ' +
-         'capacity is growing.' },
-  verification: { draw: verification, title: 'The verified agreement',
-    sub: 'A drawn scene of what a deal has to look like on the ground: declared capacity, ' +
-         'sealed lines, standing inspection. Selected when coordination holds.' },
-  robot: { draw: robotZone, title: 'The physical economy',
-    sub: 'A drawn scene of capability reaching material work — continuous operation, no shift ' +
-         'pattern. Selected once the run passes the robotics threshold.' },
-  stalled: { draw: stalled, title: 'The build-out that stopped',
-    sub: 'A drawn scene of the demand case failing before the concrete is finished. Selected ' +
-         'under a demand crisis or a halt.' },
-  square: { draw: square, title: 'The public square',
-    sub: 'A drawn scene of the political constraint. Selected when opposition holds governing ' +
-         'power or the public is durably split.' },
+    sub: 'Hulls moored past the territorial limit, generating their own power and landing a ' +
+         'subsea cable ashore. Nothing here sits inside a jurisdiction that could licence it, ' +
+         'which is the point of siting it here. Selected when coordination is absent or blocs ' +
+         'have fragmented.' },
+  campus: { draw: campus, title: 'Gigawatt campus',
+    sub: 'Halls, substation, transmission and cooling at the scale the compute track implies. ' +
+         'The capacity this forecast counts in aggregate, at one site. Selected while capacity ' +
+         'is growing.' },
+  verification: { draw: verification, title: 'Verified agreement',
+    sub: 'Capacity declared, supply lines sealed, inspectors on site. What a treaty obligation ' +
+         'looks like once it reaches the ground. Selected when coordination holds.' },
+  robot: { draw: robotZone, title: 'Physical economy',
+    sub: 'Capability reaching material work: continuous operation, no shift pattern, and no ' +
+         'reason to light the building. Selected once the run passes the robotics threshold.' },
+  stalled: { draw: stalled, title: 'Build-out that stopped',
+    sub: 'Foundations poured, steel halted, the schedule abandoned and the capital withdrawn. ' +
+         'The demand case failed before the concrete was finished. Selected under a demand ' +
+         'crisis or a halt.' },
+  square: { draw: square, title: 'Public square',
+    sub: 'A crowd, a legislature, and procurement decisions waiting on both. Consent is the ' +
+         'binding constraint here, ahead of capability or capital. Selected when opposition ' +
+         'holds governing power or the public is durably split.' },
 };
 
 // Two scenes per state: the first says what the physical world looks like, the second what the

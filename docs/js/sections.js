@@ -5,9 +5,9 @@
 // wide, drawn at one fixed scale so lettering keeps the size it was drawn at and nothing has to
 // be zoomed. A section's millimetre space runs x 0 → 300 across and y 0 → H up from its foot.
 
-import { PEN, INK, PAPER } from './draft.js?v=20260816-1602';
-import { dial, manifold, strip, collectives, fmtNum } from './instruments.js?v=20260816-1602';
-import { drawFigure } from './figures.js?v=20260816-1602';
+import { PEN, INK, PAPER } from './draft.js?v=20260816-1726';
+import { dial, manifold, strip, collectives, fmtNum } from './instruments.js?v=20260816-1726';
+import { drawFigure } from './figures.js?v=20260816-1726';
 
 export const SHEET_W = 340;
 const PAD = 13;
@@ -706,8 +706,8 @@ readout.height = (S) => 22 + (S.headlineH || 12) + S.prose.h;
 // ── the drawn scenes ────────────────────────────────────────────────────────
 export function scenes(d, S, H) {
   const y = head(d, H - 8, 'SCENES',
-    'Two drawings of the future the settings and the date describe. Each caption states what ' +
-    'the scene depicts and which setting selected it.');
+    'The world these settings describe, at this date: what is standing, who is operating it, ' +
+    'and what is stopping it. The left scene is physical and the right is political.');
   const fw = (CW - 14) / 2, fh = y - 12;
   S.figures.forEach((f, i) => {
     drawFigure(d, f.key, PAD + i * (fw + 14), 8, fw, fh);
