@@ -33,7 +33,19 @@ the task duration, in human expert time, at which an agent succeeds half the tim
 > 4 months across 2024–2025.** The sheet has been quoting the seven-month figure (as 212 days).
 > The recent-window figure is roughly twice as fast, and it is the one that bears on T1 and T2.
 > METR's own caution is recorded with it: one year of data is a less robust estimate, and the
-> rate may slow. **This is a live recommendation against T's priors, not an applied change.**
+> rate may slow. **APPLIED 2026-08-17 AS REGISTRY r4**, on August's instruction.
+>
+> The re-scoring found a larger error than the one it went looking for. From 16 h at mid-2026,
+> month-long work (160 h) is **3.32 doublings** at 50% reliability and **5.64** at the 80% bar,
+> since METR's 80% horizon runs about 5x shorter in task length. That puts a superhuman coder at
+> **2029.8 on the 7-month rate and 2028.4 on the 4-month rate — both inside T2, neither reaching
+> T3**, which had held the mode at 0.41 against T2's 0.29. The priors disagreed with the axis's
+> own cited measurement on *either* regime, not only the fast one.
+>
+> T1 0.07→0.11 · T2 0.29→0.42 (now modal) · T3 0.41→0.30 · T4 0.23→0.17. T3 and T4 stay
+> substantial because a 5.64-doubling extrapolation breaks easily, because METR's caution is that
+> one year is a weak estimate, and because T4's mechanism is structural and untested by a horizon
+> trend. Only T was re-based; the other six axes keep the weight the evidence has given them.
 
 - METR, *Time Horizon 1.1*, 29 January 2026 — https://metr.org/blog/2026-1-29-time-horizon-1-1/
 - METR, *Task-Completion Time Horizons of Frontier AI Models* — https://metr.org/time-horizons/
@@ -127,9 +139,11 @@ Source: https://futurumgroup.com/insights/ai-capex-2026-the-690b-infrastructure-
 
 ## Standing recommendations from this register
 
-1. **T priors should be re-scored against the 4-month window** (held, not applied — priors live in
-   the parent Atlas). The seven-month figure the sheet quotes is the 2019–2025 average; the
-   2024–2025 window is roughly twice as fast, which raises T1 and T2 against T3 and T4.
+1. ~~**T priors should be re-scored against the 4-month window.**~~ **Applied 2026-08-17 as
+   registry r4.** The re-scoring found a larger error than the one it went looking for: the
+   seven-month figure the sheet already quoted put a superhuman coder at 2029.8, inside T2,
+   while T3 held the mode. The priors disagreed with the axis's own cited measurement on either
+   regime. Only T was re-based; the other six axes keep the weight the evidence has given them.
 2. **E4 has no independent measurement.** It is the one position in the register whose evidence
    is a mechanism rather than an observation. Either a series is found or the position's weight
    should reflect that it rests on arithmetic.

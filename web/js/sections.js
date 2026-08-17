@@ -1139,23 +1139,32 @@ export function research(d, S, H) {
     { size: 2.0, lead: LEAD, colour: INK.pencil });
   y -= 36;
 
-  // The one finding from the register that argues with a prior now in force.
-  d.rect(PAD, y - 26, CW, 26, { weight: PEN.thin, colour: INK.red, alpha: 0.6 });
-  d.text([PAD + 4, y - 5.4], 'OPEN CALIBRATION FINDING',
-         { size: 2.4, weight: 700, track: 0.16, colour: INK.red });
-  d.textBlock([PAD + 4, y - 10], "This sheet quotes METR's task-horizon doubling time as 212 " +
-    'days, which is the average across 2019 to 2025. Across the 2024 to 2025 window alone it ' +
-    'is about four months — roughly twice as fast — and the horizon itself has run from four ' +
-    'seconds in 2019 to more than sixteen hours in 2026. The faster figure argues for raising ' +
-    'T1 and T2 against T3 and T4. It is recorded and held: priors live in the parent engine, ' +
-    "and METR's own caution is that one year of data is a weak estimate.", CW - 8,
+  // The register's calibration finding, and what happened to it.
+  d.rect(PAD, y - 34, CW, 34, { weight: PEN.thin, colour: INK.blue, alpha: 0.6 });
+  d.text([PAD + 4, y - 5.4], 'CALIBRATION FINDING, APPLIED',
+         { size: 2.4, weight: 700, track: 0.16, colour: INK.blue });
+  d.text([PAD + CW - 4, y - 5.4], 'REGISTRY r4 · 17 AUGUST 2026',
+         { size: 1.8, align: 'right', track: 0.14, colour: INK.inkLight });
+  d.textBlock([PAD + 4, y - 10], "The tempo priors quoted METR's task-completion horizon as a " +
+    '212-day doubling, which is the 2019 to 2025 average. The 2024 to 2025 window doubles in ' +
+    'about four months, and the horizon has run from four seconds in 2019 to more than sixteen ' +
+    'hours in 2026. The larger error was in the slow figure itself: from sixteen hours at ' +
+    'mid-2026, month-long work is 3.32 doublings at half reliability and 5.64 at the ' +
+    "four-fifths bar, since METR's stricter horizon runs about five times shorter in task " +
+    'length. That puts a superhuman coder at 2029.8 on the seven-month rate and 2028.4 on the ' +
+    'four-month rate. Both land in FAST (2029-31); neither reaches GRADUAL (2032-36), which ' +
+    'held the mode at 0.41 against fast at 0.29. Applied to the engine as r4 on August\u2019s ' +
+    'instruction: T1 to 0.11, T2 to 0.42 and now modal, T3 to 0.30, T4 to 0.17. Gradual and ' +
+    'continuous-normal stay substantial because a 5.64-doubling extrapolation breaks easily, ' +
+    "because METR's own caution is that one year is a weak estimate, and because the " +
+    'continuous-normal mechanism is structural and untested by a horizon trend.', CW - 8,
     { size: 2.0, lead: LEAD, colour: INK.pencil });
-  y -= 32;
+  y -= 40;
 
   // recommendations, per axis
   d.text([PAD, y], 'PRIOR REVISIONS',
          { size: 2.6, weight: 700, track: 0.14, colour: INK.ink });
-  d.text([PAD + CW, y], 'APPLIED 13 AUGUST 2026 · REGISTRY r3',
+  d.text([PAD + CW, y], 'APPLIED 13 AUG (r3) AND 17 AUG (r4)',
          { size: 1.8, align: 'right', track: 0.14, colour: INK.inkLight });
   rule(d, y - 2.2, PAD, CW, { weight: PEN.thin, colour: INK.inkLight });
   y -= 6.4;
@@ -1271,7 +1280,7 @@ export function research(d, S, H) {
   });
   return H;
 }
-research.height = () => 368;
+research.height = () => 376;
 
 // ── 9 · method ───────────────────────────────────────────────────────────────
 export function sources(d, S, H) {

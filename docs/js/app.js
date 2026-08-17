@@ -5,13 +5,13 @@
 // on that instrument. It reads the same emitted data and implements the same functions against
 // the same shipped constants (`engine.json`), so the two surfaces cannot drift apart.
 
-import { Draft, PEN, INK, paperTileURL } from './draft.js?v=20260816-2101';
+import { Draft, PEN, INK, paperTileURL } from './draft.js?v=20260816-2257';
 import { SECTIONS, SHEET_W, TABS, CHART, COL, CTL_NOTE_W, balance,
-         proseColumns, measureSections, SHEET_CW } from './sections.js?v=20260816-2101';
-import { column, fmtNum } from './instruments.js?v=20260816-2101';
-import { describe, headline } from './narrative.js?v=20260816-2101';
-import { describeRecord, headlineRecord, RECORD, recordAt, whenOf } from './record.js?v=20260816-2101';
-import { chooseFigures } from './figures.js?v=20260816-2101';
+         proseColumns, measureSections, SHEET_CW } from './sections.js?v=20260816-2257';
+import { column, fmtNum } from './instruments.js?v=20260816-2257';
+import { describe, headline } from './narrative.js?v=20260816-2257';
+import { describeRecord, headlineRecord, RECORD, recordAt, whenOf } from './record.js?v=20260816-2257';
+import { chooseFigures } from './figures.js?v=20260816-2257';
 
 // One build number, injected into index.html at ship time, versions BOTH the data fetches and
 // (via the build's import rewrite) every module. A fresh app.js against a stale draft.js is the
@@ -917,7 +917,7 @@ function plain(text) {
 // differs from the researched figure, which is how a reader can see that the
 // applied network and the research agree.
 const RESEARCHED = {
-  'T:T1': 0.070, 'T:T2': 0.290, 'T:T3': 0.410, 'T:T4': 0.230,
+  'T:T1': 0.110, 'T:T2': 0.420, 'T:T3': 0.300, 'T:T4': 0.170,   // r4, 17 Aug 2026
   'A:A1': 0.170, 'A:A2': 0.290, 'A:A3': 0.290, 'A:A4': 0.250,
   'C:C1': 0.340, 'C:C2': 0.260, 'C:C3': 0.120, 'C:C4': 0.270, 'C:C5': 0.010,
   'D:D1': 0.170, 'D:D2': 0.570, 'D:D3': 0.260,
@@ -927,7 +927,9 @@ const RESEARCHED = {
 };
 // What the priors were before the evidence round, so the sheet can show the move.
 const PRIOR_R2 = {
-  'T:T1': 0.099, 'T:T2': 0.302, 'T:T3': 0.387, 'T:T4': 0.211,
+  // T's comparison is r3, the revision r4 moved from; every other axis still
+  // compares against r2, which is the last time it moved.
+  'T:T1': 0.070, 'T:T2': 0.290, 'T:T3': 0.410, 'T:T4': 0.230,
   'A:A1': 0.116, 'A:A2': 0.263, 'A:A3': 0.351, 'A:A4': 0.270,
   'C:C1': 0.402, 'C:C2': 0.264, 'C:C3': 0.074, 'C:C4': 0.251, 'C:C5': 0.009,
   'D:D1': 0.177, 'D:D2': 0.559, 'D:D3': 0.264,
