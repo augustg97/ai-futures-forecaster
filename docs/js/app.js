@@ -5,13 +5,13 @@
 // on that instrument. It reads the same emitted data and implements the same functions against
 // the same shipped constants (`engine.json`), so the two surfaces cannot drift apart.
 
-import { Draft, PEN, INK, paperTileURL } from './draft.js?v=20260816-2043';
+import { Draft, PEN, INK, paperTileURL } from './draft.js?v=20260816-2057';
 import { SECTIONS, SHEET_W, TABS, CHART, COL, CTL_NOTE_W, balance,
-         proseColumns, measureSections, SHEET_CW } from './sections.js?v=20260816-2043';
-import { column, fmtNum } from './instruments.js?v=20260816-2043';
-import { describe, headline } from './narrative.js?v=20260816-2043';
-import { describeRecord, headlineRecord, RECORD, recordAt, whenOf } from './record.js?v=20260816-2043';
-import { chooseFigures } from './figures.js?v=20260816-2043';
+         proseColumns, measureSections, SHEET_CW } from './sections.js?v=20260816-2057';
+import { column, fmtNum } from './instruments.js?v=20260816-2057';
+import { describe, headline } from './narrative.js?v=20260816-2057';
+import { describeRecord, headlineRecord, RECORD, recordAt, whenOf } from './record.js?v=20260816-2057';
+import { chooseFigures } from './figures.js?v=20260816-2057';
 
 // One build number, injected into index.html at ship time, versions BOTH the data fetches and
 // (via the build's import rewrite) every module. A fresh app.js against a stale draft.js is the
@@ -33,6 +33,7 @@ const SEC = [];                       // { id, fn, el, cv, draft, h, sig }
 
 const state = {
   tab: 'forecast', ctlAxis: 'T', yr: NOW_Y, pin: {}, obs: false, alt: null,
+  chartView: 'forecast',   // 'forecast' | 'record' — which drawing the middle column carries
   mmPerPx: 0.25, hovered: null, selected: null, touched: null,
   ready: false, fitted: false,
 };
@@ -976,7 +977,7 @@ function sheetState(measure) {
     isRecord,
     headline: isRecord ? headlineRecord(state.yr, trunkCap)
                        : headline(wl, state.yr, tr, D.engine.y0),
-    record: RECORD, recordAt,
+    record: RECORD, recordAt, chartView: state.chartView,
     prose: proseColumns(measure, paras),
     headlineH: 0,   // filled below, once the headline string exists
     figures: chooseFigures(wl, state.yr, cap),
@@ -1118,6 +1119,9 @@ function applyControl(id) {
   } else if (kind === 'mode') {
     state.obs = arg === 'obs';
     recondition();
+  } else if (kind === 'view') {
+    state.chartView = arg;
+    state.selected = null;
   } else if (kind === 'reset') {
     state.pin = {}; state.alt = null; cond = null; state.selected = null;
   }
