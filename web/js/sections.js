@@ -7,7 +7,6 @@
 
 import { PEN, INK, PAPER } from './draft.js';
 import { dial, manifold, strip, collectives, fmtNum } from './instruments.js';
-import { drawFigure } from './figures.js';
 
 export const SHEET_W = 340;
 const PAD = 13;
@@ -313,8 +312,13 @@ function instrumentColumn(d, S, top) {
       fill: on ? 'rgba(196,78,10,0.13)' : null, solid: on, label: 'lamp',
     });
     d.dot([x + 2.6, y - 3.4], 1.1, { colour: on ? INK.warm : INK.inkLight, hollow: !on });
-    d.text([x + 5.4, y - 4.4], dm.k,
-           { size: 1.8, weight: 700, track: 0.10, pocket: true,
+    // The row lettered the key — CODE, HACK, FCAST, R&D — which a reader has to already
+    // know to read. The engine carries a full name for each; it is drawn. DOMAIN_LABEL
+    // overrides only where the engine's name is a description ("AI research itself")
+    // and falls through to the engine for everything else, so the parent stays the source.
+    const label = DOMAIN_LABEL[dm.k] || dm.n || dm.k;
+    d.text([x + 5.4, y - 4.4], fit(d, label, w - 16, { size: 1.65, track: 0.04 }),
+           { size: 1.65, weight: on ? 700 : 500, track: 0.04, pocket: true,
              colour: on ? INK.ink : INK.pencilLight });
     d.text([x + w - 2.0, y - 4.4], on ? String(S.crossYear(dm.th) || '—') : dm.th.toFixed(1),
            { size: 1.6, align: 'right', face: 'figure', pocket: true,
@@ -327,28 +331,35 @@ function instrumentColumn(d, S, top) {
     n: tr.copies[i0], speed: tr.speed[i0], id: 'tally',
     prev: tr.copies[Math.max(0, i0 - 5)],
   }) + 3;
+  return top - y;
+}
 
-  // ── behaviour, six recorders at reading size ───────────────────────────────
-  d.text([x, y], 'BEHAVIOUR OVER TIME', { size: 3.0, weight: 700, track: 0.16, colour: INK.ink });
-  rule(d, y - 2.2, x, w, { weight: PEN.thin, colour: INK.inkLight });
-  y -= 6.4;
-  d.text([x, y], '2026 TO 2100 ON THE ACTIVE LINE · PEN AT THE DATE',
-         { size: 1.6, track: 0.10, colour: INK.pencilLight });
-  y -= 4;
-  const half = (w - 4) / 2;
-  behaviourPanels(S).forEach((p, i) => {
+// ── the recorders, across the foot of the board ──────────────────────────────
+// Six strips two-up inside an 80 mm column gave each 36 mm of width for 75 years of
+// history, so every one of them was a squiggle. Across the sheet each gets 50 mm and
+// twice the height, and they read as one instrument panel.
+export function recorders(d, S, H) {
+  const top = H - 8;
+  let y = head(d, top, 'BEHAVIOUR OVER TIME',
+    'Seven quantities the same sampled line produces, 2026 to 2100, with the pen standing at ' +
+    'the date. Click any strip for what it measures and where its numbers come from.');
+  const panels = behaviourPanels(S);
+  const n = panels.length;
+  const gap = 5;
+  const pw = (CW - gap * (n - 1)) / n;
+  const ph = 34;
+  panels.forEach((p, i) => {
     const lo = Math.min(...p.d), hi = Math.max(...p.d);
     const pad = (hi - lo) * 0.08 || 1;
-    const px = x + (i % 2) * (half + 4);
-    const py = y - 17 - Math.floor(i / 2) * 20.5;
-    strip(d, px + 7, py, half - 8, 16, {
+    strip(d, PAD + i * (pw + gap) + 8, y - ph, pw - 9, ph, {
       data: p.d, years: S.tracks.year, y0: lo - pad, y1: hi + pad, colour: p.c,
       label: p.label, unit: p.unit, now: Math.max(S.engine.y0, S.yr), id: p.id, fmt: p.fmt,
     });
   });
-  y -= 20.5 * Math.ceil(behaviourPanels(S).length / 2) + 2;
-  return top - y;
+  y -= ph + 4;
+  return H - y + 4;
 }
+recorders.height = () => 60;
 
 // ── the middle column ────────────────────────────────────────────────────────
 function chartColumn(d, S, top) {
@@ -547,17 +558,35 @@ const CTAB = { T: 'TEMPO', A: 'ALIGN', C: 'COORD', D: 'LABOUR', S: 'SUPPLY',
                P: 'PUBLIC', E: 'ECONOMY' };
 const CBTN_H = 26;
 
+// Display names for the capability domains. The engine's own `n` is drawn wherever it reads
+// as a name; this overrides only where it reads as a description.
+const DOMAIN_LABEL = {
+  'R&D': 'Automated AI R&D',
+  CODE: 'Coding & software',
+  ROBOT: 'Robotics & physical work',
+  POLIT: 'Persuasion & politics',
+};
+
 function controlColumn(d, S, top) {
   const { x, w } = COL.right;
   let y = top;
   d.text([x, y], 'CONTROLS', { size: 3.0, weight: 700, track: 0.16, colour: INK.ink });
-  rule(d, y - 2.2, x, w, { weight: PEN.thin, colour: INK.inkLight });
+  // The release command sits on the heading line, where a reader looks for it. At the foot of
+  // the column it was behind every other control, including the ones it undoes.
+  const RSW = 26, RSH = 6.0;
+  const anySet = Object.keys(S.pin || {}).length > 0;
+  button(d, x + w - RSW, y - 1.6, RSW, RSH, {
+    name: 'RELEASE ALL', on: false, accent: INK.red, id: 'ctl:reset',
+    dim: !anySet,
+  });
+  rule(d, y - 2.2, x, w - RSW - 3, { weight: PEN.thin, colour: INK.inkLight });
   y -= 6.2;
   d.textBlock([x, y], 'One tab per variable. Choosing a setting fixes that variable and ' +
     'redraws the document; the figure at the foot of a button is what the setting moves ' +
-    'hardest by 2040. Choosing it again releases the variable.', w,
+    'hardest by 2040, measured in the conditioning mode now in force. Choosing it again ' +
+    'releases the variable.', w,
     { size: 1.7, lead: 1.38, colour: INK.pencil });
-  y -= 12.5;
+  y -= 15;
 
   // the tab strip
   const cols = 4, tw = (w - (cols - 1) * 1.6) / cols, th = 6.4;
@@ -617,7 +646,13 @@ function controlColumn(d, S, top) {
       d.text([x + w - 2.6, by2 + 1.8], eff.text,
              { size: 1.6, align: 'right', face: 'figure', weight: 700, colour: INK.ink });
     } else if (eff !== 0) {
-      d.text([x + 3.4, by2 + 1.8], 'NO MEASURED EFFECT BY 2040',
+      // The two modes give different answers, and for alignment they differ enormously:
+      // under intervention it moves nothing measurable, under observation it is one of the
+      // largest controls on the sheet. A bare "no measured effect" beside a chart that
+      // visibly moves is the reader's problem to resolve, so the line names the mode.
+      d.text([x + 3.4, by2 + 1.8],
+             S.obs ? 'NO MEASURED EFFECT UNDER OBSERVATION'
+                   : 'NO MEASURED EFFECT UNDER INTERVENTION',
              { size: 1.45, track: 0.08, colour: INK.pencilLight });
     }
     y = by2 - 2.2;
@@ -646,13 +681,6 @@ function controlColumn(d, S, top) {
     name: 'SUPPOSE WE LEARN IT', on: S.obs, tick: true, id: 'ctl:mode:obs',
     desc: 'Fix the setting; reweight every other variable in its light.' });
   y -= 21;
-  d.text([x, y], 'A COMMAND, TAKING EFFECT WHEN PRESSED',
-         { size: 1.5, colour: INK.pencilLight, track: 0.10 });
-  y -= 2.6;
-  button(d, x, y - 15, w, 15, {
-    name: 'RELEASE EVERY VARIABLE', on: false, accent: INK.red, id: 'ctl:reset',
-    desc: 'Return each variable to the weight the evidence gives it.' });
-  y -= 15;
   return top - y;
 }
 
@@ -661,6 +689,9 @@ export function board(d, S, H) {
   const a = instrumentColumn(d, S, top);
   const b = chartColumn(d, S, top);
   const c = controlColumn(d, S, top);
+  // What each column actually consumed, so board.height() can be checked against the
+  // drawing instead of trusted. Estimating it left 47 mm of blank paper at the foot.
+  board.measured = { left: a, mid: b, right: c, max: Math.max(a, b, c) };
   // column rules, so the three read as one drawing
   const y0 = 4, y1 = top + 5;
   for (const gx of [COL.mid.x - 2, COL.right.x - 2]) {
@@ -668,15 +699,16 @@ export function board(d, S, H) {
   }
   return Math.max(a, b, c);
 }
+// Each term is calibrated against `board.measured`, which records what the three columns
+// actually consumed. The previous estimate ran 39 to 61 mm over, and the board carried that
+// as blank paper at its foot in every state.
 board.height = (S) => {
-  const left = 34 + Math.ceil(4 / 2) * 27 + 34 + 6 + S.engine.domains.length * 7.2 + 24 +
-               40 + 3 * 20.5;
-  const mid = 30 + CHART_H + 21 + NOTE_BAND + (S.chartNote ? S.chartNote.h + 12 : 0);
+  const left = 142.8 + S.engine.domains.length * 7.2;
+  const mid = CHART_H + 76.2 + (S.chartNote ? S.chartNote.h + 12 : 0);
   const n = (S.network.axes.find((q) => q.key === S.ctlAxis) || S.network.axes[0])
     .positions.length;
-  const right = 40 + Math.ceil(S.network.axes.length / 4) * 8 + 20 + n * (CBTN_H + 2.2) +
-                (S.openNote ? S.openNote.h + 19 : 0) + 100;
-  return Math.max(left, mid, right) + 12;
+  const right = 105 + n * (CBTN_H + 2.2) + (S.openNote ? S.openNote.h + 19 : 0);
+  return Math.max(left, mid, right) + 6;
 };
 
 // ── 3 · the passage, across the head of the sheet ───────────────────────────
@@ -702,19 +734,6 @@ export function readout(d, S, H) {
   return H;
 }
 readout.height = (S) => 22 + (S.headlineH || 12) + S.prose.h;
-
-// ── the drawn scenes ────────────────────────────────────────────────────────
-export function scenes(d, S, H) {
-  const y = head(d, H - 8, 'SCENES',
-    'The world these settings describe, at this date: what is standing, who is operating it, ' +
-    'and what is stopping it. The left scene is physical and the right is political.');
-  const fw = (CW - 14) / 2, fh = y - 12;
-  S.figures.forEach((f, i) => {
-    drawFigure(d, f.key, PAD + i * (fw + 14), 8, fw, fh);
-  });
-  return H;
-}
-scenes.height = () => 92;
 
 function behaviourPanels(S) {
   const tr = S.tracks;
@@ -1152,7 +1171,7 @@ export const SECTIONS = [
   { id: 'header', fn: header, tab: 'forecast' },
   { id: 'readout', fn: readout, tab: 'forecast' },
   { id: 'board', fn: board, tab: 'forecast' },
-  { id: 'scenes', fn: scenes, tab: 'forecast' },
+  { id: 'recorders', fn: recorders, tab: 'forecast' },
   { id: 'details', fn: details, tab: 'instruments' },
   { id: 'behaviour', fn: behaviour, tab: 'behaviour' },
   { id: 'world', fn: world, tab: 'world' },

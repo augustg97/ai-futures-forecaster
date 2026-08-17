@@ -571,6 +571,58 @@ function elide(d, str, roomMM, size) {
   return s.replace(/[ (·,-]+$/, '') + '…';
 }
 
+// ── what an application means, composed ──────────────────────────────────────
+// The plate lettered the arithmetic and quoted the driver, and left the reader to work out
+// what the two had to do with each other. The parent emits no explanation, so one is
+// composed here from the fields the entry carries: the class of development, how much
+// corroboration it had, how far novelty decay had already reduced it, and which positions
+// moved in which direction with what those positions MEAN.
+const IMPACT_SENTENCE = {
+  major: 'Classed as a major development, the largest weight the engine assigns.',
+  moderate: 'Classed as a moderate development.',
+  minor: 'Classed as a minor development, the smallest weight the engine assigns.',
+};
+function explainDelta(e) {
+  const out = [];
+  const cls = IMPACT_SENTENCE[(e.impact_class || '').toLowerCase()];
+  const rule = e.rule ? `Matched by the rule ${e.rule}.` : '';
+  out.push([cls, rule].filter(Boolean).join(' '));
+
+  const n = e.sources || 1;
+  const k = Number(e.repeat_k ?? 0);
+  const corrob = n > 1 ? `${n} independent sources reported it`
+                       : 'One source reported it';
+  // The engine divides a rule's weight by a novelty factor that grows each time the rule
+  // fires, so the same kind of news moves the network less the more often it arrives.
+  // k is a divisor, so the share left is 1/k. Lettering k itself gave "to about a 3.7th of
+  // its first application", which is not a quantity anyone can read.
+  const decay = k > 1.05
+    ? `, and repetition has reduced this rule's weight to about ${Math.round(100 / k)}% of ` +
+      'what its first application carried'
+    : ', and the rule is close to full weight';
+  out.push(`${corrob}${decay}.`);
+
+  const applied = Object.entries(e.applied || {});
+  if (applied.length) {
+    const up = applied.filter((p) => p[1] > 0);
+    const dn = applied.filter((p) => p[1] < 0);
+    const say = (p) => {
+      const nm = posName(p[0]);
+      const pp = Math.abs(p[1] * 100).toFixed(2);
+      return nm ? `${nm.toLowerCase()} by ${pp} points` : `${p[0]} by ${pp} points`;
+    };
+    const bits = [];
+    if (up.length) bits.push(`raised the weight on ${up.map(say).join(', ')}`);
+    if (dn.length) bits.push(`lowered ${dn.map(say).join(', ')}`);
+    out.push(`It ${bits.join(' and ')}.`);
+  }
+  if (e.event_date && e.date && e.event_date !== e.date) {
+    out.push(`The development is dated ${e.event_date}; the engine read it on ${e.date}.`);
+  }
+  return out.join(' ');
+}
+
+const EXPL_X = 196;   // where the "what it means" column starts, in sheet mm
 function drawMorningPlate(d, S, box) {
   const [x, y, w, h] = box;
   const ent = (D.delta.entries || []).slice().reverse();
@@ -589,8 +641,12 @@ function drawMorningPlate(d, S, box) {
            { size: 2.6, colour: INK.pencil, track: 0.10 });
     return;
   }
+  // The plate said "today" without ever lettering which day, so a reader could not tell a
+  // fresh revision from a stale one — and the nightly build means the two look identical.
+  const stamp = today.length ? D.delta.date : (show[0] && show[0].date) || D.delta.date;
   d.text([x, y + h - 8], today.length
-    ? `${today.length} APPLICATIONS TODAY` : `LATEST ${show.length} APPLICATIONS ON RECORD`,
+    ? `${today.length} APPLICATION${today.length > 1 ? 'S' : ''} APPLIED ${stamp}`
+    : `LATEST ${show.length} APPLICATIONS ON RECORD · TO ${stamp}`,
     { size: 2.2, colour: INK.red, weight: 700, track: 0.16 });
   const rowH = Math.min(34, (h * 0.62 - 26) / show.length);
   if (dropped > 0) {
@@ -626,7 +682,7 @@ function drawMorningPlate(d, S, box) {
     // a development that says the opposite. The arithmetic is only checkable against its driver
     // once the key is spelled out.
     const applied = Object.entries(e.applied || {});
-    const stride = Math.min(86, (w - 98) / Math.max(1, applied.length));
+    const stride = Math.min(64, (EXPL_X - 98) / Math.max(1, applied.length));
     applied.forEach(([k, v], j) => {
       const bx = x + 96 + j * stride;
       const mag = Math.min(20, Math.abs(v) * 900);
@@ -647,9 +703,18 @@ function drawMorningPlate(d, S, box) {
       // The parent emits the driver at a fixed 140 characters. Ending the quotation without
       // a mark would read as a sentence the draughtsman wrote and then abandoned.
       const cut = e.driver.length >= 140 ? ' …' : '';
-      d.textBlock([x + 1, ry + rowH - 13.0], 'DRIVER: ' + e.driver + cut, w - 4,
+      d.textBlock([x + 1, ry + rowH - 13.0], 'DRIVER: ' + e.driver + cut, EXPL_X - 6,
                   { size: 1.55, lead: 1.4, colour: INK.pencil, max: 2 });
     }
+    // WHAT IT MEANS, in its own column. The arithmetic and the quotation sat side by side
+    // with nothing joining them; this says what the engine did with the development and why
+    // the movement is the size it is.
+    d.line([x + EXPL_X - 4, ry + 1], [x + EXPL_X - 4, ry + rowH - 3],
+           { weight: PEN.hairline, colour: INK.inkLight, alpha: 0.7 });
+    d.text([x + EXPL_X, ry + rowH - 5.4], 'WHAT IT MEANS',
+           { size: 1.45, track: 0.14, weight: 700, colour: INK.pencilLight });
+    d.textBlock([x + EXPL_X, ry + rowH - 8.6], explainDelta(e), w - EXPL_X - 2,
+                { size: 1.55, lead: 1.4, colour: INK.pencil, max: 5 });
     d.region(`delta:${(D.delta.entries || []).indexOf(e)}`, x, ry, w, rowH, e);
     if (i === ring) d.revisionCloud(x - 2, ry + 0.5, w + 4, rowH - 1);
   });
@@ -747,7 +812,36 @@ function sampleFixed(us, weights, pinned) {
   });
   return wl;
 }
-function readoutsFor(pinned) {
+// THE FIGURE UNDER A BUTTON HAS TO ANSWER THE QUESTION THE DOCUMENT IS ASKING.
+// This measured the intervened sampler in both modes, so alignment reported "no measured
+// effect": under intervention A reaches the model through one edge (C given A1) and enters
+// no track equation, so three of its four positions move nothing at all. Under observation
+// it is one of the largest controls on the sheet — learning A4 moves T4 from 22% to 48% and
+// drops the 2040 median capability by 1.3 rungs — because A's parent is T and learning the
+// child reweights the parent. Reporting the first number while drawing the second is the
+// defect.
+//
+// Observation is measured by FILTERING the fixed 2,000-line ensemble, which needs no RNG,
+// so common random numbers are automatic. Below the same 40-line floor `recondition` uses,
+// the subset is too thin to average and the intervened figure stands in.
+const OBS_MIN = 40;
+function readoutsEnsemble(pinned) {
+  if (!D.ens2k) return null;
+  const keys = Object.keys(pinned);
+  const lines = keys.length
+    ? D.ens2k.lines.filter((wl) => keys.every((k) => wl[k] === pinned[k]))
+    : D.ens2k.lines;
+  if (lines.length < OBS_MIN) return null;
+  const sums = EFF_READ.map(() => 0);
+  for (const wl of lines) {
+    const tr = tracksJS(wl);
+    const i = Math.max(0, Math.min(tr.year.length - 1, EFF_YEAR - D.engine.y0));
+    EFF_READ.forEach((r, k) => { sums[k] += r[1](tr, i); });
+  }
+  return sums.map((s) => s / lines.length);
+}
+function readoutsFor(pinned, obs = false) {
+  if (obs) { const e = readoutsEnsemble(pinned); if (e) return e; }
   const w = baseWeights(), U = effUniforms();
   const sums = EFF_READ.map(() => 0);
   for (let n = 0; n < EFF_N; n++) {
@@ -757,16 +851,16 @@ function readoutsFor(pinned) {
   }
   return sums.map((s) => s / EFF_N);
 }
-function effectsFor(pin) {
-  const sig = JSON.stringify(pin);
+function effectsFor(pin, obs = state.obs) {
+  const sig = JSON.stringify(pin) + (obs ? '|obs' : '|do');
   if (effCache.sig === sig) return effCache;
-  const base = readoutsFor(pin);
+  const base = readoutsFor(pin, obs);
   const map = {};
   for (const a of D.network.axes) {
     for (const p of a.positions) {
       const key = `${a.key}:${p[0]}`;
       if (pin[a.key] === p[0]) { map[key] = 0; continue; }   // set: it is the baseline
-      const v = readoutsFor({ ...pin, [a.key]: p[0] });
+      const v = readoutsFor({ ...pin, [a.key]: p[0] }, obs);
       let best = null, score = 0;
       EFF_READ.forEach((r, k) => {
         const d = v[k] - base[k], s = Math.abs(d) / r[3];
@@ -1296,8 +1390,12 @@ async function boot() {
   fetch(`data/countries-110m.json?v=${DATA_V}`).then((r) => (r.ok ? r.json() : null))
     .then((d) => { if (d) { D.topo = d; for (const s of SEC) s.sig = ''; redraw(); } })
     .catch(() => {});
+  // applyControl and recondition are on the debug surface because setting `state.pin`
+  // directly does NOT resample: the pin only reaches the sampler through this path.
+  // A verification that assigns state.pin and reads sheetState() silently measures the
+  // unpinned line and reports that nothing moved. That has happened twice.
   window.__FW = { state, D, SEC, sheetState: () => sheetState(SEC[0].draft), capPath, capAt, tracksJS, auditSweep,
-                  effectsFor, redraw };
+                  effectsFor, redraw, applyControl, recondition, readoutsFor };
   window.__FRAME_READY = true;
 }
 boot().catch((e) => {
