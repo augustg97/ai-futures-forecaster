@@ -5,8 +5,8 @@
 // wide, drawn at one fixed scale so lettering keeps the size it was drawn at and nothing has to
 // be zoomed. A section's millimetre space runs x 0 → 300 across and y 0 → H up from its foot.
 
-import { PEN, INK, PAPER } from './draft.js?v=20260816-2033';
-import { dial, manifold, strip, collectives, fmtNum } from './instruments.js?v=20260816-2033';
+import { PEN, INK, PAPER } from './draft.js?v=20260816-2043';
+import { dial, manifold, strip, collectives, fmtNum } from './instruments.js?v=20260816-2043';
 
 export const SHEET_W = 340;
 const PAD = 13;
@@ -511,8 +511,65 @@ function chartColumn(d, S, top) {
     d.region(`crisis:${c.id}`, it.cx - 3.2, it.cy - 3.2, 6.4, 6.4, c);
   }
 
+  // ── THE RECORD LAYER, ON ITS OWN SCALE ────────────────────────────────────
+  // The chart drew fourteen years of history as an unbroken black line with nothing on it.
+  // Plotted in situ the record is unreadable: 2012 to today is 15% of a 2012-2100 axis, so
+  // thirty-five steps fall inside 30 mm and every label overprints the next. The strip
+  // carries its OWN linear scale across the full width, and a bracket on the main axis says
+  // which window it magnifies — the same device the date index uses, for the same reason.
+  const LANE_INK = { capability: INK.blue, buildout: INK.green,
+                     capital: INK.warm, oversight: INK.red };
+  const rec = (S.record || []).filter((e) => e.y >= 2012 && e.y <= S.NOW);
+  const R0 = 2012, R1 = Math.ceil(S.NOW * 2) / 2;
+  const RX = (yy) => bx + ((yy - R0) / (R1 - R0)) * bw;
+  // the bracket: where this window sits on the axis above
+  const b0 = X(R0), b1 = X(S.NOW), evY = by - 12.0;
+  d.line([b0, by - 1.2], [b0, evY + 1.6], { weight: PEN.hairline, colour: INK.inkLight });
+  d.line([b1, by - 1.2], [b1, evY + 1.6], { weight: PEN.hairline, colour: INK.inkLight });
+  d.line([b0, evY + 1.6], [b1, evY + 1.6], { weight: PEN.hairline, colour: INK.inkLight });
+  d.line([b1, evY + 1.6], [bx + bw, evY - 1.0],
+         { weight: PEN.hairline, colour: INK.inkLight, dash: [1.2, 1.2], alpha: 0.7 });
+  d.line([b0, evY + 1.6], [bx, evY - 1.0],
+         { weight: PEN.hairline, colour: INK.inkLight, dash: [1.2, 1.2], alpha: 0.7 });
+  const sY = evY - 1.0;
+  d.line([bx, sY], [bx + bw, sY], { weight: PEN.thin, colour: INK.ink, alpha: 0.8 });
+  d.text([bx, sY - 8.6], `THE RECORD, ${R0} TO TODAY, ON ITS OWN SCALE · ` +
+         'CLICK A STEP FOR WHAT IT ESTABLISHED',
+         { size: 1.5, colour: INK.pencilLight, track: 0.08 });
+  for (let yy = R0; yy <= R1; yy += 2) {
+    d.line([RX(yy), sY], [RX(yy), sY - 1.6], { weight: PEN.hairline, colour: INK.inkLight });
+    d.text([RX(yy), sY - 4.6], String(yy),
+           { size: 1.4, align: 'center', face: 'figure', colour: INK.pencilLight });
+  }
+  // Labels alternate above and below the rule; at 35 steps in 152 mm one row overprints.
+  let lastHi = -99, lastLo = -99;
+  rec.forEach((e, i) => {
+    const ex = RX(e.y);
+    const idx = S.record.indexOf(e);
+    const hot = Math.abs(e.y - S.yr) < 0.6;
+    const c = LANE_INK[e.lane] || INK.pencil;
+    d.line([ex, sY], [ex, sY + (hot ? 4.0 : 2.4)],
+           { weight: hot ? PEN.medium : PEN.hairline, colour: c, alpha: hot ? 1 : 0.8 });
+    d.dot([ex, sY], hot ? 1.0 : 0.6, { colour: c });
+    const w2 = d.textWidth(e.k, { size: 1.4, track: 0.04 });
+    const up = i % 2 === 0;
+    const last = up ? lastHi : lastLo;
+    if (ex - last > w2 + 2.4) {
+      d.text([ex, sY + (up ? 5.2 : -2.6)], e.k,
+             { size: 1.4, track: 0.04, weight: hot ? 700 : 400,
+               colour: hot ? c : INK.pencilLight, pocket: true });
+      if (up) lastHi = ex + w2; else lastLo = ex + w2;
+    }
+    d.region(`rec:${idx}`, ex - 2.0, sY - 2.8, 4.0, 8.4, e);
+  });
+  // where the index is standing, inside the magnified window
+  if (S.yr >= R0 && S.yr <= R1) {
+    d.line([RX(S.yr), sY - 2.4], [RX(S.yr), sY + 7.6],
+           { weight: PEN.thin, colour: INK.blue, alpha: 0.85 });
+  }
+
   // the date index
-  const sy = by - 12;
+  const sy = by - 34;
   d.line([bx, sy], [bx + bw, sy], { weight: PEN.medium, colour: INK.ink });
   for (let yr = 2015; yr <= 2100; yr += 5) {
     d.line([X(yr), sy], [X(yr), sy - (yr % 20 === 0 ? 3.0 : 1.8)],
@@ -704,7 +761,7 @@ export function board(d, S, H) {
 // as blank paper at its foot in every state.
 board.height = (S) => {
   const left = 142.8 + S.engine.domains.length * 7.2;
-  const mid = CHART_H + 76.2 + (S.chartNote ? S.chartNote.h + 12 : 0);
+  const mid = CHART_H + 98.2 + (S.chartNote ? S.chartNote.h + 12 : 0);
   const n = (S.network.axes.find((q) => q.key === S.ctlAxis) || S.network.axes[0])
     .positions.length;
   const right = 105 + n * (CBTN_H + 2.2) + (S.openNote ? S.openNote.h + 19 : 0);

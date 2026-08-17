@@ -5,12 +5,13 @@
 // on that instrument. It reads the same emitted data and implements the same functions against
 // the same shipped constants (`engine.json`), so the two surfaces cannot drift apart.
 
-import { Draft, PEN, INK, paperTileURL } from './draft.js?v=20260816-2033';
+import { Draft, PEN, INK, paperTileURL } from './draft.js?v=20260816-2043';
 import { SECTIONS, SHEET_W, TABS, CHART, COL, CTL_NOTE_W, balance,
-         proseColumns, measureSections, SHEET_CW } from './sections.js?v=20260816-2033';
-import { column, fmtNum } from './instruments.js?v=20260816-2033';
-import { describe, headline } from './narrative.js?v=20260816-2033';
-import { chooseFigures } from './figures.js?v=20260816-2033';
+         proseColumns, measureSections, SHEET_CW } from './sections.js?v=20260816-2043';
+import { column, fmtNum } from './instruments.js?v=20260816-2043';
+import { describe, headline } from './narrative.js?v=20260816-2043';
+import { describeRecord, headlineRecord, RECORD, recordAt, whenOf } from './record.js?v=20260816-2043';
+import { chooseFigures } from './figures.js?v=20260816-2043';
 
 // One build number, injected into index.html at ship time, versions BOTH the data fetches and
 // (via the build's import rewrite) every module. A fresh app.js against a stale draft.js is the
@@ -319,6 +320,19 @@ function selectionNotes() {
     return [{ h: `${p[0]} · ${p[1]}`, p: [p[4] || '', `Weight today: ${((m[a.key] || {})[p[0]] * 100 || 0).toFixed(1)}%.`] },
             { h: 'On this axis', p: [a.desc || ''] },
             { h: 'Grounding', p: [(p[3] || []).join(' · ')] }];
+  }
+  if (kind === 'rec') {
+    const e = RECORD[+rest[0]];
+    if (!e) return null;
+    const later = RECORD.filter((q) => q.y > e.y).length;
+    return [{ h: `${e.k} · ${whenOf(e)}`, p: [e.t] },
+            { h: 'What it established', p: [e.m] },
+            { h: 'Where it sits', p: [
+              `${later} recorded step${later === 1 ? '' : 's'} on this sheet fall after it. ` +
+              `The capability index stood at ${trunkCap(e.y).toFixed(2)} when it happened, ` +
+              `against ${trunkCap(NOW_Y).toFixed(2)} today.`,
+              'The record is what the forecast is fitted to: every prior on the controls is ' +
+              'a reading of how these steps arrived, and how fast.'] }];
   }
   if (kind === 'dom') {
     const dm = D.engine.domains[+rest[0]];
@@ -935,7 +949,12 @@ function sheetState(measure) {
   const idx = Math.max(0, Math.min(tr.year.length - 1, Math.floor(state.yr) - D.engine.y0));
   const cap = state.yr < NOW_Y ? trunkCap(state.yr) : tr.cap[idx];
   const eff = effectsFor(state.pin);
-  const paras = describe(wl, state.yr, tr, D.engine.y0, trunkCap);
+  // Left of TODAY is record, not forecast. The passage described a past year with the
+  // forecast machinery — a sampled world-line, in the present tense, for a year already
+  // decided — so 2017 read as a prediction about 2017. A recorded year gets what happened.
+  const isRecord = state.yr < D.engine.y0;
+  const paras = isRecord ? describeRecord(state.yr, trunkCap)
+                         : describe(wl, state.yr, tr, D.engine.y0, trunkCap);
   const S = {
     yr: state.yr, NOW: NOW_Y, TRUNK, pin: state.pin, obs: state.obs, build: DATA_V,
     engine: D.engine, network: D.network, crisis: D.crisis, grounding: D.grounding,
@@ -954,7 +973,10 @@ function sheetState(measure) {
     altOrPinned: !!(cond || state.alt !== null),
     lineLabel: ['T', 'A', 'C', 'D', 'S', 'P', 'E'].map((k) => wl[k]).join('·'),
     effect: (k, p) => (eff.map[`${k}:${p}`] ?? null),
-    headline: headline(wl, state.yr, tr, D.engine.y0),
+    isRecord,
+    headline: isRecord ? headlineRecord(state.yr, trunkCap)
+                       : headline(wl, state.yr, tr, D.engine.y0),
+    record: RECORD, recordAt,
     prose: proseColumns(measure, paras),
     headlineH: 0,   // filled below, once the headline string exists
     figures: chooseFigures(wl, state.yr, cap),
@@ -970,7 +992,7 @@ function sheetState(measure) {
   const notes = selectionNotes();
   if (notes) {
     const kind = state.selected.split(':')[0];
-    const onChart = kind === 'mile' || kind === 'crisis';
+    const onChart = kind === 'mile' || kind === 'crisis' || kind === 'rec';
     const inPanel = kind === 'axis' || kind === 'pos';
     // The panel letters the entry's name at 2.4 mm; repeating it as the first column heading
     // says the same thing twice in two sizes.
