@@ -5,13 +5,13 @@
 // on that instrument. It reads the same emitted data and implements the same functions against
 // the same shipped constants (`engine.json`), so the two surfaces cannot drift apart.
 
-import { Draft, PEN, INK, paperTileURL } from './draft.js?v=20260816-2326';
+import { Draft, PEN, INK, paperTileURL } from './draft.js?v=20260817-0020';
 import { SECTIONS, SHEET_W, TABS, CHART, COL, CTL_NOTE_W, balance,
-         proseColumns, measureSections, SHEET_CW } from './sections.js?v=20260816-2326';
-import { column, fmtNum } from './instruments.js?v=20260816-2326';
-import { describe, headline } from './narrative.js?v=20260816-2326';
-import { describeRecord, headlineRecord, RECORD, recordAt, whenOf } from './record.js?v=20260816-2326';
-import { chooseFigures } from './figures.js?v=20260816-2326';
+         proseColumns, measureSections, SHEET_CW } from './sections.js?v=20260817-0020';
+import { column, fmtNum } from './instruments.js?v=20260817-0020';
+import { describe, headline } from './narrative.js?v=20260817-0020';
+import { describeRecord, headlineRecord, RECORD, recordAt, whenOf } from './record.js?v=20260817-0020';
+import { chooseFigures } from './figures.js?v=20260817-0020';
 
 // One build number, injected into index.html at ship time, versions BOTH the data fetches and
 // (via the build's import rewrite) every module. A fresh app.js against a stale draft.js is the
@@ -133,6 +133,40 @@ function instantiateJS(wl, seed) {
   evs.sort((a, b) => a.year - b.year);
   return evs;
 }
+// ── the sampler ──────────────────────────────────────────────────────────────
+// THIS CLIENT DROPPED 10 OF ITS 25 CONDITIONAL EDGES, SILENTLY, UNTIL 2026-08-17.
+// A single ordered pass over the declared axis order T, A, C, D, S, P, E applied an edge
+// only when `Object.values(wl).includes(par)` — that is, only when the parent axis had
+// already been drawn. Every edge whose parent came LATER in the order could never fire:
+// all four economy-to-labour edges, all three supply-to-tempo edges, S|E3, S|E4 and P|E4.
+// The unconditioned view was never affected, because the Atlas emits its own marginals and
+// bands from a Python sampler repaired at r3. Every CONDITIONED view was: each time a reader
+// pinned a control, `recondition()` redrew 3,000 world-lines with those ten edges absent, and
+// so did the figure under every button. This is the r3 defect surviving in the port, and it
+// looks exactly like a condition that happened not to apply.
+//
+// A Gibbs sweep re-draws each variable against ALL the others, so an edge fires whichever
+// order its endpoints happen to sit in.
+const GIBBS_SWEEPS = 4;
+function drawFrom(w, u) {
+  const tot = Object.values(w).reduce((x, y) => x + y, 0);
+  let r = u * tot, chosen = null;
+  for (const pos in w) { r -= w[pos]; if (r <= 0) { chosen = pos; break; } }
+  return chosen || Object.keys(w)[0];
+}
+// The child's weights given every OTHER variable's current position. A variable never
+// conditions on itself, so its own position is withheld from the parent set.
+function condWeights(axis, wl, weights) {
+  const k = axis.key, w = {};
+  for (const p of axis.positions) w[p[0]] = weights[k][p[0]];
+  const cond = D.network.conditionals[k] || {};
+  for (const par in cond) {
+    let held = false;
+    for (const q in wl) { if (q !== k && wl[q] === par) { held = true; break; } }
+    if (held) for (const pos in cond[par]) if (w[pos] !== undefined) w[pos] *= cond[par][pos];
+  }
+  return w;
+}
 function sampleOne(rng, weights, pinned) {
   const wl = {};
   for (const a of D.network.axes) {
@@ -140,16 +174,13 @@ function sampleOne(rng, weights, pinned) {
     if (pinned[k]) { wl[k] = pinned[k]; continue; }
     const w = {};
     for (const p of a.positions) w[p[0]] = weights[k][p[0]];
-    const cond = D.network.conditionals[k] || {};
-    for (const par in cond) {
-      if (Object.values(wl).includes(par)) {
-        for (const pos in cond[par]) if (w[pos] !== undefined) w[pos] *= cond[par][pos];
-      }
+    wl[k] = drawFrom(w, rng());
+  }
+  for (let sweep = 0; sweep < GIBBS_SWEEPS; sweep++) {
+    for (const a of D.network.axes) {
+      if (pinned[a.key]) continue;
+      wl[a.key] = drawFrom(condWeights(a, wl, weights), rng());
     }
-    const tot = Object.values(w).reduce((x, y) => x + y, 0);
-    let r = rng() * tot, chosen = null;
-    for (const pos in w) { r -= w[pos]; if (r <= 0) { chosen = pos; break; } }
-    wl[k] = chosen || Object.keys(w)[0];
   }
   return wl;
 }
@@ -803,29 +834,32 @@ function effUniforms() {
   EFF_U = [];
   for (let n = 0; n < EFF_N; n++) {
     const row = [];
-    for (let j = 0; j < D.network.axes.length; j++) row.push(rng());
+    const per = D.network.axes.length * (1 + GIBBS_SWEEPS);
+    for (let j = 0; j < per; j++) row.push(rng());
     EFF_U.push(row);
   }
   return EFF_U;
 }
+// The effect measure runs the same Gibbs sweeps, drawing from the fixed uniform matrix so
+// common random numbers still hold: the only difference between the baseline and a test is
+// the setting. The row carries one uniform per axis per sweep, plus the seeding draw.
 function sampleFixed(us, weights, pinned) {
   const wl = {};
-  D.network.axes.forEach((a, j) => {
+  const axes = D.network.axes;
+  axes.forEach((a, j) => {
     const k = a.key;
     if (pinned[k]) { wl[k] = pinned[k]; return; }
     const w = {};
     for (const p of a.positions) w[p[0]] = weights[k][p[0]];
-    const cd = D.network.conditionals[k] || {};
-    for (const par in cd) {
-      if (Object.values(wl).includes(par)) {
-        for (const pos in cd[par]) if (w[pos] !== undefined) w[pos] *= cd[par][pos];
-      }
-    }
-    const tot = Object.values(w).reduce((x, y) => x + y, 0);
-    let r = us[j] * tot, chosen = null;
-    for (const pos in w) { r -= w[pos]; if (r <= 0) { chosen = pos; break; } }
-    wl[k] = chosen || Object.keys(w)[0];
+    wl[k] = drawFrom(w, us[j]);
   });
+  for (let sweep = 0; sweep < GIBBS_SWEEPS; sweep++) {
+    axes.forEach((a, j) => {
+      if (pinned[a.key]) return;
+      const u = us[(sweep + 1) * axes.length + j];
+      wl[a.key] = drawFrom(condWeights(a, wl, weights), u === undefined ? us[j] : u);
+    });
+  }
   return wl;
 }
 // THE FIGURE UNDER A BUTTON HAS TO ANSWER THE QUESTION THE DOCUMENT IS ASKING.
