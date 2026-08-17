@@ -5,9 +5,9 @@
 // wide, drawn at one fixed scale so lettering keeps the size it was drawn at and nothing has to
 // be zoomed. A section's millimetre space runs x 0 → 300 across and y 0 → H up from its foot.
 
-import { PEN, INK, PAPER } from './draft.js?v=20260816-1726';
-import { dial, manifold, strip, collectives, fmtNum } from './instruments.js?v=20260816-1726';
-import { drawFigure } from './figures.js?v=20260816-1726';
+import { PEN, INK, PAPER } from './draft.js?v=20260816-1729';
+import { dial, manifold, strip, collectives, fmtNum } from './instruments.js?v=20260816-1729';
+import { drawFigure } from './figures.js?v=20260816-1729';
 
 export const SHEET_W = 340;
 const PAD = 13;
@@ -1093,7 +1093,7 @@ export function sources(d, S, H) {
      'engine, and changing one is a decision.'],
     ['MEASUREMENT CAVEATS',
      'The widely cited finding that 95% of enterprise AI pilots show no profit impact measures ' +
-     'what the buyer got back, and not what the seller sold; the same survey found about 90% of ' +
+     'what the buyer booked as profit; the same survey found about 90% of ' +
      'workers using personal AI tools at work against 40% of firms with official ' +
      'subscriptions. Second, coding benchmarks are contaminated: about a third of successful ' +
      'patches on the most-cited one involve the solution appearing in the problem text, and ' +

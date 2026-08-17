@@ -38,8 +38,8 @@ const RUNG = [
   [1.6, {
     near: 'AI agents run for a few minutes before losing the thread. They forget what they ' +
           'were doing and take confident wrong turns, so nobody leaves them unattended.',
-    mid: 'Agents work in short supervised bursts. Reliability is what limits them, and not ' +
-         'knowledge: they know how to do the task and fail to finish it.',
+    mid: 'Agents work in short supervised bursts. Reliability is what limits them: they ' +
+         'know how to do the task and fail to finish it.',
     long: 'Autonomy stopped improving early. Systems still work in short stretches and hand ' +
           'back to a person.',
     far: 'Agents never held a task longer than an afternoon. Every workflow built on ' +
@@ -59,7 +59,7 @@ const RUNG = [
     near: 'AI systems write better code than any human engineer. The first visible effect is ' +
           'speed: everything that depends on software ships faster.',
     mid: 'Machines are the best software engineers in the world. Every field that ships code ' +
-         'now moves at the speed of review, and no longer at the speed of writing.',
+         'now moves at the speed of review, which is the step still done by people.',
     long: 'Superhuman coding is a commodity input, bought by the hour.',
     far: 'Programming stopped being paid human work decades ago. What survives of the ' +
          'trade is writing specifications and reviewing what comes back.' }],
@@ -137,7 +137,7 @@ export const FRAG = {
               'later, with the institutions built along the way.',
         far: 'The gradual path reached the same capability decades later, with retraining ' +
              'programmes, liability rules and professional standards written before they ' +
-             'were needed instead of after.' },
+             'all written ahead of the need.' },
   T4: { near: 'No superintelligence appears in this window. Data limits, deployment friction ' +
               'or physical constraints hold capability below the top of the ladder.',
         mid: 'Capability keeps improving and the discontinuity never comes. AI is a large ' +
@@ -273,7 +273,7 @@ export const FRAG = {
              'liability exposure and the cost of checking output hold use well below ' +
              'capability, and none of those is a technical problem.' },
 
-  S1: { near: 'The binding step is advanced packaging, not wafer fabrication. All of TSMC\'s ' +
+  S1: { near: 'The binding step is advanced packaging, downstream of the wafer. All of TSMC\'s ' +
               '2026 CoWoS capacity is allocated, one buyer holds the majority through 2027, ' +
               'and there is none on US soil — so a chip fabricated in Arizona ships to Taiwan ' +
               'to be packaged.',
@@ -308,7 +308,7 @@ export const FRAG = {
   P1: { near: 'Restriction has majority support and it crosses both coalitions: 57% oppose ' +
               'federal preemption of state AI law against 19% in favour, including 43% of ' +
               'Trump voters and 70% of Harris voters. The split is public against industry ' +
-              'and government, not left against right.',
+              'and government, and it crosses both parties.',
         mid: 'Anti-AI parties hold power. Restrictions and procurement bans are law in ' +
              'several large economies.',
         long: 'The opposition won its arguments and wrote them into statute. What is ' +
@@ -335,8 +335,7 @@ export const FRAG = {
 
   E1: { near: 'AI revenue is growing fast enough to cover the capital being spent on it, and ' +
               'the capital keeps arriving.',
-        mid: 'The boom sustained itself: earnings caught up with the build-out instead of ' +
-             'always trailing it.',
+        mid: 'The boom sustained itself: earnings caught up with the build-out.',
         long: 'The expansion ran for years, and the capacity it built is still in service.',
         far: 'The compute carrying current workloads was financed in one long expansion, ' +
              'by owners who paid to build it and kept it.' },
@@ -495,7 +494,7 @@ const CROSS = {
   'P1|D2': 'Opposition is strongest in the regions whose industries automated, and weak ' +
            'where work has not changed.',
   'P1|D3': 'The opposition is growing with no measurable employment effect behind it, which ' +
-           'means it is about status and control, and not about jobs.',
+           'means the grievance is about status and control.',
   'P2|D1': 'Approval is holding through significant job losses, which is either genuine ' +
            'acceptance or a lag before the politics catches up.',
   'P2|D2': 'Acceptance tracks use, and use is uneven, so approval differs sharply by ' +
@@ -568,7 +567,8 @@ const REV_BANDS = [
   [4, 'That is comparable to the global automotive industry.'],
   [1, 'That is larger than worldwide semiconductor sales in 2026.'],
   [0.2, 'That is a large software business and a small share of the economy.'],
-  [0, 'The capital being spent is a bet on the forecast, and not on current sales.'],
+  [0, 'The capital being spent is a bet on the forecast, placed years ahead of the revenue ' +
+      'that would justify it.'],
 ];
 const LAW_BANDS = [
   [600, 'About six hundred AI statutes and regulations are in force worldwide, and firms ' +
@@ -586,12 +586,12 @@ function jobsClause(v) {
   if (v > -8) return `Employment is ${p}% below 2026 — visible in national statistics, ` +
                      'arguable in any single industry.';
   if (v > -18) return `Employment is ${p}% below 2026, a fall comparable to a deep recession, ` +
-                      'sustained for years, and not for quarters.';
+                      'sustained across years.';
   return `Employment is ${p}% below 2026, larger than any peacetime fall on record.`;
 }
 function apprClause(v) {
   if (v >= 55) return 'That is a majority, and it gives governments room to act.';
-  if (v >= 40) return 'That is a plurality: enough to govern with, and not enough to rely on.';
+  if (v >= 40) return 'That is a plurality: enough to govern with, and thin enough to lose.';
   if (v >= 25) return 'That is a minority, so each new deployment is a political decision.';
   return 'Public consent is now the binding limit on what gets deployed.';
 }

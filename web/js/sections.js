@@ -1093,7 +1093,7 @@ export function sources(d, S, H) {
      'engine, and changing one is a decision.'],
     ['MEASUREMENT CAVEATS',
      'The widely cited finding that 95% of enterprise AI pilots show no profit impact measures ' +
-     'what the buyer got back, and not what the seller sold; the same survey found about 90% of ' +
+     'what the buyer booked as profit; the same survey found about 90% of ' +
      'workers using personal AI tools at work against 40% of firms with official ' +
      'subscriptions. Second, coding benchmarks are contaminated: about a third of successful ' +
      'patches on the most-cited one involve the solution appearing in the problem text, and ' +
