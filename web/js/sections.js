@@ -52,8 +52,21 @@ export function measureSections(d, secs, colW, size = 2.0) {
 const BULLET = '\u00b7\u2002';
 const IND = 3.0;        // the bullet's hanging indent, in sheet millimetres
 const HEAD_SIZE = 1.7;  // the subheading's cap height
-const HEAD_LEAD = 1.3;
+const HEAD_LEAD = 1.28;
 const SUB_SIZE = 1.5;   // the group heading, a step under the section heading
+// EVERY VERTICAL GAP IN THE PASSAGE IS A MULTIPLE OF ONE UNIT, and measure and draw read the
+// same numbers. They had been written out twice — 1.1 between bullets here, 1.0 + 0.6 around a
+// group heading there, 2.2 after a section heading, 3.6 between paragraphs — four figures with
+// no relation to each other, in two places that could disagree without anything noticing.
+const SP_U = 0.9;
+export const PROSE_SP = {
+  bullet: SP_U,             // air between two bullets
+  subOver: SP_U * 1.35,     // above a group heading, which belongs to the bullets below it
+  subUnder: SP_U * 0.55,
+  headUnder: SP_U * 1.9,    // under the section heading's rule
+  para: SP_U * 3.4,         // between paragraphs
+  lead: 1.34,               // inside a wrapped bullet, tighter than running prose
+};
 export function paraLines(d, p, colW, size = 2.0) {
   const head = String(p.lead || '').replace(/[.:]\s*$/, '').toUpperCase();
   const body = String(p.text || '');
@@ -100,8 +113,9 @@ export function measureProse(d, paras, colW, size = 2.0) {
     const bullets = rows.filter((r) => !r.head).length;
     const subs = rows.filter((r) => r.head === 2).length;
     h += headLines * HEAD_SIZE * HEAD_LEAD + subLines * SUB_SIZE * HEAD_LEAD +
-         bodyLines * size * LEAD + bullets * 1.1 + subs * 1.6 +
-         (headLines ? 2.2 : 0) + 3.6;
+         bodyLines * size * PROSE_SP.lead + bullets * PROSE_SP.bullet +
+         subs * (PROSE_SP.subOver + PROSE_SP.subUnder) +
+         (headLines ? PROSE_SP.headUnder : 0) + PROSE_SP.para;
   }
   return h;
 }
@@ -1007,11 +1021,11 @@ export function readout(d, S, H) {
       const { rows } = paraLines(d, para, PROSE_COL, 2.0);
       rows.forEach((r, ri) => {
         if (r.head === 2) {
-          cy -= 1.0;
+          cy -= PROSE_SP.subOver;
           cy -= d.textBlock([cx + IND, cy], r.t, PROSE_COL - IND,
                             { size: SUB_SIZE, lead: HEAD_LEAD, weight: 700, track: 0.16,
                               colour: INK.pencilLight });
-          cy -= 0.6;
+          cy -= PROSE_SP.subUnder;
         } else if (r.head) {
           // A SUBHEADING HAS TO LOOK LIKE ONE. Bold body type at body size read as another
           // sentence; this is smaller, letter-spaced, in full ink, over a hairline, which is
@@ -1021,14 +1035,14 @@ export function readout(d, S, H) {
                               track: 0.16, colour: INK.ink });
           d.line([cx, cy + 1.0], [cx + PROSE_COL, cy + 1.0],
                  { weight: PEN.hairline, colour: INK.inkLight, alpha: 0.8 });
-          cy -= 2.2;
+          cy -= PROSE_SP.headUnder;
         } else {
           cy -= d.textBlock([cx + IND, cy], r.t, PROSE_COL - IND,
-                            { size: 2.0, lead: LEAD, colour: INK.pencil });
-          cy -= 1.1;              // air between bullets, so they read as separate claims
+                            { size: 2.0, lead: PROSE_SP.lead, colour: INK.pencil });
+          cy -= PROSE_SP.bullet;  // air between bullets, so they read as separate claims
         }
       });
-      cy -= 3.6;
+      cy -= PROSE_SP.para;
     }
   });
   for (let i = 1; i < PROSE_N; i++) {
