@@ -3184,7 +3184,7 @@ export function headline(wl, year, tracks, engineY0) {
     () => `In ${yr}, AI is ${rung}. ${gov}. ${eco}. ${ten}.`,
     () => `By ${yr}, AI is ${rung}, and ${lower(gov)}. ${eco}, and ${lower(ten)}.`,
     () => `${gov}. By ${yr}, AI is ${rung}, and ${lower(eco)}. ${ten}.`,
-    () => `${ten} That is ${yr}: AI is ${rung}, ${lower(gov)}, and ${lower(eco)}.`,
+    () => `${ten}. That is ${yr}: AI is ${rung}, ${lower(gov)}, and ${lower(eco)}.`,
     () => `AI is ${rung} in ${yr}. ${eco}. ${gov}. ${ten}.`,
     () => `In ${yr}, ${lower(gov)}, and ${lower(eco)}. AI is ${rung}. ${ten}.`,
   ];
