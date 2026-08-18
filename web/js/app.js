@@ -1192,9 +1192,12 @@ function hoverLabel(hit) {
     if (rest[0] === 'pin') {
       const a = D.network.axes.find((z) => z.key === rest[1]);
       const p = a && a.positions.find((q) => q[0] === rest[2]);
+      // effectsFor stores {label, text, d} or 0 or null, never a bare number. This called
+      // toFixed on the object and threw on every pointer move over a set-variable button —
+      // latent until r5's edges gave enough settings a measurable effect to hover over.
       const e = effCache.map[`${rest[1]}:${rest[2]}`];
-      return p ? ['SET THIS VARIABLE', p[1] +
-        (e ? ` — ${e > 0 ? '+' : ''}${e.toFixed(2)} on the 2040 median` : '')] : null;
+      const eff = e && e.text ? ` — ${e.text} on ${e.label.toLowerCase()} by 2040` : '';
+      return p ? ['SET THIS VARIABLE', p[1] + eff] : null;
     }
     if (rest[0] === 'mode') return ['CONDITIONING MODE', rest[1] === 'obs'
       ? 'reweight everything else in light of the setting'

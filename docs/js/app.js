@@ -5,13 +5,13 @@
 // on that instrument. It reads the same emitted data and implements the same functions against
 // the same shipped constants (`engine.json`), so the two surfaces cannot drift apart.
 
-import { Draft, PEN, INK, paperTileURL } from './draft.js?v=20260817-2307';
+import { Draft, PEN, INK, paperTileURL } from './draft.js?v=20260817-2309';
 import { SECTIONS, SHEET_W, TABS, CHART, COL, CTL_NOTE_W, balance,
-         proseColumns, measureSections, SHEET_CW } from './sections.js?v=20260817-2307';
-import { column, fmtNum } from './instruments.js?v=20260817-2307';
-import { describe, headline } from './narrative.js?v=20260817-2307';
-import { describeRecord, headlineRecord, RECORD, recordAt, whenOf } from './record.js?v=20260817-2307';
-import { chooseFigures } from './figures.js?v=20260817-2307';
+         proseColumns, measureSections, SHEET_CW } from './sections.js?v=20260817-2309';
+import { column, fmtNum } from './instruments.js?v=20260817-2309';
+import { describe, headline } from './narrative.js?v=20260817-2309';
+import { describeRecord, headlineRecord, RECORD, recordAt, whenOf } from './record.js?v=20260817-2309';
+import { chooseFigures } from './figures.js?v=20260817-2309';
 
 // One build number, injected into index.html at ship time, versions BOTH the data fetches and
 // (via the build's import rewrite) every module. A fresh app.js against a stale draft.js is the
@@ -1192,9 +1192,12 @@ function hoverLabel(hit) {
     if (rest[0] === 'pin') {
       const a = D.network.axes.find((z) => z.key === rest[1]);
       const p = a && a.positions.find((q) => q[0] === rest[2]);
+      // effectsFor stores {label, text, d} or 0 or null, never a bare number. This called
+      // toFixed on the object and threw on every pointer move over a set-variable button —
+      // latent until r5's edges gave enough settings a measurable effect to hover over.
       const e = effCache.map[`${rest[1]}:${rest[2]}`];
-      return p ? ['SET THIS VARIABLE', p[1] +
-        (e ? ` — ${e > 0 ? '+' : ''}${e.toFixed(2)} on the 2040 median` : '')] : null;
+      const eff = e && e.text ? ` — ${e.text} on ${e.label.toLowerCase()} by 2040` : '';
+      return p ? ['SET THIS VARIABLE', p[1] + eff] : null;
     }
     if (rest[0] === 'mode') return ['CONDITIONING MODE', rest[1] === 'obs'
       ? 'reweight everything else in light of the setting'
