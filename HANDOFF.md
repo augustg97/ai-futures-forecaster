@@ -1,15 +1,13 @@
 # AI Futures Forecaster — live state
 
-> **HELD at r4 since 2026-08-17.** The parent rebuilt its registry to `r5-2026-08-17` — 7 axes and
-> 26 positions became 9 and 49, two axes are new (K takeoff shape, R regulatory architecture), and
-> **every position that kept its letter changed its meaning**, four of them to roughly the opposite
-> (P1 backlash → acquiescence, D1 shock → delivery stalls, E2 correction → margin squeeze, A3
-> tractable → catch buys pause). The authored layer is keyed to r4, so the build now refuses to
-> publish (exit 4) and the sheet keeps serving the last coherent drawing. The re-key, and the
-> staged r5 material that feeds it, are in
-> [`Research/nightly-2026-08-17.md`](Research/nightly-2026-08-17.md).
+The parent rebuilt its registry twice on 2026-08-17 — `r5-2026-08-17`, then `r6-2026-08-18`.
+Seven axes and 26 positions became **nine and 49**; two axes are new (**K** takeoff shape, **R**
+regulatory architecture); and every position that kept its letter changed its meaning, four of
+them to roughly the opposite. The authored layer was re-keyed against r5 (`1ed5580`) and r6
+(`88609a9`) and the sheet publishes again. **The 26 researched figures in `app.js` were not
+re-keyed** — see the finding below.
 
-**Live:** https://augustg97.github.io/ai-futures-forecaster/ · build `20260817-0020` (registry r4)
+**Live:** https://augustg97.github.io/ai-futures-forecaster/ · build `20260818-1130` (registry r6-2026-08-18)
 **Local:** `python3 build/serve.py 8154` (serves `web/`, never `docs/`) · working
 directory `~/Forecast Works`, repo `augustg97/ai-futures-forecaster`
 
@@ -162,6 +160,26 @@ sizes three of the four missing edges with multipliers and shows the fourth cann
   the size of what it cannot move.
 - **`P|C`** — cannot be sized. Gilens & Page and Bashir disagree about exactly this quantity,
   so the edge stays out and the sheet says why.
+
+## The researched figures are keyed to r4 letters (2026-08-18)
+
+`RESEARCHED` and `PRIOR_R2` in `app.js` hold the evidence programme's 26 figures, researched
+against the **r4** meanings. `recommend()` looks them up by letter and `sections.js` letters each
+row with the **live r6 name** for that letter. Twenty-two rows draw; **thirteen attach a figure to a
+letter that now means something else**, four of them roughly the opposite, and P1/P2 are a straight
+transposition — the sheet says the programme recommended raising *acquiescence through use* to
+0.380 when it recommended raising *populist backlash*. The heading still reads `APPLIED 13 AUG (r3)
+AND 17 AUG (r4)`.
+
+The crisis board has the same shape from the parent's side: `no-sc-window` draws **18% NO
+SUPERINTELLIGENCE THIS WINDOW** off `T.T4`, which under r6 means arrival in 2037 to 2050, and
+`deal-window` draws a dated transparency deal off C3, *Declaratory accord*. The band-keyed item
+`researcher-by-2035` came through untouched, because a measured quantity survives a rebuild.
+
+**A coverage declaration protects only what it declares.** It caught the authored strings through
+two rebuilds in one night and did it correctly; the 26 figures were never in it. Re-keying them is
+held — three have no clean destination and belong withdrawn rather than moved to the
+nearest-looking cell. See [`Research/nightly-2026-08-18.md`](Research/nightly-2026-08-18.md).
 
 ## Open
 
