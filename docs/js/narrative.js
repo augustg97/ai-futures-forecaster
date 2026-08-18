@@ -3010,7 +3010,14 @@ const ECON_MOD = {
 function econClause(wl, span) {
   const base = String(ECON[wl.E][span] || '').replace(/\.\s*$/, '');
   for (const k of ['S', 'D', 'P', 'C']) {
-    const m = ECON_MOD[`${wl.E}|${wl[k]}`];
+    // A MODIFIER GROUNDED IN 2026 HAS NOTHING TO SAY IN 2072. ECON_MOD is written against the
+    // record — $725 billion of guided capital expenditure, a 35,000-accelerator authorisation,
+    // a named tariff — and it carries no span of its own, so the same clause appeared beside a
+    // base clause that had moved four spans on. Past the mid span the second variable speaks
+    // through its own span text.
+    const m = (span === 'near' || span === 'mid')
+      ? ECON_MOD[`${wl.E}|${wl[k]}`]
+      : (HEADCL[wl[k]] && HEADCL[wl[k]][span]);
     if (m) {
       const tail = String(m).replace(/\.\s*$/, '');
       // A BASE THAT IS ALREADY COMPOUND TAKES THE MODIFIER AS A NEW SENTENCE. Joining with
