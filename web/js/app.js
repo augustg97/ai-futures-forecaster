@@ -383,7 +383,7 @@ function axisNotes(a) {
       inter.push(`This axis shapes ${child}: ${D.network.cond_stories[key]}`);
     }
   }
-  if (inter.length) secs.push({ h: 'How this axis interacts', p: inter });
+  if (inter.length) secs.push({ h: 'Interactions', p: inter });
   // A sub-axis carrying `origin` was added by the parent's weekly schema review, not by the
   // draughtsman. It is uncited and unapproved, so it is not drawn as though it were authored.
   const subs = a.subaxes || [];
@@ -432,8 +432,8 @@ function selectionNotes() {
     if (!e) return null;
     const later = RECORD.filter((q) => q.y > e.y).length;
     return [{ h: `${e.k} · ${whenOf(e)}`, p: [e.t] },
-            { h: 'What it established', p: [e.m] },
-            { h: 'Where it sits', p: [
+            { h: 'Consequence', p: [e.m] },
+            { h: 'Position in the record', p: [
               `${later} recorded step${later === 1 ? '' : 's'} on this sheet fall after it. ` +
               `The capability index stood at ${trunkCap(e.y).toFixed(2)} when it happened, ` +
               `against ${trunkCap(NOW_Y).toFixed(2)} today.`,

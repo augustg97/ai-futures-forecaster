@@ -5,14 +5,14 @@
 // on that instrument. It reads the same emitted data and implements the same functions against
 // the same shipped constants (`engine.json`), so the two surfaces cannot drift apart.
 
-import { Draft, PEN, INK, paperTileURL } from './draft.js?v=20260818-0112';
+import { Draft, PEN, INK, paperTileURL } from './draft.js?v=20260818-0129';
 import { SECTIONS, SHEET_W, TABS, CHART, COL, CTL_NOTE_W, balance,
-         proseColumns, measureSections, SHEET_CW } from './sections.js?v=20260818-0112';
-import { column, fmtNum } from './instruments.js?v=20260818-0112';
-import { describe, headline } from './narrative.js?v=20260818-0112';
-import { describeRecord, headlineRecord, RECORD, recordAt, whenOf } from './record.js?v=20260818-0112';
-import { LONGFORM } from './narrative.js?v=20260818-0112';
-import { chooseFigures } from './figures.js?v=20260818-0112';
+         proseColumns, measureSections, SHEET_CW } from './sections.js?v=20260818-0129';
+import { column, fmtNum } from './instruments.js?v=20260818-0129';
+import { describe, headline } from './narrative.js?v=20260818-0129';
+import { describeRecord, headlineRecord, RECORD, recordAt, whenOf } from './record.js?v=20260818-0129';
+import { LONGFORM } from './narrative.js?v=20260818-0129';
+import { chooseFigures } from './figures.js?v=20260818-0129';
 
 // One build number, injected into index.html at ship time, versions BOTH the data fetches and
 // (via the build's import rewrite) every module. A fresh app.js against a stale draft.js is the
@@ -383,7 +383,7 @@ function axisNotes(a) {
       inter.push(`This axis shapes ${child}: ${D.network.cond_stories[key]}`);
     }
   }
-  if (inter.length) secs.push({ h: 'How this axis interacts', p: inter });
+  if (inter.length) secs.push({ h: 'Interactions', p: inter });
   // A sub-axis carrying `origin` was added by the parent's weekly schema review, not by the
   // draughtsman. It is uncited and unapproved, so it is not drawn as though it were authored.
   const subs = a.subaxes || [];
@@ -432,8 +432,8 @@ function selectionNotes() {
     if (!e) return null;
     const later = RECORD.filter((q) => q.y > e.y).length;
     return [{ h: `${e.k} · ${whenOf(e)}`, p: [e.t] },
-            { h: 'What it established', p: [e.m] },
-            { h: 'Where it sits', p: [
+            { h: 'Consequence', p: [e.m] },
+            { h: 'Position in the record', p: [
               `${later} recorded step${later === 1 ? '' : 's'} on this sheet fall after it. ` +
               `The capability index stood at ${trunkCap(e.y).toFixed(2)} when it happened, ` +
               `against ${trunkCap(NOW_Y).toFixed(2)} today.`,

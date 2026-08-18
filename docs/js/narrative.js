@@ -2682,41 +2682,41 @@ export function describe(wl, year, tracks, engineY0, trunkCap = null) {
   const out = [];
 
   out.push(grouped('System capabilities.', [
-    ['What the systems do', [rungText(cap, span)]],
-    ['Where the index stands', [slopeClause(cap, prev),
+    ['Current capability', [rungText(cap, span)]],
+    ['Index and rate', [slopeClause(cap, prev),
       `Frontier systems sit at ${cap.toFixed(2)} on the milestone ladder, where 3.0 is a ` +
       'machine that writes better code than any human engineer and 4.0 is one that runs its ' +
       'own research.']],
-    ['What is still ahead', [crossingClause(tracks, year, engineY0), distanceClause(year, span)]],
+    ['Crossings ahead', [crossingClause(tracks, year, engineY0), distanceClause(year, span)]],
   ]));
 
   out.push(grouped('Build-out and governance.', [
-    ['What is settled', [FRAG[wl.C][span]]],
-    ['What supply does to it', [X('C', 'S'), FRAG[wl.S][span]]],
-    ['Measured now', [
+    ['Settlement between states', [FRAG[wl.C][span]]],
+    ['Supply conditions', [X('C', 'S'), FRAG[wl.S][span]]],
+    ['Measured quantities', [
       `Installed AI compute is ${Math.round(tracks.gw[i]).toLocaleString('en-US')} GW.`,
       band(tracks.gw[i], GW_BANDS), rateClause(tracks, i, 'gw', 'Capacity')]],
-    ['On the calendar', [markerClause(year, 'law'), markerClause(year, 'supply')]],
+    ['Dated commitments', [markerClause(year, 'law'), markerClause(year, 'supply')]],
   ]));
 
   out.push(grouped('Capital and employment.', [
-    ['Where the money stands', [FRAG[wl.E][span], X('E', 'S')]],
-    ['What it does to work', [X('E', 'D'), FRAG[wl.D][span]]],
-    ['Measured now', [
+    ['Capital position', [FRAG[wl.E][span], X('E', 'S')]],
+    ['Labour effects', [X('E', 'D'), FRAG[wl.D][span]]],
+    ['Measured quantities', [
       `AI revenue is ${money(tracks.rev[i])} a year.`, band(tracks.rev[i], REV_BANDS),
       rateClause(tracks, i, 'rev', 'Revenue'), jobsClause(tracks.jobs[i]),
       rateClause(tracks, i, 'jobs', 'Employment', { pct: true })]],
-    ['On the calendar', [markerClause(year, 'capital')]],
+    ['Dated commitments', [markerClause(year, 'capital')]],
   ]));
 
   out.push(grouped('Oversight and public opinion.', [
-    ['Whether control holds', [FRAG[wl.A][span], X('A', 'T')]],
-    ['What the public will take', [FRAG[wl.P][span], X('P', 'D')]],
-    ['Measured now', [
+    ['Control outcome', [FRAG[wl.A][span], X('A', 'T')]],
+    ['Public response', [FRAG[wl.P][span], X('P', 'D')]],
+    ['Measured quantities', [
       `Approval of AI stands at ${tracks.appr[i].toFixed(0)}%.`, apprClause(tracks.appr[i]),
       rateClause(tracks, i, 'appr', 'Approval', { pct: true }),
       band(tracks.laws[i], LAW_BANDS), rateClause(tracks, i, 'laws', 'The statute book')]],
-    ['On the calendar', [markerClause(year, 'oversight')]],
+    ['Dated commitments', [markerClause(year, 'oversight')]],
   ]));
 
   out.push({ lead: 'Capability trajectory.', text: deChain(join([FRAG[wl.T][span], X('T', 'C')])) });
