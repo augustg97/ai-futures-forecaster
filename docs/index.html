@@ -53,8 +53,11 @@
      an ancestor and measure against the canvas rect, so marks underneath stay hit-testable
      and a click still opens the entry it lands on. */
   .seltext { position: absolute; inset: 0; }
+  /* The same face the drawing letters in, so the overlay starts close before it is scaled. */
   .seltext span { position: absolute; white-space: pre; color: transparent;
-    line-height: 1; font-family: inherit; cursor: text; }
+    line-height: 1; cursor: text; display: inline-block;
+    font-family: "Avenir Next Condensed","Roboto Condensed","Arial Narrow",
+                 system-ui, sans-serif; }
   .seltext span::selection { background: rgba(38,118,214,.28); color: transparent; }
   #doc section { user-select: text; }
   #chip { position: fixed; pointer-events: none; display: none; z-index: 40;
@@ -70,7 +73,7 @@
   <span id="hint">click a mark for its entry</span></div>
 <div id="doc"></div>
 <div id="chip"></div>
-<script>window.__BUILD = "20260818-0129";</script>
-<script type="module" src="js/app.js?v=20260818-0129"></script>
+<script>window.__BUILD = "20260818-0830";</script>
+<script type="module" src="js/app.js?v=20260818-0830"></script>
 </body>
 </html>

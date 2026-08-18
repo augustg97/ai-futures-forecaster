@@ -5,14 +5,14 @@
 // on that instrument. It reads the same emitted data and implements the same functions against
 // the same shipped constants (`engine.json`), so the two surfaces cannot drift apart.
 
-import { Draft, PEN, INK, paperTileURL } from './draft.js?v=20260818-0129';
+import { Draft, PEN, INK, paperTileURL } from './draft.js?v=20260818-0830';
 import { SECTIONS, SHEET_W, TABS, CHART, COL, CTL_NOTE_W, balance,
-         proseColumns, measureSections, SHEET_CW } from './sections.js?v=20260818-0129';
-import { column, fmtNum } from './instruments.js?v=20260818-0129';
-import { describe, headline } from './narrative.js?v=20260818-0129';
-import { describeRecord, headlineRecord, RECORD, recordAt, whenOf } from './record.js?v=20260818-0129';
-import { LONGFORM } from './narrative.js?v=20260818-0129';
-import { chooseFigures } from './figures.js?v=20260818-0129';
+         proseColumns, measureSections, SHEET_CW } from './sections.js?v=20260818-0830';
+import { column, fmtNum } from './instruments.js?v=20260818-0830';
+import { describe, headline } from './narrative.js?v=20260818-0830';
+import { describeRecord, headlineRecord, RECORD, recordAt, whenOf } from './record.js?v=20260818-0830';
+import { LONGFORM } from './narrative.js?v=20260818-0830';
+import { chooseFigures } from './figures.js?v=20260818-0830';
 
 // One build number, injected into index.html at ship time, versions BOTH the data fetches and
 // (via the build's import rewrite) every module. A fresh app.js against a stale draft.js is the
@@ -1376,9 +1376,11 @@ function layText(s) {
     }
     // A trailing space inside the span, so two marks that meet on a line never run together.
     const left = m.x * k, w = (m.w || m.size * 4) * k;
+    // The span carries the mark's own drawn width, so the highlight can be fitted to the
+    // glyphs underneath rather than to whatever the page font happens to measure.
     line.push({ top: top.toFixed(1), left, w,
-      html: '<span style="position:absolute;left:' + (left - 0).toFixed(1) +
-            'px;font-size:' + Math.max(6, m.size * k * 0.92).toFixed(1) + 'px">' +
+      html: '<span data-w="' + w.toFixed(2) + '" style="position:absolute;left:' +
+            left.toFixed(1) + 'px;font-size:' + Math.max(6, m.size * k).toFixed(2) + 'px">' +
             String(m.str).replace(/&/g, '&amp;').replace(/</g, '&lt;') + ' </span>' });
   }
   flush();
@@ -1386,7 +1388,27 @@ function layText(s) {
   // is anchored to, and hovering redraws the section, so any drag across the passage collapsed
   // the moment the pointer moved. The layer is rebuilt only when its content differs.
   const html = out.join('');
-  if (s.txHtml !== html) { s.txHtml = html; s.tx.innerHTML = html; }
+  if (s.txHtml === html) return;
+  s.txHtml = html; s.tx.innerHTML = html;
+  // FIT EACH SPAN TO THE MARK IT SHADOWS. The overlay is set in the page's own font, so its
+  // glyphs are a different width from the drawn ones and the selection highlight ended
+  // mid-word, ragged, line after line. Every span is scaled horizontally to the width the
+  // draughtsman actually drew. Widths are read in one pass and written in the next, so the
+  // browser lays out twice rather than once per span.
+  const spans = s.tx.querySelectorAll('span[data-w]');
+  const scales = new Array(spans.length);
+  for (let n = 0; n < spans.length; n++) {
+    const want = parseFloat(spans[n].getAttribute('data-w'));
+    const got = spans[n].offsetWidth;
+    scales[n] = got > 0.5 ? want / got : 1;
+  }
+  for (let n = 0; n < spans.length; n++) {
+    const sc = scales[n];
+    if (sc > 0.2 && sc < 5 && Math.abs(sc - 1) > 0.01) {
+      spans[n].style.transformOrigin = '0 0';
+      spans[n].style.transform = 'scaleX(' + sc.toFixed(3) + ')';
+    }
+  }
 }
 function drawSection(s, S) {
   // `audit: true` records a box per lettered string. The collision sweep uses it, and so does
