@@ -18,6 +18,31 @@
 
 const SPANS = [['near', 2026, 2031], ['mid', 2032, 2040],
                ['long', 2041, 2060], ['far', 2061, 2100]];
+// ── one "and" to a sentence ─────────────────────────────────────────────────
+// The authored fragments carry their own compound clauses, so no rule at the JOIN can bound
+// what a paragraph reads like: capping the assembly still let a single authored sentence run
+// "A, and B, and C". This splits any sentence carrying more than one ", and" at its LAST such
+// join, which is the one that turns a pair into a list, and repeats until every sentence
+// carries at most one. It works on composed output, so it bounds authored text and assembled
+// text alike.
+export function deChain(text) {
+  const sentences = String(text || '').split(/(?<=[.!?])\s+/);
+  const out = [];
+  for (let sent of sentences) {
+    let guard = 0;
+    while ((sent.match(/,\s+and\s/g) || []).length > 1 && guard++ < 6) {
+      const at = sent.lastIndexOf(', and ');
+      const head = sent.slice(0, at).replace(/[,\s]+$/, '');
+      let tail = sent.slice(at + 6);
+      tail = tail.charAt(0).toUpperCase() + tail.slice(1);
+      out.push(head.replace(/\.?$/, '.'));
+      sent = tail;
+    }
+    if (sent.trim()) out.push(sent);
+  }
+  return out.join(' ').replace(/\s+/g, ' ').trim();
+}
+
 export function spanOf(year) {
   for (const [k, a, b] of SPANS) if (year >= a && year <= b) return k;
   return year < 2026 ? 'near' : 'far';
@@ -2642,36 +2667,36 @@ export function describe(wl, year, tracks, engineY0, trunkCap = null) {
   const X = (a, b) => CROSS[`${wl[a]}|${wl[b]}`] || '';
   const out = [];
 
-  out.push({ lead: 'System capabilities.', text: join([
+  out.push({ lead: 'System capabilities.', text: deChain(join([
     rungText(cap, span), slopeClause(cap, prev),
     `Frontier systems sit at ${cap.toFixed(2)} on the milestone ladder, where 3.0 is a machine that writes better code than any human engineer and 4.0 is one that runs its own research.`,
     crossingClause(tracks, year, engineY0), distanceClause(year, span),
-  ]) });
+  ])) });
 
-  out.push({ lead: 'Build-out and governance.', text: join([
+  out.push({ lead: 'Build-out and governance.', text: deChain(join([
     FRAG[wl.C][span], X('C', 'S'), FRAG[wl.S][span],
     `Installed AI compute is ${Math.round(tracks.gw[i]).toLocaleString('en-US')} GW.`,
     band(tracks.gw[i], GW_BANDS), rateClause(tracks, i, 'gw', 'Capacity'),
     markerClause(year, 'law'), markerClause(year, 'supply'),
-  ]) });
+  ])) });
 
-  out.push({ lead: 'Capital and employment.', text: join([
+  out.push({ lead: 'Capital and employment.', text: deChain(join([
     FRAG[wl.E][span], X('E', 'S'), X('E', 'D'), FRAG[wl.D][span],
     `AI revenue is ${money(tracks.rev[i])} a year.`, band(tracks.rev[i], REV_BANDS),
     rateClause(tracks, i, 'rev', 'Revenue'), jobsClause(tracks.jobs[i]),
     rateClause(tracks, i, 'jobs', 'Employment', { pct: true }),
     markerClause(year, 'capital'),
-  ]) });
+  ])) });
 
-  out.push({ lead: 'Oversight and public opinion.', text: join([
+  out.push({ lead: 'Oversight and public opinion.', text: deChain(join([
     FRAG[wl.A][span], X('A', 'T'), FRAG[wl.P][span], X('P', 'D'),
     `Approval of AI stands at ${tracks.appr[i].toFixed(0)}%.`, apprClause(tracks.appr[i]),
     rateClause(tracks, i, 'appr', 'Approval', { pct: true }),
     band(tracks.laws[i], LAW_BANDS), rateClause(tracks, i, 'laws', 'The statute book'),
     markerClause(year, 'oversight'),
-  ]) });
+  ])) });
 
-  out.push({ lead: 'Capability trajectory.', text: join([FRAG[wl.T][span], X('T', 'C')]) });
+  out.push({ lead: 'Capability trajectory.', text: deChain(join([FRAG[wl.T][span], X('T', 'C')])) });
 
   const inter = PAIRS.filter((q) => q.span.includes(span) &&
     Object.entries(q.req).every(([k, v]) => wl[k] === v)).map((q) => q.t);
@@ -3206,7 +3231,7 @@ export function headline(wl, year, tracks, engineY0) {
   const chainDepth = (t) => Math.max(0, ...String(t).split(/(?<=\.)\s+/)
     .map((sent) => (sent.match(/,\s+and\s/g) || []).length));
   const chosen = shapes[vary(wl, year, shapes.length)]();
-  return chainDepth(chosen) > 2 ? shapes[0]() : chosen;
+  return deChain(chainDepth(chosen) > 1 ? shapes[0]() : chosen);
 }
 
 // ── the long form ───────────────────────────────────────────────────────────

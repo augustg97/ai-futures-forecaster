@@ -43,11 +43,30 @@ export function measureSections(d, secs, colW, size = 2.0) {
   }
   return h;
 }
+// ── a paragraph of the passage ──────────────────────────────────────────────
+// A subheading, then the evidence as separate lines. The paragraph used to be a run-in lead
+// followed by one block of prose, which reads as a wall at the head of the sheet; the same
+// sentences under a heading, one to a line, let a reader take in a year at a glance and check
+// any single claim without reading the rest. Measuring and drawing share this function, so a
+// change to one cannot leave the other behind.
+const BULLET = '\u00b7\u2002';
+export function paraLines(d, p, colW, size = 2.0) {
+  const head = String(p.lead || '').replace(/[.:]\s*$/, '');
+  const body = String(p.text || '');
+  // sentence per line, keeping decimals, dates and abbreviations intact
+  const bits = body.split(/(?<=[.!?])\s+(?=[A-Z“"])/).map((t) => t.trim()).filter(Boolean);
+  const rows = [];
+  if (head) rows.push({ t: head, head: true });
+  for (const b of bits) rows.push({ t: BULLET + b, head: false });
+  let lines = 0;
+  for (const r of rows) {
+    lines += d.wrap(r.t, colW - (r.head ? 0 : 2.6), { size, weight: r.head ? 700 : 400 }).length;
+  }
+  return { rows, lines };
+}
 export function measureProse(d, paras, colW, size = 2.0) {
   let h = 0;
-  for (const p of paras) {
-    h += d.runInLines(p.lead, p.text, colW, size).lines.length * size * LEAD + 2.4;
-  }
+  for (const p of paras) h += paraLines(d, p, colW, size).lines * size * LEAD + 3.0;
   return h;
 }
 // The passage across n columns, split so the columns end level. Three columns keep it a band
@@ -949,8 +968,15 @@ export function readout(d, S, H) {
     let cy = y;
     const cx = PAD + ci * (PROSE_COL + 10);
     for (const para of col) {
-      cy -= d.runIn([cx, cy], para.lead, para.text, PROSE_COL,
-                    { size: 2.0, lead: LEAD, colour: INK.pencil, leadColour: INK.ink }) + 2.4;
+      const { rows } = paraLines(d, para, PROSE_COL, 2.0);
+      for (const r of rows) {
+        const w = PROSE_COL - (r.head ? 0 : 2.6);
+        const n = d.wrap(r.t, w, { size: 2.0, weight: r.head ? 700 : 400 }).length;
+        cy -= d.textBlock([cx + (r.head ? 0 : 2.6), cy], r.t, w,
+                          { size: 2.0, lead: LEAD, weight: r.head ? 700 : 400,
+                            colour: r.head ? INK.ink : INK.pencil });
+      }
+      cy -= 3.0;
     }
   });
   for (let i = 1; i < PROSE_N; i++) {

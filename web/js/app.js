@@ -1344,13 +1344,28 @@ function layText(s) {
   const rows = (s.draft.marks || [])
     .filter((m) => m.str && String(m.str).trim() && !m.angle)
     .sort((a, b) => (b.y - a.y) || (a.x - b.x));
+  // COPIED TEXT NEEDS ITS SPACES BACK. Each lettered string is its own absolutely positioned
+  // span, so a copy ran them together — "In 2026,AI iscompleting". Strings on the same visual
+  // line are wrapped in one block element with a space between them, and each line is its own
+  // block, so a copy comes out with the words apart and the lines broken where the drawing
+  // breaks them.
   const out = [];
+  let line = [], lastY = null;
+  const flush = () => {
+    if (!line.length) return;
+    out.push('<div style="position:absolute;left:0;right:0;top:' + line[0].top +
+             'px;white-space:pre">' + line.map((q) => q.html).join(' ') + '</div>');
+    line = [];
+  };
   for (const m of rows) {
-    out.push('<span style="left:' + (m.x * k).toFixed(1) + 'px;top:' +
-             ((s.h - m.y - m.h) * k).toFixed(1) + 'px;font-size:' +
-             Math.max(6, m.size * k * 0.92).toFixed(1) + 'px">' +
-             String(m.str).replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</span>');
+    const top = ((s.h - m.y - m.h) * k);
+    if (lastY === null || Math.abs(top - lastY) > 1.2) { flush(); lastY = top; }
+    line.push({ top: top.toFixed(1),
+      html: '<span style="position:absolute;left:' + (m.x * k).toFixed(1) +
+            'px;font-size:' + Math.max(6, m.size * k * 0.92).toFixed(1) + 'px">' +
+            String(m.str).replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</span>' });
   }
+  flush();
   s.tx.innerHTML = out.join('');
 }
 function drawSection(s, S) {
