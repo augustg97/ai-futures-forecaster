@@ -46,6 +46,13 @@
     0 2px 0 #fdfdfb; }
   #doc { margin-top: 34px; min-height: calc(100vh - 34px); }
   @media (max-width: 1100px) { #hint { display: none; } }
+  /* The selectable copy of the drawing. Transparent and inert to the pointer, so the marks
+     underneath stay hit-testable; it exists so a reader can select and copy what is lettered. */
+  .seltext { position: absolute; inset: 0; pointer-events: none; }
+  .seltext span { position: absolute; white-space: pre; color: transparent;
+    line-height: 1; font-family: inherit; }
+  .seltext span::selection { background: rgba(38,118,214,.28); color: transparent; }
+  #doc section { user-select: text; }
   #chip { position: fixed; pointer-events: none; display: none; z-index: 40;
     background: rgba(20,17,13,.93); color: #e8e2d4; padding: 5px 9px;
     font-size: 10.5px; letter-spacing: .05em; white-space: nowrap; max-width: 340px; }

@@ -160,41 +160,77 @@ function instantiateJS(wl, seed) {
 // A Gibbs sweep re-draws each variable against ALL the others, so an edge fires whichever
 // order its endpoints happen to sit in.
 const GIBBS_SWEEPS = 4;
-function drawFrom(w, u) {
-  const tot = Object.values(w).reduce((x, y) => x + y, 0);
-  let r = u * tot, chosen = null;
-  for (const pos in w) { r -= w[pos]; if (r <= 0) { chosen = pos; break; } }
-  return chosen || Object.keys(w)[0];
-}
-// The child's weights given every OTHER variable's current position. A variable never
-// conditions on itself, so its own position is withheld from the parent set.
-function condWeights(axis, wl, weights) {
-  const k = axis.key, w = {};
-  for (const p of axis.positions) w[p[0]] = weights[k][p[0]];
-  const cond = D.network.conditionals[k] || {};
-  for (const par in cond) {
-    let held = false;
-    for (const q in wl) { if (q !== k && wl[q] === par) { held = true; break; } }
-    if (held) for (const pos in cond[par]) if (w[pos] !== undefined) w[pos] *= cond[par][pos];
-  }
-  return w;
-}
-function sampleOne(rng, weights, pinned) {
-  const wl = {};
+// THE SAMPLER RUNS 135,000 DRAWS PER CONDITIONING, so its inner loop decides whether the
+// control panel answers in a frame or in eight seconds. r5 took the space from 7 axes and 25
+// edges to 9 and 144, and the object-per-draw version went to 8.4 s a click.
+//
+// Precomputed once per registry: positions as indices, priors as a Float64Array per axis, and
+// each edge as an array of multipliers ALIGNED TO THAT AXIS. A draw then starts from the prior
+// row, walks only the eight positions actually held, and multiplies in the few tilts that name
+// them. No allocation, no scan over parents that are not present.
+let FAST = null;
+function fastTables() {
+  if (FAST && FAST.v === D.network.version) return FAST;
+  const axes = D.network.axes.map((a) => a.key);
+  const pos = {}, prior = {}, tilt = {}, scratch = {};
   for (const a of D.network.axes) {
-    const k = a.key;
-    if (pinned[k]) { wl[k] = pinned[k]; continue; }
-    const w = {};
-    for (const p of a.positions) w[p[0]] = weights[k][p[0]];
-    wl[k] = drawFrom(w, rng());
+    pos[a.key] = a.positions.map((p) => p[0]);
+    prior[a.key] = Float64Array.from(a.positions.map((p) => p[2]));
+    scratch[a.key] = new Float64Array(a.positions.length);
+    tilt[a.key] = {};
+    const cond = D.network.conditionals[a.key] || {};
+    for (const par in cond) {
+      const row = new Float64Array(a.positions.length).fill(1);
+      a.positions.forEach((p, k) => { if (cond[par][p[0]] !== undefined) row[k] = cond[par][p[0]]; });
+      tilt[a.key][par] = row;
+    }
+  }
+  FAST = { v: D.network.version, axes, pos, prior, tilt, scratch };
+  return FAST;
+}
+// One draw of `ax`, given the positions every other axis currently holds.
+function drawAxis(ax, held, u, weights, T) {
+  const w = T.scratch[ax], names = T.pos[ax], base = weights[ax];
+  for (let k = 0; k < names.length; k++) w[k] = base[names[k]];
+  const rows = T.tilt[ax];
+  for (let h = 0; h < held.length; h++) {
+    const row = rows[held[h]];
+    if (row !== undefined) for (let k = 0; k < w.length; k++) w[k] *= row[k];
+  }
+  let tot = 0;
+  for (let k = 0; k < w.length; k++) tot += w[k];
+  let r = u * tot;
+  for (let k = 0; k < w.length; k++) { r -= w[k]; if (r <= 0) return names[k]; }
+  return names[names.length - 1];
+}
+function gibbs(nextU, weights, pinned) {
+  const T = fastTables(), axes = T.axes, wl = {};
+  const held = [];
+  for (const ax of axes) {
+    if (pinned[ax]) { wl[ax] = pinned[ax]; continue; }
+    const names = T.pos[ax], base = weights[ax];
+    let tot = 0;
+    for (const n of names) tot += base[n];
+    let r = nextU() * tot, chosen = names[names.length - 1];
+    for (const n of names) { r -= base[n]; if (r <= 0) { chosen = n; break; } }
+    wl[ax] = chosen;
   }
   for (let sweep = 0; sweep < GIBBS_SWEEPS; sweep++) {
-    for (const a of D.network.axes) {
-      if (pinned[a.key]) continue;
-      wl[a.key] = drawFrom(condWeights(a, wl, weights), rng());
+    for (const ax of axes) {
+      if (pinned[ax]) continue;
+      held.length = 0;
+      for (const other of axes) if (other !== ax) held.push(wl[other]);
+      wl[ax] = drawAxis(ax, held, nextU(), weights, T);
     }
   }
   return wl;
+}
+function sampleOne(rng, weights, pinned) { return gibbs(rng, weights, pinned); }
+// The effect measure draws from a fixed uniform matrix, so common random numbers hold: the
+// only difference between the baseline and a test is the setting.
+function sampleFixed(us, weights, pinned) {
+  let k = 0;
+  return gibbs(() => us[k++ % us.length], weights, pinned);
 }
 function jointP(wl, weights) {
   let p = 1.0; const chosen = {};
@@ -212,17 +248,32 @@ function jointP(wl, weights) {
   }
   return p;
 }
-function argmaxLine(weights, pinned) {
-  const keys = D.network.axes.map((a) => a.key);
-  const posl = D.network.axes.map((a) => a.positions.map((p) => p[0]));
+// THE MOST PROBABLE LINE THAT ACTUALLY OCCURRED, out of the ones drawn.
+//
+// This enumerated every cell of the joint and returned the exact argmax. At 7 axes and 8,640
+// cells that was cheap and meaningful. r5 took the space to 9 axes and 2,520,000 cells, where
+// the enumeration costs 8.3 seconds — the whole of the delay on a control click — and returns
+// an object worth less than it was: the exact argmax carries a joint probability of 0.0086%,
+// one line in 11,668, and 20,000 draws produce 19,254 distinct assignments. No single line is
+// the likely future in a space that flat.
+//
+// Scanning the ensemble the conditioning already drew gives a line that is jointly coherent,
+// that actually occurred, and that costs O(n) instead of O(product of positions). The sheet
+// letters what it is.
+function argmaxLine(weights, pinned, lines) {
   let best = null, bp = -1;
-  const rec = (i, wl) => {
-    if (i === keys.length) { const p = jointP(wl, weights); if (p > bp) { bp = p; best = { ...wl }; } return; }
-    const k = keys[i];
-    for (const o of (pinned[k] ? [pinned[k]] : posl[i])) { wl[k] = o; rec(i + 1, wl); }
-  };
-  rec(0, {});
-  return [best, bp];
+  for (const wl of (lines || [])) {
+    const p = jointP(wl, weights);
+    if (p > bp) { bp = p; best = wl; }
+  }
+  if (best) return [{ ...best }, bp];
+  // no ensemble to scan: fall back to each variable at its own most likely setting
+  const wl = {};
+  for (const a of D.network.axes) {
+    wl[a.key] = pinned[a.key] ||
+      a.positions.slice().sort((p, q) => q[2] - p[2])[0][0];
+  }
+  return [wl, jointP(wl, weights)];
 }
 function marginalsOf(lines) {
   const m = {};
@@ -264,7 +315,7 @@ function recondition() {
     lines = []; for (let i = 0; i < 3000; i++) lines.push(sampleOne(rng, w, state.pin));
     mode = (state.obs ? 'OBSERVATION UNAVAILABLE — ' : '') + 'INTERVENED · 3000 RESAMPLED';
   }
-  const [ml] = argmaxLine(w, state.pin);
+  const [ml] = argmaxLine(w, state.pin, lines);
   cond = { lines, mode, marginals: marginalsOf(lines), bands: bandsOf(lines),
            main: ml, tracks: tracksJS(ml), events: instantiateJS(ml, 20260731) };
 }
@@ -852,28 +903,6 @@ function effUniforms() {
   }
   return EFF_U;
 }
-// The effect measure runs the same Gibbs sweeps, drawing from the fixed uniform matrix so
-// common random numbers still hold: the only difference between the baseline and a test is
-// the setting. The row carries one uniform per axis per sweep, plus the seeding draw.
-function sampleFixed(us, weights, pinned) {
-  const wl = {};
-  const axes = D.network.axes;
-  axes.forEach((a, j) => {
-    const k = a.key;
-    if (pinned[k]) { wl[k] = pinned[k]; return; }
-    const w = {};
-    for (const p of a.positions) w[p[0]] = weights[k][p[0]];
-    wl[k] = drawFrom(w, us[j]);
-  });
-  for (let sweep = 0; sweep < GIBBS_SWEEPS; sweep++) {
-    axes.forEach((a, j) => {
-      if (pinned[a.key]) return;
-      const u = us[(sweep + 1) * axes.length + j];
-      wl[a.key] = drawFrom(condWeights(a, wl, weights), u === undefined ? us[j] : u);
-    });
-  }
-  return wl;
-}
 // THE FIGURE UNDER A BUTTON HAS TO ANSWER THE QUESTION THE DOCUMENT IS ASKING.
 // This measured the intervened sampler in both modes, so alignment reported "no measured
 // effect": under intervention A reaches the model through one edge (C given A1) and enters
@@ -1291,11 +1320,33 @@ function frame() {
     if (sig === s.sig) continue;
     s.sig = sig;
     drawSection(s, S);
+    layText(s);
   }
   markTabs();
 }
+// Write every lettered string into the transparent layer over its own section, at the place it
+// was drawn, so a reader can select a paragraph and take it away. Reading order follows the
+// drawing — down the sheet, then across — so a selection dragged over one column comes out as
+// that column instead of a zigzag through all three.
+function layText(s) {
+  if (!s.tx) return;
+  const k = 1 / state.mmPerPx;
+  const rows = (s.draft.marks || [])
+    .filter((m) => m.str && String(m.str).trim() && !m.angle)
+    .sort((a, b) => (b.y - a.y) || (a.x - b.x));
+  const out = [];
+  for (const m of rows) {
+    out.push('<span style="left:' + (m.x * k).toFixed(1) + 'px;top:' +
+             ((s.h - m.y - m.h) * k).toFixed(1) + 'px;font-size:' +
+             Math.max(6, m.size * k * 0.92).toFixed(1) + 'px">' +
+             String(m.str).replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</span>');
+  }
+  s.tx.innerHTML = out.join('');
+}
 function drawSection(s, S) {
-  s.draft.begin({ centre: [SHEET_W / 2, s.h / 2], mmPerPx: state.mmPerPx });
+  // `audit: true` records a box per lettered string. The collision sweep uses it, and so does
+  // the selectable-text layer, which is why it is on for every draw now.
+  s.draft.begin({ centre: [SHEET_W / 2, s.h / 2], mmPerPx: state.mmPerPx, audit: true });
   s.fn(s.draft, S, s.h);
   const hov = state.hovered && state.hovered.sec === s.id &&
               s.draft.regions.find((r) => r.id === state.hovered.id);
@@ -1443,9 +1494,17 @@ async function boot() {
   for (const s of SECTIONS) {
     const el = document.createElement('section');
     const cv = document.createElement('canvas');
+    // THE SHEET IS DRAWN, SO NOTHING ON IT COULD BE SELECTED OR COPIED. Every string the
+    // draughtsman letters is also written into a transparent layer over the same section, at
+    // the position it was drawn, so a reader can select a paragraph and take it with them.
+    // The layer is inert to the pointer, which keeps the marks underneath hit-testable, and
+    // it is turned on only while a selection is being made.
+    const tx = document.createElement('div');
+    tx.className = 'seltext';
     el.appendChild(cv);
+    el.appendChild(tx);
     docEl.appendChild(el);
-    SEC.push({ id: s.id, fn: s.fn, tab: s.tab, el, cv,
+    SEC.push({ id: s.id, fn: s.fn, tab: s.tab, el, cv, tx,
                draft: new Draft(cv), h: 0, sig: '', on: null });
   }
   buildTabs();
@@ -1461,6 +1520,15 @@ async function boot() {
   }, { rootMargin: '600px 0px' });
   for (const s of SEC) io.observe(s.el);
 
+  // Prime the passage's height reserve before the first draw, so the document does not
+  // resettle under the reader on their first drag of the date. Composing and measuring is
+  // cheap — the expensive part of a state is the sampling, and this reuses one sample.
+  {
+    const keep = state.yr;
+    for (let y = D.engine.y0; y <= D.engine.y1; y += 6) { state.yr = y; sheetState(SEC[0].draft); }
+    state.yr = D.engine.y1; sheetState(SEC[0].draft);
+    state.yr = keep;
+  }
   state.ready = true;
   redraw();
   new ResizeObserver(() => { for (const s of SEC) s.sig = ''; redraw(); }).observe(docEl);

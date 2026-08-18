@@ -958,7 +958,18 @@ export function readout(d, S, H) {
   }
   return H;
 }
-readout.height = (S) => 22 + (S.headlineH || 12) + S.prose.h;
+// THE PASSAGE MUST NOT MOVE THE DOCUMENT WHEN THE DATE MOVES. Its height is a function of
+// how much text this year happens to produce, so dragging the index re-laid out every section
+// below it and the chart walked under the cursor. The section now reserves the tallest height
+// it takes across the whole run and holds it, so the text grows and shrinks inside a fixed
+// frame. The reserve is measured, not guessed: `readout.reserve` is the running maximum, and
+// it only ever grows within a session.
+readout.reserve = 0;
+readout.height = (S) => {
+  const want = 22 + (S.headlineH || 12) + S.prose.h;
+  if (want > readout.reserve) readout.reserve = want;
+  return readout.reserve;
+};
 
 function behaviourPanels(S) {
   const tr = S.tracks;

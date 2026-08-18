@@ -5,8 +5,8 @@
 // wide, drawn at one fixed scale so lettering keeps the size it was drawn at and nothing has to
 // be zoomed. A section's millimetre space runs x 0 → 300 across and y 0 → H up from its foot.
 
-import { PEN, INK, PAPER } from './draft.js?v=20260817-2309';
-import { dial, manifold, strip, collectives, fmtNum } from './instruments.js?v=20260817-2309';
+import { PEN, INK, PAPER } from './draft.js?v=20260817-2335';
+import { dial, manifold, strip, collectives, fmtNum } from './instruments.js?v=20260817-2335';
 
 export const SHEET_W = 340;
 const PAD = 13;
@@ -958,7 +958,18 @@ export function readout(d, S, H) {
   }
   return H;
 }
-readout.height = (S) => 22 + (S.headlineH || 12) + S.prose.h;
+// THE PASSAGE MUST NOT MOVE THE DOCUMENT WHEN THE DATE MOVES. Its height is a function of
+// how much text this year happens to produce, so dragging the index re-laid out every section
+// below it and the chart walked under the cursor. The section now reserves the tallest height
+// it takes across the whole run and holds it, so the text grows and shrinks inside a fixed
+// frame. The reserve is measured, not guessed: `readout.reserve` is the running maximum, and
+// it only ever grows within a session.
+readout.reserve = 0;
+readout.height = (S) => {
+  const want = 22 + (S.headlineH || 12) + S.prose.h;
+  if (want > readout.reserve) readout.reserve = want;
+  return readout.reserve;
+};
 
 function behaviourPanels(S) {
   const tr = S.tracks;
