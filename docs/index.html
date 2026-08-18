@@ -48,9 +48,13 @@
   @media (max-width: 1100px) { #hint { display: none; } }
   /* The selectable copy of the drawing. Transparent and inert to the pointer, so the marks
      underneath stay hit-testable; it exists so a reader can select and copy what is lettered. */
-  .seltext { position: absolute; inset: 0; pointer-events: none; }
+  /* pointer-events: none makes a layer unselectable by definition — a selection has to be
+     able to start on the text. The layer takes pointer events; the pointer handlers sit on
+     an ancestor and measure against the canvas rect, so marks underneath stay hit-testable
+     and a click still opens the entry it lands on. */
+  .seltext { position: absolute; inset: 0; }
   .seltext span { position: absolute; white-space: pre; color: transparent;
-    line-height: 1; font-family: inherit; }
+    line-height: 1; font-family: inherit; cursor: text; }
   .seltext span::selection { background: rgba(38,118,214,.28); color: transparent; }
   #doc section { user-select: text; }
   #chip { position: fixed; pointer-events: none; display: none; z-index: 40;
@@ -66,7 +70,7 @@
   <span id="hint">click a mark for its entry</span></div>
 <div id="doc"></div>
 <div id="chip"></div>
-<script>window.__BUILD = "20260818-0011";</script>
-<script type="module" src="js/app.js?v=20260818-0011"></script>
+<script>window.__BUILD = "20260818-0021";</script>
+<script type="module" src="js/app.js?v=20260818-0021"></script>
 </body>
 </html>
