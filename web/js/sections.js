@@ -53,36 +53,55 @@ const BULLET = '\u00b7\u2002';
 const IND = 3.0;        // the bullet's hanging indent, in sheet millimetres
 const HEAD_SIZE = 1.7;  // the subheading's cap height
 const HEAD_LEAD = 1.3;
+const SUB_SIZE = 1.5;   // the group heading, a step under the section heading
 export function paraLines(d, p, colW, size = 2.0) {
   const head = String(p.lead || '').replace(/[.:]\s*$/, '').toUpperCase();
   const body = String(p.text || '');
   // sentence per line, keeping decimals, dates and abbreviations intact
-  const bits = body.split(/(?<=[.!?])\s+(?=[A-Z“"])/).map((t) => t.trim()).filter(Boolean);
   const rows = [];
-  if (head) rows.push({ t: head, head: true });
-  for (const b of bits) rows.push({ t: BULLET + b, head: false });
+  if (head) rows.push({ t: head, head: 1 });
+  const split = (t) => String(t).split(/(?<=[.!?])\s+(?=[A-Z“"])/)
+    .map((x) => x.trim()).filter(Boolean);
+  if (p.groups && p.groups.length) {
+    // A GROUP HEADING SAYS WHAT KIND OF CLAIM FOLLOWS. Under one section heading the bullets
+    // mix the setting's own account, what a second variable does to it, the quantities the
+    // model computes, and dated commitments already on the record. Those are four different
+    // kinds of claim and the reader is entitled to see which is which.
+    for (const g of p.groups) {
+      if (g.head) rows.push({ t: g.head, head: 2 });
+      for (const b of split(g.text)) rows.push({ t: BULLET + b, head: 0 });
+    }
+  } else {
+    for (const b of split(body)) rows.push({ t: BULLET + b, head: 0 });
+  }
   // The heading is set at its own size and lead, so it is counted at its own size and lead.
   // Counting every row at body size measured the block short and put nine marks off the
   // section, which is the measure and the draw disagreeing by exactly one type size.
-  let headLines = 0, bodyLines = 0;
+  let headLines = 0, subLines = 0, bodyLines = 0;
   for (const r of rows) {
     // THE MEASURE MUST WRAP ON THE SAME TRACKING THE DRAW USES. textBlock defaults to 0.06
     // and this counted at 0, so every bullet wrapped to more lines than were measured for it
     // and the tallest column ran 4.3 mm past the section.
-    const n = d.wrap(r.t, colW - (r.head ? 0 : IND),
-                     { size: r.head ? HEAD_SIZE : size, track: r.head ? 0.16 : 0.06,
+    const sz = r.head === 1 ? HEAD_SIZE : r.head === 2 ? SUB_SIZE : size;
+    const n = d.wrap(r.t, colW - (r.head ? (r.head === 2 ? IND : 0) : IND),
+                     { size: sz, track: r.head ? 0.16 : 0.06,
                        weight: r.head ? 700 : 400 }).length;
-    if (r.head) headLines += n; else bodyLines += n;
+    if (r.head === 1) headLines += n;
+    else if (r.head === 2) subLines += n;
+    else bodyLines += n;
   }
-  return { rows, headLines, bodyLines, lines: headLines + bodyLines };
+  return { rows, headLines, subLines, bodyLines,
+           lines: headLines + subLines + bodyLines };
 }
 export function measureProse(d, paras, colW, size = 2.0) {
   let h = 0;
   for (const p of paras) {
-    const { rows, headLines, bodyLines } = paraLines(d, p, colW, size);
+    const { rows, headLines, subLines, bodyLines } = paraLines(d, p, colW, size);
     const bullets = rows.filter((r) => !r.head).length;
-    h += headLines * HEAD_SIZE * HEAD_LEAD + bodyLines * size * LEAD +
-         bullets * 1.1 + (headLines ? 2.2 : 0) + 3.6;
+    const subs = rows.filter((r) => r.head === 2).length;
+    h += headLines * HEAD_SIZE * HEAD_LEAD + subLines * SUB_SIZE * HEAD_LEAD +
+         bodyLines * size * LEAD + bullets * 1.1 + subs * 1.6 +
+         (headLines ? 2.2 : 0) + 3.6;
   }
   return h;
 }
@@ -987,7 +1006,13 @@ export function readout(d, S, H) {
     for (const para of col) {
       const { rows } = paraLines(d, para, PROSE_COL, 2.0);
       rows.forEach((r, ri) => {
-        if (r.head) {
+        if (r.head === 2) {
+          cy -= 1.0;
+          cy -= d.textBlock([cx + IND, cy], r.t, PROSE_COL - IND,
+                            { size: SUB_SIZE, lead: HEAD_LEAD, weight: 700, track: 0.16,
+                              colour: INK.pencilLight });
+          cy -= 0.6;
+        } else if (r.head) {
           // A SUBHEADING HAS TO LOOK LIKE ONE. Bold body type at body size read as another
           // sentence; this is smaller, letter-spaced, in full ink, over a hairline, which is
           // the same treatment every other heading on the sheet gets.

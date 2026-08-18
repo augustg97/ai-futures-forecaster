@@ -1382,7 +1382,11 @@ function layText(s) {
             String(m.str).replace(/&/g, '&amp;').replace(/</g, '&lt;') + ' </span>' });
   }
   flush();
-  s.tx.innerHTML = out.join('');
+  // ONLY WRITE WHEN THE TEXT CHANGED. Rewriting innerHTML destroys the very nodes a selection
+  // is anchored to, and hovering redraws the section, so any drag across the passage collapsed
+  // the moment the pointer moved. The layer is rebuilt only when its content differs.
+  const html = out.join('');
+  if (s.txHtml !== html) { s.txHtml = html; s.tx.innerHTML = html; }
 }
 function drawSection(s, S) {
   // `audit: true` records a box per lettered string. The collision sweep uses it, and so does
