@@ -1,6 +1,6 @@
 {
  "_what": "What the drawing's authored layer can letter and compose. Every FRAG, CROSS, GOVERN, ECON and ECON_MOD row in narrative.js, every scene selector in figures.js and every position read in tracksJS is keyed on these. Position letters are stable across a parent rebuild and their meanings are not, so both are declared: `axes` catches an added or withdrawn position and `meanings` catches one that kept its letter and changed what it says.",
- "_registry": "r5-2026-08-17",
+ "_registry": "r6-2026-08-18",
  "axes": {
   "T": [
    "T1",
