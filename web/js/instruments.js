@@ -20,7 +20,7 @@ import { PEN, INK, PAPER } from './draft.js';
 // gap between them is the drift — an angle, held clear of small print. The caller states the
 // span, because the history is shorter than the 30 days the lookback asks for.
 export function dial(d, cx, cy, r, { label, value, was = null, sub = '', id = null,
-                                     colour = null, ticks = 5 } = {}) {
+                                     colour = null, ticks = 5, labelW = 0 } = {}) {
   const A0 = Math.PI * 1.20, A1 = -Math.PI * 0.20;      // sweep, ccw from lower-left
   const ang = (v) => A0 + (A1 - A0) * Math.max(0, Math.min(1, v));
   const c = colour ?? INK.ink;
@@ -67,8 +67,28 @@ export function dial(d, cx, cy, r, { label, value, was = null, sub = '', id = nu
   d.dot([cx, cy], 0.42, { colour: PAPER });
   d.text([cx, cy - r * 0.52], (value * 100).toFixed(0) + '%',
          { size: 2.6, align: 'center', colour: c, weight: 700, face: 'figure' });
-  if (label) d.text([cx, cy - r - 3.4], label,
-                    { size: 1.9, align: 'center', colour: INK.ink, weight: 600, track: 0.14 });
+  // THE LABEL WRAPS; IT IS NEVER CUT. Callers used to hand this a string already truncated to
+  // nine characters, so "2029 to 2031" was lettered "2029 TO 2" — a label trimmed silently
+  // reads as the whole name of something narrower than it is. The dial takes the full name and
+  // fits it: onto one line if it goes, onto two if it does not, shrinking a little first.
+  if (label) {
+    const room = labelW || r * 4.6;
+    const opt = (sz) => ({ size: sz, align: 'center', colour: INK.ink, weight: 600, track: 0.10 });
+    let size = 1.9;
+    while (size > 1.5 && d.textWidth(label, opt(size)) > room) size -= 0.1;
+    if (d.textWidth(label, opt(size)) <= room) {
+      d.text([cx, cy - r - 3.4], label, opt(size));
+    } else {
+      const words = String(label).split(' ');
+      let a = '', b = '';
+      for (const w of words) {
+        if (!a || d.textWidth(a + ' ' + w, opt(size)) <= room) a = a ? a + ' ' + w : w;
+        else b = b ? b + ' ' + w : w;
+      }
+      d.text([cx, cy - r - 3.4], a, opt(size));
+      if (b) d.text([cx, cy - r - 3.4 - size * 1.35], b, opt(size));
+    }
+  }
   if (sub) d.text([cx, cy - r - 6.0], sub,
                   { size: 1.5, align: 'center', colour: INK.pencilLight, track: 0.10 });
   if (id) d.region(id, cx - r * 1.2, cy - r - 7, r * 2.4, r * 2 + 9);

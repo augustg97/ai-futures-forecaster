@@ -5,8 +5,8 @@
 // wide, drawn at one fixed scale so lettering keeps the size it was drawn at and nothing has to
 // be zoomed. A section's millimetre space runs x 0 → 300 across and y 0 → H up from its foot.
 
-import { PEN, INK, PAPER } from './draft.js?v=20260817-2338';
-import { dial, manifold, strip, collectives, fmtNum } from './instruments.js?v=20260817-2338';
+import { PEN, INK, PAPER } from './draft.js?v=20260817-2354';
+import { dial, manifold, strip, collectives, fmtNum } from './instruments.js?v=20260817-2354';
 
 export const SHEET_W = 340;
 const PAD = 13;
@@ -282,7 +282,7 @@ function instrumentColumn(d, S, top) {
   const m = S.marginals.T || {}, was = S.marginals30.T || {};
   T.positions.forEach((p, i) => {
     dial(d, x + 9 + (i % 2) * 40, y - 12 - Math.floor(i / 2) * 27, 8.2, {
-      label: p[0] + ' · ' + p[1].split(' (')[0].toUpperCase().slice(0, 9),
+      label: p[0] + ' · ' + p[1].split(' (')[0].toUpperCase(), labelW: 37,
       value: m[p[0]] || 0, was: was[p[0]] ?? null, id: `pos:T:${p[0]}`, colour: INK.blue,
     });
   });
@@ -578,8 +578,9 @@ function chartColumn(d, S, top) {
 }
 
 // ── the right column: the controls, one tab per variable ─────────────────────
-const CTAB = { T: 'TEMPO', A: 'ALIGN', C: 'COORD', D: 'LABOUR', S: 'SUPPLY',
-               P: 'PUBLIC', E: 'ECONOMY' };
+// r5 added two axes and neither had a word here, so their tabs read as a bare letter.
+const CTAB = { T: 'TEMPO', K: 'TAKEOFF', A: 'ALIGN', C: 'COORD', R: 'RULES',
+               D: 'LABOUR', S: 'SUPPLY', P: 'PUBLIC', E: 'ECONOMY' };
 const CBTN_H = 26;
 
 // Display names for the capability domains. The engine's own `n` is drawn wherever it reads
@@ -1021,7 +1022,7 @@ export function details(d, S, H) {
   const m = S.marginals.T || {}, was = S.marginals30.T || {};
   T.positions.forEach((p, i) => {
     dial(d, PAD + 13 + (i % 2) * 32, tops - 26 - Math.floor(i / 2) * 34, 10.5, {
-      label: p[0] + ' · ' + p[1].split(' (')[0].toUpperCase().slice(0, 12),
+      label: p[0] + ' · ' + p[1].split(' (')[0].toUpperCase(), labelW: 30,
       value: m[p[0]] || 0, was: was[p[0]] ?? null, id: `pos:T:${p[0]}`, colour: INK.blue,
     });
   });
