@@ -5,14 +5,14 @@
 // on that instrument. It reads the same emitted data and implements the same functions against
 // the same shipped constants (`engine.json`), so the two surfaces cannot drift apart.
 
-import { Draft, PEN, INK, paperTileURL } from './draft.js?v=20260818-0029';
+import { Draft, PEN, INK, paperTileURL } from './draft.js?v=20260818-0031';
 import { SECTIONS, SHEET_W, TABS, CHART, COL, CTL_NOTE_W, balance,
-         proseColumns, measureSections, SHEET_CW } from './sections.js?v=20260818-0029';
-import { column, fmtNum } from './instruments.js?v=20260818-0029';
-import { describe, headline } from './narrative.js?v=20260818-0029';
-import { describeRecord, headlineRecord, RECORD, recordAt, whenOf } from './record.js?v=20260818-0029';
-import { LONGFORM } from './narrative.js?v=20260818-0029';
-import { chooseFigures } from './figures.js?v=20260818-0029';
+         proseColumns, measureSections, SHEET_CW } from './sections.js?v=20260818-0031';
+import { column, fmtNum } from './instruments.js?v=20260818-0031';
+import { describe, headline } from './narrative.js?v=20260818-0031';
+import { describeRecord, headlineRecord, RECORD, recordAt, whenOf } from './record.js?v=20260818-0031';
+import { LONGFORM } from './narrative.js?v=20260818-0031';
+import { chooseFigures } from './figures.js?v=20260818-0031';
 
 // One build number, injected into index.html at ship time, versions BOTH the data fetches and
 // (via the build's import rewrite) every module. A fresh app.js against a stale draft.js is the
@@ -1341,29 +1341,34 @@ function frame() {
 function layText(s) {
   if (!s.tx) return;
   const k = 1 / state.mmPerPx;
-  const rows = (s.draft.marks || [])
-    .filter((m) => m.str && String(m.str).trim() && !m.angle)
-    .sort((a, b) => (b.y - a.y) || (a.x - b.x));
-  // COPIED TEXT NEEDS ITS SPACES BACK. Each lettered string is its own absolutely positioned
-  // span, so a copy ran them together — "In 2026,AI iscompleting". Strings on the same visual
-  // line are wrapped in one block element with a space between them, and each line is its own
-  // block, so a copy comes out with the words apart and the lines broken where the drawing
-  // breaks them.
+  const marks = (s.draft.marks || []).filter((m) => m.str && String(m.str).trim() && !m.angle);
+  // COPY READS COLUMN BY COLUMN, THEN DOWN. Sorting by y first put the three columns of the
+  // passage on one line, so a copy came out interleaved: "...without supervision — writing and
+  // debugging a · The Bureau of Industry and Security announced...". Marks are bucketed into
+  // columns by where they sit across the sheet, and each column is read top to bottom before
+  // the next begins.
+  const COLW = SHEET_W / 3;
+  const col = (m) => Math.min(2, Math.max(0, Math.floor(m.x / COLW)));
+  marks.sort((a, b) => (col(a) - col(b)) || (b.y - a.y) || (a.x - b.x));
   const out = [];
-  let line = [], lastY = null;
+  let line = [], lastY = null, lastCol = null;
   const flush = () => {
     if (!line.length) return;
     out.push('<div style="position:absolute;left:0;right:0;top:' + line[0].top +
-             'px;white-space:pre">' + line.map((q) => q.html).join(' ') + '</div>');
+             'px;white-space:pre-wrap">' + line.map((q) => q.html).join('') + '</div>');
     line = [];
   };
-  for (const m of rows) {
-    const top = ((s.h - m.y - m.h) * k);
-    if (lastY === null || Math.abs(top - lastY) > 1.2) { flush(); lastY = top; }
+  for (const m of marks) {
+    const c = col(m);
+    const top = (s.h - m.y - m.h) * k;
+    if (lastY === null || c !== lastCol || Math.abs(top - lastY) > 1.2) {
+      flush(); lastY = top; lastCol = c;
+    }
+    // A trailing space inside the span, so two marks that meet on a line never run together.
     line.push({ top: top.toFixed(1),
       html: '<span style="position:absolute;left:' + (m.x * k).toFixed(1) +
             'px;font-size:' + Math.max(6, m.size * k * 0.92).toFixed(1) + 'px">' +
-            String(m.str).replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</span>' });
+            String(m.str).replace(/&/g, '&amp;').replace(/</g, '&lt;') + ' </span>' });
   }
   flush();
   s.tx.innerHTML = out.join('');
