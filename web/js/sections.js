@@ -634,11 +634,16 @@ function controlColumn(d, S, top) {
   const a = S.network.axes.find((q) => q.key === S.ctlAxis) || S.network.axes[0];
   const pin = S.pin[a.key];
   const marg = S.marginals[a.key] || {};
-  d.text([x, y], a.name.toUpperCase(),
-         { size: 2.3, weight: 700, track: 0.12, colour: pin ? INK.blue : INK.ink });
+  // r5 lengthened the axis names — "Coordination between principal states" against
+  // "Coordination" — and the heading ran straight through the likeliest-position figure on
+  // its right. The name takes the room the figure leaves, and says so by eliding.
   const modal = Object.entries(marg).sort((p, q) => q[1] - p[1])[0];
-  d.text([x + w, y], pin ? 'SET BY YOU'
-           : modal ? `LIKELIEST ${modal[0]} ${(modal[1] * 100).toFixed(0)}%` : '',
+  const right = pin ? 'SET BY YOU'
+    : modal ? `LIKELIEST ${modal[0]} ${(modal[1] * 100).toFixed(0)}%` : '';
+  const rw = right ? d.textWidth(right, { size: 1.6, track: 0.08 }) + 3 : 0;
+  d.text([x, y], fit(d, a.name.toUpperCase(), w - rw, { size: 2.3, weight: 700, track: 0.12 }),
+         { size: 2.3, weight: 700, track: 0.12, colour: pin ? INK.blue : INK.ink });
+  d.text([x + w, y], right,
          { size: 1.6, align: 'right', colour: pin ? INK.blue : INK.inkLight, track: 0.08 });
   y -= 3.4;
   y -= d.textBlock([x, y], S.plain(a.desc || ''), w,
@@ -914,12 +919,20 @@ export function board(d, S, H) {
 // actually consumed. The previous estimate ran 39 to 61 mm over, and the board carried that
 // as blank paper at its foot in every state.
 board.height = (S) => {
-  const left = 142.8 + S.engine.domains.length * 7.2;
+  // The collectives instrument has two states: a one-line note below the autonomy
+  // threshold, and the full ladder, clock scale and product above it — 54 mm more. The
+  // left column declares the taller one, because a column that fits only its short
+  // state draws its tall state past the board, which is where 14 marks went.
+  const left = 196.8 + S.engine.domains.length * 7.2;
   const mid = (S.chartView === 'record' ? 96 + 124 : CHART_H + 76.2) +
               (S.chartNote ? S.chartNote.h + 12 : 0);
   const n = (S.network.axes.find((q) => q.key === S.ctlAxis) || S.network.axes[0])
     .positions.length;
-  const right = 105 + n * (CBTN_H + 2.2) + (S.openNote ? S.openNote.h + 19 : 0);
+  // The tab strip wraps at four to a row, and r5 took the axis count from seven to nine,
+  // so it grew from two rows to three. That row was folded into the constant when there
+  // were only ever two of them, and the column then drew 2 mm past the board.
+  const right = 89 + Math.ceil(S.network.axes.length / 4) * 8 +
+                n * (CBTN_H + 2.2) + (S.openNote ? S.openNote.h + 19 : 0);
   return Math.max(left, mid, right) + 6;
 };
 

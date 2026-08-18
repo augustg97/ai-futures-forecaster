@@ -5,13 +5,13 @@
 // on that instrument. It reads the same emitted data and implements the same functions against
 // the same shipped constants (`engine.json`), so the two surfaces cannot drift apart.
 
-import { Draft, PEN, INK, paperTileURL } from './draft.js?v=20260817-0020';
+import { Draft, PEN, INK, paperTileURL } from './draft.js?v=20260817-2243';
 import { SECTIONS, SHEET_W, TABS, CHART, COL, CTL_NOTE_W, balance,
-         proseColumns, measureSections, SHEET_CW } from './sections.js?v=20260817-0020';
-import { column, fmtNum } from './instruments.js?v=20260817-0020';
-import { describe, headline } from './narrative.js?v=20260817-0020';
-import { describeRecord, headlineRecord, RECORD, recordAt, whenOf } from './record.js?v=20260817-0020';
-import { chooseFigures } from './figures.js?v=20260817-0020';
+         proseColumns, measureSections, SHEET_CW } from './sections.js?v=20260817-2243';
+import { column, fmtNum } from './instruments.js?v=20260817-2243';
+import { describe, headline } from './narrative.js?v=20260817-2243';
+import { describeRecord, headlineRecord, RECORD, recordAt, whenOf } from './record.js?v=20260817-2243';
+import { chooseFigures } from './figures.js?v=20260817-2243';
 
 // One build number, injected into index.html at ship time, versions BOTH the data fetches and
 // (via the build's import rewrite) every module. A fresh app.js against a stale draft.js is the
@@ -84,7 +84,11 @@ function tracksJS(wl) {
   let gw = 62.0, us = 0.58, cn = 0.22, eu = 0.05, rev = 0.14, jobs = 0.0,
       laws = 61, appr = P.APPROVAL0[wl.P];
   let intensity = C.intensity0;
-  let decline = C.decline[wl.S] - (wl.C === 'C3' ? C.c3_bonus : 0);
+  // The axis the decline map is indexed by, and the positions that earn the bonus, are
+  // extracted with the constants — this read carried a `wl.C === 'C3'` literal until r5
+  // moved the condition to C4/C5, where it would have gone on computing the wrong number.
+  let decline = C.decline[wl[C.decline_axis]]
+              - (C.bonus.positions.includes(wl[C.bonus.axis]) ? C.bonus.amount : 0);
   const out = { year: [], cap: [], gw: [], us: [], cn: [], eu: [], rev: [], jobs: [],
                 laws: [], appr: [], copies: [], speed: [], twh: [], co2: [] };
   for (let y = D.engine.y0; y <= D.engine.y1; y++) {
@@ -92,16 +96,24 @@ function tracksJS(wl) {
     let g = P.COMPUTE_G[wl.S] * P.E_DAMP[wl.E];
     g = 1.0 + (g - 1.0) * (1.0 / (1.0 + Math.max(0, gw / 8000.0)));
     gw = Math.min(60000.0, gw * g);
-    if (wl.C === 'C2') us = Math.min(0.72, us + 0.004);
-    if (wl.C === 'C3') { us = Math.max(0.44, us - 0.003); cn = Math.min(0.30, cn + 0.002); }
-    if (wl.C === 'C4') eu = Math.min(0.16, eu + 0.0025);
+    // RE-KEYED TO r5. Six reads moved with the rebuild, and the one that mattered most was
+    // silent: LAWS_RATE became R-keyed in the parent while this read it on C, so every laws
+    // value was `undefined` and the recorder ran on NaN without raising. Counting statutes was
+    // never a question about what the principal states settle between them, which is why the
+    // rate followed the regulatory-architecture axis when C was carved down.
+    if (wl.R === 'R4') us = Math.min(0.72, us + 0.004);       // executive release gate
+    if (wl.C === 'C5' || wl.C === 'C4') {                      // a limit that holds
+      us = Math.max(0.44, us - 0.003); cn = Math.min(0.30, cn + 0.002);
+    }
+    if (wl.R === 'R2') eu = Math.min(0.16, eu + 0.0025);       // contested patchwork
     cn = Math.min(0.34, cn + (wl.S !== 'S3' ? 0.003 : 0.0));
     const lift = 1.0 + 0.10 * Math.max(0, c - 2.6);
     const rg = 1.0 + (P.REV_G[wl.D] - 1.0) * lift;
     rev = Math.min(30.0, rev * (1.0 + (rg - 1.0) / (1.0 + rev / 6.0)));
     jobs = Math.max(-35.0, jobs + P.JOBS_RATE[wl.D] * Math.min(2.5, Math.max(0.3, c - 2.0)));
-    laws = laws + P.LAWS_RATE[wl.C];
-    appr += (wl.D === 'D1' ? -1.2 : -0.3) + (wl.C === 'C3' ? 0.8 : 0.0);
+    laws = laws + P.LAWS_RATE[wl.R];
+    appr += (wl.D === 'D4' ? -1.2 : -0.3) +
+            ((wl.C === 'C5' || wl.C === 'C4') ? 0.8 : 0.0);
     appr = Math.max(8, Math.min(72, appr));
     const copies = c < 3.0 ? 0 : Math.min(5e7, 2.2e4 * Math.pow(10, 1.1 * (c - 3.0)));
     const speed = c < 3.0 ? 1 : Math.min(1000, Math.floor(13 * Math.pow(5.5, c - 3.0)));
@@ -408,7 +420,7 @@ function selectionNotes() {
     const ev = activeEvents()[+rest[0]];
     if (!ev) return null;
     return [{ h: `Waypoint · ${Math.floor(ev.year)}`, p: [ev.text,
-      `Instantiated on the active world-line (${['T','A','C','D','S','P','E'].map((k) => activeMain()[k]).join('·')}) from a cited template. A composed line re-instantiates its own.`] },
+      `Instantiated on the active world-line (${['T','K','A','C','R','D','S','P','E'].map((k) => activeMain()[k]).join('·')}) from a cited template. A composed line re-instantiates its own.`] },
             { h: 'Grounding', p: [(ev.cites || []).join(' · ')] }];
   }
   if (kind === 'delta') {
@@ -433,7 +445,7 @@ function selectionNotes() {
     const e = D.exemplars.lines[+rest[0]];
     if (!e) return null;
     return [{ h: 'Alternative world-line', p: [
-      'Composition ' + ['T','A','C','D','S','P','E'].map((k) => e.wl[k]).join('·') + '. ' +
+      'Composition ' + ['T','K','A','C','R','D','S','P','E'].map((k) => e.wl[k]).join('·') + '. ' +
       altPhrase(e) + '.',
       'One sampled future from the ensemble, drawn in full: its own capability path, its own ' +
       'waypoints, its own outcome layers. Selecting it makes it the active line everywhere on ' +
@@ -584,7 +596,7 @@ function drawAltsPlate(d, S, box) {
       pts.push([gx + ((yr - 2026) / 74) * gw, gy + (capAt(kn, yr) / 6.4) * gh]);
     }
     d.polyline(pts, { weight: PEN.medium, colour: on ? INK.ochre : INK.blue });
-    d.text([cx + 6, cy + ch - 12], ['T','A','C','D','S','P','E'].map((k) => e.wl[k]).join('·'),
+    d.text([cx + 6, cy + ch - 12], ['T','K','A','C','R','D','S','P','E'].map((k) => e.wl[k]).join('·'),
            { size: 2.0, face: 'figure', weight: 700, colour: on ? INK.ochre : INK.ink });
     d.text([cx + 6, cy + ch - 15.6], pk.label,
            { size: 1.4, colour: INK.pencilLight, track: 0.12 });
@@ -1009,7 +1021,7 @@ function sheetState(measure) {
     // The forecast with nothing set, kept as a ghost line so a setting's effect is a visible gap
     baselineBands: (cond || state.alt !== null) ? D.bands.annual : null,
     altOrPinned: !!(cond || state.alt !== null),
-    lineLabel: ['T', 'A', 'C', 'D', 'S', 'P', 'E'].map((k) => wl[k]).join('·'),
+    lineLabel: ['T', 'K', 'A', 'C', 'R', 'D', 'S', 'P', 'E'].map((k) => wl[k]).join('·'),
     effect: (k, p) => (eff.map[`${k}:${p}`] ?? null),
     isRecord,
     headline: isRecord ? headlineRecord(state.yr, trunkCap)
@@ -1201,7 +1213,7 @@ function hoverLabel(hit) {
   if (kind === 'site') { const p = hit.payload;
     return p ? ['COMPUTE SITE', `${p.s.n} — ~${p.gwSite.toFixed(1)} GW modelled`] : null; }
   if (kind === 'alt') { const e = hit.payload;
-    return e ? ['ALTERNATIVE', ['T','A','C','D','S','P','E'].map((k) => e.wl[k]).join('·')] : null; }
+    return e ? ['ALTERNATIVE', ['T','K','A','C','R','D','S','P','E'].map((k) => e.wl[k]).join('·')] : null; }
   if (kind === 'delta') { const e = hit.payload; return e ? ['EVIDENCE APPLICATION', e.rule] : null; }
   if (kind === 'trk') return ['BEHAVIOUR TRACE', 'click for its mechanism'];
   if (kind === 'stat') return ['READING', hit.payload ? hit.payload[0] : ''];

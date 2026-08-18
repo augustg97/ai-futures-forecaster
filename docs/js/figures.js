@@ -8,7 +8,7 @@
 // outlines on built form, hatching for material, wash for water and sky, warm ink for anything
 // carrying energy, green for anything verified, red for anything contested.
 
-import { PEN, INK } from './draft.js?v=20260817-0020';
+import { PEN, INK } from './draft.js?v=20260817-2243';
 
 // A deterministic jitter, so a scene is the same drawing every time it is redrawn.
 function rnd(seed) {
@@ -440,12 +440,12 @@ const FIGURES = {
 // politics is doing to it.
 export function chooseFigures(wl, year, cap) {
   const out = [];
-  if (wl.E === 'E4' || wl.C === 'C5' || wl.E === 'E3') out.push('stalled');
-  if (wl.C === 'C3') out.push('verification');
-  if (wl.C === 'C1' || wl.C === 'C4') out.push('offshore');
+  if (wl.E === 'E5' || wl.C === 'C8' || wl.E === 'E4') out.push('stalled');
+  if ((wl.C === 'C5' || wl.C === 'C4')) out.push('verification');
+  if (wl.C === 'C1' || wl.R === 'R2') out.push('offshore');
   if (cap >= 4.5) out.push('robot');
   out.push('campus');
-  if (wl.P === 'P1' || wl.P === 'P3') out.push('square');
+  if (wl.P === 'P5' || wl.P === 'P4') out.push('square');
   const seen = new Set(), pick = [];
   for (const k of out) { if (!seen.has(k)) { seen.add(k); pick.push(k); } }
   return pick.slice(0, 2).map((k) => ({ key: k, ...FIGURES[k] }));
