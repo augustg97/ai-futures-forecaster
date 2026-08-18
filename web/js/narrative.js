@@ -83,13 +83,16 @@ const RUNG = [
     far: 'Superhuman AI is built into every institution with a budget, and it predates ' +
          'most of the officials now operating it.' }],
   [5.8, {
-    near: 'Capability has passed the top of the scale this model measures. Every figure past ' +
-          'this point is an extrapolation the model was never built to make.',
-    mid: 'Capability is past the top of the scale. The ladder was built for a narrower range ' +
-         'than the world now occupies.',
+    near: 'AI systems solve problems no research programme had posed, and the people who ' +
+          'commissioned them cannot say in advance what a run will return. Procurement ' +
+          'moves to standing budgets, because a specification written in advance no longer ' +
+          'describes what arrives.',
+    mid: 'Systems exceed human performance on every task anyone has thought to measure, ' +
+         'and new measures are written after the fact to describe what they already did.',
     long: 'The scale ends well below where these systems operate.',
-    far: 'Off the top of the scale for decades. The ladder ruled across this sheet was ' +
-         'built for a narrower world than the one it is measuring.' }],
+    far: 'Institutions were rebuilt around systems whose output no person checks in full. ' +
+         'Auditors sample, regulators licence, and the professions that once verified ' +
+         'results now certify the sampling.' }],
 ];
 export function rungText(cap, span = 'near') {
   let out = RUNG[0][1];
@@ -2682,7 +2685,7 @@ export function describe(wl, year, tracks, engineY0, trunkCap = null) {
 
   out.push({ lead: 'System capabilities.', text: join([
     rungText(cap, span), slopeClause(cap, prev),
-    `The capability index reads ${cap.toFixed(2)} on the scale ruled across the forecast.`,
+    `Frontier systems sit at ${cap.toFixed(2)} on the milestone ladder, where 3.0 is a machine that writes better code than any human engineer and 4.0 is one that runs its own research.`,
     crossingClause(tracks, year, engineY0), distanceClause(year, span),
   ]) });
 
@@ -2731,10 +2734,10 @@ export function describe(wl, year, tracks, engineY0, trunkCap = null) {
 // Every clause is keyed on a position AND the span, and the economy clause takes a second key
 // from whichever variable is doing the most to it.
 const RUNG_SHORT = [
-  [5.8, { near: 'already past what this scale can measure',
-          mid: 'past what this scale can measure',
-          long: 'far past what this scale can measure',
-          far: 'off this scale for decades' }],
+  [5.8, { near: 'already solving problems nobody had posed',
+          mid: 'solving problems nobody had posed',
+          long: 'answering questions the people who commissioned them cannot check',
+          far: 'built into institutions whose staff certify the sampling' }],
   [5.0, { near: 'already better than humans at essentially all cognitive work',
           mid: 'better than humans at essentially all cognitive work',
           long: 'better than humans at everything measured and built into everything',

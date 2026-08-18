@@ -177,6 +177,24 @@ export const RECORD = [
        'cleared the last obstacle to restarting Three Mile Island Unit 1 for datacenter load.',
     m: 'Access to models and access to power, decided in the same month by the same ' +
        'government.' },
+  { y: 2026.18, lane: 'oversight', k: 'Supply chain risk',
+    t: 'The Department of War notified Anthropic by letters dated 3 March 2026 that it had been ' +
+       'designated a supply chain risk, the first such designation applied to an American ' +
+       'company, after Anthropic declined to waive contract terms barring mass domestic ' +
+       'surveillance and fully autonomous weapons. Anthropic filed suit in two federal courts ' +
+       'on 9 March 2026.',
+    m: 'The first case of a developer refusing a state customer on stated use limits and being ' +
+       'penalised through procurement standing, which is the mechanism the coordination axis ' +
+       'describes when a state treats a lab as infrastructure.' },
+  { y: 2026.45, lane: 'buildout', k: 'Fable and Mythos withdrawn',
+    t: 'The Bureau of Industry and Security issued an "is informed" letter under the Export ' +
+       'Control Reform Act on 12 June 2026, requiring an individually validated licence before ' +
+       'any foreign national could use Claude Fable 5 or Mythos 5. Anthropic disabled both ' +
+       'worldwide three days after launch, and disputed the severity of the jailbreak finding ' +
+       'the order rested on.',
+    m: 'Export control reached a released model rather than a chip, on a letter rather than a ' +
+       'rule, which is what a licensed channel between the principal states looks like when it ' +
+       'is applied to software.' },
   { y: 2026.52, lane: 'capability', k: 'GPT-5.6',
     t: 'OpenAI released the GPT-5.6 family on 9 July 2026 in three tiers.',
     m: 'The current frontier the index reads at 2.6, and the reference point for every ' +
