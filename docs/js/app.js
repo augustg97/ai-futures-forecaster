@@ -5,13 +5,14 @@
 // on that instrument. It reads the same emitted data and implements the same functions against
 // the same shipped constants (`engine.json`), so the two surfaces cannot drift apart.
 
-import { Draft, PEN, INK, paperTileURL } from './draft.js?v=20260818-0003';
+import { Draft, PEN, INK, paperTileURL } from './draft.js?v=20260818-0011';
 import { SECTIONS, SHEET_W, TABS, CHART, COL, CTL_NOTE_W, balance,
-         proseColumns, measureSections, SHEET_CW } from './sections.js?v=20260818-0003';
-import { column, fmtNum } from './instruments.js?v=20260818-0003';
-import { describe, headline } from './narrative.js?v=20260818-0003';
-import { describeRecord, headlineRecord, RECORD, recordAt, whenOf } from './record.js?v=20260818-0003';
-import { chooseFigures } from './figures.js?v=20260818-0003';
+         proseColumns, measureSections, SHEET_CW } from './sections.js?v=20260818-0011';
+import { column, fmtNum } from './instruments.js?v=20260818-0011';
+import { describe, headline } from './narrative.js?v=20260818-0011';
+import { describeRecord, headlineRecord, RECORD, recordAt, whenOf } from './record.js?v=20260818-0011';
+import { LONGFORM } from './narrative.js?v=20260818-0011';
+import { chooseFigures } from './figures.js?v=20260818-0011';
 
 // One build number, injected into index.html at ship time, versions BOTH the data fetches and
 // (via the build's import rewrite) every module. A fresh app.js against a stale draft.js is the
@@ -413,9 +414,18 @@ function selectionNotes() {
     const a = D.network.axes.find((z) => z.key === rest[0]);
     const p = a && a.positions.find((q) => q[0] === rest[1]);
     if (!p) return null;
-    return [{ h: `${p[0]} · ${p[1]}`, p: [p[4] || '', `Weight today: ${((m[a.key] || {})[p[0]] * 100 || 0).toFixed(1)}%.`] },
-            { h: 'On this axis', p: [a.desc || ''] },
-            { h: 'Grounding', p: [(p[3] || []).join(' · ')] }];
+    // A position opened from the controls has room for more than a paragraph, so the long
+    // form goes under its own subhead as separate lines, each a complete sentence with a
+    // figure and a date. A reader can check one without reading the rest.
+    const lf = LONGFORM[p[0]];
+    const out = [{ h: `${p[0]} · ${p[1]}`,
+                   p: [p[4] || '', `Weight today: ${((m[a.key] || {})[p[0]] * 100 || 0).toFixed(1)}%.`] }];
+    if (lf && lf.lines && lf.lines.length) {
+      out.push({ h: lf.head, p: lf.lines.map((t) => '·\u2002' + t) });
+    }
+    out.push({ h: 'On this axis', p: [a.desc || ''] });
+    out.push({ h: 'Grounding', p: [(p[3] || []).join(' · ')] });
+    return out;
   }
   if (kind === 'rec') {
     const e = RECORD[+rest[0]];

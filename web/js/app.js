@@ -11,6 +11,7 @@ import { SECTIONS, SHEET_W, TABS, CHART, COL, CTL_NOTE_W, balance,
 import { column, fmtNum } from './instruments.js';
 import { describe, headline } from './narrative.js';
 import { describeRecord, headlineRecord, RECORD, recordAt, whenOf } from './record.js';
+import { LONGFORM } from './narrative.js';
 import { chooseFigures } from './figures.js';
 
 // One build number, injected into index.html at ship time, versions BOTH the data fetches and
@@ -413,9 +414,18 @@ function selectionNotes() {
     const a = D.network.axes.find((z) => z.key === rest[0]);
     const p = a && a.positions.find((q) => q[0] === rest[1]);
     if (!p) return null;
-    return [{ h: `${p[0]} · ${p[1]}`, p: [p[4] || '', `Weight today: ${((m[a.key] || {})[p[0]] * 100 || 0).toFixed(1)}%.`] },
-            { h: 'On this axis', p: [a.desc || ''] },
-            { h: 'Grounding', p: [(p[3] || []).join(' · ')] }];
+    // A position opened from the controls has room for more than a paragraph, so the long
+    // form goes under its own subhead as separate lines, each a complete sentence with a
+    // figure and a date. A reader can check one without reading the rest.
+    const lf = LONGFORM[p[0]];
+    const out = [{ h: `${p[0]} · ${p[1]}`,
+                   p: [p[4] || '', `Weight today: ${((m[a.key] || {})[p[0]] * 100 || 0).toFixed(1)}%.`] }];
+    if (lf && lf.lines && lf.lines.length) {
+      out.push({ h: lf.head, p: lf.lines.map((t) => '·\u2002' + t) });
+    }
+    out.push({ h: 'On this axis', p: [a.desc || ''] });
+    out.push({ h: 'Grounding', p: [(p[3] || []).join(' · ')] });
+    return out;
   }
   if (kind === 'rec') {
     const e = RECORD[+rest[0]];

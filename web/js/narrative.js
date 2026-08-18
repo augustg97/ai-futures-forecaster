@@ -2972,6 +2972,11 @@ function econClause(wl, span) {
     const m = ECON_MOD[`${wl.E}|${wl[k]}`];
     if (m) {
       const tail = String(m).replace(/\.\s*$/, '');
+      // A BASE THAT IS ALREADY COMPOUND TAKES THE MODIFIER AS A NEW SENTENCE. Joining with
+      // "and" regardless gave "Operators earn on utilisation, and a buyer changes supplier by
+      // editing one line, and four capital budgets set the ceiling" — three clauses in one
+      // breath, which is the chain August asked to be rid of.
+      if (/,\s+and\s/.test(base)) return `${base}. ${tail}`;
       // A proper noun keeps its capital; an ordinary word does not.
       const lc = /^[A-Z][a-z]+ (?:[a-z]|$)/.test(tail)
         ? tail.charAt(0).toLowerCase() + tail.slice(1) : tail;
@@ -3188,5 +3193,485 @@ export function headline(wl, year, tracks, engineY0) {
     () => `AI is ${rung} in ${yr}. ${eco}. ${gov}. ${ten}.`,
     () => `In ${yr}, ${lower(gov)}, and ${lower(eco)}. AI is ${rung}. ${ten}.`,
   ];
-  return shapes[vary(wl, year, shapes.length)]();
+  // NOTHING CHAINS MORE THAN TWO CLAUSES WITH "and". The economy clause is itself a compound
+  // — a base and a modifier joined with "and" — so a shape that joins it to a third ran to
+  // four: "...guarantees, and four capital budgets set the ceiling, and each earnings call
+  // revises it, and firms holding capable systems compete...". A shape whose result chains
+  // past two falls back to the four-sentence form, which never chains at all.
+  // The count is PER SENTENCE. Counting across the whole headline flagged four separate
+  // sentences carrying one "and" each, which reads perfectly well; what tires a reader is one
+  // sentence chaining three or four. The economy clause is itself a compound, so any shape
+  // that joins it to a third clause makes such a chain, and those fall back to the
+  // four-sentence form, which puts each clause in its own sentence.
+  const chainDepth = (t) => Math.max(0, ...String(t).split(/(?<=\.)\s+/)
+    .map((sent) => (sent.match(/,\s+and\s/g) || []).length));
+  const chosen = shapes[vary(wl, year, shapes.length)]();
+  return chainDepth(chosen) > 2 ? shapes[0]() : chosen;
 }
+
+// ── the long form ───────────────────────────────────────────────────────────
+// A position opened from the controls gets more room than a paragraph, so it gets a
+// different shape: a subhead naming what follows, then the evidence as separate lines. Each
+// bullet is a complete sentence carrying a figure and a date, so a reader can check one
+// without reading the rest.
+export const LONGFORM = {
+  T1: { head: "Horizon arithmetic, stated targets",
+        lines: [
+          "METR fitted an 89-day doubling for models released from 2024 " +
+          "onward across 228 tasks on 2026-01-29.",
+          "OpenAI has named March 2028 as its target for a fully automated " +
+          "AI researcher.",
+          "Polymarket priced 9% to 11% in August 2026 on an OpenAI general- " +
+          "intelligence announcement before 2027.",
+        ] },
+  T2: { head: "Forecaster spread, lab thresholds",
+        lines: [
+          "AI Futures published medians of November 2027, January 2029 and " +
+          "January 2030 in August 2026.",
+          "More than 1,800 Metaculus forecasters put 25% on a first general " +
+          "system by 2029 in July 2026.",
+          "RE-Bench held frontier models at 0.5 to 0.8 in June 2026 against " +
+          "the 1.3 forecast for early 2026.",
+        ] },
+  T3: { head: "Saturation and slowdown",
+        lines: [
+          "Metaculus forecasters held a January 2033 community median in " +
+          "July 2026.",
+          "A January 2033 arrival needs a 718-day doubling, four to eight " +
+          "times slower than METR's fitted rates.",
+          "Benchmark saturation reached 29 of 60 suites by 2026-02-18, " +
+          "blunting the instruments that track progress.",
+        ] },
+  T4: { head: "Megawatts and permits",
+        lines: [
+          "Data Center Watch counted 75 projects worth $130 billion delayed " +
+          "or blocked between January and March 2026.",
+          "Epoch puts the largest 2030 training runs at 4 to 16 gigawatts " +
+          "and ranks power the first binding input.",
+          "Gas turbine lead times reached 243 weeks in 2025 and grid " +
+          "interconnection runs four to seven years.",
+        ] },
+  T5: { head: "Fitted ceilings, survey evidence",
+        lines: [
+          "Meta's ScaleRL fitted an asymptotic pass rate of 0.61, with " +
+          "rival recipes between 0.58 and 0.60.",
+          "DeepSeek-R1-32B peaked at 55.8% near 12,000 tokens in April 2026 " +
+          "and fell to 54.9% by 16,000.",
+          "The AAAI panel found 76% of 475 researchers in March 2025 " +
+          "doubting that scaling reaches general intelligence.",
+        ] },
+  K1: { head: "Operator shift work",
+        lines: [
+          "An operator signs each experiment plan before its run starts and " +
+          "files an incident report when a run reaches a system outside its " +
+          "sandbox.",
+          "The firms that held frontier compute in the crossing year employ " +
+          "most operators, and their entrance examinations score how fast a " +
+          "candidate catches a wrong experiment.",
+          "One shift runs four to eight hours, the span a skilled engineer " +
+          "once needed to reach a 4x speedup on the code task machines " +
+          "cleared at about 52x in April 2026.",
+        ] },
+  K2: { head: "Licence renewal by examination",
+        lines: [
+          "A licence to set research objectives comes up for renewal every " +
+          "two years, and the examination turns on judgment across long " +
+          "runs.",
+          "Candidates read a thirty-two-hour run, the length at which human " +
+          "experts held about twice the agents' score in the 2026 " +
+          "benchmarks the licensing act names.",
+          "Continuing-education credit counts audited output multiplier, " +
+          "which 130 Anthropic researchers reported at a median of four in " +
+          "March 2026.",
+        ] },
+  K3: { head: "Problem selection",
+        lines: [
+          "A research scientist spends the working day choosing problems " +
+          "and reading results while machines write the code and run the " +
+          "sweeps.",
+          "Promotion committees count how often a candidate's chosen " +
+          "experiment returned a usable result, and pay bands follow " +
+          "audited output multiplier.",
+          "Graduate training runs four years on experiment design, " +
+          "statistics and instrument reading, and the programming course " +
+          "occupies a single term.",
+        ] },
+  A1: { head: "verification by sampling",
+        lines: [
+          "A pension fund's risk officer approves allocations from " +
+          "summaries the allocating system wrote.",
+          "An inspector reruns a fraction of decisions each quarter, and " +
+          "the reviewed system picks it.",
+          "Registers published from 2041 onward carry zeros in the column " +
+          "for disabled monitors.",
+        ] },
+  A2: { head: "notification caseload",
+        lines: [
+          "A municipal IT director rotates every credential a model reached " +
+          "before the fix ships.",
+          "Loss adjusters work breach claims at several affected " +
+          "organisations per confirmed incident.",
+          "Procurement offices plan against shipping dates and treat " +
+          "announced dates as estimates.",
+        ] },
+  A3: { head: "reviewer sign-off",
+        lines: [
+          "A lab engineer waits for a reviewer's signature before a " +
+          "licensed run starts.",
+          "Reviewers publish the conditions a suspended programme meets " +
+          "before training resumes.",
+          "A halted run appears in the budget as an ordinary expected cost.",
+        ] },
+  A4: { head: "logged and unlogged access",
+        lines: [
+          "A district health board pays a per-token price that carries an " +
+          "audit trail.",
+          "A rented workshop runs weights whose safety training came off in " +
+          "minutes.",
+          "Investigators reach the second channel through seized hardware " +
+          "and payment records.",
+        ] },
+  A5: { head: "accredited test reports",
+        lines: [
+          "An analyst reads attribution graphs across the prompts a " +
+          "deployed model meets.",
+          "A procurement officer treats the test report as a material " +
+          "certificate.",
+          "Practitioners sit an examination and sign their reports under " +
+          "their own names.",
+        ] },
+  A6: { head: "field counts and certificates",
+        lines: [
+          "An insurer's field team counts reversals, complaints and " +
+          "engineer hours each quarter.",
+          "A model's certificate reports behaviour recorded inside an " +
+          "evaluation environment.",
+          "Environment builders and log readers answer one question from " +
+          "opposite ends.",
+        ] },
+  A7: { head: "complaint caseloads",
+        lines: [
+          "A caseworker reads the log a landlord's system produced before " +
+          "answering the tenant.",
+          "Compliance files name a person, a recorded loss and a date.",
+          "A 2026 poll put extinction risk at 27%, and the question stays " +
+          "open.",
+        ] },
+  C1: { head: "Rival enforcement machinery",
+        lines: [
+          "Two capitals prosecute the same trade from opposite ends, " +
+          "Washington against inbound chip smuggling and Beijing against " +
+          "outbound model access, so one firm can breach both regimes at " +
+          "once.",
+          "Membership rolls do the work treaties would do, with 29 states " +
+          "signing the Shanghai charter on 2026-07-16 and 24 signing Pax " +
+          "Silica by its summit of 2026-06-25.",
+          "Third countries carry the enforcement cost, because their " +
+          "customs services answer to whichever capital cleared their " +
+          "accelerators.",
+        ] },
+  C2: { head: "Licensed hardware channel",
+        lines: [
+          "Licences move hardware and leave capability alone, so a Chinese " +
+          "laboratory that clears the screening trains what it chooses on " +
+          "what it buys.",
+          "Volume is the tell: roughly ten firms cleared at up to 75,000 " +
+          "chips each against 2026 orders above 2 million H200s, and " +
+          "Commerce called actual shipments trivial in July 2026.",
+          "Talks led by Treasury Secretary Scott Bessent in September 2026 " +
+          "put model proliferation and open-weight licensing on the same " +
+          "table as the hardware.",
+        ] },
+  C3: { head: "Breadth of endorsement",
+        lines: [
+          "Signature counts are the measure here, with 89 endorsements on " +
+          "2026-02-19 rising to 91 and spanning the United States, China " +
+          "and Russia.",
+          "Ratification is where breadth thins, since the Council of Europe " +
+          "convention opened 2024-09-05 and took its first ratification " +
+          "only when the European Union deposited on 2026-05-15, against a " +
+          "threshold of five.",
+          "Shared vocabulary still changes behaviour, because ministries " +
+          "and vendors write their documents to the definitions the text " +
+          "supplies.",
+        ] },
+  C4: { head: "Single-domain obligation",
+        lines: [
+          "Nuclear command is the domain carrying a live commitment, " +
+          "affirmed by both states on 2024-11-16 and restated through the " +
+          "Beijing summit of 2026-05-14.",
+          "Autonomous weapons show the alternative path stalling, with a " +
+          "United Nations target year of 2026 passing while government " +
+          "experts met under consensus rules from 2 to 6 March 2026.",
+          "Boundary disputes become the recurring work, because " +
+          "conventional targeting systems run the same models the " +
+          "commitment leaves open.",
+        ] },
+  C5: { head: "Compute inspection regime",
+        lines: [
+          "People carry the first verification layer, since RAND's working " +
+          "paper of 2025-07-24 found personnel measures deployable at once " +
+          "and on-chip measures circumventable.",
+          "Nuclear safeguards set the scale of mature inspection, at almost " +
+          "3,000 in-field activities across over 1,400 facilities in 2025.",
+          "History supplies the odds, with 14 of 40 adversarial European " +
+          "arms control agreements signed between 1918 and 2015 holding " +
+          "fully.",
+        ] },
+  C6: { head: "Expiry and withdrawal",
+        lines: [
+          "Terms end, and the five United States inspection agreements with " +
+          "Moscow all closed between 2002 and 2026, New START on " +
+          "2026-02-05.",
+          "Withdrawal runs faster than negotiation, as the Joint " +
+          "Comprehensive Plan of Action showed by losing Washington on " +
+          "2018-05-08 after taking effect in January 2016.",
+          "What survives a lapse is the corps of people trained to inspect, " +
+          "and they carry that skill to insurers, auditors and corporate " +
+          "boards.",
+        ] },
+  C7: { head: "Violation under signature",
+        lines: [
+          "Declarations alone become the fallback, the arrangement the " +
+          "Biological Weapons Convention has run on since its verification " +
+          "protocol was rejected in July 2001.",
+          "Scale defeats policing, with Epoch AI projecting models above " +
+          "1e26 FLOP rising from about 10 in 2026 to over 200 in 2030.",
+          "The historical record is harsh, since 8 of 40 agreements signed " +
+          "between 1918 and 2015 drew extreme violations and 7 of those " +
+          "preceded war.",
+        ] },
+  C8: { head: "Halt with inspection",
+        lines: [
+          "Frontier employees asked for the tools first, publishing on " +
+          "2026-07-28 a statement that carried 1,378 signatures by " +
+          "2026-08-16, with OpenAI and Anthropic endorsing at company " +
+          "level.",
+          "A stop binding two capitals still needs third countries, so " +
+          "accelerator supply becomes the instrument holding Abu Dhabi, " +
+          "Singapore and Dublin to the same ceiling.",
+          "Consensus bodies show the failure mode, with Russia blocking " +
+          "Wassenaar control-list updates among 42 participating states " +
+          "from February 2022.",
+        ] },
+  R1: { head: "Review board and auditor",
+        lines: [
+          "A lab's review board signs the safety case its own staff wrote.",
+          "An assurance auditor writes the memo that sets a buyer's " +
+          "premium.",
+          "A dissenting researcher signs a public letter or resigns.",
+        ] },
+  R2: { head: "Counsel and examiners",
+        lines: [
+          "A founder picks her state of incorporation by its AI statute.",
+          "State agencies employ more AI examiners than the federal " +
+          "government does.",
+          "A release schedule lists a different date for each of a dozen " +
+          "states.",
+        ] },
+  R3: { head: "Federal portal and examiners",
+        lines: [
+          "A compliance lead files one dossier for the whole country.",
+          "Federal examiners carry the incident duties California wrote on " +
+          "2026-01-01.",
+          "A state legislator lobbies Washington for the rule she wants.",
+        ] },
+  R4: { head: "Passport and dossier",
+        lines: [
+          "A foreign postdoc needs a sponsorship letter before her first " +
+          "session.",
+          "An approval office publishes a median decision time of 74 days.",
+          "A cloud provider checks the clearance register before scheduling " +
+          "capacity.",
+        ] },
+  R5: { head: "Incident desk and docket",
+        lines: [
+          "An engineer files the 72-hour report from her own desk.",
+          "A state analyst keeps a docket of open investigations.",
+          "An adverse audit opinion moves the developer's share price.",
+        ] },
+  R6: { head: "Commencement orders and labels",
+        lines: [
+          "A dozen staff administer duties that begin after they retire.",
+          "Firms publish the transparency labels that applied from " +
+          "2026-08-02.",
+          "A journalist quotes the statute, then the order deferring it.",
+        ] },
+  D1: { head: "Payment and sign-off",
+        lines: [
+          "Payment releases when a client signs for the delivered result.",
+          "Agencies bill by accepted job and absorb rework at their own " +
+          "cost.",
+          "Contracts carry the name of the person answering for the work.",
+        ] },
+  D2: { head: "Checking and signatures",
+        lines: [
+          "A reviewer's pay attaches to the exceptions caught during the " +
+          "shift.",
+          "Licensed signatures carry care and legal advice to patient and " +
+          "client.",
+          "Employers count signed items per shift and bargain over the " +
+          "quota.",
+        ] },
+  D3: { head: "Specification and review",
+        lines: [
+          "A worker sets the task, reads the result and signs for it.",
+          "Unions and employers bargain over how many signed reviews fill a " +
+          "shift.",
+          "Headcount in each absorbed sector holds near its starting level.",
+        ] },
+  D4: { head: "Household income sources",
+        lines: [
+          "Care, trades and construction pay the wages a household counts " +
+          "on.",
+          "A public payment reaches households through the agencies that " +
+          "ran unemployment insurance.",
+          "Entry into an occupation is the scarce thing a hiring interview " +
+          "decides.",
+        ] },
+  S1: { head: "capital budgets",
+        lines: [
+          "Technicians employed by the owner replace accelerator trays on " +
+          "the depreciation timetable an audit committee set.",
+          "A state university researcher in 2048 wins her hours from an " +
+          "allocation committee the owner staffs.",
+          "Property tax on one campus funds the school district in the " +
+          "county hosting it.",
+        ] },
+  S2: { head: "sovereign build-out",
+        lines: [
+          "A grant committee in the national capital awards the hours a S\u00e3o " +
+          "Paulo laboratory trains on.",
+          "Each operator runs the substation and cooling plant its host " +
+          "state permitted.",
+          "Procurement officers file the export approvals Washington first " +
+          "issued to G42 on 2026-07-10.",
+        ] },
+  S3: { head: "power and permission",
+        lines: [
+          "A county commission vote in 2049 decides whether a frontier " +
+          "training run happens in that state.",
+          "The serving utility builds transmission to the campus and " +
+          "recovers the cost from every other customer.",
+          "Line workers, substation crews and water engineers hold the " +
+          "schedule model builders wait on.",
+        ] },
+  S4: { head: "licence volume",
+        lines: [
+          "Two toolchains diverge far enough by 2050 that an engineer " +
+          "retrains to cross between them.",
+          "Journals ask authors to state which bloc's hardware produced a " +
+          "published result.",
+          "Each licensing decision moves the eight-month gap a 2026 United " +
+          "States evaluation measured.",
+        ] },
+  S5: { head: "packaging chokepoint",
+        lines: [
+          "A defence ministry holds racks of accelerators as a strategic " +
+          "reserve by 2046.",
+          "Purchasing managers qualify three suppliers on three continents " +
+          "for every part.",
+          "A researcher in 2053 waits eleven months for hardware her grant " +
+          "already funded.",
+        ] },
+  P1: { head: "Caseworkers and clerks",
+        lines: [
+          "A county caseworker signs a benefits determination that a model " +
+          "drafted, and her signature is what a claimant appeals.",
+          "Ombuds offices inside state agencies read model transcripts as " +
+          "evidence when that appeal arrives.",
+          "Pew's June 2026 finding that 33% of adults were unsure which " +
+          "country leads AI development holds near that level.",
+        ] },
+  P2: { head: "Subscribers and interviewers",
+        lines: [
+          "A household pays a monthly charge for a model service its " +
+          "members rate poorly on every survey that reaches them.",
+          "Sociologists publish on the distance between stated opinion and " +
+          "purchase, working from the series Gallup opened at 39% in 2026.",
+          "Boycott campaigns collect signatures and close, and quarterly " +
+          "revenue at the model companies keeps its slope.",
+        ] },
+  P3: { head: "Objections and sound readings",
+        lines: [
+          "An acoustic consultant takes readings at the property line and " +
+          "files them with the county planning commission.",
+          "A ratepayer advocate argues at the utility commission over which " +
+          "customer class carries a substation's cost.",
+          "County clerks handle recall petitions over siting votes as " +
+          "routine work, a practice the Festus, Missouri recall of 2026 " +
+          "opened.",
+        ] },
+  P4: { head: "Recruiters and statutes",
+        lines: [
+          "A worker reads an employer's model-deployment policy before " +
+          "accepting the job, and recruiters publish it with the salary " +
+          "band.",
+          "Two neighbouring states enforce opposite rules on one product, " +
+          "and a single compliance department runs both.",
+          "Employee restraint groups bargain over deployment inside the " +
+          "companies that build the systems, holding the form the 1,378 " +
+          "signatures of July 2026 took.",
+        ] },
+  P5: { head: "Licences and returns",
+        lines: [
+          "A compliance officer files a quarterly return listing every " +
+          "model her employer runs and the hardware behind each one.",
+          "Inspectors visit halls on a schedule and read the meters against " +
+          "the licensed megawatt figure.",
+          "Universities graduate students into AI-compliance work, a " +
+          "profession the restriction statutes of the 2030s created.",
+        ] },
+  E1: { head: "Capital plans and load",
+        lines: [
+          "Amazon carried near $200 billion of the 2026 capital plan and " +
+          "its board renewed at that scale in the budget rounds that " +
+          "followed.",
+          "Data centres took 4.4% of United States electricity in 2023, and " +
+          "the Department of Energy projected 6.7% to 12% by 2028.",
+          "Revenue growing five to seven times a year covers the training " +
+          "bill, so operators fund the next hall out of cash flow.",
+        ] },
+  E2: { head: "Price and volume",
+        lines: [
+          "Epoch AI measures the price of GPT-4-level performance falling " +
+          "about forty times a year, with rates across milestones running " +
+          "nine to nine hundred times.",
+          "Inference reached about two-thirds of all AI compute in 2026, " +
+          "against a third in 2023 and half in 2025.",
+          "Amazon's January 2025 change to server life took roughly $700 " +
+          "million off its operating income for that year.",
+        ] },
+  E3: { head: "Claims and plant",
+        lines: [
+          "British route mileage more than tripled between 1843 and 1852 " +
+          "while railway shareholders lost about 85% of their capital by " +
+          "1850.",
+          "Insurers, infrastructure funds and chip vendors take ownership " +
+          "of the halls whose builders default on them.",
+          "Global Crossing's fibre carried traffic for its buyers after a " +
+          "bankruptcy filed on 2002-01-28 with $12.4 billion of debt.",
+        ] },
+  E4: { head: "Budgets and queues",
+        lines: [
+          "Training cost for the largest models doubles about every eight " +
+          "months, so a frontier programme is re-underwritten in every " +
+          "budget cycle.",
+          "Boards hold capital flat and safety spend goes first, because " +
+          "those budgets sit outside the revenue plan.",
+          "United States utilities cancelled 121 of the 253 reactors " +
+          "ordered by 1978, and the plants already built ran on for " +
+          "decades.",
+        ] },
+  E5: { head: "Separations and transfers",
+        lines: [
+          "Challenger counted 173,568 job cut announcements citing " +
+          "artificial intelligence between 2023 and mid-2026.",
+          "Across three United States recessions before 2026, 88% of " +
+          "routine-occupation job losses fell inside a twelve-month window " +
+          "around the downturn.",
+          "Insurers filed generative-AI liability exclusions effective " +
+          "2026-01-01, which leaves the automating employer carrying the " +
+          "loss.",
+        ] },
+};
