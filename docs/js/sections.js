@@ -5,8 +5,8 @@
 // wide, drawn at one fixed scale so lettering keeps the size it was drawn at and nothing has to
 // be zoomed. A section's millimetre space runs x 0 → 300 across and y 0 → H up from its foot.
 
-import { PEN, INK, PAPER } from './draft.js?v=20260818-0031';
-import { dial, manifold, strip, collectives, fmtNum } from './instruments.js?v=20260818-0031';
+import { PEN, INK, PAPER } from './draft.js?v=20260818-0059';
+import { dial, manifold, strip, collectives, fmtNum } from './instruments.js?v=20260818-0059';
 
 export const SHEET_W = 340;
 const PAD = 13;
@@ -50,23 +50,40 @@ export function measureSections(d, secs, colW, size = 2.0) {
 // any single claim without reading the rest. Measuring and drawing share this function, so a
 // change to one cannot leave the other behind.
 const BULLET = '\u00b7\u2002';
+const IND = 3.0;        // the bullet's hanging indent, in sheet millimetres
+const HEAD_SIZE = 1.7;  // the subheading's cap height
+const HEAD_LEAD = 1.3;
 export function paraLines(d, p, colW, size = 2.0) {
-  const head = String(p.lead || '').replace(/[.:]\s*$/, '');
+  const head = String(p.lead || '').replace(/[.:]\s*$/, '').toUpperCase();
   const body = String(p.text || '');
   // sentence per line, keeping decimals, dates and abbreviations intact
   const bits = body.split(/(?<=[.!?])\s+(?=[A-Z“"])/).map((t) => t.trim()).filter(Boolean);
   const rows = [];
   if (head) rows.push({ t: head, head: true });
   for (const b of bits) rows.push({ t: BULLET + b, head: false });
-  let lines = 0;
+  // The heading is set at its own size and lead, so it is counted at its own size and lead.
+  // Counting every row at body size measured the block short and put nine marks off the
+  // section, which is the measure and the draw disagreeing by exactly one type size.
+  let headLines = 0, bodyLines = 0;
   for (const r of rows) {
-    lines += d.wrap(r.t, colW - (r.head ? 0 : 2.6), { size, weight: r.head ? 700 : 400 }).length;
+    // THE MEASURE MUST WRAP ON THE SAME TRACKING THE DRAW USES. textBlock defaults to 0.06
+    // and this counted at 0, so every bullet wrapped to more lines than were measured for it
+    // and the tallest column ran 4.3 mm past the section.
+    const n = d.wrap(r.t, colW - (r.head ? 0 : IND),
+                     { size: r.head ? HEAD_SIZE : size, track: r.head ? 0.16 : 0.06,
+                       weight: r.head ? 700 : 400 }).length;
+    if (r.head) headLines += n; else bodyLines += n;
   }
-  return { rows, lines };
+  return { rows, headLines, bodyLines, lines: headLines + bodyLines };
 }
 export function measureProse(d, paras, colW, size = 2.0) {
   let h = 0;
-  for (const p of paras) h += paraLines(d, p, colW, size).lines * size * LEAD + 3.0;
+  for (const p of paras) {
+    const { rows, headLines, bodyLines } = paraLines(d, p, colW, size);
+    const bullets = rows.filter((r) => !r.head).length;
+    h += headLines * HEAD_SIZE * HEAD_LEAD + bodyLines * size * LEAD +
+         bullets * 1.1 + (headLines ? 2.2 : 0) + 3.6;
+  }
   return h;
 }
 // The passage across n columns, split so the columns end level. Three columns keep it a band
@@ -969,14 +986,24 @@ export function readout(d, S, H) {
     const cx = PAD + ci * (PROSE_COL + 10);
     for (const para of col) {
       const { rows } = paraLines(d, para, PROSE_COL, 2.0);
-      for (const r of rows) {
-        const w = PROSE_COL - (r.head ? 0 : 2.6);
-        const n = d.wrap(r.t, w, { size: 2.0, weight: r.head ? 700 : 400 }).length;
-        cy -= d.textBlock([cx + (r.head ? 0 : 2.6), cy], r.t, w,
-                          { size: 2.0, lead: LEAD, weight: r.head ? 700 : 400,
-                            colour: r.head ? INK.ink : INK.pencil });
-      }
-      cy -= 3.0;
+      rows.forEach((r, ri) => {
+        if (r.head) {
+          // A SUBHEADING HAS TO LOOK LIKE ONE. Bold body type at body size read as another
+          // sentence; this is smaller, letter-spaced, in full ink, over a hairline, which is
+          // the same treatment every other heading on the sheet gets.
+          cy -= d.textBlock([cx, cy], r.t, PROSE_COL,
+                            { size: HEAD_SIZE, lead: HEAD_LEAD, weight: 700,
+                              track: 0.16, colour: INK.ink });
+          d.line([cx, cy + 1.0], [cx + PROSE_COL, cy + 1.0],
+                 { weight: PEN.hairline, colour: INK.inkLight, alpha: 0.8 });
+          cy -= 2.2;
+        } else {
+          cy -= d.textBlock([cx + IND, cy], r.t, PROSE_COL - IND,
+                            { size: 2.0, lead: LEAD, colour: INK.pencil });
+          cy -= 1.1;              // air between bullets, so they read as separate claims
+        }
+      });
+      cy -= 3.6;
     }
   });
   for (let i = 1; i < PROSE_N; i++) {

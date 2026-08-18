@@ -1354,8 +1354,18 @@ function layText(s) {
   let line = [], lastY = null, lastCol = null;
   const flush = () => {
     if (!line.length) return;
-    out.push('<div style="position:absolute;left:0;right:0;top:' + line[0].top +
-             'px;white-space:pre-wrap">' + line.map((q) => q.html).join('') + '</div>');
+    // EACH LINE IS ONLY AS WIDE AS ITS OWN TEXT. Full-width line divs stack on top of one
+    // another, and at any point only the last one painted can take a selection — so with three
+    // columns sharing a row, two of the three columns were unselectable and a drag returned
+    // part of the page. The div is placed and sized from the marks it holds.
+    const x0 = Math.min(...line.map((q) => q.left));
+    const x1 = Math.max(...line.map((q) => q.left + q.w));
+    for (const q of line) q.html = q.html.replace(/left:[-\d.]+px/,
+      'left:' + (q.left - x0).toFixed(1) + 'px');
+    out.push('<div style="position:absolute;left:' + x0.toFixed(1) + 'px;width:' +
+             Math.max(1, x1 - x0).toFixed(1) + 'px;top:' + line[0].top +
+             'px;white-space:pre-wrap">' +
+             line.map((q) => q.html).join('') + '</div>');
     line = [];
   };
   for (const m of marks) {
@@ -1365,8 +1375,9 @@ function layText(s) {
       flush(); lastY = top; lastCol = c;
     }
     // A trailing space inside the span, so two marks that meet on a line never run together.
-    line.push({ top: top.toFixed(1),
-      html: '<span style="position:absolute;left:' + (m.x * k).toFixed(1) +
+    const left = m.x * k, w = (m.w || m.size * 4) * k;
+    line.push({ top: top.toFixed(1), left, w,
+      html: '<span style="position:absolute;left:' + (left - 0).toFixed(1) +
             'px;font-size:' + Math.max(6, m.size * k * 0.92).toFixed(1) + 'px">' +
             String(m.str).replace(/&/g, '&amp;').replace(/</g, '&lt;') + ' </span>' });
   }
