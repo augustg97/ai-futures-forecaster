@@ -260,11 +260,12 @@ const NOTHING = {
 // bodies disagree the passage gives the range and names them. The largest correction went the
 // opposite way from the one expected: the sheet said "more than a hundred local moratoria" and
 // the systematic dataset holds roughly 420 in force.
-export const TODAY_HEADLINE = 'METR measures the best model at a 17.4-hour task horizon at half success; agents finish 16% of ' +
-  'freelance jobs. The four largest hyperscalers guide to roughly $725–745bn of 2026 capital ' +
-  'spending, against about $410bn in 2025. Governments have paused: Brussels deferred its ' +
-  'high-risk duties to December 2027, New York and Texas halted data-centre permitting. Roughly ' +
-  '420 local moratoria stand in force; opposition to a nearby data centre runs from 47 to 71%.';
+export const TODAY_HEADLINE = 'METR measures the best model at a 17.4-hour task horizon at half success; agents finish 16% ' +
+  'of freelance jobs. The four largest hyperscalers guide to roughly $725–745bn of 2026 capital ' +
+  'spending, against about $410bn in 2025. Brussels postponed its high-risk duties to December ' +
+  '2027, easing what industry must do; New York and Texas halted data-centre permitting, ' +
+  'restricting what it may build. Roughly 420 local moratoria stand in force; opposition to a ' +
+  'nearby data centre runs from 47 to 71%.';
 
 export const TODAY = [
   { lead: 'System capabilities.',

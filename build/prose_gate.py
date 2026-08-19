@@ -62,6 +62,24 @@ PLUMBING = [
 # repeated part is a two-word tail; this names it directly.
 # A phrase struck in one rewriting pass comes back in the next, because each pass sees only the
 # tables it was given. These are struck permanently, with the round that first removed them.
+# ── a metaphor is not a mechanism ───────────────────────────────────────────
+# August rewrote one himself and the rewrite is the rule:
+#   BEFORE  Middle powers running both blocs' systems have become the translators whose
+#           conventions travel furthest.
+#   AFTER   Middle powers adopt both blocs' AI systems, and achieve influence in setting
+#           protocols and conventions.
+# "have become the translators" asks a reader to decode an image; the rewrite says what these
+# states DO and what they GET. Of the same family as "adoption decides reach alongside export
+# control", which he called "too slick - would wikipedia say this?" An abstraction cannot act,
+# and a sentence shaped to sound finished usually is not saying anything.
+METAPHOR = [
+    (r'\b(?:have |has |had )?become the \w+\b', 'a metaphor standing in for a role'),
+    (r'\btravels? furthest\b|\bcarr(?:y|ies) furthest\b', 'a distance metaphor'),
+    (r'\bmarks the (?:outer )?(?:edge|limit|boundary) of\b', 'a boundary metaphor'),
+    (r'\b\w+ion (?:decides|governs|dictates) \w+\b', 'an abstraction verbing an abstraction'),
+    (r'\bthe (?:scarce|binding|operative) (?:good|input|limit|constraint)\b',
+     'an abstraction as the grammatical subject'),
+]
 RETIRED = [
     (r'\bset the pace\b', 'a phrase retired on 2026-08-19: it carried eight different claims'),
     (r'\bthe sequence amounts to\b', 'a phrase retired on 2026-08-19: copied from a brief'),
@@ -155,7 +173,7 @@ def check(src):
     if closing >= 12:
         faults.append('%d clauses close on "stays open" or "remains unsettled"; one instruction '
                       'produced one sentence many times' % closing)
-    for pat, why in INVENTED + PLUMBING + SELF + MODEL_WORDS + RETIRED:
+    for pat, why in INVENTED + PLUMBING + SELF + MODEL_WORDS + RETIRED + METAPHOR:
         for t in strings:
             m = re.search(pat, t)
             if m:

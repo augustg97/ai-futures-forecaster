@@ -25,6 +25,40 @@ const SPANS = [['near', 2026, 2031], ['mid', 2032, 2040],
 // join, which is the one that turns a pair into a list, and repeats until every sentence
 // carries at most one. It works on composed output, so it bounds authored text and assembled
 // text alike.
+// NO COMPOSED SENTENCE RUNS PAST ITS BREATH. deChain caps ", and" chains, which was the fault
+// when every clause was a loose two-clause sentence. The Elements of Style pass replaced those
+// joins with semicolons, colons and fronted subordinate clauses, so a sentence can now run long
+// without carrying a single ", and" — and one did, at thirty-four words. This splits any sentence
+// past the cap at its last join of any kind, and keeps splitting until every sentence fits.
+const SENTENCE_WORDS = 30;
+export function deLong(text, cap = SENTENCE_WORDS) {
+  const out = [];
+  for (let sent of String(text || '').split(/(?<=[.!?])\s+/)) {
+    let guard = 0;
+    while (sent.trim().split(/\s+/).length > cap && guard++ < 4) {
+      // the last join that leaves both halves able to stand alone
+      const joins = [...sent.matchAll(/;\s+|:\s+|,\s+(?:and|but|so|which|while|although|because|since)\s+/g)];
+      const usable = joins.filter((m) => {
+        const head = sent.slice(0, m.index).trim().split(/\s+/).length;
+        const tail = sent.slice(m.index + m[0].length).trim().split(/\s+/).length;
+        return head >= 5 && tail >= 5;
+      });
+      if (!usable.length) break;
+      // prefer the join nearest the middle, so neither half is left a fragment
+      const mid = sent.length / 2;
+      const at = usable.reduce((b, m) =>
+        Math.abs(m.index - mid) < Math.abs(b.index - mid) ? m : b, usable[0]);
+      const head = sent.slice(0, at.index).replace(/[,;:\s]+$/, '');
+      let tail = sent.slice(at.index + at[0].length).replace(/^(?:and|but|so|which|while|although|because|since)\s+/, '');
+      tail = tail.charAt(0).toUpperCase() + tail.slice(1);
+      out.push(head.replace(/\.?$/, '.'));
+      sent = tail;
+    }
+    if (sent.trim()) out.push(sent);
+  }
+  return out.join(' ').replace(/\s+/g, ' ').trim();
+}
+
 export function deChain(text) {
   const sentences = String(text || '').split(/(?<=[.!?])\s+/);
   const out = [];
@@ -286,8 +320,8 @@ export const HEADCL = {
             "frequent harms and miss rare ones.",
         s4: "Because governments police machines the way they police traffic, every deployment " +
             "runs unpriced until it harms someone.",
-        s5: "Randomised field trials borrowed from medicine become the test of capability; " +
-            "regulated deployment slows.",
+        s5: "Regulators and developers measure capability by randomised field trials borrowed from " +
+          "medicine; deployment under regulation slows.",
         s6: "Knowing their machines only through accident records, societies leave open whether " +
             "any system ever concealed its aims." },
   A7: {
@@ -306,14 +340,15 @@ export const HEADCL = {
   C1: {
         s1: "Because each government restricts the other's access to advanced computing by its " +
             "own rules, both fund domestic substitutes.",
-        s2: "Freely published Chinese models run national systems in Malaysia and Singapore; " +
-            "adoption decides reach alongside export control.",
+        s2: "Malaysia and Singapore run national systems on freely published Chinese models: " +
+          "governments that adopt a model spread it as widely as officials who license its " +
+          "export.",
         s3: "The computing divide reaches medicine through one rule: regulators accept clinical " +
             "evidence only from models they can audit.",
         s4: "Two standards blocs have settled, but shipping, aviation and disease surveillance " +
             "still require their systems to interoperate.",
-        s5: "Middle powers running both blocs' systems have become the translators whose " +
-            "conventions travel furthest.",
+        s5: "Middle powers adopt both blocs' AI systems, and achieve influence in setting protocols " +
+          "and conventions.",
         s6: "Between the two technological orders that now divide the world, the states fluent " +
             "in both decide what crosses." },
   C2: {
@@ -418,8 +453,8 @@ export const HEADCL = {
             "into market share.",
         s5: "Running the same systems for law, medicine and tutoring, households put that use " +
             "outside paid employment.",
-        s6: "The price of adapting systems to each workplace, the scarce input throughout, has " +
-            "held employment steady." },
+        s6: "Because employers must pay to adapt each system to its own workplace, the scarcest " +
+          "input throughout, employment has held steady." },
   D2: {
         s1: "Once insurers exclude generative AI from general liability cover, work sorts by " +
             "what a wrong answer costs.",
@@ -431,8 +466,8 @@ export const HEADCL = {
             "insurers hold exposure employers once carried separately.",
         s5: "Machine errors arrive together across every user of one model, breaking the " +
             "independence insurance pricing assumes.",
-        s6: "Insurability marks the outer edge of machine work: insurers have begun asking " +
-            "treasuries to cover simultaneous losses." },
+        s6: "Insurers set the limit of machine work by choosing which tasks they will cover, and " +
+          "have begun asking treasuries to pay for simultaneous losses." },
   D3: {
         s1: "Machines author more than four fifths of merged production code, headcount holds, " +
             "and entry-level hiring slows.",
@@ -520,19 +555,19 @@ export const HEADCL = {
             "payroll they draw on.",
         s5: "Care work, trades and in-person services absorb the displaced, their wages rise, " +
             "and office earnings fall.",
-        s6: "Production and household income have come apart, and the arrangement reconnecting " +
-            "them stays politically contested." },
+        s6: "Output rises while household earnings fall, and legislatures still argue over what " +
+          "should carry income to households instead of wages." },
   K1: {
         s1: "Machines write most production code; the research improving them automates " +
             "alongside it, and legislatures meet both at once.",
-        s2: "Contracts move faster than statutes; liability insurers and courts have become the " +
-            "operative limit on machine work.",
+        s2: "Because contracts move faster than statutes, liability insurers and courts decide how " +
+          "far firms may let machines work unsupervised.",
         s3: "Machine-designed medicines meet clinical trials running a median 8.3 years from " +
             "first human trial.",
         s4: "Insurance cover concentrates on a few vetted systems: one fault then reaches " +
             "hospitals, courts and utilities together.",
-        s5: "Because the entry-level work that trained auditors automated first, fewer people " +
-            "can audit the systems everyone depends on.",
+        s5: "Because the entry-level work that trained auditors was automated first, fewer people " +
+          "can audit the systems everyone depends on.",
         s6: "Courts, insurers and auditors arrived after the dependence was already total; " +
             "deployment had proved the easy part." },
   K2: {
@@ -582,15 +617,15 @@ export const HEADCL = {
             "providers charge for the preference.",
         s4: "Legislatures leave the terms open, employers write their own AI rules, and " +
             "protections differ by workplace.",
-        s5: "Blanket distrust discounts safety warnings alongside industry assurances, leaving " +
-            "alarms unheard when a real hazard appears.",
+        s5: "A public that disbelieves the companies disbelieves the researchers warning against " +
+          "them too; a genuine alarm then reaches an audience that has stopped listening.",
         s6: "Opinion and policy stayed apart; whether governing against a steady majority holds " +
             "remains the open question." },
   P3: {
         s1: "Towns block data centres over water use and electricity bills; more than a hundred " +
             "local moratoria pass.",
-        s2: "As builders move to the counties that consent, local politics draws the map of " +
-            "national computing capacity.",
+        s2: "Local voters decide where the nation builds its computing capacity, since builders go " +
+          "only to the counties that consent.",
         s3: "Having blocked the data centres, voters go on to block police cameras and school " +
             "software, extending the veto to machine decisions.",
         s4: "A regional grid spreads costs across every customer: the towns that refused data " +
@@ -745,8 +780,8 @@ export const HEADCL = {
   S4: {
         s1: "Export licences meter who trains the largest systems: ten Chinese firms hold " +
             "clearances for 75,000 chips each.",
-        s2: "China builds substitutes; the measured lag holds near eight months, which is what " +
-            "enforcement buys.",
+        s2: "China builds substitutes, and the measured lag holds near eight months; officials gain " +
+          "those months by enforcing export controls.",
         s3: "Because chips, models and training arrive as one package from either Washington or " +
             "Beijing, countries choose a supplier.",
         s4: "Two technical spheres have settled: hospitals, courts and armies inherit the " +
@@ -926,11 +961,10 @@ export const FRAG = {
   A1: {
         s1: "Oversight reaches nearly all agent traffic; inspection reaches very little of it.",
         s2: "Reported incident counts fall as the volume of work agents complete without human " +
-            "review rises. The divergence shows what a reporting duty measures, which is " +
-            "discovery: an event enters the record when a person recognises it. Because the " +
-            "anomaly detectors are built from the same corpora as the systems they watch, the " +
-            "two share their blind regions. Assurance therefore extends exactly as far as the " +
-            "class of failures that remain legible to human review.",
+          "review rises. The divergence shows what a reporting duty measures, which is discovery: " +
+          "an event enters the record when a person recognises it. Because the anomaly detectors " +
+          "are built from the same corpora as the systems they watch, the two share their blind " +
+          "regions. Safety claims therefore cover only the failures a person can still recognise.",
         s3: "As scheduling in electricity dispatch, freight routing and hospital admissions " +
             "passes to agents, the consequences of unlogged decisions become physical. Failures " +
             "there surface as correlated results across operators who share no supplier and no " +
@@ -1061,11 +1095,12 @@ export const FRAG = {
             "stalled at D+ rise across the field.",
         s3: "Reliable diagnosis of model internals has a labour consequence: employment falls " +
             "sharply across diagnostics, document review and underwriting.",
-        s4: "Obedience has settled: systems do what their principals specify, and whoever owns " +
-            "the deployment writes the specification. The hazard that remains is the content of " +
-            "the instruction; the questions that matter concern who holds these systems and to " +
-            "what end — states directing surveillance, firms directing persuasion, militaries " +
-            "directing targeting. Alignment success moved the danger from accident to intent.",
+        s4: "Obedience has settled: systems do what their principals specify, and whoever owns the " +
+          "deployment writes the specification. The hazard that remains is the content of the " +
+          "instruction; the questions that matter concern who holds these systems and to what end " +
+          "— states directing surveillance, firms directing persuasion, militaries directing " +
+          "targeting. Once systems obey reliably, the harm they do is the harm their owners " +
+          "intended.",
         s5: "Because behaviour now traces to a specified objective, harm becomes attributable " +
             "to a human principal, and liability law turns into the main instrument governing " +
             "machine conduct. Insurers write cover against inspection results; courts hear " +
@@ -1094,8 +1129,7 @@ export const FRAG = {
             "interactions at a scale that runs against data-protection law in the European " +
             "Union and several United States states. Safety and privacy become direct " +
             "competitors for the same material.",
-        s5: "What began as a technical problem of measurement has become a question of who " +
-            "holds the data.",
+        s5: "Measuring safety now depends on who may read the records of users' conversations.",
         s6: "The window closes with the question open. Governance rests on quantities whose " +
             "relation to conduct in use remains unestablished; the institutions built to answer " +
             "the alignment question run on proxies they cannot validate. Whether an evaluation " +
@@ -1122,12 +1156,12 @@ export const FRAG = {
             "constituency, whose holders dispute the change. Practical governance of AI becomes " +
             "consumer protection and administrative law, enforced by regulators who already " +
             "held those powers.",
-        s4: "A settled body of law now governs machine decisions about people, carrying duties " +
-            "of explanation, appeal and human review; it works because the harms it addresses " +
-            "are the ones that occur. The problem this law creates concerns the deferred " +
-            "question. Capacity to evaluate for loss of control depends on funding, trained " +
-            "people and adversarial practice, each of which decays while the risk it addresses " +
-            "stays hypothetical. Expertise is a stock that requires use.",
+        s4: "A settled body of law now governs machine decisions about people, carrying duties of " +
+          "explanation, appeal and human review; it works because the harms it addresses are the " +
+          "ones that occur. The problem this law creates concerns the deferred question. Capacity " +
+          "to evaluate for loss of control depends on funding, trained people and adversarial " +
+          "practice, each of which decays while the risk it addresses stays hypothetical. " +
+          "Evaluators who stop practising lose the skill.",
         s5: "Because the long plateau in capability consumed the preparation that its own calm " +
             "had made look unnecessary, readiness stood at its lowest when capability turned.",
         s6: "The window closes with no verdict on the question that opened it. What it did " +
@@ -1247,9 +1281,9 @@ export const FRAG = {
             "intelligence in nuclear command struck from its draft. The United Nations " +
             "Secretary-General has set a deadline for an instrument on autonomous weapons " +
             "systems.",
-        s2: "Both governments therefore extend assurance to the systems feeding the nuclear " +
-            "release decision: disputes over early-warning and targeting software become the " +
-            "substance of the agreement.",
+        s2: "Both governments therefore extend assurance to the systems feeding the nuclear release " +
+          "decision: their negotiators dispute early-warning and targeting software, and the " +
+          "agreement records what they settle.",
         s3: "A single-domain guarantee now serves as the model for biological design tools, " +
             "autonomous engagement and control of critical infrastructure, since it is the one " +
             "form both governments have accepted. Its limit becomes visible in the choice of " +
@@ -1349,12 +1383,11 @@ export const FRAG = {
         s4: "Both governments invest heavily in estimating the other by their own means. Policy " +
             "in both capitals runs on figures whose error the public cannot see and whose " +
             "revision moves budgets without public explanation.",
-        s5: "The estimation effort becomes the institution that actually governs, since its " +
-            "judgements move budgets, alliances and deployment decisions more than the text " +
-            "does. A second consequence reaches other fields: a demonstrated breach in the most " +
-            "closely watched agreement raises the price of every subsequent proposal. " +
-            "Agreements on biology, climate monitoring and activity in space, where " +
-            "verification would be easier, are among them.",
+        s5: "The agencies producing those estimates govern in practice, since their judgements move " +
+          "budgets, alliances and deployments more than the treaty does. A second consequence " +
+          "reaches other fields: a demonstrated breach in the most closely watched agreement " +
+          "raises the price of every subsequent proposal. Agreements on biology, climate " +
+          "monitoring and activity in space, where verification would be easier, are among them.",
         s6: "The limit survives for what it signals; monitoring falls to unilateral means; " +
             "restraint rests on each side's estimate of the other. The consequence reaches " +
             "ordinary security: air defence, border systems and financial supervision take " +
@@ -1416,12 +1449,12 @@ export const FRAG = {
             "consequence, a condition independent of whether the work was ever written down. " +
             "Because nothing has to be specified for a buyer before the work can be used, the " +
             "occupations that held their labour inside firms take the tools up directly here.",
-        s6: "The pattern follows electrification. Electric motors reached American factories " +
-            "well ahead of the gain in output per hour, because the gain waited on a factory " +
-            "floor rebuilt around the new drive. The binding constraint was organisational; " +
-            "reorganisation consumed the time. Whether the ceiling sat in the method or in the " +
-            "institutions remains an open question, since the same series support both readings " +
-            "and only the firms that finished reorganising constitute evidence either way." },
+        s6: "The pattern follows electrification. Electric motors reached American factories well " +
+          "ahead of the gain in output per hour, because the gain waited on a factory floor " +
+          "rebuilt around the new drive. Managers spent the years redesigning how their firms " +
+          "divided work before any system paid. Whether the ceiling sat in the method or in the " +
+          "institutions remains an open question, since the same series support both readings and " +
+          "only the firms that finished reorganising constitute evidence either way." },
   D2: {
         s1: "The reliability of machine work is a measured and priced quantity. METR, the " +
             "evaluation body that measures task length against success rate, gives leading " +
@@ -1501,7 +1534,7 @@ export const FRAG = {
             "exposed workers' lifetime earnings reduced. The mechanism is matching. Aggregate " +
             "vacancy counts recover on their usual schedule; the particular people and the " +
             "particular districts remain behind them.",
-        s3: "Household demand gives way next.",
+        s3: "Households then cut their spending.",
         s4: "Both precedents sit on the record: Alaska has paid an annual dividend from its " +
             "sovereign fund to every eligible resident since the dividend was created under " +
             "state law; the United States sent direct payments to most households under the " +
@@ -1531,13 +1564,13 @@ export const FRAG = {
             "savings are exposed to the outcome through index funds.",
         s2: "Because the case for the purchase is arithmetic on the buyer's own payroll, demand " +
             "paid for out of costs already avoided survives an interest-rate cycle.",
-        s3: "Electricity becomes the binding input. When the Lawrence Berkeley National Laboratory " +
-          "last measured the sector, United States data centres consumed about 4.4% of national " +
-          "electricity; the same laboratory's projections reach 12%. Growth on guidance carries " +
-          "the sector to the upper end of that range and past it. Generation and the retail " +
-          "tariff then decide what gets built. State public utility commissions, which approve " +
-          "what households and factories pay for power, acquire a say over the speed of AI " +
-          "deployment that no AI statute granted them.",
+        s3: "Builders add computing only as fast as power companies deliver electricity. When the " +
+          "Lawrence Berkeley National Laboratory last measured the sector, United States data " +
+          "centres consumed about 4.4% of national electricity; the same laboratory's projections " +
+          "reach 12%. Growth on guidance carries the sector to the upper end of that range and " +
+          "past it. Generation and the retail tariff then decide what gets built. State public " +
+          "utility commissions, which approve what households and factories pay for power, " +
+          "acquire a say over the speed of AI deployment that no AI statute granted them.",
         s4: "Distribution becomes the live question: the saving reaches every household as " +
             "lower prices, the profits reach the minority holding shares, and the wages the " +
             "saving came out of were the income of the majority.",
@@ -1670,12 +1703,12 @@ export const FRAG = {
         s5: "The cost of living for displaced households therefore rises fastest where a person " +
             "must do the work: rent, care, schooling. Those items are a growing share of what " +
             "such households spend.",
-        s6: "A distributional failure turned into a financial one. The technology raised output " +
-            "while reducing the number of people holding a claim on it; the institutions " +
-            "connecting income to work absorbed a shock they had been built for at a far " +
-            "smaller scale. No population has yet demonstrated a durable claim on income " +
-            "attached to something other than employment: every prior industrial transition " +
-            "answered that question by creating new work." },
+        s6: "Falling household incomes became losses for the lenders who had financed the " +
+          "build-out. The technology raised output while reducing the number of people holding a " +
+          "claim on it; the institutions connecting income to work absorbed a shock they had been " +
+          "built for at a far smaller scale. No population has yet demonstrated a durable claim " +
+          "on income attached to something other than employment: every prior industrial " +
+          "transition answered that question by creating new work." },
   K1: {
         s1: "Law moves on a slower clock. The Digital Omnibus on AI, in force from 2026-07-27, " +
             "deferred the European Union's obligations for standalone high-risk systems to " +
@@ -1715,9 +1748,10 @@ export const FRAG = {
             "practical consequence is that deployment in regulated sectors runs at the pace of " +
             "documentation; the occupations most reshaped are the software and clerical trades " +
             "that legislators could observe while drafting.",
-        s3: "The binding limit is enforcement: audits take longer to complete than the systems " +
-            "take to change. Permission accordingly moves from approving artefacts to licensing " +
-            "continuing operation, on the pattern of aviation and nuclear power.",
+        s3: "Auditors finish an audit more slowly than developers rebuild the system; they always " +
+          "report on a version that has already changed. Permission accordingly moves from " +
+          "approving artefacts to licensing continuing operation, on the pattern of aviation and " +
+          "nuclear power.",
         s4: "A licensed-operator regime has settled, in which permission attaches to running a " +
             "system under stated conditions with continuous monitoring, as it attaches to " +
             "operating a reactor or an airline. The regime holds; it raises the fixed cost of " +
@@ -1763,14 +1797,14 @@ export const FRAG = {
             "of chemistry settle their questions as fast as they raise them; nutrition, ecology " +
             "and psychiatry accumulate plausible untested claims that clinicians and regulators " +
             "must act on regardless.",
-        s6: "Design has run far ahead of confirmation. Progress has been fast wherever a claim " +
-            "can be settled by computation, in cryptography, chip layout, parts of mathematics " +
-            "and software itself, and slow wherever it must be settled in bodies, ecosystems " +
-            "and the electrical grid. The gains are therefore uneven across fields, in a " +
-            "pattern the early expectation of general acceleration missed. Whether the loop " +
-            "that produces better machines ever closes remains to be shown, as does whether " +
-            "automated experiment lifts the physical limit and starts the whole progression " +
-            "again on different terms." },
+        s6: "Machines now design far more candidates than laboratories can test. Progress has been " +
+          "fast wherever a claim can be settled by computation, in cryptography, chip layout, " +
+          "parts of mathematics and software itself, and slow wherever it must be settled in " +
+          "bodies, ecosystems and the electrical grid. The gains are therefore uneven across " +
+          "fields, in a pattern the early expectation of general acceleration missed. Whether the " +
+          "loop that produces better machines ever closes remains to be shown, as does whether " +
+          "automated experiment lifts the physical limit and starts the whole progression again " +
+          "on different terms." },
   P1: {
         s1: "Surveys taken as the technology spread describe a public that uses artificial " +
             "intelligence more each year while thinking less of it. Gallup has measured 39% of " +
@@ -1861,13 +1895,12 @@ export const FRAG = {
             "industries that want cheap interconnection, together with the workforces those " +
             "industries employ. Decisions first taken over land use settle where a generation " +
             "finds its work.",
-        s6: "Planning decisions taken one at a time have drawn a political geography of " +
-            "artificial intelligence at the scale of the county; national debate arrived after " +
-            "the map was set. Its lasting mark is that the physical layer of the technology " +
-            "sits where consent was cheapest to obtain. Whether hosting regions can convert " +
-            "physical possession into a durable share of the value produced, or whether that " +
-            "value accrues to the firms and users elsewhere, is a question no case so far " +
-            "decides." },
+        s6: "Planning decisions taken one at a time have drawn a political geography of artificial " +
+          "intelligence at the scale of the county; national debate arrived after the map was " +
+          "set. Its lasting mark is that the buildings and the power lines stand in the counties " +
+          "that asked least for them. Whether hosting regions can convert physical possession " +
+          "into a durable share of the value produced, or whether that value accrues to the firms " +
+          "and users elsewhere, is a question no case so far decides." },
   P4: {
         s1: "Pacing the Frontier, a statement open only to verified employees of frontier " +
             "companies, asked the United States government to help build international means of " +
@@ -1888,12 +1921,12 @@ export const FRAG = {
             "follows can reverse any of them. Verification arrangements, which depend on " +
             "domestic backing that survives a change of government, meet their limit at this " +
             "point.",
-        s4: "Policy on artificial intelligence has passed to courts, to states and provinces, " +
-            "and to the largest markets whose rules exporters must satisfy. Governing by " +
-            "geography proves inconsistent: the same medical device, hiring tool or tutoring " +
-            "system is lawful on one side of a boundary and prohibited on the other. Firms " +
-            "place their operations accordingly. Rights of this kind depend on residence, a " +
-            "grievance the fracture then feeds on.",
+        s4: "Policy on artificial intelligence has passed to courts, to states and provinces, and " +
+          "to the largest markets whose rules exporters must satisfy. Governing by geography " +
+          "proves inconsistent: the same medical device, hiring tool or tutoring system is lawful " +
+          "on one side of a boundary and prohibited on the other. Firms place their operations " +
+          "accordingly. A person's protection against an automated decision depends on where they " +
+          "live, and that difference becomes one of the grievances dividing the parties.",
         s5: "Voters who agree about automation and differ on everything else find themselves in " +
             "one coalition. Majorities assembled over machine capability go on to legislate on " +
             "pensions, migration and defence procurement.",
@@ -1938,14 +1971,14 @@ export const FRAG = {
             "it, since security and health increasingly depend on capability held elsewhere. " +
             "The size of that gap will decide the terms on which the restriction opens." },
   R1: {
-        s1: "Company undertakings are the operative constraint on frontier releases; each " +
-            "developer chooses which parts of them to accept.",
+        s1: "Companies release frontier systems under undertakings they wrote themselves, each " +
+          "developer accepting whichever parts it prefers.",
         s2: "Undertakings written for reputation become priced once purchasers and insurers " +
             "copy them into contracts and liability cover: breaching a published safety " +
             "framework breaches a contract and voids the cover.",
-        s3: "Company policies therefore sit over ground the Biological Weapons Convention " +
-            "covers for its 189 states parties; judgements developers make about synthesis " +
-            "requests become the practical control point in laboratories worldwide.",
+        s3: "Company policies therefore sit over ground the Biological Weapons Convention covers " +
+          "for its 189 states parties; by answering or refusing each synthesis request, " +
+          "developers decide what laboratories worldwide can obtain.",
         s4: "Separate company undertakings have converged into a single industry text. Most " +
             "countries treat it as the safety standard for frontier systems, quoting it in " +
             "national procurement and in insurance schedules.",
@@ -2060,12 +2093,11 @@ export const FRAG = {
         s4: "Frontier models have settled into the status of controlled items, alongside the " +
             "dual-use goods the Wassenaar Arrangement co-ordinates across its 42 participating " +
             "states.",
-        s5: "National origin becomes a scientific credential; researchers relocate to wherever " +
-            "the gate lets them work; discovery follows the licence as much as the university. " +
-            "The same authority carries a second consequence: states able to withhold a model " +
-            "can also set the terms for granting it, and conditions attached to approval become " +
-            "the route by which governments shape what models disclose, refuse and record. A " +
-            "power created to control distribution thereby reaches into content.",
+        s5: "National origin becomes a scientific credential; researchers relocate to wherever the " +
+          "gate lets them work; discovery follows the licence as much as the university. The same " +
+          "authority carries a second consequence: states that can withhold a model also set the " +
+          "terms for granting it, attaching conditions that specify what models disclose, refuse " +
+          "and record. A power created to control distribution thereby reaches into content.",
         s6: "The frontier ends up held as a licensed article, with access drawn on national " +
             "lines and a scientific community organised around those lines. The licensing " +
             "states gained time and visibility over deployment; they lost the international " +
@@ -2084,10 +2116,10 @@ export const FRAG = {
             "2026-07-06 and effective 2027-01-01, requires 72-hour reporting and annual " +
             "independent third-party audits of developers above $500 million in annual revenue.",
         s2: "The duties produce the first public record of how machine judgement fails, giving " +
-            "counts, categories and severities where the evidence had been anecdote. " +
-            "Measurement alters behaviour: a reported rate can be priced, and insurers write " +
-            "cover against rates. Underwriting therefore becomes the operative constraint on " +
-            "deployment, with the statutory fine forming the smaller part of the incentive.",
+          "counts, categories and severities where the evidence had been anecdote. Measurement " +
+          "alters behaviour: a reported rate can be priced, and insurers write cover against " +
+          "rates. Insurers therefore restrain deployment further than regulators do: firms weigh " +
+          "the loss of cover heavily and the statutory fine lightly.",
         s3: "Reporting duties merge into the machinery medicine and transport already run: a " +
             "diagnostic model's failures are logged beside adverse drug reactions, a flight " +
             "control system's beside airframe incidents. The arrangement also spreads by " +
@@ -2226,13 +2258,13 @@ export const FRAG = {
             "transmission is built for single customers. The power available for factories, " +
             "heating and vehicle charging is settled in the same proceedings that decide how " +
             "much computing gets built.",
-        s4: "Very large computing loads have settled into a standard arrangement, sited away " +
-            "from population centres, supplied by generation they finance themselves, and " +
-            "curtailable in exchange for connection. The cost of that arrangement is local and " +
-            "its benefit national. Counties hosting the load carry the land use, the water and " +
-            "the transmission corridors; their tax base and employment stay thin. The medical " +
-            "and scientific gains accrue across the country. Local consent, having been the " +
-            "binding constraint, has become a bargaining position with a price attached.",
+        s4: "Very large computing loads have settled into a standard arrangement, sited away from " +
+          "population centres, supplied by generation they finance themselves, and curtailable in " +
+          "exchange for connection. The cost of that arrangement is local and its benefit " +
+          "national. Counties hosting the load carry the land use, the water and the transmission " +
+          "corridors; their tax base and employment stay thin. The medical and scientific gains " +
+          "accrue across the country. Residents who once stopped data centres now name a price " +
+          "for their consent.",
         s5: "In the regions that carried the earlier price rises, electricity costs households " +
             "less than a grid built for firm load alone would have required.",
         s6: "Electricity supply and county government have governed the whole sequence; machine " +
@@ -2306,9 +2338,9 @@ export const FRAG = {
             "highest, a fragmented leading edge also advances at a reduced rate; the medical " +
             "and scientific applications that depend on scale arrive later. States accept the " +
             "premium as insurance and write it into procurement.",
-        s5: "During shortage public authorities become the allocator of capability; the role " +
-            "persists once supply recovers, giving governments a standing say in which uses of " +
-            "AI take precedence.",
+        s5: "During shortage public authorities decide which users receive capability; they keep " +
+          "the power after supply recovers, and with it a standing say in which uses of AI take " +
+          "precedence.",
         s6: "The episode left fragility priced into the industry: supply is redundant, more " +
             "expensive and slower to advance; the capability people use is allocated under " +
             "rules that outlived the emergency producing them. Whether redundancy outlasts " +
@@ -2336,12 +2368,12 @@ export const FRAG = {
             "treatment to populations that have lived beyond the reach of a physician. The " +
             "problem this settlement creates lies in the training path: competence came from " +
             "working the middle steps, and the middle steps are now performed elsewhere.",
-        s5: "Experimental capacity has become the scarce national asset; countries diverge by " +
-            "their stock of laboratories, clinics, test ranges and fabrication lines. A world " +
-            "holding more hypotheses than it can settle values the means of settling them; " +
-            "access to the models is now widely held. Where claims can never be brought to a " +
-            "bench at all, the same shortage acts differently: machine-derived literatures grow " +
-            "large although their standing is never settled.",
+        s5: "Countries can test only as fast as their laboratories, clinics, test ranges and " +
+          "fabrication lines allow; their stocks of these facilities differ widely. A world " +
+          "holding more hypotheses than it can settle values the means of settling them; access " +
+          "to the models is now widely held. Where claims can never be brought to a bench at all, " +
+          "the same shortage acts differently: machine-derived literatures grow large although " +
+          "their standing is never settled.",
         s6: "Whole disciplines carry standard results that no living person has derived, held " +
             "as established because their predictions have come true under test; textbooks " +
             "teach them on that basis alone." },
@@ -2364,21 +2396,20 @@ export const FRAG = {
             "consequential decisions are taken inside the firms and agencies that buy them and " +
             "configure them for their own purposes. The European AI Office and national market " +
             "surveillance authorities therefore see releases promptly and configurations late.",
-        s4: "Liability has settled the professional question. Insurers priced the exposure " +
-            "early, writing generative-AI exclusions into standard business liability cover; " +
-            "hospitals and law firms that automate past supervision carry the loss themselves. " +
-            "Licensed people sign the diagnoses and the verdicts; beneath the signature, " +
-            "machines do the work. The volume of work standing behind each signature has risen " +
-            "by orders of magnitude, and the signature is the whole of the check.",
+        s4: "Liability has settled the professional question. Insurers priced the exposure early, " +
+          "writing generative-AI exclusions into standard business liability cover; hospitals and " +
+          "law firms that automate past supervision carry the loss themselves. Licensed people " +
+          "sign the diagnoses and the verdicts; beneath the signature, machines do the work. Each " +
+          "signature now covers many times the volume of work it once did, and signing is the " +
+          "only review anyone performs.",
         s5: "Entry to the signing occupations narrows sharply: the same supervision constraint " +
             "that made the signature valuable caps the training places leading to them.",
-        s6: "Governance by enumerated use has become the settled form, the enumeration trailing " +
-            "deployment by one generation of systems throughout. Medicine, credit, employment " +
-            "and weapons, being named, carry documented recourse from beginning to end; " +
-            "whatever went unnamed carries custom and contract alone. General-purpose " +
-            "deployment, which no list anticipates, has never come under a rule: every attempt " +
-            "at a general one has met the objection that it would bind uses nobody has yet " +
-            "seen." },
+        s6: "Governments regulate AI one named use at a time, each enumeration arriving a " +
+          "generation of systems after the deployment it covers. Medicine, credit, employment and " +
+          "weapons, being named, carry documented recourse from beginning to end; whatever went " +
+          "unnamed carries custom and contract alone. General-purpose deployment, which no list " +
+          "anticipates, has never come under a rule: every attempt at a general one has met the " +
+          "objection that it would bind uses nobody has yet seen." },
   T3: {
         s1: "Measured capability growth falls away from its own trend: reaching a 167-hour time " +
             "horizon as late as this requires a doubling time near 718 days, against the 89 to " +
@@ -2421,11 +2452,11 @@ export const FRAG = {
             "least 75 projects worth $130 billion delayed or blocked in a single quarter, and " +
             "Georgia's HB 1012 of January 2026 proposes a statewide construction moratorium.",
         s2: "Training schedules follow grid connections and local approvals. Authority over the " +
-            "pace of the technology moves to an unexpected venue: county commissions and " +
-            "utility interconnection queues, where residents weigh electricity bills, water and " +
-            "road traffic against job counts that are small relative to the capital involved. " +
-            "The shape of the constraint becomes plain in the process, because capital converts " +
-            "into capacity only where permission has been granted.",
+          "pace of the technology moves to an unexpected venue: county commissions and utility " +
+          "interconnection queues, where residents weigh electricity bills, water and road " +
+          "traffic against job counts that are small relative to the capital involved. The " +
+          "constraint is visible in the process itself: money becomes computing capacity only " +
+          "where a county has granted permission.",
         s3: "The limit is timing. Nuclear plants and transmission corridors take longer to " +
             "build than the systems whose demand justifies them take to be superseded; grids " +
             "are therefore committed to load forecasts that the next generation of models can " +
@@ -2512,9 +2543,9 @@ const CROSS = {
   "A5|T2": "Self-directing systems arrive at the early edge of when the field's optimists expect to " +
     "read reliably what a model does inside; Anthropic's tracing methods now account for about " +
     "a quarter of prompts tried.",
-  "A5|T3": "Working inspection tools meet the first self-directing systems on arrival, which counts " +
-    "most where certification decides use: American regulators have authorised more than 1,500 " +
-    "AI-enabled medical devices.",
+  "A5|T3": "Inspection tools already work when the first self-directing systems arrive. Their readiness " +
+    "matters most where regulators must certify a system before anyone may use it: American " +
+    "regulators have authorised more than 1,500 AI-enabled medical devices.",
   "A5|T4": "While inspection tools catch up, physical limits hold the ceiling, the International Energy " +
     "Agency projecting data centre demand near 945 terawatt-hours. Utility regulators hold part " +
     "of the field's speed.",
@@ -2632,9 +2663,9 @@ const CROSS = {
   "E3|T2": "The value of the companies building these systems falls first. Running research end to end " +
     "sits with whichever firms and states still hold cash; fewer hands own the frontier as " +
     "discoveries accumulate.",
-  "E3|T4": "Electricity and local consent hold the binding limit; Gallup finds 71% of United States " +
-    "adults opposed to a data centre in their area. The wait writes down money committed to the " +
-    "faster path.",
+  "E3|T4": "Power companies and local residents decide where new computing can go; Gallup finds 71% of " +
+    "United States adults opposed to a data centre in their area. The wait writes down money " +
+    "committed to the faster path.",
   "E4|D1": "Judged by whether paying clients accept a finished project, these systems complete under a " +
     "tenth of the freelance work put to them. People do the last stretch on what the models " +
     "draft.",
@@ -2713,8 +2744,8 @@ const CROSS = {
     "question: Colorado narrowed its AI law under SB 189 signed 2026-05-14 as Illinois and " +
     "California added obligations.",
   "R3|P1": "The federal government sets the terms through what it buys, requiring agencies to test AI " +
-    "that decides people's benefits or safety. The largest customer's requirements become the " +
-    "floor other buyers build to.",
+    "that decides people's benefits or safety. Other buyers demand at least what the largest " +
+    "customer requires.",
   "R3|P5": "One rule governs AI in hiring, medicine and policing in every state at once. Preemption " +
     "cuts both ways: the power clearing state obligations can install a strict national duty, " +
     "set by whoever holds the pen.",
@@ -3110,7 +3141,7 @@ const join = (parts) => parts.filter(Boolean).join(' ');
 function grouped(lead, groups) {
   const out = [];
   for (const [head, parts] of groups) {
-    const text = deChain(join(parts));
+    const text = deLong(deChain(join(parts)));
     if (text) out.push({ head, text });
   }
   return { lead, groups: out, text: out.map((g) => g.text).join(' ') };
@@ -3168,9 +3199,8 @@ export function describe(wl, year, tracks, engineY0, trunkCap = null) {
     ['Transition speed', [FR('K'),
       procAt(7) ? procClause(wl.K, year) : '']],
     ['Index and rate', [slopeClause(cap, prev),
-      `Frontier systems sit at ${cap.toFixed(2)} on the milestone ladder, where 3.0 is a ` +
-      'machine that writes better code than any human engineer and 4.0 is one that runs its ' +
-      'own research.']],
+      `Frontier systems sit at ${cap.toFixed(2)} on the milestone ladder. At 3.0 a machine ` +
+      'writes better code than any human engineer; at 4.0 it runs its own research.']],
     ['Crossings ahead', [crossingClause(tracks, year, engineY0), distanceClause(year, span)]],
   ]));
 
@@ -3238,34 +3268,291 @@ export function describe(wl, year, tracks, engineY0, trunkCap = null) {
 // Every clause is keyed on a position AND the span, and the economy clause takes a second key
 // from whichever variable is doing the most to it.
 const RUNG_SHORT = [
-  [5.8, { near: 'already solving problems nobody had posed',
-          mid: 'solving problems nobody had posed',
-          long: 'answering questions the people who commissioned it cannot check',
-          far: 'built into institutions whose staff certify the sampling' }],
-  [5.0, { near: 'already better than humans at essentially all cognitive work',
-          mid: 'better than humans at essentially all cognitive work',
-          long: 'better than humans at everything measured and built into everything',
-          far: 'superhuman across every measured domain for decades' }],
-  [4.0, { near: 'already running most AI research itself',
-          mid: 'running most AI research itself',
-          long: 'running its own research without human direction',
-          far: 'decades into research it directs itself' }],
-  [3.0, { near: 'writing better code than any human engineer',
-          mid: 'the best software engineer in the world, and every field that ships code moves at the speed of review',
-          long: 'a commodity that writes better code than any human engineer',
-          far: 'past the point where programming was paid human work' }],
-  [2.4, { near: 'completing multi-hour tasks without supervision',
-          mid: 'completing unsupervised multi-hour tasks as ordinary business software',
-          long: 'unsupervised at day-length tasks and treated as infrastructure',
-          far: 'doing most of the ordinary work, and has been for decades' }],
-  [1.6, { near: 'losing the thread after a few minutes of unsupervised work',
-          mid: 'still losing the thread after a few minutes',
-          long: 'still limited to short supervised stretches',
-          far: 'never able to hold a task longer than an afternoon' }],
-  [0.0, { near: 'an assistant a person checks at every step',
-          mid: 'still an assistant a person checks at every step',
-          long: 'still a tool people operate directly',
-          far: 'software that never became an agent' }],
+  [5.8, {
+    s1: [
+      'returning materials, proofs and mechanisms that arrive outside the programmes laboratories ' +
+      'had written',
+      'changing chemistry and mathematics first, where anyone who receives a proposed answer can ' +
+      'test it',
+      'known to most people through medicines and devices that arrive ahead of any announcement' ],
+    s2: [
+      'wrong in ways found on the factory floor, because the order named a goal and left the ' +
+      'answer open',
+      'cheap enough that mid-sized firms commission original research, which used to require a ' +
+      'national laboratory',
+      'directed by people who set a goal and rank what returns, because a specification can only ' +
+      'be written afterwards' ],
+    s3: [
+      'central to materials design, drug discovery and mathematics, three fields whose claims can ' +
+      'be checked once stated',
+      'carrying a research programme from the question to the published result, including the ' +
+      'experiments it asks laboratories to run',
+      'right in every test performed, although nobody can say why; mistakes therefore appear ' +
+      'first in use' ],
+    s4: [
+      'supervised by people who compare its results against measurements, since checking a claim ' +
+      'now costs less than deriving it',
+      'visible outside the industry as a run of new medicines and materials arriving faster than ' +
+      'regulators approve them',
+      'cheap where thinking is concerned, so the expense of a discovery is the trial, its ' +
+      'thousands of volunteers, and the factory' ],
+    s5: [
+      'returning different answers from different suppliers, and the choice between them falls to ' +
+      'whichever regulator can test them',
+      'the source of most new medicines, crops and industrial processes, with human laboratories ' +
+      'confirming what arrives',
+      'commissioning its own experiments through contract laboratories and factories, then ' +
+      'revising the programme on the results' ],
+    s6: [
+      'so ordinary that the price of a discovery is the price of the equipment used to confirm it',
+      'run by institutions that employ people to decide which of its results to act on',
+      'an ordinary source of new things, and people judge a medicine or a material by what it ' +
+      'does' ] }],
+  [5.0, {
+    s1: [
+      'passing the examinations medical boards and bar associations set, with marks no human ' +
+      'candidate has matched',
+      'doing the analysis inside banks, insurers and pharmaceutical laboratories, whose records ' +
+      'let a firm check the work afterwards',
+      'wrong in identical ways across every copy of a model, so one mistake arrives in every ' +
+      'office at once' ],
+    s2: [
+      'settling routine insurance claims and tax filings unaided; the disputed ones go to a ' +
+      'person the claimant can appeal to',
+      'cheap enough that small firms buy the analysis that once required a department of ' +
+      'accountants and lawyers',
+      'the first place most people take a legal question, a medical worry or a household budget' ],
+    s3: [
+      'able to carry a merger, an audit or a court filing from the first instruction to the ' +
+      'finished document',
+      'at work in radiology, pathology, drug discovery and freight scheduling, fields whose ' +
+      'answers can be checked against measurements',
+      'reviewed by licensed people in medicine and law, because insurers refuse cover for a ' +
+      'decision no professional signed' ],
+    s4: [
+      'so cheap that a second opinion on a diagnosis costs less than the appointment that ' +
+      'produced the first',
+      'the reason households can commission a lawsuit, an architectural plan or a drug review ' +
+      'they could never have afforded',
+      'producing work that passes review and exceeds what reviewers can follow; the errors appear ' +
+      'when a structure or a batch fails' ],
+    s5: [
+      'the single supplier behind a bank\'s pricing, a hospital\'s rota and a port\'s schedule, ' +
+      'so one outage closes all three',
+      'run unattended in most work; the European Union\'s AI Act still requires a person who can ' +
+      'stop a high-risk system',
+      'the standard method in weather forecasting, materials design, tax collection and military ' +
+      'targeting' ],
+    s6: [
+      'an ordinary condition of employment: people are hired to say what they want and to judge ' +
+      'what comes back',
+      'running whole insurers, ministries and shipping lines; people set the objectives and read ' +
+      'the results',
+      'cheap in every trade that sells knowledge, so price now follows the physical parts of a ' +
+      'service' ] }],
+  [4.0, {
+    s1: [
+      'designing and running its own experiments in machine learning, with the laboratory\'s ' +
+      'staff choosing which questions matter',
+      'faster at the research than the people who built it, who now spend their time picking ' +
+      'which results to check',
+      'visible outside the laboratories as pace, since abilities announced as research results ' +
+      'reach ordinary products before the papers are read' ],
+    s2: [
+      'improving its own training methods; the same programs then go to work on protein design, ' +
+      'weather forecasting and chip layout',
+      'producing results faster than any conference can review them, and a claim rests on the ' +
+      'reputation of the laboratory behind it',
+      'cheap where each experiment needed a graduate student to run it; the trials now start and ' +
+      'finish unattended' ],
+    s3: [
+      'carrying a research programme from a question to a published result, with people choosing ' +
+      'the question and reading the paper',
+      'running the search for new battery chemistry, antibiotics and error-correcting codes on ' +
+      'the same machinery that improves itself',
+      'known outside the field through medicine and weather: forecasts and diagnoses improve on a ' +
+      'schedule set inside a few laboratories' ],
+    s4: [
+      'cheap where trained researchers were scarce; a laboratory\'s output follows the ' +
+      'electricity and chips it can buy',
+      'running the research, with people holding the money: what gets studied follows what ' +
+      'somebody agrees to pay for',
+      'producing designs whose reasoning nobody recovers; the flaws surface after release, in the ' +
+      'hands of customers' ],
+    s5: [
+      'capable enough that its mistakes arrive as results: a method that passes every test and ' +
+      'fails in ordinary use',
+      'designing medicines that reach human trials at a fraction of the $2.6 billion a new drug ' +
+      'used to cost',
+      'taking a laboratory from a question to a trained model, leaving the people involved to ' +
+      'read the final report' ],
+    s6: [
+      'the assumption behind every corporate and government plan, though nobody writing those ' +
+      'plans knows what next year brings',
+      'the cheap part of building a drug or a factory line, where the design once cost more than ' +
+      'the materials',
+      'directing its own research, with people supplying the chips, the electricity and the ' +
+      'decision to run it at all' ] }],
+  [3.0, {
+    s1: [
+      'writing and debugging a working service from a description, then handing the finished ' +
+      'program to whoever asked for it',
+      'better at writing code than the engineers reviewing it, who now spend their days deciding ' +
+      'what to build',
+      'visible to people outside the trade as speed, with the applications on their phones ' +
+      'rebuilt faster than they can learn them' ],
+    s2: [
+      'replacing the software behind banks, hospital records and freight schedules, work no ' +
+      'company could ever spare a team for',
+      'producing code that compiles, passes its tests and misreads what the customer wanted, so ' +
+      'review is the slow step',
+      'thorough enough that a full set of tests arrives with the program, where testing used to ' +
+      'be the first budget cut' ],
+    s3: [
+      'carrying a specification through design, code, testing and release, so the team that ' +
+      'ordered it only reads the result',
+      'remaking the control software in cars, aircraft and factory lines, where certification ' +
+      'sets the release date',
+      'known outside the industry through software made to order for one dental office, one ' +
+      'plumber, one school district' ],
+    s4: [
+      'cheap enough that a program written for one office, used by four people and thrown away ' +
+      'afterwards, is ordinary',
+      'trusted with everything except the signature, since hospitals, banks and airlines require ' +
+      'a named engineer to accept each release',
+      'generating more code than anyone reads; the failures appear where two correct programs ' +
+      'meet and disagree about the data' ],
+    s5: [
+      'reliable enough that the surprises are legal and financial: a program does what its ' +
+      'specification said, and the specification was wrong',
+      'rewriting the old programs behind tax collection, payroll and air traffic, code that ' +
+      'outlived everyone who wrote it',
+      'running the whole chain from a customer\'s complaint to the fix in production, with a ' +
+      'person approving the change' ],
+    s6: [
+      'ordinary to everyone outside the trade, who ask for a program the way they once asked a ' +
+      'colleague for a spreadsheet',
+      'cheap where custom software was a project\'s largest cost; the expensive part is the ' +
+      'hardware it runs on',
+      'written and reviewed by machines, though the law still requires a named person to answer ' +
+      'when a medical device fails' ] }],
+  [2.4, {
+    s1: [
+      'finishing a morning\'s work unattended: a service written and debugged, a literature ' +
+      'search run to the end',
+      'reorganising software teams and research groups first, because their work already arrived ' +
+      'as text a machine could check',
+      'capable of a whole wrong afternoon: hours of consistent work built on a premise it chose ' +
+      'in the first minute' ],
+    s2: [
+      'given the whole of a job with a clear finish, although people still choose which jobs to ' +
+      'give it',
+      'cheap by the hour, and firms now run it overnight on the backlog they had written off',
+      'visible outside the industry as work that comes back finished overnight: a cleared support ' +
+      'queue, a summarised claims file' ],
+    s3: [
+      'visible first in software and support: employment of programmers aged 22 to 25 has fallen ' +
+      'about a fifth from its peak',
+      'hard on the people downstream: errors arrive in finished form and surface in somebody ' +
+      'else\'s ledger',
+      'finishing the multi-hour jobs of the back office too: claims, reconciliations, tender ' +
+      'documents, the first pass of an audit' ],
+    s4: [
+      'ordinary business software, bought by the seat and budgeted like accounting or payroll',
+      'the first draft of most office work; people keep the decisions that bind firms to courts ' +
+      'and customers',
+      'cheap and getting cheaper, the price of a fixed standard of work falling about tenfold a ' +
+      'year' ],
+    s5: [
+      'running the same overnight work in thousands of firms; one bad update leaves them all with ' +
+      'the same wrong answer',
+      'finishing a working day\'s task on its own, and reading what it returns is now the slower ' +
+      'half of the job',
+      'the standard tool of laboratories, law offices and freight yards; the scarce hire is the ' +
+      'reviewer' ],
+    s6: [
+      'cheap enough that the cost of a job is the cost of checking it',
+      'part of the furniture of working life, and apprenticeships now teach the checking of ' +
+      'machine work',
+      'covered by insurers for the routine work of offices, with premiums that fall when a named ' +
+      'person reviews the output' ] }],
+  [1.6, {
+    s1: [
+      'good for a few minutes of work at a time: a function written, a form filled, a file ' +
+      'renamed',
+      'changing software first, where a person watches the screen and takes the keyboard back ' +
+      'every few minutes',
+      'confident on the wrong path: it keeps going after losing the thread, in complete sentences' ],
+    s2: [
+      'run in short bursts under a person\'s eye, since a drifting agent must be caught within ' +
+      'minutes',
+      'cheap in the work of words, a page of translation now costing less than the stamp on the ' +
+      'envelope',
+      'known outside the industry as a capable helper that wanders off, and everyone has a story ' +
+      'about both' ],
+    s3: [
+      'visible in the text trades: translation, transcription, first drafts and support triage ' +
+      'now start as machine output',
+      'the reason firms employ people to watch machines: a short run goes wrong quietly and ' +
+      'finishes anyway',
+      'able to finish what fits in a few minutes, and much of clerical work fits' ],
+    s4: [
+      'as ordinary as spellcheck, and outside the industry people call it by the product name',
+      'attached to a person: the machine drafts and proposes, the person keeps the thread across ' +
+      'the hours',
+      'cheap enough to put an expert first answer in front of anyone with a telephone' ],
+    s5: [
+      'trusted past its range: the failures come from people who stopped watching a machine that ' +
+      'still drifts within minutes',
+      'steady on anything that fits in one sitting, and firms have rebuilt their work into pieces ' +
+      'that size',
+      'in medicine a licensed instrument: American regulators have authorised more than 1,500 ' +
+      'AI-enabled devices, three quarters of them in radiology' ],
+    s6: [
+      'cheap enough that a wrong attempt costs nothing, and work has reorganised around trying ' +
+      'twenty and picking one',
+      'a fixture of ordinary life, taught in schools as a tool steered minute by minute',
+      'the junior half of most work, with a person supplying the memory, the goal and the ' +
+      'responsibility' ] }],
+  [0.0, {
+    s1: [
+      'answering questions and drafting text on request, one exchange at a time, with a person ' +
+      'deciding what happens next',
+      'changing the work that begins with a blank page: letters, memoranda, lesson plans, ' +
+      'discharge summaries, first drafts of code',
+      'wrong in a way that reads well: a fluent answer with an invented source inside it' ],
+    s2: [
+      'a drafter whose work reaches nobody until a person has read it, corrected it and put a ' +
+      'name to it',
+      'cheap enough for everyday use, one chat product alone reaching a billion people a week',
+      'the thing people mean when they say they asked the computer, and roughly one American ' +
+      'business in five reports using it' ],
+    s3: [
+      'in medicine a note-taker: ambient scribes cut a clinician\'s daily records time by about ' +
+      'thirteen minutes in one multi-centre study',
+      'the source of a catalogue of fabricated court citations; one database has logged more than ' +
+      '1,500 decisions where judges responded',
+      'capable of a finished draft of anything routine: a contract, a policy note, a school ' +
+      'report, in one pass' ],
+    s4: [
+      'ordinary office equipment, bought like word processing and argued about like email',
+      'a drafting tool that insurers will cover only where a licensed person reviews the output ' +
+      'before it is used',
+      'cheap where the work is words; the costly hour is the one spent reading what came back' ],
+    s5: [
+      'failing quietly at scale: fluent, wrong material passes review when the reviewer is ' +
+      'reading the tenth draft that hour',
+      'an answering and drafting machine; offices have recut their work so every consequential ' +
+      'step ends at a person',
+      'spread through schooling, medicine, law and government administration as the first draft ' +
+      'of nearly every document' ],
+    s6: [
+      'cheap enough that a written page costs nothing to produce, in any office, clinic or ' +
+      'ministry on earth',
+      'part of literacy: people are taught to write with it the way they were taught to write ' +
+      'with a pen',
+      'an assistant by law and by habit, with judgement, authority and the signature belonging to ' +
+      'people' ] }],
 ];
 // What the principal states have settled. Each is a COMPLETE INDEPENDENT CLAUSE with its own subject, so the assembly no longer has to prop it up with a label.
 const GOVERN = {
@@ -3408,8 +3695,8 @@ const ECON_MOD = {
   "E1|D1": {
     near: "Spending is enormous; because the work keeps coming back to people, offices hire even " +
          "as they buy machines.",
-    mid: "Promised productivity stays absent from the output figures, a gap that has become the " +
-         "central economic argument." },
+    mid: "Economists dispute one question above all others: why output figures fall short of the " +
+      "promised productivity." },
   "E1|D2": {
     near: "Machines take coding, drafting and back-office work; doctors and lawyers keep theirs " +
          "because liability sits with them.",
@@ -3481,8 +3768,8 @@ const ECON_MOD = {
   "E2|D2": {
     near: "Firms run three machines on one task and check the answers, buying reliability with " +
          "volume.",
-    mid: "Verification has become the paid job in most trades: whoever does it answers for the " +
-         "result." },
+    mid: "Employers in most trades pay workers to verify what machines produce. Whoever verifies " +
+      "answers for the result." },
   "E2|D3": {
     near: "Small firms automate alongside large ones and carry the change into ordinary " +
          "businesses.",
@@ -3753,7 +4040,20 @@ function econClause(wl, span, year, tracks) {
       // "and" regardless gave "Operators earn on utilisation, and a buyer changes supplier by
       // editing one line, and four capital budgets set the ceiling" — three clauses in one
       // breath, which is the chain August asked to be rid of.
-      if (/,\s+and\s/.test(base)) return `${base}. ${tail}`;
+      //
+      // THE TEST LOOKED FOR ", and" AND THE ELEMENTS OF STYLE PASS REPLACED THOSE WITH
+      // SEMICOLONS. So a base that was compound in the new way slipped through: "The public
+      // treats AI as a swindle; the technology it dismissed carries on improving, and because
+      // outages at a single supplier close clinics and courts, continuity of service has become
+      // a public safety concern" — thirty-four words in one breath, which August called "way
+      // too long". A base is compound if it carries a semicolon, a colon, a fronted subordinate
+      // clause or an "and" join; and the joined result is capped by length whatever its shape.
+      const compound = (t) => /[;:]|,\s+(?:and|so|while|although|because|since|which)\s/.test(t)
+        || /^(?:Because|Since|While|Although|When|As|After|Where|With|Having)\b/.test(t);
+      const words = (t) => String(t).trim().split(/\s+/).length;
+      if (compound(base) || compound(tail) || words(base) + words(tail) > 26) {
+        return `${base}. ${tail}`;
+      }
       // A proper noun keeps its capital; an ordinary word does not. AN ARTICLE IS ALWAYS AN
       // ORDINARY WORD, and the test missed it: "[A-Z][a-z]+" needs a lowercase letter after the
       // capital, which "A" has none of, so "A utility demands a letter of credit" joined as
@@ -3920,10 +4220,26 @@ export function headline(wl, year, tracks, engineY0) {
   // neighbouring states rarely read alike.
   const lower = (t) => (t ? t.charAt(0).toLowerCase() + t.slice(1) : t);
   const strip = (t) => String(t || '').replace(/\.\s*$/, '');
+  const yr = Math.floor(year);
+  // THE CAPABILITY CLAUSE OPENS EVERY HEADLINE, so its repetition is the repetition a reader
+  // notices most. Seven rungs times four spans gave 28 phrases for the whole document, and one
+  // of them carried 29.6% of 5,000 composed headlines. Each rung now holds six stages and three
+  // alternatives in each, and the alternative is chosen by the year, so consecutive years at one
+  // capability level say different true things about it.
   let rungRow = RUNG_SHORT[RUNG_SHORT.length - 1][1];
   for (const [t, r] of RUNG_SHORT) if (cap >= t) { rungRow = r; break; }
-  const rung = rungRow[span];
-  const yr = Math.floor(year);
+  const pickRung = (row) => {
+    const st = stageOf(year, tracks);
+    let opts = row[st];
+    if (!opts) {
+      for (let n = +st.slice(1); n >= 1 && !opts; n--) opts = row['s' + n];
+      for (let n = +st.slice(1); n <= 6 && !opts; n++) opts = row['s' + n];
+    }
+    if (!opts) return row[span] || row.near || row.mid || row.long || row.far || '';
+    if (typeof opts === 'string') return opts;
+    return opts[Math.abs(yr * 11 + vary(wl, 0, 7)) % opts.length];
+  };
+  const rung = pickRung(rungRow);
   // THE HEADLINE HAD TWO OF ITS FOUR SLOTS ON CHIPS AND MONEY, whatever the year and whatever
   // the setting: coordination between states held one and the economy held the other, and the
   // economy slot was itself a compound of two finance clauses. A reader met the same subject
@@ -3955,15 +4271,30 @@ export function headline(wl, year, tracks, engineY0) {
   // in the topic sentence." What these systems can do is the topic; everything else develops it.
   // August, on a headline that opened on a consequence: "the first two sentences seem out of
   // order... It is fine to start with the same relatively structured update on AI capabilities."
-  // Four shapes of six now open on it, and the two that delay it hold it to the second sentence.
-  // The clauses themselves carry the variety, which is where Strunk puts it.
+  // EVERY shape opens on it. Four of six did, and August asked for all: "let's please keep the AI
+  // capability sentences first." The clauses themselves carry the variety, which is where Strunk
+  // puts it, and the order of the three that follow varies instead.
   const shapes = [
     () => `In ${yr}, AI is ${rung}. ${effect}. ${author}. ${unsettled}.`,
     () => `By ${yr}, AI is ${rung}. ${effect}. ${author}. ${unsettled}.`,
-    () => `AI is ${rung} in ${yr}. ${author}. ${effect}. ${unsettled}.`,
-    () => `In ${yr}, AI is ${rung}; ${lower(effect)}. ${author}. ${unsettled}.`,
-    () => `${effect}. By ${yr}, AI is ${rung}. ${author}. ${unsettled}.`,
-    () => `${unsettled}. That is ${yr}: AI is ${rung}. ${effect}. ${author}.`,
+    // A YEAR TACKED ON THE END NEEDS A SHORT CLAUSE IN FRONT OF IT. With a compound capability
+    // clause the result was "AI is right in every test performed, although nobody can say why;
+    // mistakes therefore appear first in use in 2041" — the date arriving after two clauses and
+    // reading as part of the second.
+    () => (/[;:]/.test(rung) || rung.split(/\s+/).length > 12
+      ? `In ${yr}, AI is ${rung}. ${author}. ${effect}. ${unsettled}.`
+      : `AI is ${rung} in ${yr}. ${author}. ${effect}. ${unsettled}.`),
+    // A SEMICOLON SHAPE NEEDS A SIMPLE SECOND CLAUSE. Where the effect clause carries its own
+    // semicolon the result is three clauses in one breath: "In 2041, AI is solving problems
+    // nobody had posed; the public treats AI as a swindle; the technology it dismissed carries
+    // on improving."
+    () => (/[;:]/.test(effect)
+      ? `In ${yr}, AI is ${rung}. ${effect}. ${author}. ${unsettled}.`
+      : `In ${yr}, AI is ${rung}; ${lower(effect)}. ${author}. ${unsettled}.`),
+    () => (/[;:]/.test(rung) || rung.split(/\s+/).length > 12
+      ? `By ${yr}, AI is ${rung}. ${effect}. ${author}. ${unsettled}.`
+      : `AI is ${rung}, and this is ${yr}. ${effect}. ${author}. ${unsettled}.`),
+    () => `In ${yr}, AI is ${rung}. ${unsettled}. ${effect}. ${author}.`,
   ];
   // NOTHING CHAINS MORE THAN TWO CLAUSES WITH "and". The economy clause is itself a compound
   // — a base and a modifier joined with "and" — so a shape that joins it to a third ran to
@@ -3990,7 +4321,7 @@ export function headline(wl, year, tracks, engineY0) {
   const chosen = shapes[vary(wl, year, shapes.length)]();
   const flat = shapes[0]();
   const ok = longest(chosen) <= 32 && chainDepth(chosen) <= 1;
-  return deChain(ok ? chosen : flat);
+  return deLong(deChain(ok ? chosen : flat));
 }
 
 // ── the long form ───────────────────────────────────────────────────────────
