@@ -56,11 +56,50 @@ PLUMBING = [
 # A CLAUSE MAY NOT TALK ABOUT THE DRAWING. August struck out "past what this scale can measure"
 # and "is off this scale": a reader wants to know what is true of the world, and the instrument's
 # range is the document's problem. The same bars a clause describing the sheet it sits on.
+# A CLOSING FORMULA IS A REPEATED FRAMING. The stage-6 brief asked for "what is still open", and
+# 29 of 48 positions duly closed on "stays open" or "remains unsettled" — one instruction
+# producing one sentence forty-eight times. The n-gram check below cannot see it, because the
+# repeated part is a two-word tail; this names it directly.
+CLOSING = [
+    (r'\b(?:stays|remains|is still) (?:open|unsettled)\b', 'a closing formula'),
+    (r'\bwhat (?:stays|remains) (?:open|unsettled)\b', 'a closing formula'),
+]
 SELF = [
     (r'\b(?:this|the) scale (?:ends|stops|runs out|cannot|can\'t)\b', 'the clause talks about the scale'),
     (r'\b(?:past|beyond|off) (?:what )?this scale\b', 'the clause talks about the scale'),
     (r'\bthis (?:document|sheet|drawing|forecast) (?:shows|says|cannot|draws)\b',
      'the clause talks about the document'),
+]
+# ── August's language rules, 2026-08-19 ─────────────────────────────────────
+# He edited six sentences by hand and each edit is a rule. Three of them are machine-checkable.
+#
+#   "A job survives where a mistake is expensive"  →  "Jobs survive where mistakes are expensive"
+# THE INDEFINITE SINGULAR STANDING FOR THE GENERAL CASE. "a job", "a company", "a country" used
+# to mean all of them. The plural says the same thing without inviting the reader to picture one.
+# Checked SENTENCE-INITIALLY only. Mid-sentence "a doctor signs every diagnosis" reads as
+# ordinary English; it is the clause that OPENS on an indefinite singular and then makes a
+# general claim about all of them that he struck out.
+GENERAL_SINGULAR = re.compile(
+    r"(?:^|(?<=[.!?] ))A (job|company|firm|worker|employee|country|user|patient|doctor|lawyer|"
+    r"student|household|city|town|nation|government|hospital|school)\b(?!'s)")
+#
+#   "and machines take tasks whose errors are cheap"  →  "while machines automate low-risk tasks"
+# DO NOT REPEAT A FRAMING. Once a mechanism is established, later clauses name its consequences.
+# A phrase recurring across the corpus is that failure at scale: "what stays open is whether"
+# closed nine different positions the same way.
+#
+#   "Machines do a third of paid work, and the rest needs..."  →  "...; the rest requires..."
+# VARY THE JOIN. A page joined entirely by "and" reads as one list.
+JOIN_AND = re.compile(r',\s+and\s')
+JOIN_REL = re.compile(r'(?:,\s+(?:although|while|because|since|so|though|whereas|yet|as)\s|;)')
+
+# THE DRAWING'S NAMES FOR ITS OWN PARTS ARE NOT ENGLISH. "the research rung", "this axis",
+# "this span", "this setting", "world-line" are internal vocabulary; a reader meets the sentence
+# with none of it. Say the thing itself — "the point at which systems run their own research".
+MODEL_WORDS = [
+    (r'\b(?:the research rung|the coding rung|the rung|rungs?\b(?! of a ladder))', 'ladder vocabulary'),
+    (r'\bthis (?:axis|span|setting|position|world-line|line)\b', 'model vocabulary'),
+    (r'\bworld-lines?\b', 'model vocabulary'),
 ]
 INFRA = re.compile(
     r'\b(data ?cent\w*|halls?|campus(?:es)?|substations?|grids?|megawatts?|gigawatts?|'
@@ -90,11 +129,53 @@ def check(src):
     for raw in re.findall(r"'((?:[^'\\\n]|\\.)*)'", src) + re.findall(r'"((?:[^"\\\n]|\\.)*)"', src):
         if len(raw) > 24 and re.search(r'\\[nt]', raw):
             faults.append('an escape that draws as whitespace: "%s"' % raw[:70])
-    for pat, why in INVENTED + PLUMBING + SELF:
+    # A closing formula is only a fault at scale: one position may honestly end on an open
+    # question, and forty-eight ending the same way is a template.
+    closing = sum(1 for t in strings for pat, _ in CLOSING if re.search(pat, t))
+    if closing >= 12:
+        faults.append('%d clauses close on "stays open" or "remains unsettled"; one instruction '
+                      'produced one sentence many times' % closing)
+    for pat, why in INVENTED + PLUMBING + SELF + MODEL_WORDS:
         for t in strings:
             m = re.search(pat, t)
             if m:
                 faults.append('%s: "%s"' % (why, t[max(0, m.start() - 40):m.start() + 70].strip()))
+    # a stock phrase recurring across positions is a framing repeated, not a fact restated
+    proper = set()
+    for t in strings:
+        for w in re.findall(r'(?<=[a-z,] )([A-Z][a-z]{2,})', t):
+            proper.add(w.lower())
+    stop = set('the a an and or of to in on at is are was were be been by for from with that this '
+               'it its as not no more most than then so which who whose what when where while '
+               'their they them these those there has have had do does did one two three'.split())
+    grams = {}
+    for t in strings:
+        w = re.findall(r"[a-z][a-z'-]+", t.lower())
+        for n in (3, 4):
+            for i in range(len(w) - n + 1):
+                g = w[i:i + n]
+                if sum(1 for x in g if x in stop) > n - 2 or g[0] in stop:
+                    continue   # a measure idiom ("of paid work") is not a framing
+                if any(x in proper for x in g):
+                    continue
+                grams[' '.join(g)] = grams.get(' '.join(g), 0) + 1
+    for g, c in sorted(grams.items(), key=lambda kv: -kv[1]):
+        if c >= 8:
+            faults.append('a framing repeated %d times: "%s"' % (c, g))
+
+    for t in strings:
+        m = GENERAL_SINGULAR.search(t)
+        if m:
+            faults.append('the indefinite singular for the general case: "%s"'
+                          % t[max(0, m.start() - 30):m.start() + 60].strip())
+
+    ands = sum(len(JOIN_AND.findall(t)) for t in strings)
+    rels = sum(len(JOIN_REL.findall(t)) for t in strings)
+    if ands + rels > 50 and ands / (ands + rels) > 0.68:
+        faults.append('%d%% of clause joins are ", and" (%d against %d carrying a relation); a '
+                      'page joined entirely by "and" reads as one list'
+                      % (100 * ands / (ands + rels), ands, rels))
+
     infra = sum(1 for t in strings if INFRA.search(t))
     share = infra / max(1, len(strings))
     if share > 0.34:
