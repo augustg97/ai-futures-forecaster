@@ -7,7 +7,15 @@ them to roughly the opposite. The authored layer was re-keyed against r5 (`1ed55
 (`88609a9`) and the sheet publishes again. **The 26 researched figures in `app.js` were not
 re-keyed** — see the finding below.
 
-**Live:** https://augustg97.github.io/ai-futures-forecaster/ · build `20260818-1130` (registry r6-2026-08-18)
+**2026-08-19: five authored SENTENCES were still asserting r4**, none of them keyed to a letter,
+so the coverage declaration could not see them — `ALL 26 POSITIONS`, "Every position now carries
+at least one source", two "a dossier stands behind each variable", and a block naming four network
+edges as missing that the parent had already drawn. All five are corrected, the structural block
+now derives from `S.network.conditionals`, and `build/counts_gate.py` (exit 6) refuses any authored
+count of axes, positions, variables or dossiers that neither matches the live registry nor dates
+itself. A letter inherits a new meaning; a quantifier inherits a new domain.
+
+**Live:** https://augustg97.github.io/ai-futures-forecaster/ · build `20260819-1145` (registry r6-2026-08-18)
 **Local:** `python3 build/serve.py 8154` (serves `web/`, never `docs/`) · working
 directory `~/Forecast Works`, repo `augustg97/ai-futures-forecaster`
 
