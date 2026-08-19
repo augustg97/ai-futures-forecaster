@@ -1038,10 +1038,16 @@ function sheetState(measure) {
   const idx = Math.max(0, Math.min(tr.year.length - 1, Math.floor(state.yr) - D.engine.y0));
   const cap = state.yr < NOW_Y ? trunkCap(state.yr) : tr.cap[idx];
   const eff = effectsFor(state.pin);
-  // Left of TODAY is record, not forecast. The passage described a past year with the
-  // forecast machinery — a sampled world-line, in the present tense, for a year already
-  // decided — so 2017 read as a prediction about 2017. A recorded year gets what happened.
-  const isRecord = state.yr < D.engine.y0;
+  // LEFT OF TODAY IS RECORD, AND TODAY IS ON THE RECORD TOO. The passage described a past year
+  // with the forecast machinery — a sampled world-line, in the present tense, for a year already
+  // decided — so 2017 read as a prediction about 2017. The guard stopped one year short: the
+  // engine's first year is 2026, so 2026 itself still ran the forecast, and the sheet printed
+  // whichever branch the controls had selected as though it were the present. August read it
+  // back: "'savings tied to ai companies lose most of their value' is not the case... 2026
+  // should reflect our current state and the record of 2026 so far." The project's own record
+  // for 2026 says Nvidia closed at an all-time high in April. A CONTROL SETS A FUTURE; IT
+  // CANNOT REWRITE WHAT HAS HAPPENED.
+  const isRecord = state.yr < D.engine.y0 + 1;
   const paras = isRecord ? describeRecord(state.yr, trunkCap)
                          : describe(wl, state.yr, tr, D.engine.y0, trunkCap);
   const S = {

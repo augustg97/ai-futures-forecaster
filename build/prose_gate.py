@@ -60,6 +60,13 @@ PLUMBING = [
 # 29 of 48 positions duly closed on "stays open" or "remains unsettled" — one instruction
 # producing one sentence forty-eight times. The n-gram check below cannot see it, because the
 # repeated part is a two-word tail; this names it directly.
+# A phrase struck in one rewriting pass comes back in the next, because each pass sees only the
+# tables it was given. These are struck permanently, with the round that first removed them.
+RETIRED = [
+    (r'\bset the pace\b', 'a phrase retired on 2026-08-19: it carried eight different claims'),
+    (r'\bthe sequence amounts to\b', 'a phrase retired on 2026-08-19: copied from a brief'),
+    (r'\bthe problem this creates\b', 'a phrase retired on 2026-08-19: copied from a brief'),
+]
 CLOSING = [
     (r'\b(?:stays|remains|is still) (?:open|unsettled)\b', 'a closing formula'),
     (r'\bwhat (?:stays|remains) (?:open|unsettled)\b', 'a closing formula'),
@@ -101,6 +108,19 @@ MODEL_WORDS = [
     (r'\bthis (?:axis|span|setting|position|world-line|line)\b', 'model vocabulary'),
     (r'\bworld-lines?\b', 'model vocabulary'),
 ]
+# ── Strunk's Rule 14, measured ──────────────────────────────────────────────
+# "This rule refers especially to loose sentences of a particular type, those consisting of two
+# co-ordinate clauses, the second introduced by a conjunction or relative. Although single
+# sentences of this type may be unexceptionable, A SERIES SOON BECOMES MONOTONOUS AND TEDIOUS."
+# On 2026-08-19 that series was 54% of the 1,542 authored sentences, 249 of them joined by ", so"
+# — the pattern August named: "obviously repetitive in their 'x, so y' pattern".
+# The remedy is Strunk's own: "simple sentences... two clauses joined by a semicolon... periodic
+# sentences of two clauses... sentences, loose or periodic, of three clauses — whichever best
+# represent the real relations of the thought."
+LOOSE = re.compile(r',\s+(and|but|so|which|who|when|where|while)\s')
+LOOSE_SHARE = 0.34      # of all authored sentences
+LOOSE_ONE_CONNECTIVE = 0.17   # no single connective may carry more than this share
+
 INFRA = re.compile(
     r'\b(data ?cent\w*|halls?|campus(?:es)?|substations?|grids?|megawatts?|gigawatts?|'
     r'utilit\w+|interconnect\w*|turbines?|siting|tariffs?|energis\w+|power contracts?|'
@@ -135,7 +155,7 @@ def check(src):
     if closing >= 12:
         faults.append('%d clauses close on "stays open" or "remains unsettled"; one instruction '
                       'produced one sentence many times' % closing)
-    for pat, why in INVENTED + PLUMBING + SELF + MODEL_WORDS:
+    for pat, why in INVENTED + PLUMBING + SELF + MODEL_WORDS + RETIRED:
         for t in strings:
             m = re.search(pat, t)
             if m:
@@ -175,6 +195,25 @@ def check(src):
         faults.append('%d%% of clause joins are ", and" (%d against %d carrying a relation); a '
                       'page joined entirely by "and" reads as one list'
                       % (100 * ands / (ands + rels), ands, rels))
+
+    # Rule 14 is a property of the SET, never of one sentence, so it is counted over all of them.
+    sents = [x.strip() for t in strings
+             for x in re.split(r'(?<=[.!?])\s+', t) if len(x.strip()) > 25]
+    if len(sents) > 200:
+        hits = [LOOSE.search(x) for x in sents]
+        loose = [h for h in hits if h]
+        share = len(loose) / len(sents)
+        if share > LOOSE_SHARE:
+            faults.append('%.0f%% of %d sentences are loose two-clause sentences (Strunk 14: "a '
+                          'series soon becomes monotonous and tedious")' % (100 * share, len(sents)))
+        by = {}
+        for h in loose:
+            by[h.group(1)] = by.get(h.group(1), 0) + 1
+        for conn, n in sorted(by.items(), key=lambda kv: -kv[1]):
+            if n / len(sents) > LOOSE_ONE_CONNECTIVE:
+                faults.append('", %s" joins %.0f%% of all sentences; vary the construction'
+                              % (conn, 100 * n / len(sents)))
+                break
 
     infra = sum(1 for t in strings if INFRA.search(t))
     share = infra / max(1, len(strings))
