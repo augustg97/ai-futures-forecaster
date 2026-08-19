@@ -234,6 +234,26 @@ def coverage_gate():
           % (net.get("version"), len(reg), sum(len(v) for v in reg.values())))
 
 
+def count_gate():
+    """Refuse to publish an authored count the registry has outgrown.
+
+    The coverage gate catches a position that changed meaning, because the
+    drawing declares which letters it letters. It cannot catch a SENTENCE.
+    Three of them survived both rebuilds of 17 and 18 August still asserting
+    r4 — 'ALL 26 POSITIONS', 'Every position now carries at least one source',
+    'A dossier now stands behind each variable' — and a fourth asserted four
+    missing network edges that the parent had since drawn.
+
+    A letter inherits a new MEANING and is wrong about one row. A quantifier
+    inherits a new DOMAIN and is wrong about every member the rebuild added.
+    `build/counts_gate.py` carries the rule and exits 6.
+    """
+    rc = subprocess.call([sys.executable,
+                          os.path.join(ROOT, "build", "counts_gate.py")])
+    if rc:
+        fail(6, "count gate refused the authored layer (see above)")
+
+
 def prose_gate():
     """Refuse to publish a passage that has drifted back into plumbing.
 
@@ -258,6 +278,7 @@ def main():
         print("dev pull done — serve the repo and open /web/")
         return
     coverage_gate()
+    count_gate()
     prose_gate()
     stamp = _dt.datetime.now().strftime("%Y%m%d-%H%M")
     os.makedirs(DOCS, exist_ok=True)

@@ -5,8 +5,8 @@
 // wide, drawn at one fixed scale so lettering keeps the size it was drawn at and nothing has to
 // be zoomed. A section's millimetre space runs x 0 → 300 across and y 0 → H up from its foot.
 
-import { PEN, INK, PAPER } from './draft.js?v=20260819-1130';
-import { dial, manifold, strip, collectives, fmtNum } from './instruments.js?v=20260819-1130';
+import { PEN, INK, PAPER } from './draft.js?v=20260819-1145';
+import { dial, manifold, strip, collectives, fmtNum } from './instruments.js?v=20260819-1145';
 
 export const SHEET_W = 340;
 const PAD = 13;
@@ -1286,11 +1286,13 @@ morning.height = (S) => 190 + Math.max(0, morning.rowsToday(S) - 3) * 29 +
 // should say so where a reader can see it, beside the number that rests on them.
 export function research(d, S, H) {
   let y = head(d, H - 8, 'EVIDENCE PROGRAMME',
-    'A dossier stands behind each variable, each answering the same five questions from ' +
-    'sources about the world: a base rate, a mechanism and its weakest step, the 2026 record, ' +
-    'resolution criteria, and what would move the number. On 13 August 2026 the findings ' +
-    'were applied to the forecast engine itself, as registry revision r3. What follows is ' +
-    'the record of what moved. The full dossiers are in the repository under Research/.');
+    'A dossier stands behind each of the seven variables the registry carried at r4, each ' +
+    'answering the same five questions from sources about the world: a base rate, a ' +
+    'mechanism and its weakest step, the 2026 record, resolution criteria, and what would ' +
+    'move the number. On 13 August 2026 the findings were applied to the forecast engine ' +
+    'itself, as registry revision r3. What follows is the record of what moved. The ' +
+    'rebuilds of 17 and 18 August added takeoff shape and regulatory architecture, which ' +
+    'the programme reaches next. The full dossiers are in the repository under Research/.');
 
   // the audit that opened it
   d.rect(PAD, y - 26, CW, 26, { weight: PEN.thin, colour: INK.red, alpha: 0.6 });
@@ -1298,26 +1300,38 @@ export function research(d, S, H) {
          { size: 2.4, weight: 700, track: 0.16, colour: INK.red });
   d.textBlock([PAD + 4, y - 10], 'The engine is grounded in 1,330 wiki pages — but that ' +
     'number describes the corpus. The priors themselves rested on 55 citations from 31 ' +
-    'sources, with 21 of 26 positions carrying one citation or none, and 19 of those 55 ' +
+    'sources, with 21 of the 26 positions in the r4 registry carrying one citation or none, ' +
+    'and 19 of those 55 ' +
     'pointing at four scenario documents. A prior derived mainly from another forecast ' +
     'inherits its errors without inheriting its reasoning.', CW - 8,
     { size: 2.0, lead: LEAD, colour: INK.pencil });
   y -= 32;
 
   // ── the source register, which answers the audit ──────────────────────────
-  d.rect(PAD, y - 30, CW, 30, { weight: PEN.thin, colour: INK.green, alpha: 0.6 });
+  // The pass measured the registry as it stood at r4. The parent has rebuilt twice since, to
+  // nine axes and 49 positions, so the block states the set it covered and the set that
+  // exists now. A present-tense 'every position' inherits whatever set the registry later
+  // holds; a dated count of what was measured does not. The box takes its height from its own
+  // wrap, because a constant sized to the old sentence would run the new one off its foot.
+  const regBody = 'The pass of 17 August 2026 put at least one source about the world behind ' +
+    'each of the 26 positions the registry then held — a measurement, a statute, a filing, a ' +
+    'poll or market data, independent of any scenario document. Thirteen had rested wholly ' +
+    'on a scenario document: T1, T2, T4, A1, A2, A4, C2, C3, C5, D1, D3, P3 and E4, under the ' +
+    'meanings those letters carried at r4. Thirty-one independent world-sources stand behind ' +
+    'that set. The registry now holds 49 positions across nine axes and the register reaches ' +
+    '26 of them; the 23 it stands clear of are all of K, all of R, T5, A5 to A7, C6 to C8, ' +
+    'D4, S4, S5, P4 and P5, and E5. The register is in the repository at ' +
+    'Research/findings/source-register.md.';
+  const regH = 12 + d.wrap(regBody, CW - 8, { size: 2.0, track: 0.06, weight: 400 })
+                     .length * 2.0 * LEAD;
+  d.rect(PAD, y - regH, CW, regH, { weight: PEN.thin, colour: INK.green, alpha: 0.6 });
   d.text([PAD + 4, y - 5.4], 'SOURCE REGISTER',
          { size: 2.4, weight: 700, track: 0.16, colour: INK.green });
-  d.text([PAD + CW - 4, y - 5.4], 'ALL 26 POSITIONS · 17 AUGUST 2026',
+  d.text([PAD + CW - 4, y - 5.4], '26 POSITIONS OF REGISTRY r4 · 17 AUGUST 2026',
          { size: 1.8, align: 'right', track: 0.14, colour: INK.inkLight });
-  d.textBlock([PAD + 4, y - 10], 'Every position now carries at least one source about the ' +
-    'world — a measurement, a statute, a filing, a poll or market data — independent of any ' +
-    'scenario document. Thirteen positions rested wholly on a scenario document before this ' +
-    'pass: T1, T2, T4, A1, A2, A4, C2, C3, C5, D1, D3, P3 and E4. None does now. Thirty-one ' +
-    'independent world-sources stand behind the twenty-six positions. The register itself is ' +
-    'in the repository at Research/findings/source-register.md.', CW - 8,
+  d.textBlock([PAD + 4, y - 10], regBody, CW - 8,
     { size: 2.0, lead: LEAD, colour: INK.pencil });
-  y -= 36;
+  y -= regH + 6;
 
   // The register's calibration finding, and what happened to it.
   d.rect(PAD, y - 34, CW, 34, { weight: PEN.thin, colour: INK.blue, alpha: 0.6 });
@@ -1398,17 +1412,38 @@ export function research(d, S, H) {
          { size: 2.6, weight: 700, track: 0.14, colour: INK.ink });
   rule(d, gy - 2.2, PAD, CW, { weight: PEN.thin, colour: INK.inkLight });
   const gcol = (CW - 12) / 2;
-  d.textBlock([PAD, gy - 6.4], 'Three axes mix how big an effect is with where it lands, so a ' +
-    'state that is sharp and narrow cannot be said: compute siting diversifying while chip ' +
-    'supply concentrates; entry-level hiring collapsing while aggregate employment is flat; a ' +
-    'public united against its own government. Each is what the 2026 record shows. The model ' +
-    'must round to whichever half is louder, then propagates the rounded state.', gcol,
+  // Both findings were measured against the r3 network, and the parent has rebuilt twice
+  // since. The right-hand block asserted four missing edges by name; the network now carries
+  // all four, so it derives the shape from what the parent emits and states the r3 reading as
+  // the dated finding it is. A sentence that counts a network cannot be a literal.
+  const cond = S.network.conditionals || {};
+  const axKeys = S.network.axes.map((a) => a.key);
+  const parentsOf = (k) => [...new Set(Object.keys(cond[k] || {}).map((q) => q[0]))];
+  const orphans = axKeys.filter((k) => parentsOf(k).length === 0);
+  const unlinked = [];
+  axKeys.forEach((x, i) => axKeys.slice(i + 1).forEach((y) => {
+    if (!parentsOf(y).includes(x) && !parentsOf(x).includes(y)) unlinked.push(x + '\u2013' + y);
+  }));
+  d.textBlock([PAD, gy - 6.4], 'The r3 network mixed how big an effect is with where it lands ' +
+    'on three axes, so a state that is sharp and narrow could not be said: compute siting ' +
+    'diversifying while chip supply concentrates; entry-level hiring collapsing while ' +
+    'aggregate employment is flat; a public united against its own government. Each is what ' +
+    'the 2026 record shows, and the model rounds to whichever half is louder, then propagates ' +
+    'the rounded state. ' + S.network.version.split('-')[0] + ' rebuilt each of them, and ' +
+    'the programme re-reads the finding against the new positions.', gcol,
     { size: 2.0, lead: LEAD, colour: INK.pencil });
-  d.textBlock([PAD + gcol + 12, gy - 6.4], 'Two variables — capability tempo and diffusion — ' +
-    'have no parent at all. Three of the four published constraints on continued compute ' +
-    'scaling are the supply variable, so the model asserts an independence the evidence ' +
-    'denies. Four edges are missing: tempo on supply, diffusion on tempo, diffusion on the ' +
-    'economy, and public response on coordination.', gcol,
+  d.textBlock([PAD + gcol + 12, gy - 6.4],
+    (orphans.length
+      ? orphans.length + ' of the ' + axKeys.length + ' variables carry no parent: ' +
+        orphans.join(', ') + '. '
+      : 'Each of the ' + axKeys.length + ' variables carries at least one parent. ') +
+    'The r3 network left capability tempo and diffusion with none, and the programme named ' +
+    'four edges it wanted: tempo on supply, diffusion on tempo, diffusion on the economy, and ' +
+    'public response on coordination. ' + S.network.version.split('-')[0] + ' carries all ' +
+    'four. ' + (unlinked.length
+      ? 'The ' + unlinked.length + ' axis pairs that pass no edge either way are ' +
+        unlinked.join(', ') + '.'
+      : 'Every axis pair passes an edge one way or the other.'), gcol,
     { size: 2.0, lead: LEAD, colour: INK.pencil });
 
   // the sized edges
@@ -1469,13 +1504,15 @@ export function sources(d, S, H) {
   const colW = (CW - 12) / 2;
   const left = [
     ['EVIDENCE PROGRAMME',
-     'A dossier now stands behind each variable, each answering the same five questions from ' +
-     'sources about the world: a base rate, a mechanism and its weakest step, the 2026 record, ' +
-     'resolution criteria, and what would move the number. The audit that opened the programme ' +
-     'is the reason for it — the engine is grounded in over 1,300 wiki pages, but the priors ' +
-     'themselves rested on 55 citations from 31 sources, and 21 of 26 positions carried one ' +
-     'citation or none. Recommendations are held for review; the priors live in the parent ' +
-     'engine, and changing one is a decision.'],
+     'A dossier stands behind seven of the nine variables the registry now carries, each ' +
+     'answering the same five questions from sources about the world: a base rate, a ' +
+     'mechanism and its weakest step, the 2026 record, resolution criteria, and what would ' +
+     'move the number. The audit that opened the programme is the reason for it — the engine ' +
+     'is grounded in over 1,300 wiki pages, but the priors rested on 55 citations from 31 ' +
+     'sources, and 21 of the 26 positions in the r4 registry carried one citation or none. ' +
+     'Takeoff shape and regulatory architecture arrived in the rebuilds of 17 and 18 August ' +
+     'and the programme reaches them next. Recommendations are held for review; the priors ' +
+     'live in the parent engine, and changing one is a decision.'],
     ['MEASUREMENT CAVEATS',
      'The widely cited finding that 95% of enterprise AI pilots show no profit impact measures ' +
      'what the buyer booked as profit; the same survey found about 90% of ' +
