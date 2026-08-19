@@ -234,6 +234,21 @@ def coverage_gate():
           % (net.get("version"), len(reg), sum(len(v) for v in reg.values())))
 
 
+def prose_gate():
+    """Refuse to publish a passage that has drifted back into plumbing.
+
+    The authored layer is rewritten by workflows often, and it drifts the same
+    way every time: invented bodies performing invented procedures, and data
+    centres standing in as the subject of a forecast about AI. August named
+    both on 2026-08-19. `build/prose_gate.py` carries the check and the
+    evidence; it exits 5 with the offending strings.
+    """
+    rc = subprocess.call([sys.executable,
+                          os.path.join(ROOT, "build", "prose_gate.py")])
+    if rc:
+        fail(5, "prose gate refused the authored layer (see above)")
+
+
 def main():
     dev = "--dev" in sys.argv
     if not dev:
@@ -243,6 +258,7 @@ def main():
         print("dev pull done — serve the repo and open /web/")
         return
     coverage_gate()
+    prose_gate()
     stamp = _dt.datetime.now().strftime("%Y%m%d-%H%M")
     os.makedirs(DOCS, exist_ok=True)
     for item in os.listdir(DOCS):
