@@ -40,8 +40,12 @@ def main():
     if len(sys.argv) < 2:
         raise SystemExit(__doc__)
     fixes = json.load(open(sys.argv[1], encoding='utf-8'))
+    # LONGEST FIRST. Some `before` strings contain others — a paragraph and the sentence that
+    # opens it are both fixed, and applying the short one first eats the long one's anchor, which
+    # then silently fails to match. Sorting by length makes the containing fix land first.
     pairs = [(f['before'].strip(), f['after'].strip()) for f in fixes
              if f.get('before') and f.get('after')]
+    pairs.sort(key=lambda kv: -len(kv[0]))
     src = NARR.read_text(encoding='utf-8')
     applied = {b: 0 for b, _ in pairs}
 
@@ -59,7 +63,19 @@ def main():
                 return run
             line_start = out.rfind('\n', 0, m.start()) + 1
             t = lit(new, m.start() - line_start)
-            return t if q == '"' else t.replace('"', "'")
+            if q == '"':
+                return t
+            # AN APOSTROPHE INSIDE A SINGLE-QUOTED LITERAL ENDS IT. `lit` escapes for a
+            # DOUBLE-quoted target, so swapping the delimiter afterwards leaves every apostrophe
+            # in the text bare: "the sheet's range" closed the string and left `s range.` as
+            # code. Pre-escaping does not work either, because `lit` escapes backslashes again
+            # and produces `\\'`. The delimiter swap has to be done on the emitted literal —
+            # unescape what `lit` escaped for double quotes, then escape for single ones.
+            return re.sub(r'"((?:[^"\\\\]|\\\\.)*)"',
+                          lambda mm: "'%s'" % (mm.group(1)
+                                               .replace('\\"', '"')
+                                               .replace("'", "\\'")), t)
+
         out = rx.sub(swap, out)
     NARR.write_text(out, encoding='utf-8')
 

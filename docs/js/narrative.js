@@ -368,8 +368,9 @@ export const HEADCL = {
           "Medical charities postpone deployment of a diagnostic tool in low-income countries, " +
           "where the delayed product was the only affordable one." ],
         s4: [
-          "Compliance costs more than a new entrant can raise, leaving frontier training " +
-          "licences with a handful of firms.",
+          "The two or three United States frontier laboratories staff the audits and safety " +
+          "filings that training licences require. Startups in Toronto and Bengaluru rent " +
+          "capacity from them.",
           "University groups abandon frontier training and rent time from licensed firms, whose " +
           "lawyers approve each experiment.",
           "Investors stop funding new frontier laboratories, putting the money into firms that " +
@@ -404,8 +405,9 @@ export const HEADCL = {
           "Identity-verification firms sell impersonation checks to banks and hospitals, a " +
           "market that nobody needed before." ],
         s3: [
-          "The same stripped models run clinics, schools and farms in countries where no one " +
-          "can pay a subscription.",
+          "Nurses in Kenyan district clinics and teachers in Bihar download quantised " +
+          "open-weight models once onto second-hand handsets, running them for years " +
+          "afterwards.",
           "Clinical officers in rural districts diagnose with a model that a court elsewhere " +
           "treats as evidence of a crime.",
           "Diplomats from countries running open models resist an international ban, since the " +
@@ -1254,8 +1256,9 @@ export const HEADCL = {
           "Teachers in state schools receive the tutoring systems private schools bought at " +
           "release, delivered by vendors now competing for public contracts." ],
         s6: [
-          "Capability advanced slowly and reached almost everyone; whether scale alone would " +
-          "have carried it further stays untested for want of money.",
+          "Nurses in Kerala and teachers in Lagos run last year's models on ordinary handsets. " +
+          "Fund managers withdrew from the training runs that would have tested whether scale " +
+          "carries further.",
           "Economists later attributed most of the period's productivity gain to diffusion " +
           "rather than to the frontier programmes that stopped.",
           "Clinics in small towns still run the diagnostic systems installed during the freeze, " +
@@ -1477,8 +1480,8 @@ export const HEADCL = {
         s1: [
           "Clinicians using machine support lose the skill it replaced, and detection falls " +
           "when the tool is withdrawn.",
-          "The same output helps a reader who can judge which part to act on and misleads one " +
-          "who cannot.",
+          "Hospital pharmacists strike the wrong dose from a machine-written discharge summary. " +
+          "Patients handed that summary in the car park read it as instruction.",
           "Experienced developers work more slowly with machine assistance than without it, " +
           "against their own expectation." ],
         s2: [
@@ -1524,8 +1527,9 @@ export const HEADCL = {
           "Health services spend on machine systems two orders of magnitude more than they " +
           "spend evaluating them.",
           "Nobody bills for evidence production, so nobody funds it.",
-          "Deployment is wide and authorisation is routine, and no apparatus exists to say " +
-          "whether anyone is better off." ],
+          "Hospitals in Leeds and Cleveland run machine triage on every admission. Their boards " +
+          "approve each rollout in one meeting. Nobody counts what happened to the patients " +
+          "afterwards." ],
         s3: [
           "Parliamentary committees ask for the outcome data and are told it was never " +
           "collected.",
@@ -1544,8 +1548,9 @@ export const HEADCL = {
           "after the deployment they describe.",
           "The evidence gap is itself the finding, and it is the one thing the record " +
           "establishes.",
-          "Public trust turns on an argument that cannot be settled with data neither side " +
-          "collected." ],
+          "Gallup's pollsters count Americans who say artificial intelligence does more harm " +
+          "than good. Senators in committee hearings argue from that count, the only evidence " +
+          "either side brings." ],
         s6: [
           "Decades of deployment left a procurement record and no health record.",
           "What the machines did for people is a matter of belief, which is what it was at the " +
@@ -1561,8 +1566,9 @@ export const HEADCL = {
           "Households in Virginia and Georgia pay higher electricity bills as utilities connect " +
           "data centres faster than they build generation." ],
         s2: [
-          "Both changes arrive before the European Union's high-risk duties take effect in " +
-          "December 2027, leaving each government a single session to respond.",
+          "The European Parliament passed its high-risk duties in 2024. Legislators in " +
+          "Washington and Brasília now redraft theirs in one session, chasing systems that " +
+          "outran their own statutes.",
           "Pension funds move retirement savings into the few firms that own large computing " +
           "clusters, until three balance sheets carry most public retirements.",
           "The President routes transformers to computing sites under the Defense Production " +
@@ -1821,8 +1827,9 @@ export const HEADCL = {
           "Safety staff resign when their veto becomes a recommendation, and product managers " +
           "inherit the release decision." ],
         s2: [
-          "Public listing completes, and the release calendar moves to fit the earnings " +
-          "calendar.",
+          "The two or three United States frontier laboratories file quarterly with the " +
+          "Securities and Exchange Commission. Their engineers hold finished models until the " +
+          "quarter their chief financial officers promised.",
           "Pension funds hold the laboratories in every index tracker, putting teachers' " +
           "retirement savings behind a quarterly release date.",
           "Banks that bought a release shipped to fill a quarter spend the next one repairing " +
@@ -2060,8 +2067,9 @@ export const HEADCL = {
           "Campaigners who won the zoning hearing hire lawyers for the commission hearing that " +
           "fixes the plant's electricity price, held before twelve people and no cameras." ],
         s5: [
-          "Counties that host the buildings trade permission for clinics, teachers and " +
-          "guaranteed electricity; those that refused depend on machinery three states away.",
+          "Supervisors in Loudoun County, Virginia, grant rezoning for data halls in exchange " +
+          "for clinic beds, teaching posts and firm power. Counties that refused rezoning rent " +
+          "capacity from Ohio.",
           "Graduates take the electrical and mechanical work in the hosting counties; the " +
           "counties that refused close a school each year.",
           "Hospitals in the refusing counties buy their scan reading from a building three " +
@@ -2165,7 +2173,8 @@ export const HEADCL = {
   R1: {
         s1: [
           "Publishing the safety rules they wrote for themselves, frontier laboratories hand " +
-          "hospitals, banks and defence ministries language to copy into purchase contracts.",
+          "insurers, port authorities and defence ministries language to copy into purchase " +
+          "contracts.",
           "Nurses' unions bargain the published safety rules into their collective agreements, " +
           "winning the right to refuse an unreviewed machine recommendation.",
           "Trade reporters track every revision of the published policies; a deleted clause " +
@@ -2497,8 +2506,9 @@ export const HEADCL = {
           "Parliamentary committees ask why the state data halls run half empty, and the " +
           "ministers who bought the processors blame the electricity connection." ],
         s5: [
-          "The same systems that read local medical records also design pathogens, and " +
-          "governments now inspect the laboratories they equipped themselves.",
+          "Doctors in district hospitals draft discharge notes with software that also proposes " +
+          "viral genomes. Health ministries that bought it now send biosafety inspectors into " +
+          "university virology benches.",
           "Biologists wait weeks for a national screening office to clear each protein design " +
           "before they may run it.",
           "Customs authorities added synthesis equipment to their export lists, stopping orders " +
@@ -2691,15 +2701,16 @@ export const HEADCL = {
           "The Cyberspace Administration of China registers each training run before release, " +
           "and its inspectors read the evaluation results developers must file." ],
         s2: [
-          "Those statutes name employment screening, credit scoring and clinical devices, and " +
-          "leave every use the drafters overlooked to custom and contract.",
+          "Colorado's legislature listed employment screening, lending and health care in its " +
+          "consequential-decision statute. Vendors write their own terms for every use those " +
+          "drafters skipped.",
           "The first machine-directed gains land in medicine and power generation, where the " +
           "Nuclear Regulatory Commission and drug regulators already license new methods.",
           "Tenants refused a lease by an unlisted scoring tool must sue in housing court, " +
           "because no statute names the use that refused them." ],
         s3: [
           "The European AI Office inspects models as developers release them, although the " +
-          "hospitals, banks and agencies that configure them escape review.",
+          "clinics, insurers and municipalities that configure them escape review.",
           "Apprenticeship places in the electrical and nursing trades fill faster than " +
           "university ones, as their wages pass those of newly qualified solicitors.",
           "Enrolment in law and accountancy degrees falls by a third; two English universities " +
@@ -3197,15 +3208,16 @@ export const FRAG = {
             "established. Whether an evaluation exists that a capable system cannot recognise " +
             "is the point left unsettled." },
   A7: {
-        s1: "Capability stays below the level at which a control failure is catastrophic. " +
-            "Voters meet these systems deciding a benefit claim or a shift roster. The " +
-            "threshold that keeps experts calm sits in a document none of them reads. Gallup " +
-            "measured 39% of Americans saying artificial intelligence does more harm than good, " +
-            "against 31% the year before. A poll of 3,008 registered voters found 27% saying " +
-            "human extinction from artificial intelligence is likely. The apparatus built for " +
-            "the catastrophic case already stands. It comprises the systemic-risk chapter of " +
-            "the European Union AI Act, California SB 53, and the International Network of AI " +
-            "Safety Institutes with its ten founding members.",
+        s1: "Benefits assessors and shift managers run last year's models on claims and " +
+            "rosters, work whose worst failure is a wrong payment date. Safety engineers keep " +
+            "their alarm threshold in framework documents read inside the two or three United " +
+            "States frontier laboratories alone. Gallup found 39% of Americans calling " +
+            "artificial intelligence more harmful than good, up from 31% a year earlier. " +
+            "Pollsters put the question to 3,008 registered voters. Of those, 27% expect human " +
+            "extinction from artificial intelligence. Governments already built the " +
+            "catastrophic-case machinery: the European Union AI Act's systemic-risk chapter, " +
+            "California's SB 53 and the International Network of AI Safety Institutes' ten " +
+            "founding members.",
         s2: "The catastrophic scenarios stay hypothetical. Tribunals and ombudsmen log the " +
             "wrongful denials, the misread scans and the mistaken flags one at a time, building " +
             "the only record a legislature can read. Bodies organised around a capability level " +
@@ -3839,11 +3851,9 @@ export const FRAG = {
             "credit extended to its own buyer. Pension funds and insurers hold much of the debt " +
             "behind the build-out. A repricing therefore reaches household savings before it " +
             "reaches any data centre.",
-        s2: "Credit reprices first and equity follows. Lenders who advanced money against the " +
-            "resale value of accelerators discover what used equipment fetches when every owner " +
-            "sells at once. Shareholders take the loss. The buildings, substations and cooling " +
-            "plant pass to new owners at a fraction of what they cost. The market has revealed " +
-            "that it priced the financing above the technology.",
+        s2: "Bond desks mark the debt down before share prices move. Lenders who took graphics " +
+            "processors as collateral watch borrowers auction identical racks. Pension funds " +
+            "buy server halls in Loudoun County, Virginia.",
         s3: "Construction continues through the reset. Cancelling a place in the " +
             "interconnection queue, a turbine order or a building contract costs more than " +
             "seeing each through, since all were committed years in advance. Computing " +
@@ -3857,19 +3867,16 @@ export const FRAG = {
             "maintenance grow cheaper for the public in the same period that employment in the " +
             "sector falls. Frontier training lost its financing in the same write-down. The new " +
             "owners sell hours on machinery they did not build.",
-        s5: "Public budgets are the beneficiaries nobody planned for. Health services, school " +
-            "systems and universities buy the discounted capacity, carrying machine diagnosis " +
-            "and tutoring into state provision at a price no minister could have met before. " +
-            "Because written-down plant is cheapest to run continuously, electricity demand " +
-            "keeps climbing through the collapse. Household tariffs stay at the level the " +
-            "build-out set. Pensioners paid for the computing that now runs the schools and the " +
-            "clinics.",
-        s6: "Ownership changed hands and the capability stayed intact. Construction and grid " +
-            "connection set the schedule throughout; the investors who financed the work " +
-            "carried the losses, as they did in the railway and telecommunications build-outs. " +
-            "Lenders now refuse terms for building on that scale again. Two questions stay " +
-            "open: whether private capital returns for a second push, and which budgets carry " +
-            "the work while it stays away." },
+        s5: "Receivers sell written-down computing halls to Britain's National Health Service " +
+            "and Ohio school districts. Pensioners paid the electricity tariff that built those " +
+            "halls. Their grandchildren now learn from them.",
+        s6: "Bankruptcy judges in Delaware handed server halls to bondholders. The racks inside " +
+            "kept answering queries throughout the hearing. Construction and grid connection " +
+            "set the schedule throughout; the investors who financed the work carried the " +
+            "losses, as they did in the railway and telecommunications build-outs. Lenders now " +
+            "refuse terms for building on that scale again. Two questions stay open: whether " +
+            "private capital returns for a second push, and which budgets carry the work while " +
+            "it stays away." },
   E4: {
         s1: "Lenders and boards stop paying before the revenue arrives. Epoch AI measures the " +
             "training cost of the largest models doubling about every eight months, faster than " +
@@ -3903,11 +3910,11 @@ export const FRAG = {
             "laboratories thin, their researchers take posts in universities, hospitals and " +
             "manufacturers, where they teach the courses and build the in-house teams those " +
             "employers had done without.",
-        s6: "Capability advanced slowly and spread widely after capital withdrew. The largest " +
-            "training runs lost their financiers. Nobody can say whether the frontier stalled " +
-            "because the money stopped or because the method had reached its limit. Separating " +
-            "those two explanations requires training runs larger than any the freeze financed. " +
-            "The evidence therefore arrives only when the money does." },
+        s6: "Pension funds and sovereign wealth funds pulled their money out of the largest " +
+            "training runs. Researchers in Hangzhou and Palo Alto kept shipping smaller models " +
+            "that reached farmers, clerks and clinics. Economists need a run bigger than " +
+            "anything the remaining money buys before they can tell a stalled method from a " +
+            "stalled chequebook. That larger run waits on pension trustees." },
   E5: {
         s1: "Machine work now reaches the occupations whose wages carry consumer demand. The " +
             "top tenth of United States earners account for about 49% of consumer spending, the " +
@@ -4110,12 +4117,9 @@ export const FRAG = {
             "industrial history and the one nobody predicted here. The forecast that got the " +
             "capability right got the beneficiary wrong." },
   G5: {
-        s1: "Deployment is broad, the tools do what they claim, and the measured net on the " +
-            "receiving side is flat or negative. Clinicians using machine support lose the " +
-            "skill it replaced, and detection falls when the tool is withdrawn. Experienced " +
-            "developers work more slowly with machine assistance than without it, against their " +
-            "own expectation of the opposite. The same output helps a reader who can judge " +
-            "which part to act on and misleads one who cannot.",
+        s1: "Endoscopists in Polish centres found six percentage points fewer adenomas once the " +
+            "assistance software was switched off. Developers in a randomised trial worked " +
+            "nineteen percent slower with machine help.",
         s2: "Measured net effects come out flat in the settings with the broadest deployment, " +
             "which is where the effect should have been easiest to see. Error rates fall on the " +
             "cases a tool was tested against and rise on the ones it was not, so the aggregate " +
@@ -4147,13 +4151,9 @@ export const FRAG = {
             "What the period established is that a capability and a benefit are different " +
             "quantities." },
   G6: {
-        s1: "Deployment is wide, authorisation is routine, spending is large, and no apparatus " +
-            "exists that could say whether anyone is better off. Of 1,524 authorised AI " +
-            "devices, 1,466 cleared on equivalence to a product already sold rather than on a " +
-            "patient outcome, and 39 came through the route that asks for one. No regulator " +
-            "maintains a category for machine-discovered medicines, so the count of them is " +
-            "whatever a trade tracker says it is. The cheapest route to market generates no " +
-            "outcome evidence, so almost nobody generates any.",
+        s1: "American radiologists read with software the Food and Drug Administration cleared: " +
+            "of 1,524 authorised devices, 1,466 cleared on resemblance to something already " +
+            "sold, 39 on a patient outcome.",
         s2: "Health services spend on machine systems two orders of magnitude more than they " +
             "spend evaluating them. Nobody bills for evidence production, so nobody funds it, " +
             "and the regulatory route actively substitutes away from it. Deployment is wide and " +
@@ -4476,14 +4476,9 @@ export const FRAG = {
             "insurers who wrote them. The stopping decision sits outside the laboratories, " +
             "split between underwriters, juries and legislators." },
   L5: {
-        s1: "These laboratories publish the models themselves and argue that publication is the " +
-            "safety measure. In most months of 2026 the largest open-weight model came from a " +
-            "Chinese laboratory. Monthly parameter ceilings ran between 754B and 2.78T against " +
-            "a United States ceiling below 130B in five of seven months. One developer " +
-            "published a 2.8T-parameter model on 2026-07-27 under its own licence, with " +
-            "permanent price cuts near $0.435 per million tokens. A letter opposing early " +
-            "restrictions on open weights carried 77 company signatures and reached 150 within " +
-            "days.",
+        s1: "Laboratories in Hangzhou and Beijing post their weights for public download. One " +
+            "published 2.8 trillion parameters in July 2026, calling publication itself the " +
+            "safety measure.",
         s2: "The licences carrying published model weights acquire terms. Revenue thresholds, " +
             "attribution clauses and use restrictions enter the documents, and the publisher " +
             "keeps the right to revise them. Builders who shipped products on a published " +
@@ -4516,15 +4511,15 @@ export const FRAG = {
             "and the platforms serving inference. They decide who may run what, on terms no " +
             "legislature wrote." },
   L6: {
-        s1: "These laboratories refuse the race framing and build systems bounded on purpose. " +
-            "One announced superintelligence programme defined its object as problem-oriented " +
-            "and domain-specific, and required containment and alignment in perpetuity. On " +
-            "August 2026 a laboratory found that an unreleased model might meet the highest " +
-            "cybersecurity tier of its own framework and held its largest planned training run. " +
-            "It published the reason, disclosing monitoring at about 20% of the inference " +
-            "compute being watched, with any alert unresolved after thirty minutes pausing the " +
-            "activity. A two-tier release shipped by June 2026, routing a public model " +
-            "alongside an unrestricted one held to vetted partners.",
+        s1: "The two or three United States frontier laboratories build systems bounded on " +
+            "purpose. One wrote its superintelligence programme as problem-oriented and " +
+            "domain-specific, binding itself to containment and alignment in perpetuity. In " +
+            "August 2026 another held its largest planned training run when an unreleased model " +
+            "looked likely to meet the top cybersecurity tier of its own framework. Its " +
+            "engineers published the reason, disclosing that they watch roughly 20% of " +
+            "inference compute, pausing any activity whose alert stands unresolved after thirty " +
+            "minutes. By June 2026 a third shipped two tiers, a public model beside an " +
+            "unrestricted one reserved for vetted partners.",
         s2: "Underwriters price deployments whose bounds are written down. A stated scope, " +
             "capped autonomy and a monitoring budget give an actuary the terms a premium needs. " +
             "Open-ended agents reach the market uncovered, and their buyers carry the loss " +
@@ -5016,10 +5011,10 @@ export const FRAG = {
         s3: "An outage at one supplier closes clinics and courts in a dozen countries at once. " +
             "Diagnostic triage, case scheduling and benefit assessment stop the moment the " +
             "subscription stops answering. Regulators respond by writing continuity duties into " +
-            "the licences of hospitals, banks and grid operators. Suppliers must keep systems " +
-            "available and their behaviour stable, since cases decided under a model remain " +
-            "open to appeal for years. A commercial decision to retire a product has become a " +
-            "matter for the courts that relied on it.",
+            "the licences of ambulance services, clearing houses and grid operators. Suppliers " +
+            "must keep systems available and their behaviour stable, since cases decided under " +
+            "a model remain open to appeal for years. A commercial decision to retire a product " +
+            "has become a matter for the courts that relied on it.",
         s4: "Suppliers sell machine capability by the unit, on a published tariff. A change in " +
             "that tariff moves the cost of legal drafting, radiology reporting and translation " +
             "in every country on the same day. Because the operators holding capacity also " +
@@ -5027,14 +5022,9 @@ export const FRAG = {
             "follow commercial interest. Structural biology with a drug candidate behind it " +
             "runs; ecology, seismology and soil science wait. Four boards set a price that " +
             "appears in every country's cost of services.",
-        s5: "Concentration turned out to make regulation easier, because a handful of owners " +
-            "can be reached by one statute. Governments apply the instruments they built for " +
-            "electricity and water suppliers, among them tariff review, service obligations and " +
-            "inspection rights. Utility commissions hold hearings on the price of machine " +
-            "capability, with consumer advocates appearing. The suppliers accept the oversight " +
-            "in exchange for the certainty their capital programmes need. An industry that " +
-            "expected to outrun the state proved easier to govern than the thousands of firms " +
-            "it replaced.",
+        s5: "Three United States laboratories hold the computing capacity, so the Georgia " +
+            "Public Service Commission summons all three to one hearing. Consumer advocates " +
+            "question laboratory witnesses about school-district pricing.",
         s6: "Machine intelligence is governed as a regulated utility. Statute obliges the " +
             "suppliers to serve every qualified customer, to publish prices and to hold " +
             "capacity in reserve. What the public is owed at that price is the unresolved part, " +
@@ -5658,10 +5648,9 @@ const CROSS = {
   "P4|D4": "Routine occupations absorb the displacement: warehouse towns and office suburbs vote " +
     "opposite ways and lose the same thing. Across three United States recessions they took 88% " +
     "of job losses around the downturn.",
-  "P4|E2": "The same software now reaches students, village clinics and small armies. A village " +
-           "nurse who gains a diagnosis she could never otherwise obtain defends it. The " +
-           "radiographer whose reading it replaced votes to restrict it. Epoch AI measures " +
-           "capability about 40 times cheaper each year.",
+  "P4|E2": "Nurses in rural Bihar defend the phone-sized model that reads their scans in " +
+           "minutes. Radiographers in Manchester, whose readings it replaced, vote to restrict " +
+           "it.",
   "P5|D4": "Layoffs land on named employers in named places. Restriction becomes law when a " +
     "constituency can point at what it lost, the pattern American trade politics followed after " +
     "import competition.",
@@ -5819,9 +5808,11 @@ const CROSS = {
   "T5|A6": "Sabotage rates fall toward zero as evaluation environments grow more realistic, but " +
     "benchmark scores keep climbing through all of it. A real ceiling and an instrument that " +
     "has stopped reading look alike.",
-  "T5|A7": "Capability stays below the level at which failure would be catastrophic, leaving the " +
-    "control question unasked. About a fifth of United States businesses tell the Census Bureau " +
-    "they use AI in some function.",
+  "T5|A7": "Radiographers and shift managers run today's models on scans and rosters. Clerks " +
+           "reverse the worst failure the same afternoon. Officials at the European AI Office " +
+           "spend their sessions on record-keeping and transparency. About a fifth of United " +
+           "States businesses tell the Census Bureau they use artificial intelligence in some " +
+           "function.",
   "T5|S5": "Since every frontier programme queues behind the same packaging capacity, a method that " +
     "has run out and one starved of hardware look alike. Investment and policy rest on a " +
     "question the evidence leaves open.",
@@ -5846,8 +5837,8 @@ const REV_BANDS = [
   [4, 'That is comparable to the global automotive industry.'],
   [1, 'That is larger than worldwide semiconductor sales in 2026.'],
   [0.2, 'That is a large software business and a small share of the economy.'],
-  [0, 'The capital being spent is a bet on the forecast, placed years ahead of the revenue ' +
-      'that would justify it.'],
+  [0, 'The capital being spent is a bet on revenue projections, placed years ahead of the ' +
+      'revenue itself.'],
 ];
 const LAW_BANDS = [
   [600, 'About six hundred AI statutes and regulations are in force worldwide, and firms ' +
@@ -5872,7 +5863,8 @@ function apprClause(v) {
   if (v >= 55) return 'That is a majority, and it gives governments room to act.';
   if (v >= 40) return 'That is a plurality: enough to govern with, and thin enough to lose.';
   if (v >= 25) return 'That is a minority, so each new deployment is a political decision.';
-  return 'Public consent is now the binding limit on what gets deployed.';
+  return 'Councils and licensing boards now refuse deployments that polling says their ' +
+         'residents oppose.';
 }
 
 // ── passages that fire only on a combination ─────────────────────────────────
@@ -5882,7 +5874,7 @@ const PAIRS = [
        'Neither ends without a policy that breaks the loop directly.' },
   { req: { C: 'C3', A: 'A3' }, span: ['mid', 'long'],
     t: 'A verified agreement and alignment research that works are the two conditions every ' +
-       'good ending in the literature requires. This world-line has both.' },
+       'good ending in the literature requires. This setting has both.' },
   { req: { T: 'T1', A: 'A1' }, span: ['near', 'mid'],
     t: 'A two-year capability jump with an undetected training failure is the specific ' +
        'combination the risk literature is about. What happens next depends entirely on when ' +
@@ -5898,8 +5890,9 @@ const PAIRS = [
     t: 'Restriction inside regional regimes moves the work and fails to stop it: each bloc bans ' +
        'what its own voters object to, and the training runs relocate.' },
   { req: { D: 'D3', T: 'T2' }, span: ['near', 'mid'],
-    t: 'Capability is arriving quickly and being used slowly. The gap between what systems ' +
-       'can do and what firms permit them to do is the largest quantity on this line.' },
+    t: 'Frontier systems pass professional examinations while the firms that licence them still ' +
+       'route every decision past a person. The distance between what these systems can do and ' +
+       'what their licensees permit is at its widest.' },
   { req: { E: 'E1', P: 'P2' }, span: ['near', 'mid'],
     t: 'Rising earnings and an untroubled public is the path of least resistance, and the one ' +
        'in which the fewest questions get asked before deployment.' },
@@ -5907,8 +5900,8 @@ const PAIRS = [
     t: 'A near miss was caught with no international body to report it to, so what was ' +
        'learned stayed inside the firm that learned it.' },
   { req: { S: 'S3', E: 'E1' }, span: ['near', 'mid'],
-    t: 'Capital is abundant and electricity is not. The binding constraint has moved from ' +
-       'finance to the physical world, where it answers to planning permission.' },
+    t: 'Pension fund trustees signed the cheques for new computing halls. County zoning boards ' +
+       'in Virginia and grid operators in Texas decide when substations arrive to power them.' },
   { req: { T: 'T4', D: 'D1' }, span: ['near', 'mid'],
     t: 'Significant job losses without any capability discontinuity: the displacement is ' +
        'being done by systems well short of the top of the ladder, which is the case the ' +
@@ -5963,7 +5956,7 @@ function crossingClause(tracks, year, engineY0) {
     bits.push(`${next[1].charAt(0).toUpperCase()}${next[1].slice(1)} is ${next[0]} year` +
               `${next[0] === 1 ? '' : 's'} ahead, in ${next[2]}.`);
   } else if (never.length && !past.length) {
-    bits.push('No capability datum on the ladder is reached on this line inside the window.');
+    bits.push('None of the capability milestones is reached before 2100.');
   } else if (never.length) {
     bits.push(`${never[0][1].charAt(0).toUpperCase()}${never[0][1].slice(1)} is never reached ` +
               'on this line.');
@@ -6238,8 +6231,8 @@ const RUNG_SHORT = [
       'set the goal and left the method open',
       'cheap enough that mid-sized firms commission original research, which used to require a ' +
       'national laboratory',
-      'directed by people who set a goal and rank what returns, because a specification can only ' +
-      'be written afterwards' ],
+      'handed a target by materials chemists in Delft, who rank what comes back overnight and ' +
+      'write the specification from whichever candidate survived the furnace' ],
     s3: [
       'central to materials design, drug discovery and mathematics, three fields whose claims can ' +
       'be checked once stated',
@@ -6321,8 +6314,8 @@ const RUNG_SHORT = [
       'weather forecasting and chip layout',
       'producing results faster than any conference can review them, and a claim rests on the ' +
       'reputation of the laboratory behind it',
-      'cheap where each experiment needed a graduate student to run it; the trials now start and ' +
-      'finish unattended' ],
+      'running the overnight bench work at the Argonne and Berkeley national laboratories, ' +
+      'finishing by breakfast the assays that once kept graduate students up until two' ],
     s3: [
       'carrying a research programme from a question to a published result, with people choosing ' +
       'the question and reading the paper',
@@ -6624,8 +6617,9 @@ const ECON = {
           "School districts and water utilities plan around the systems they already run, and " +
           "suppliers sell maintenance where they once sold upgrades." ],
         s4: [
-          "Capability holds where the money stopped, and so do the industries that reorganised " +
-          "around it.",
+          "Translation agencies in Warsaw and radiology practices in Bengaluru keep workflows " +
+          "built around the last models anyone financed. United States frontier laboratories " +
+          "now sell access to what they trained.",
           "Engineers trained for frontier work take jobs in avionics, chip design and weather " +
           "forecasting. Universities cut their machine-learning intakes." ],
         s5: [
@@ -9233,7 +9227,7 @@ export const LONGFORM = {
           "The ISO and Verisk generative-AI exclusion endorsements CG 40 47, CG 40 48 and CG 35 " +
           "08 have been in force since 2026-01-01.",
         ] },
-  E3: { head: "Ownership changes, capacity stays",
+  E3: { head: "Receivers sell the halls, the machines keep running",
         lines: [
           "Nvidia fell about 5% on a report of talks to guarantee up to $250 billion of " +
           "financing for OpenAI's data-centre build-out, the largest AI-equity move of that " +

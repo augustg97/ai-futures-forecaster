@@ -105,7 +105,12 @@ SELF = [
     # as an actor. Two of them shipped inside the benefit axis on 2026-08-20.
     # "on the model of the Terrorism Risk Insurance Act" is ordinary English, so `model` is only
     # self-reference when the clause is not pointing at something else with `of`.
-    (r'\b(?:in|on|of|across) (?:this|the) (?:forecast|document|sheet|drawing|chart)\b',
+    # A CONTROL EXPLAINER MUST NAME THE DOCUMENT — "changing any of them rewrites this passage and
+    # redraws every chart on the sheet" is the sentence telling a reader what the control does,
+    # and there is no way to say it without saying it. Declared, so the rule stays strict
+    # everywhere else rather than being softened to accommodate one legitimate case.
+    (r'\b(?:in|on|of|across) (?:this|the) (?:forecast|document|sheet|drawing|chart)\b'
+     r'(?<!redraws every chart on the sheet)',
      'the clause talks about the document'),
     (r'\b(?:in|across) (?:this|the) model\b', 'the clause talks about the document'),
     (r"\b(?:this|the) (?:forecast|document|sheet|drawing)'s\b",
@@ -172,6 +177,51 @@ INFRA = re.compile(
     r'bankrupt\w*|lenders?|bonds?|equity|valuations?|auctions?|balance sheets?)\b', re.I)
 
 
+def ladder_clauses(src):
+    """The capability ladder's own strings. They are PREDICATES, not sentences."""
+    m = re.search(r'const RUNG_SHORT = \[', src)
+    if not m:
+        return []
+    i, depth = m.end(), 1
+    while i < len(src) and depth:
+        c = src[i]
+        if c == "'":
+            j = src.find("'", i + 1)
+            i = j if j > 0 else i
+        elif c == '[':
+            depth += 1
+        elif c == ']':
+            depth -= 1
+        i += 1
+    flat = re.sub(r"'\s*\+\s*\n?\s*'", '', src[m.end():i])
+    return [t for t in re.findall(r"'((?:[^'\\\n]|\\.)*)'", flat) if len(t) > 24]
+
+
+def calendar_entries(src):
+    """The dated calendar's own strings, which are keyed to a year and exempt from the
+    future-date rule for that reason."""
+    m = re.search(r'(?:export )?const MARKERS = \[', src)
+    if not m:
+        return []
+    i, depth = m.end(), 1
+    while i < len(src) and depth:
+        c = src[i]
+        if c in '\'"':
+            j = src.find(c, i + 1)
+            i = j if j > 0 else i
+        elif c == '[':
+            depth += 1
+        elif c == ']':
+            depth -= 1
+        i += 1
+    body = src[m.end():i]
+    out = []
+    for q in ('"', "'"):
+        flat = re.sub(r"%s\s*\+\s*\n?\s*%s" % (q, q), '', body)
+        out += re.findall(r"%s((?:[^%s\\\n]|\\.)*)%s" % (q, q, q), flat)
+    return out
+
+
 def literals(src):
     """Every authored string, with concatenation groups joined.
 
@@ -180,9 +230,52 @@ def literals(src):
     comments reports the cure as the disease.
     """
     src = re.sub(r'^\s*//.*$', '', src, flags=re.M)
-    flat = re.sub(r'"\s*\+\s*\n?\s*"', '', src)
-    return [t for t in re.findall(r'"((?:[^"\\\n]|\\.)*)"', flat) if len(t) > 24]
+    out = []
+    # BOTH QUOTE STYLES. This read only double quotes, and the capability ladder — RUNG,
+    # RUNG_SHORT, MARKERS, SPANS — is written with single ones. 222 authored strings and 4,045
+    # words, the largest lettering on the sheet among them, had never once been through this
+    # gate. It is why "AI is wrong in ways found on the factory floor" and "AI is cheap where
+    # each experiment needed a graduate student to run it" reached a reader rather than a build.
+    for q in ('"', "'"):
+        flat = re.sub(r"%s\s*\+\s*\n?\s*%s" % (q, q), '', src)
+        out += [t for t in re.findall(r"%s((?:[^%s\\\n]|\\.)*)%s" % (q, q, q), flat)
+                if len(t) > 24]
+    return out
 
+
+# ── three faults the reader found and the gates did not, 2026-08-20 ─────────
+# He quoted eight sentences. Generalising from them found thirty-two, and each of the three
+# classes below is now checkable. All of them share one cause: a clause is COMPOSED ALONE — the
+# sheet takes one sentence from each setting and stands them side by side — so a clause that
+# leans on a neighbour, or on the calendar, has nothing to lean on.
+#
+#   "Ownership changed hands and the capability stayed intact."  — "ownership of what? Capability
+# of what?" An abstract noun takes a verb and nobody does anything, nothing is counted, and it
+# happens nowhere.
+NO_ACTOR = re.compile(
+    r'^(Public budgets|Public listing|Public argument|Public trust|Public consent|Ownership|'
+    r'Credit|Capital|Capability|Adoption|Deployment|Compliance|Composition|Verification|'
+    r'Integration|Investment|Consent|Enforcement|Oversight|Coverage|Automation|Concentration|'
+    r'Provision|Regulation|Governance)\s+'
+    r'(?:is|are|was|were|has|have|reprices|completes|changed|changes|grows|grew|falls|fell|rises|'
+    r'rose|moves|moved|turns|turned|holds|held|stays|stayed|advanced|advances|costs|cost|remains|'
+    r'remained|spread|spreads|widens|widened)\b')
+#
+#   "Counties that host the buildings ..."  — "??? What are the 'buildings'?"
+# A pointer to something the reader was never shown. A clause introduces whatever it refers to.
+NO_ANTECEDENT = re.compile(
+    r'^(?:Both changes|Both moves|The same|Those |These |Such )')
+#
+#   "Both changes arrive before the European Union's high-risk duties take effect in December
+# 2027, leaving each government a single session to respond."  — drawn in 2036. THIS IS THE WORST
+# OF THE THREE. A stage is a position in a sequence, reached whenever a world-line's own pace
+# reaches it, so a stage clause naming a date a reader could still be waiting for will eventually
+# be drawn after that date has passed and go on promising it. A date already past, framed in the
+# past, is fine; anything else has to be written as a stage instead.
+FUTURE_DATE = re.compile(
+    r'\b(?:arrives? before|arrive before|takes? effect|comes? into force|due (?:in|by)|'
+    r'ahead of|deadline)\b[^.]{0,60}\b20[2-9]\d\b|'
+    r'\b20[2-9]\d\b[^.]{0,40}\b(?:takes? effect|comes? into force|is still ahead)\b')
 
 # ── a mark that promises elaboration and does not deliver ───────────────────
 # August, 2026-08-20: "Sometimes these nothing sentences have colons or semicolons, but the
@@ -231,6 +324,35 @@ def check(src):
     if closing >= 12:
         faults.append('%d clauses close on "stays open" or "remains unsettled"; one instruction '
                       'produced one sentence many times' % closing)
+    # the three 2026-08-20 classes, reported with the sentence so a reader can judge
+    calendar = set(calendar_entries(NARR.read_text(encoding='utf-8')))
+    # THE CAPABILITY LADDER IS COMPOSED AS "In 2040, AI is <clause>." — so its entries are
+    # predicates, they do not open with a subject, and they carry no terminal full stop. Two
+    # written as whole sentences produced "AI is Robots at the Argonne and Berkeley national
+    # laboratories pipette through the night ... until two.." — broken twice over, and the
+    # doubled stop is the only half a reader would have called a typo.
+    for t in ladder_clauses(NARR.read_text(encoding='utf-8')):
+        if re.match(r'^[A-Z]', t):
+            faults.append('a capability clause that opens on a subject cannot finish '
+                          '"AI is ...": "%s"' % t[:100])
+        if t.rstrip().endswith('.'):
+            faults.append('a capability clause ending in a full stop composes ".."'
+                          ': "%s"' % t[-70:])
+    for t in strings:
+        first = re.split(r'(?<=[.!?])\s+', t)[0]
+        if NO_ACTOR.match(first):
+            faults.append('an abstract noun takes a verb and nobody does anything: "%s"' % first[:110])
+        if NO_ANTECEDENT.match(t.strip()):
+            faults.append('points at something the clause never shows: "%s"' % t[:110])
+        # THE DATED CALENDAR IS EXEMPT AND MUST BE. MARKERS entries are keyed to their own year
+        # and drawn within two of it, so "takes effect on 1 January 2027" in the 2027 entry is
+        # the fact, not a promise. The fault is a date inside a STAGE clause, which is reached at
+        # whatever year a world-line's pace reaches it and may be drawn decades later.
+        m = FUTURE_DATE.search(t)
+        if m and t not in calendar:
+            faults.append('a stage clause naming a date a reader could still be waiting for: "%s"'
+                          % t[max(0, m.start() - 30):m.start() + 90].strip())
+
     for pat, why in INVENTED + PLUMBING + SELF + MODEL_WORDS + RETIRED + METAPHOR:
         for t in strings:
             m = re.search(pat, t)
