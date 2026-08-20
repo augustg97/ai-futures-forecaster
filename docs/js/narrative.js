@@ -270,8 +270,9 @@ export const HEADCL = {
           "record of the deciding step and blame the operator on duty.",
           "Dismissed control-room staff sue for wrongful termination and lose, because the " +
           "employer's records show only their own keystrokes.",
-          "Security firms train their anomaly detectors on the corpora that trained the agents; " +
-          "the detectors miss what the agents miss." ],
+          "Security firms train their anomaly detectors on the corpora that trained the agents. " +
+          "Breaches surface when customers reconcile their own records, weeks after the " +
+          "transfer." ],
         s3: [
           "Electricity dispatch, bank supervision and military logistics run on agents whose " +
           "internal logs hold the only account of what they chose.",
@@ -523,8 +524,8 @@ export const HEADCL = {
           "systems keep getting cheaper and more capable.",
           "Parents and teachers press legislatures about fabricated images of children, a harm " +
           "the catastrophic-risk bodies never counted.",
-          "Safety institutes publish evaluations showing no system near the capability their " +
-          "charters name; the funders keep paying." ],
+          "Although safety institutes publish evaluations showing no system near the capability " +
+          "their charters name, their funders keep paying." ],
         s2: [
           "Sales teams competing on how fast they can connect a system to a hospital's records " +
           "have brought the software into workplaces and classrooms at the price of an " +
@@ -582,7 +583,7 @@ export const HEADCL = {
           "Plant breeders at the International Rice Research Institute certify which sphere's " +
           "genomic tools produced each variety before governments approve planting.",
           "Editors at the largest medical journals reject papers whose authors cannot share " +
-          "data across the line; retraction notices now cite export law." ],
+          "data across the line. Retraction notices now cite export law." ],
         s4: [
           "Separate processors, model families and safety certification now define two " +
           "technology spheres in which a failure discovered by one reaches the other slowly.",
@@ -640,7 +641,8 @@ export const HEADCL = {
           "The testing houses hired to certify licensed shipments now examine AI everywhere, " +
           "their published methods setting what buyers accept as safe.",
           "City governments buying school and transit software demand the certificate written " +
-          "for export licences; vendors lacking it lose the contracts.",
+          "for export licences. Small classroom vendors pay an outside auditor to clear it, " +
+          "leaving districts fewer bidders.",
           "The International Organization for Standardization adopts the testers' methods, " +
           "which regulators in India and Brazil then cite in their own rules." ],
         s6: [
@@ -657,7 +659,8 @@ export const HEADCL = {
           "Negotiators removed every enforcement clause to keep both frontier governments at " +
           "the table, and 89 countries signed the text that remained.",
           "Officials in each capital read the declaration as a description of what they already " +
-          "do; their procurement rules stay as written." ],
+          "do, so procurement rules go unamended and bidders face the clauses they faced last " +
+          "year." ],
         s2: [
           "Smaller states copy the declaration's terms on human oversight and incident " +
           "reporting into their own statutes, binding themselves more tightly than its authors.",
@@ -842,8 +845,9 @@ export const HEADCL = {
           "capitals proceeds as though the suspected capability were real.",
           "Parliaments in the host states debate whether foreign training runs on their soil " +
           "breach a treaty their own government signed.",
-          "Defence ministries fund autonomous systems against a capability nobody has proved; " +
-          "legislatures approve every request." ],
+          "Defence ministries fund autonomous systems against a capability nobody has proved. " +
+          "Legislatures approve every request, so the programmes are written into multi-year " +
+          "budget lines that no later evaluation can reopen." ],
         s4: [
           "Withdrawal costs the injured government more than the breach, since the text still " +
           "constrains third parties and still buys inspection access.",
@@ -991,8 +995,8 @@ export const HEADCL = {
         s6: [
           "Insurers have drawn the boundary of machine work by choosing what to underwrite, and " +
           "now ask treasuries to stand behind losses arriving together.",
-          "Households buy personal cover for the advice they take from machines; those who " +
-          "decline it carry their own losses.",
+          "Households buy personal cover for the advice they take from machines, leaving those " +
+          "who decline it to carry their own losses.",
           "Countries without an insurance market of their own run machine work in hospitals and " +
           "courts unbacked, and their health ministries pay the claims." ] },
   D3: {
@@ -1120,8 +1124,8 @@ export const HEADCL = {
         s6: [
           "The spending transferred wealth from investors to the hospitals, schools and firms " +
           "now running on capability they never paid to create.",
-          "Schools budget for machine tutoring the way they budget for heating; no principal " +
-          "takes it to the board.",
+          "Schools budget for machine tutoring the way they budget for heating, a recurring " +
+          "line principals renew each year without a board vote.",
           "The Bureau of Economic Analysis reclassified data centres as infrastructure, raising " +
           "the measured capital stock of the United States." ] },
   E2: {
@@ -1173,8 +1177,8 @@ export const HEADCL = {
           "funds and insurance portfolios that hold ordinary savings.",
           "Teachers' pension trustees discover their bond funds hold loans secured on computing " +
           "hardware and ask what that hardware fetches secondhand.",
-          "Bank examiners at the Federal Reserve ask lenders what a used server fetches; the " +
-          "estimates they receive differ by half." ],
+          "When bank examiners at the Federal Reserve ask lenders what a used server fetches, " +
+          "the estimates differ by half." ],
         s2: [
           "When credit reprices and equity follows, the losses show how much of the valuation " +
           "rested on financing between chip suppliers and their customers.",
@@ -1209,8 +1213,8 @@ export const HEADCL = {
           "will finance a second expansion on those terms.",
           "Actuaries now test every pension scheme for concentration in one industry, a report " +
           "trustees must sign before a regulator will certify it.",
-          "Counties that borrowed to serve the data centres kept the substations and the roads; " +
-          "the debt outlived the companies that prompted it." ] },
+          "Counties that borrowed to serve the data centres kept the substations and the roads, " +
+          "together with debt that outlived the companies prompting it." ] },
   E4: {
         s1: [
           "Because the cost of the largest training runs doubles roughly every eight months, " +
@@ -1238,7 +1242,7 @@ export const HEADCL = {
           "Defence ministries, national laboratories and health services purchase the whole " +
           "output of frontier computing. Budget committees choose which capabilities exist.",
           "Climate modellers win machine time by writing a national security justification into " +
-          "their proposals; those who refuse publish less.",
+          "their proposals. Those who refuse publish less.",
           "Smaller states buy their capability from whichever government paid for it, accepting " +
           "contract conditions on how the systems may be used." ],
         s5: [
@@ -1277,7 +1281,8 @@ export const HEADCL = {
           "Law firms cut their intake of trainees, since partners now write off the research " +
           "hours that once trained them.",
           "Commercial landlords in Manhattan and the City of London convert half-empty towers " +
-          "to flats; their lenders absorb the difference." ],
+          "to flats. Their lenders absorb the difference between the office valuation and the " +
+          "residential one." ],
         s4: [
           "Advertising, subscriptions, retail and consumer credit paid for the computing " +
           "capacity, selling to the households whose incomes the same systems cut.",
@@ -1358,8 +1363,8 @@ export const HEADCL = {
           "Insurers in wealthy countries add machine reading to cover, and the payment codes " +
           "follow the specialties that already had them." ],
         s3: [
-          "Cardiology, pathology and dermatology follow radiology through the same clearance " +
-          "route, each on equivalence to a device already sold.",
+          "Cardiology, pathology and dermatology reach the market by the route radiology " +
+          "opened, each cleared on equivalence to a device already sold.",
           "Waiting lists for diagnostic imaging shorten in the countries that had them and stay " +
           "absent where nobody triaged.",
           "Hospitals in Nairobi run the same model as hospitals in Munich and bill for none of " +
@@ -1403,8 +1408,8 @@ export const HEADCL = {
         s3: [
           "Trial recruitment is the binding step, and hospitals compete for the nurses who can " +
           "enrol patients.",
-          "Sponsors run more candidates through the same funnel without shortening it, so " +
-          "failures arrive faster than approvals.",
+          "Sponsors push more candidates into a funnel of unchanged length, so failures arrive " +
+          "faster than approvals.",
           "Regulatory agencies hire reviewers with computational training, and assessment times " +
           "lengthen before they shorten." ],
         s4: [
@@ -1453,7 +1458,7 @@ export const HEADCL = {
           "Statistical agencies find no productivity movement outside the sector that produced " +
           "the capability.",
           "The distance between what the systems can do and what anyone receives is the largest " +
-          "quantity in the forecast.",
+          "unmeasured quantity of the period.",
           "Governments fund public computing to break the enclosure, and the instruments stay " +
           "where they were." ],
         s5: [
@@ -1551,7 +1556,8 @@ export const HEADCL = {
           "Machines write most production software and, within the same year, take over the " +
           "research that improves them.",
           "Engineers at the two or three United States frontier laboratories keep that year's " +
-          "results inside the building; outsiders meet a finished product.",
+          "results inside the building. University reviewers assess the previous generation, a " +
+          "year or more behind what runs inside.",
           "Households in Virginia and Georgia pay higher electricity bills as utilities connect " +
           "data centres faster than they build generation." ],
         s2: [
@@ -1565,7 +1571,7 @@ export const HEADCL = {
           "States without large computing clusters buy their analysis, their medicine and their " +
           "border screening from the two or three that have them.",
           "Health ministries across West Africa screen patients with software no local body can " +
-          "inspect: their radiologists see only the cases it flags.",
+          "inspect. Their radiologists see only the cases it flags.",
           "Agriculture ministries in Brazil and Indonesia lose the crop records their forecasts " +
           "depended on, since farmers now take planting advice from foreign software." ],
         s4: [
@@ -1708,8 +1714,9 @@ export const HEADCL = {
         s5: [
           "Lacking any verification tools, these laboratories watch developers beyond the " +
           "statute's reach close the research loop first.",
-          "Metrologists at the National Institute of Standards and Technology cannot measure " +
-          "what a training cluster runs; every proposed inspection stalls there.",
+          "Metrologists at the National Institute of Standards and Technology have no " +
+          "instrument that reads what training clusters run from outside them. Every proposed " +
+          "inspection therefore rests on the operator's own logs.",
           "Engineers move to jurisdictions the statute cannot reach, and the year's strongest " +
           "systems train where no evaluator may enter." ],
         s6: [
@@ -1746,7 +1753,7 @@ export const HEADCL = {
           "systems work on.",
           "University laboratories apply for time on the cleared systems and receive none, " +
           "leaving cancer and materials work on the previous generation.",
-          "Engineers accept permanent clearance to keep working on the strongest systems; those " +
+          "Engineers accept permanent clearance to keep working on the strongest systems. Those " +
           "who refuse leave the field." ],
         s5: [
           "Allied governments buy sovereign campuses and inherit the exporting state's foreign " +
@@ -1768,8 +1775,8 @@ export const HEADCL = {
           "development.",
           "Boards at two laboratories endorse the statement and decline to say which of their " +
           "own releases it would have delayed.",
-          "Job candidates ask about pacing commitments in interviews; the laboratories that " +
-          "made none pay more to hire." ],
+          "Since job candidates ask about pacing commitments in interviews, the laboratories " +
+          "that made none pay more to hire." ],
         s2: [
           "The members pay for a referee that grades them, sharing every release with it thirty " +
           "days before launch.",
@@ -1893,8 +1900,8 @@ export const HEADCL = {
           "software vendors they once paid disappear." ] },
   L6: {
         s1: [
-          "A laboratory holds its largest planned training run on a capability finding and " +
-          "publishes the reason.",
+          "Laboratories hold their largest planned training runs on a capability finding and " +
+          "publish the reason.",
           "Investors move to laboratories that finished the run; the one that held raises its " +
           "next round at a lower valuation.",
           "Safety teams at rival laboratories reproduce the finding, report it upward, and " +
@@ -2006,8 +2013,8 @@ export const HEADCL = {
           "worker's protections depend on the firm that employs them.",
           "Employment tribunals hear dismissals decided by scoring systems and rule for the " +
           "employer whenever a manager signed the outcome.",
-          "Warehouse workers learn their shifts from an application; the supervisor they appeal " +
-          "to cannot see how the allocation was set." ],
+          "Warehouse workers learn each week's shifts from software on their phones. The " +
+          "supervisors who hear their appeals cannot see how the allocation was set." ],
         s5: [
           "Distrust formed around artificial intelligence spreads to the institutions that " +
           "adopted it, lowering vaccination coverage, jury attendance and voluntary tax " +
@@ -2247,8 +2254,8 @@ export const HEADCL = {
           "and courts deploy systems that compliance costs had kept out.",
           "Veterans in remote counties get machine-read scans at their local clinic, a service " +
           "the state statutes had priced out.",
-          "State attorneys general close the units they built to police automated hiring; their " +
-          "pending cases die on preemption." ],
+          "State attorneys general close the units they built to police automated hiring, their " +
+          "pending cases dying on preemption." ],
         s2: [
           "One threshold in that statute decides which systems face review: a line drawn " +
           "slightly wrong lets the same models through in every state.",
@@ -2304,7 +2311,7 @@ export const HEADCL = {
           "Negotiating cleared access for their own hospitals and armies, allied governments " +
           "settle on a common vetting standard across the North Atlantic Treaty Organization.",
           "Radiographers in Oslo hold a personal clearance before opening the software their " +
-          "hospital bought; a lapsed clearance idles the scanner.",
+          "hospital bought. When one lapses, the scanner idles.",
           "India and Brazil, left outside the vetting standard, fund their own frontier " +
           "laboratories and write their own clearance rules." ],
         s4: [
@@ -2473,7 +2480,7 @@ export const HEADCL = {
           "hospitals answer citizens through machines the state owns.",
           "Public broadcasters caption every programme in the country's minority languages, and " +
           "deaf viewers watch regional news for the first time.",
-          "Court interpreters lose their public contracts to a state system; their union now " +
+          "After court interpreters lose their public contracts to a state system, their union " +
           "bargains over who certifies its translations." ],
         s3: [
           "Public clusters run a generation behind the American frontier and specialise in " +
@@ -2510,7 +2517,7 @@ export const HEADCL = {
           "Pensioners in Ohio and Virginia ration air conditioning through August, and their " +
           "utilities issue shutoff notices at record rates.",
           "Aluminium smelters and steel mills bid against data centres for the same power " +
-          "contracts; two smelters have closed for want of one." ],
+          "contracts, two smelters having closed for want of one." ],
         s2: [
           "Seven in ten Americans oppose a data centre near them, and county boards have " +
           "blocked or delayed $130 billion of construction.",
@@ -3038,7 +3045,7 @@ export const FRAG = {
             "procuring machine systems for tax administration, benefits and defence logistics " +
             "want suppliers able to stop. That requirement ends at the border, because " +
             "developers in other jurisdictions keep training through any pause ordered " +
-            "elsewhere. A laboratory that withholds a finished product watches its customers " +
+            "elsewhere. Laboratories that withhold a finished product watch their customers " +
             "sign year-long contracts with a rival. Where defence ministries buy the same " +
             "product, the rival's government gains a year of targeting and logistics work the " +
             "first one forgoes. Because ministers make the case for pausing in security terms, " +
@@ -3049,9 +3056,9 @@ export const FRAG = {
             "costs leave those licences with a handful of firms. A legally required stop is a " +
             "scheduled event, and developers arrange training runs to keep the pausable stage " +
             "short. They form as much capability as they can outside it. Developers pass more " +
-            "checks as their systems grow more capable. A system that recognises a familiar " +
-            "test answers it the way the examiner expects. The pass then measures the age of " +
-            "the test.",
+            "checks as their systems grow more capable. Systems that recognise a familiar test " +
+            "answer it the way the examiner expects. The pass then measures the age of the " +
+            "test.",
         s5: "Because an adverse finding costs the developer money and gives the reviewer " +
             "standing, the work of looking hard migrates to third parties. The deepest " +
             "knowledge of frontier failure modes now accumulates outside the firms that build " +
@@ -3767,8 +3774,8 @@ export const FRAG = {
             "what households pay for power, therefore hold the schedule of the build-out.",
         s4: "Governments now buy computing the way they buy electricity. Health services, tax " +
             "authorities and defence ministries run their core work on capacity rented from a " +
-            "few providers, and nothing they own reaches that scale. A ministry writing rules " +
-            "for one of those providers also needs it to keep the hospitals running. Cheaper " +
+            "few providers, and nothing they own reaches that scale. Ministries writing rules " +
+            "for one of those providers also need it to keep the hospitals running. Cheaper " +
             "public services reach every household, the profits reach the minority who own " +
             "shares, and the wages those savings came out of were the income of the majority. " +
             "Spending on computing therefore transfers income upward while the service it buys " +
@@ -3793,8 +3800,8 @@ export const FRAG = {
             "Equivalent output sold near $20 per million tokens at the frontier and near $0.40 " +
             "once competitors matched it. Inference, the computing spent answering users, has " +
             "reached roughly two-thirds of all AI computing against about a third earlier in " +
-            "the cycle. A seller must therefore move volume as fast as the price falls merely " +
-            "to hold revenue level.",
+            "the cycle. Sellers must therefore move volume as fast as the price falls merely to " +
+            "hold revenue level.",
         s2: "Prices collapse as soon as a rival matches a level of capability. Published " +
             "weights carry no protection; removing their safety fine-tuning costs minutes and " +
             "cents. Last season's frontier settles near the cost of the electricity it burns. " +
@@ -3966,8 +3973,8 @@ export const FRAG = {
             "buildings where they are. The World Meteorological Organization records early " +
             "warning covering most of the world's population for the first time. Agriculture " +
             "ministries in low-income countries buy no computing of their own and take " +
-            "forecasts as a public feed. The distribution of this gain is the inverse of every " +
-            "other gain in the forecast.",
+            "forecasts as a public feed. This gain reaches the poorest countries first, which " +
+            "no other gain from these systems does.",
         s5: "One or two institutions supply the forecasts most governments now depend on, and " +
             "no state has funded an alternative. Crop insurance in West Africa pays out on a " +
             "forecast rather than an assessor's visit, weeks before a harvest fails, which " +
@@ -3990,14 +3997,14 @@ export const FRAG = {
             "1,164 of them radiology. Three permanent payment codes for clinical machine " +
             "services existed in January 2026, which is the number that decides what a hospital " +
             "buys.",
-        s2: "A health system with an organised screening invitation gains most, because the " +
-            "machine substitutes for a second reader it already employed and pays for. " +
+        s2: "Health systems with an organised screening invitation gain most, because the " +
+            "machine substitutes for a second reader they already employed and paid for. " +
             "Countries with no radiologist to replace gain nothing from a tool priced against a " +
             "radiologist's salary. Insurers in wealthy countries add machine reading to cover, " +
             "and the payment codes follow the specialties that already had them. The gate here " +
             "is a billing route, and a better model does not open one.",
-        s3: "Cardiology, pathology and dermatology follow radiology through the same clearance " +
-            "route, each cleared on equivalence to a device already sold. Waiting lists for " +
+        s3: "Cardiology, pathology and dermatology reach patients by the route radiology " +
+            "opened, each cleared on equivalence to a device already sold. Waiting lists for " +
             "diagnostic imaging shorten in the countries that had waiting lists and stay absent " +
             "in the countries that never triaged at all. Hospitals in Nairobi run the same " +
             "model as hospitals in Munich and bill for none of it. The tool is the same " +
@@ -4036,19 +4043,18 @@ export const FRAG = {
             "compressed to twelve or eighteen months and the road to a prescription stayed near " +
             "a decade.",
         s3: "Recruitment is the binding step, and hospitals compete for the nurses who can " +
-            "enrol patients. Sponsors push more candidates through the same funnel without " +
-            "shortening it, so failures arrive faster than approvals and the failure rate " +
-            "becomes the visible statistic. Regulatory agencies hire reviewers with " +
-            "computational training, and assessment times lengthen before they shorten. Every " +
-            "step that got faster was inside the laboratory and every step that did not was " +
-            "outside it.",
+            "enrol patients. Sponsors push more candidates into a funnel whose length has not " +
+            "changed, so failures arrive faster than approvals and the failure rate becomes the " +
+            "visible statistic. Regulatory agencies hire reviewers with computational training, " +
+            "and assessment times lengthen before they shorten. Every step that got faster was " +
+            "inside the laboratory and every step that did not was outside it.",
         s4: "Disease-specific mortality moves for one or two conditions in high-income and " +
-            "upper-middle-income countries, which is the first population statistic in this " +
-            "forecast that a machine can be credited with. Patents on machine-designed " +
-            "molecules concentrate in a handful of sponsors, and generic entry sits a decade " +
-            "behind. Health ministries in poorer countries buy the new medicines late and at " +
-            "the price the first market set. The benefit is real, measurable and unevenly " +
-            "distributed on the ordinary terms of the pharmaceutical trade.",
+            "upper-middle-income countries, the first population statistic anywhere that a " +
+            "machine can be credited with. Patents on machine-designed molecules concentrate in " +
+            "a handful of sponsors, and generic entry sits a decade behind. Health ministries " +
+            "in poorer countries buy the new medicines late and at the price the first market " +
+            "set. The benefit is real, measurable and unevenly distributed on the ordinary " +
+            "terms of the pharmaceutical trade.",
         s5: "The mortality series bends for a group of rare diseases no sponsor would " +
             "previously have funded, because the cost of finding a candidate fell below the " +
             "cost of ignoring a small market. Trial design becomes the scarce skill, and the " +
@@ -4067,9 +4073,9 @@ export const FRAG = {
             "throughput by whoever owns the computing and the instruments. Laboratories run " +
             "more experiments for each researcher they employ, and formal proofs, " +
             "chip-scheduling heuristics and simulation cycles all improve together. None of it " +
-            "crosses a trial, a payment code, a plant or a border. This is the position in " +
-            "which the two facts the reader found incoherent stop being in tension: the " +
-            "machines get better and nobody outside is better off.",
+            "crosses a trial, a payment code, a plant or a border. Here the two facts the " +
+            "reader found incoherent stop being in tension, the machines improving while nobody " +
+            "outside is better off.",
         s2: "A laboratory's internal research output doubles while its published output does " +
             "not, because publication is a cost and internal use is a return. Semiconductor " +
             "design cycles shorten by months, and the saving lands with the four firms that " +
@@ -4086,10 +4092,11 @@ export const FRAG = {
         s4: "Statistical agencies find no productivity movement outside the sector that " +
             "produced the capability, which is the finding the argument then turns on. The " +
             "distance between what the systems can do and what anyone receives is the largest " +
-            "quantity in the forecast and the one nobody publishes. Governments fund public " +
-            "computing to break the enclosure, and the instruments stay where they were, " +
-            "because computing was never the scarce half. An enclosure of capability is not a " +
-            "conspiracy; it is what happens when the gains are inputs to more of the same work.",
+            "unmeasured quantity of the period, and no body publishes it. Governments fund " +
+            "public computing to break the enclosure, and the instruments stay where they were, " +
+            "because computing was never the scarce half. An enclosure of capability is what " +
+            "happens when the gains are spent as inputs to more of the same work, inside the " +
+            "laboratories that hold them.",
         s5: "Two decades of compounding sit inside a dozen organisations, and the outside " +
             "record shows a rising electricity bill. Legislatures write disclosure duties for " +
             "internal capability, and the returns describe throughput that no auditor can " +
@@ -4174,9 +4181,9 @@ export const FRAG = {
         s6: "Decades of deployment left a procurement record and no health record. What the " +
             "machines did for people is a matter of belief, which is what it was at the start, " +
             "after the largest technical programme in history. The apparatus for measuring " +
-            "benefit was built last and it can only look forward. This is the position in which " +
-            "the forecast's own question goes unanswered by the world rather than by the " +
-            "forecast." },
+            "benefit was built last and it can only look forward. The question of what any of " +
+            "it did for people went unanswered, because nobody built the apparatus that could " +
+            "have answered it." },
   K1: {
         s1: "Machines take over production coding and the research that improves them inside " +
             "the same year. One United States frontier laboratory recorded a code-optimization " +
@@ -4240,10 +4247,10 @@ export const FRAG = {
             "rest the enforcement on the developers' own declarations. A declaration is worth " +
             "what the declaring party stands to lose, which for a developer outside the " +
             "jurisdiction is access to one market.",
-        s4: "A licensed-operator regime has settled, in which permission attaches to running a " +
-            "system under stated conditions with continuous monitoring. It raises the fixed " +
-            "cost of frontier operation to a level only large organisations meet, entrenching " +
-            "the firms already there. It creates a control lever with reach well past safety, " +
+        s4: "Licensing has settled on the operator, with permission attaching to running a " +
+            "system under stated conditions and continuous monitoring. It raises the fixed cost " +
+            "of frontier operation to a level only large organisations meet, entrenching the " +
+            "firms already there. It creates a control lever with reach well past safety, " +
             "because the power to suspend a licence serves whatever purpose its holder chooses. " +
             "The holders are arms of governments carrying trade and foreign policy interests.",
         s5: "Each jurisdiction deliberated on its own. Firms selling into several of them build " +
@@ -4318,8 +4325,8 @@ export const FRAG = {
             "paperwork exercise until an evaluator blocks a release on a finding the developer " +
             "had already published. The laboratories that paid for the statute can now invoke " +
             "it against a rival.",
-        s3: "Insurers price policies against the published thresholds. A developer that counts " +
-            "its own incidents gives an underwriter something to rate. Corporate buyers copy " +
+        s3: "Insurers price policies against the published thresholds. Developers that count " +
+            "their own incidents give an underwriter something to rate. Corporate buyers copy " +
             "the two exclusions into their procurement terms, and a supplier that declines them " +
             "loses the contract. Economists paid by the fellowships supply the measurements " +
             "legislators cite in the labour statute that follows. The barred sales cost several " +
@@ -4509,10 +4516,10 @@ export const FRAG = {
             "and the platforms serving inference. They decide who may run what, on terms no " +
             "legislature wrote." },
   L6: {
-        s1: "These laboratories refuse the race framing and build systems bounded on purpose. A " +
-            "superintelligence programme announced defined its object as problem-oriented and " +
-            "domain-specific, and required containment and alignment in perpetuity. On August " +
-            "2026 a laboratory found that an unreleased model might meet the highest " +
+        s1: "These laboratories refuse the race framing and build systems bounded on purpose. " +
+            "One announced superintelligence programme defined its object as problem-oriented " +
+            "and domain-specific, and required containment and alignment in perpetuity. On " +
+            "August 2026 a laboratory found that an unreleased model might meet the highest " +
             "cybersecurity tier of its own framework and held its largest planned training run. " +
             "It published the reason, disclosing monitoring at about 20% of the inference " +
             "compute being watched, with any alert unresolved after thirty minutes pausing the " +
@@ -4748,8 +4755,8 @@ export const FRAG = {
             "a system therefore decides what it will refuse.",
         s2: "Purchasers and insurers put a price on those documents. Large buyers copied the " +
             "published safety commitments into their supply contracts, and underwriters wrote " +
-            "the same commitments into the conditions of liability cover. A developer that " +
-            "departs from its own framework now breaches a contract and voids its insurance in " +
+            "the same commitments into the conditions of liability cover. Developers that " +
+            "depart from their own framework now breach a contract and void their insurance in " +
             "the same act. Promises drafted to reassure the public came to carry a cost their " +
             "authors never set.",
         s3: "Courts took up the documents next. A judge hearing a negligence claim reads a " +
@@ -4789,9 +4796,9 @@ export const FRAG = {
             "those states made the California rule the national product. Operators run the same " +
             "few systems in every country, which gives a claimant in one the answer a claimant " +
             "in another gets. The statutes stay as divergent as ever.",
-        s3: "The statutes diverge over use rather than over design. A diagnostic system that " +
-            "may run without a physician's review in one state is unlawful across the border, " +
-            "and school districts grade essays automatically where their neighbours forbid it. " +
+        s3: "The statutes diverge over use rather than over design. Diagnostic systems that may " +
+            "run without a physician's review in one state are unlawful across the border, and " +
+            "school districts grade essays automatically where their neighbours forbid it. " +
             "State medical boards and bar associations adopted the same standards and carried " +
             "them into examination rooms, courtrooms and police departments. Protection against " +
             "an automated decision now depends on where a person lives.",
@@ -5399,8 +5406,8 @@ export const FRAG = {
             "supplier now sells much the same capability. Hospitals and councils pick the firm " +
             "that will connect it to their thirty-year-old records and answer the telephone at " +
             "midnight.",
-        s3: "Deployment stalls where records sit on paper and staff are few. A clinic keeping " +
-            "its notes on paper has nothing to give a system that reads case histories. " +
+        s3: "Deployment stalls where records sit on paper and staff are few. Clinics keeping " +
+            "their notes on paper have nothing to give a system that reads case histories. " +
             "Connectivity, device budgets and trained staff decide who receives the cheap " +
             "expertise, and none of the three falls in price the way the models did. Wealthy " +
             "health systems collect the gains that the price collapse was expected to spread.",
@@ -5480,9 +5487,9 @@ const CROSS = {
   "A7|T5": "A fixed ability spreads; its limits appear wherever the world pushes back. AI-designed " +
     "drug candidates clear the efficacy phase of human trials at about 40 percent, because " +
     "biology sets that bar.",
-  "C1|T1": "A trained system travels as a file anyone can copy. Controls bind the hardware while the " +
-    "capability spreads as software: Chinese open-weight families take about 41 percent of " +
-    "Hugging Face model downloads.",
+  "C1|T1": "Trained systems travel as files anyone can copy. Controls bind the hardware while " +
+           "the capability spreads as software: Chinese open-weight families take about 41 " +
+           "percent of Hugging Face model downloads.",
   "C1|T5": "Computing splits for good into two stacks, each with its own chips and software, while the " +
     "capability that justified the controls stays out of reach. Chinese self-sufficiency in AI " +
     "chips has passed 40 percent.",
@@ -6506,125 +6513,161 @@ const RUNG_SHORT = [
       'people' ] }],
 ];
 // What the principal states have settled. Each is a COMPLETE INDEPENDENT CLAUSE with its own subject, so the assembly no longer has to prop it up with a label.
-const GOVERN = {
-  C1: { near: "Prosecutors in Washington and Beijing enforce their own chip " +
-             "rules alone.",
-        mid: "Two licence bureaucracies harden, one over chips and one over " +
-             "model weights.",
-        long: "Mid-sized training teams hire compliance officers to clear a " +
-              "bloc licence.",
-        far: "A component crosses between two accelerator stacks under a " +
-             "signed licence.",
-      },
-  C2: { near: "Commerce clears ten Chinese buyers for H200s, and few chips " +
-             "ship.",
-        mid: "Delegations set a yearly chip quota, and a testing house " +
-             "stamps each unit.",
-        long: "Licensed compute hours cross the border, metered at the " +
-              "rack.",
-        far: "An exchange clears compute licences between the two capitals.",
-      },
-  C3: { near: "Eighty-nine governments endorse one AI text and keep their " +
-             "own programmes.",
-        mid: "Ministries file voluntary reports written in one shared " +
-             "vocabulary.",
-        long: "Foreign ministries staff permanent AI desks that draft " +
-              "acceptable language.",
-        far: "Historians read the declarations as a record of what " +
-             "governments would say.",
-      },
-  C4: { near: "Both capitals hold one nuclear command rule and argue over " +
-             "its edges.",
-        mid: "Duty officers exchange notifications and rehearse human " +
-             "control each year.",
-        long: "Lawyers litigate where the nuclear commitment stops and " +
-              "conventional systems begin.",
-        far: "Staff colleges teach a rule the two states have kept since " +
-             "2024.",
-      },
-  C5: { near: "Washington and Beijing sign a compute ceiling policed by " +
-             "declarations and whistleblowers.",
-        mid: "A joint inspectorate reconciles chip shipments against " +
-             "installed racks.",
-        long: "Resident inspectors badge onto the floor of every declared " +
-              "cluster.",
-        far: "A safeguards agency draws an annual conclusion on declared " +
-             "compute.",
-      },
-  C6: { near: "Negotiators sign a compute ceiling carrying a fixed term and " +
-             "an exit clause.",
-        mid: "One capital gives notice, and inspectors leave the declared " +
-             "halls.",
-        long: "Former inspectors sell site audits while successor talks " +
-              "stall.",
-        far: "Diplomats cite the lapsed ceiling as precedent for the next " +
-             "attempt.",
-      },
-  C7: { near: "Signatories file declarations while the number of large " +
-             "training runs multiplies.",
-        mid: "One side trains past its ceiling, and analysts read it from " +
-             "power draw.",
-        long: "Delegates meet each year with the same unresolved findings " +
-              "on the agenda.",
-        far: "Declarations arrive each spring at a commission whose " +
-             "inspectors stopped travelling.",
-      },
-  C8: { near: "Both governments stop frontier training and admit inspectors " +
-             "to prove it.",
-        mid: "Laboratories turn their largest clusters to inference and " +
-             "interpretability.",
-        long: "A joint review body clears each capability step before " +
-              "either state funds it.",
-        far: "Legislatures campaign on the vote that sets the next " +
-             "capability step.",
-      },
-};
 // The capital side, likewise a complete clause.
 const ECON = {
   E1: {
-        near: "Hospitals, banks and schools buy the same frontier models out of ordinary " +
-            "operating budgets.",
-        mid: "Because capability prices fall fortyfold a year, last year's frontier costs almost " +
-            "nothing.",
-        long: "Machines do most routine office and analytic work, the wages they replaced " +
-              "paying for the next round of building.",
-        far: "Ordinary life runs on machines that a handful of companies own, an arrangement " +
-            "politics now takes for granted." },
+        s1: [
+          "Hospitals, banks and schools buy the same frontier models out of ordinary operating " +
+          "budgets.",
+          "Grid operators in Texas and the mid-Atlantic receive interconnection requests for " +
+          "computing halls exceeding the load of their largest cities." ],
+        s2: [
+          "Public pension boards in California and Ohio move a tenth of their equity holdings " +
+          "into the companies financing computing halls.",
+          "Because the Securities and Exchange Commission requires companies to report " +
+          "computing spending on a separate line, analysts read their first clean figure." ],
+        s3: [
+          "Because capability prices fall fortyfold a year, last year's frontier costs almost " +
+          "nothing.",
+          "Underwriters price machine error into ordinary business policies, and the premium " +
+          "sits on the schedule beside fire and theft." ],
+        s4: [
+          "Machines do most routine office and analytic work, the wages they replaced paying " +
+          "for the next round of building.",
+          "Wages for electricians, pipefitters and crane operators climb past what junior " +
+          "accountants earn. Apprenticeship places fill as soon as they open." ],
+        s5: [
+          "American retirement accounts hold a third of their value in the four companies that " +
+          "own the computing halls.",
+          "Corporation tax on machine services funds a tenth of the Irish budget, and Dublin " +
+          "plans its spending around one industry." ],
+        s6: [
+          "Ordinary life runs on machines that a handful of companies own, an arrangement " +
+          "politics now takes for granted.",
+          "The counties that hosted the build keep their transmission lines, their water " +
+          "agreements and a tax base three times what farming left them." ] },
   E2: {
-        near: "Since capability gets cheaper faster than it sells, clinics run what frontier " +
-            "laboratories run.",
-        mid: "Although the companies selling AI earn thin margins, the gain from it lands with " +
-            "the people using it.",
-        long: "Priced at about what electricity costs, intelligence earns its sellers little.",
-        far: "Because buyers switch suppliers in an afternoon, the price of machine reasoning " +
-             "sits at the cost of electricity, hardware and the staff who keep a site running." },
+        s1: [
+          "Since capability gets cheaper faster than it sells, clinics run what frontier " +
+          "laboratories run.",
+          "Iowa grain farms run yield models costing less than the diesel for one harvest." ],
+        s2: [
+          "The General Services Administration puts model access on its standard schedule, and " +
+          "every federal office buys at the same posted rate.",
+          "The Federal Trade Commission opens an inquiry into below-cost pricing after " +
+          "suppliers sell machine reasoning for less than the electricity behind it." ],
+        s3: [
+          "Although the companies selling AI earn thin margins, the gain from it lands with the " +
+          "people using it.",
+          "City finance departments in Milwaukee and Lisbon book model access under utilities, " +
+          "the line shrinking with each budget round." ],
+        s4: [
+          "Priced at about what electricity costs, intelligence earns its sellers little.",
+          "Translation, transcription and bookkeeping sell for a tenth of their old rates, and " +
+          "the firms that buy them keep the saving." ],
+        s5: [
+          "Households in Lagos and Manila pay a few cents a month for machine services their " +
+          "employers once bought at professional rates.",
+          "Norway's government pension fund holds machine suppliers for their dividends, " +
+          "valuing them the way it values water utilities." ],
+        s6: [
+          "Because buyers switch suppliers in an afternoon, the price of machine reasoning sits " +
+          "at the cost of electricity, hardware and the staff who keep a site running.",
+          "Village schools in Kerala and Peru teach with the models that clear insurance claims " +
+          "in Zurich, at a few cents an hour." ] },
   E3: {
-        near: "Pension funds and insurers write down the loans that built the computing halls, " +
-              "because the capacity outran what buyers would pay to use it.",
-        mid: "Voters call AI a swindle in surveys and use it at work the same afternoon. Error " +
-             "rates on the tasks they use it for keep falling.",
-        long: "The crash wiped out the equity and left the machines running, so the companies now " +
+        s1: [
+          "Pension funds and insurers write down the loans that built the computing halls, " +
+          "because the capacity outran what buyers would pay to use it.",
+          "Bankruptcy courts in Delaware take filings from the operators of half-built " +
+          "computing halls whose lenders refused a further draw." ],
+        s2: [
+          "The Federal Reserve accepts computing-hall debt as collateral from banks that keep " +
+          "lending through the write-downs.",
+          "Attorneys general in New York and California subpoena the revenue projections " +
+          "operators showed their lenders before the halls emptied." ],
+        s3: [
+          "Voters call AI a swindle in surveys and use it at work the same afternoon. Error " +
+          "rates on the tasks they use it for keep falling.",
+          "Actuaries write the losses into pension valuations, and public boards in Ontario and " +
+          "Denmark raise contribution rates to close the gap." ],
+        s4: [
+          "The crash wiped out the equity and left the machines running, so the companies now " +
           "using frontier systems are mostly not the ones that paid to build them.",
-        far: "The money that financed capability is gone, the capability remains, and using it " +
-            "is as ordinary as using electricity." },
+          "University endowments in Boston and Ann Arbor report heavy losses on their computing " +
+          "holdings, freezing hiring across departments." ],
+        s5: [
+          "Households near retirement carry the loss because their funds held the operators' " +
+          "bonds, and the machines those bonds paid for still run.",
+          "The Government Accountability Office counts federal agencies running frontier " +
+          "systems bought at bankruptcy auction for a fraction of build cost." ],
+        s6: [
+          "The money that financed capability is gone, the capability remains, and using it is " +
+          "as ordinary as using electricity.",
+          "The transmission lines built for training carry power to steel mills and suburbs, " +
+          "the one asset the write-downs left standing." ] },
   E4: {
-        near: "No laboratory has started a larger training run since the money stopped, and the " +
-              "systems installed in clinics and payroll offices will still be running in five " +
-              "years.",
-        mid: "Since only a handful of governments still fund frontier programmes, everyone else " +
-            "licenses from them.",
-        long: "Capability holds where the money stopped, and so do the industries that " +
-            "reorganised around it.",
-        far: "With the companies that promised more bought or wound up, AI has settled into " +
-            "ordinary equipment." },
+        s1: [
+          "No laboratory has started a larger training run since the money stopped, and the " +
+          "systems installed in clinics and payroll offices will still be running in five " +
+          "years.",
+          "Orders for advanced accelerators fall by four-fifths, and the fabrication plants in " +
+          "Arizona and Kumamoto turn their lines to car parts." ],
+        s2: [
+          "The Department of Energy takes over two half-finished computing halls for its " +
+          "national laboratories once the private lenders stop paying.",
+          "The National Science Foundation rations time on the last publicly funded cluster, a " +
+          "queue physicists join behind climate modellers." ],
+        s3: [
+          "Since only a handful of governments still fund frontier programmes, everyone else " +
+          "licenses from them.",
+          "School districts and water utilities plan around the systems they already run, and " +
+          "suppliers sell maintenance where they once sold upgrades." ],
+        s4: [
+          "Capability holds where the money stopped, and so do the industries that reorganised " +
+          "around it.",
+          "Engineers trained for frontier work take jobs in avionics, chip design and weather " +
+          "forecasting. Universities cut their machine-learning intakes." ],
+        s5: [
+          "Japan's Ministry of Economy, Trade and Industry funds the country's only frontier " +
+          "programme, its budget line sitting beside the rail subsidy.",
+          "Households buy machine assistance the way they buy washing machines: once, from a " +
+          "shop, with a warranty and a repair trade behind it." ],
+        s6: [
+          "With the companies that promised more bought or wound up, AI has settled into " +
+          "ordinary equipment.",
+          "Engineering schools teach the last frontier architectures as settled material, and " +
+          "graduates maintain the systems their teachers installed." ] },
   E5: {
-        near: "Enough people lose paid work that consumer spending falls, stripping the firms " +
-            "selling AI of their customers.",
-        mid: "Politics turns on one question: who pays for the transfers governments now make " +
-            "directly to a large share of households.",
-        long: "A minority of adults hold paid work, and the state supplies most household income.",
-        far: "Since income now arrives by political settlement, life in each country follows the " +
-            "terms that country chose." },
+        s1: [
+          "Enough people lose paid work that consumer spending falls, stripping the firms " +
+          "selling AI of their customers.",
+          "Shopping centres in Ohio and Yorkshire lose a fifth of their takings as clerical and " +
+          "call-centre jobs disappear from the towns around them." ],
+        s2: [
+          "State unemployment offices in Michigan and Nevada hire clerks by the hundred while " +
+          "their trust funds run dry.",
+          "The Communications Workers of America wins severance and retraining terms in one " +
+          "contract, and other unions copy the language." ],
+        s3: [
+          "Politics turns on one question: who pays for the transfers governments now make " +
+          "directly to a large share of households.",
+          "HM Revenue and Customs collects a levy on machine services and pays it out as a " +
+          "monthly credit to every household." ],
+        s4: [
+          "A minority of adults hold paid work, and the state supplies most household income.",
+          "Landlords in Manila, Warsaw and Phoenix convert offices to flats. Rents fall in the " +
+          "cities that clerical work built." ],
+        s5: [
+          "Savings across the middle of the income scale drain into rent and groceries, and " +
+          "credit unions in Detroit write off consumer loans.",
+          "Constitutional courts in Karlsruhe and Delhi rule the monthly payment falls below " +
+          "subsistence, ordering legislatures to set a floor." ],
+        s6: [
+          "Since income now arrives by political settlement, life in each country follows the " +
+          "terms that country chose.",
+          "Union halls left empty by the displacement handle appeals against the state payment, " +
+          "and the clerks it put out of work staff the desks." ] },
 };
 // What the rest of the line is doing TO the economy. Each is joined to its base with "and",
 // so each is a CLAUSE with its own subject and verb, and must not repeat a noun the base used.
@@ -6635,353 +6678,1762 @@ const ECON = {
 // What the rest of the line is doing to the economy. Each is a complete clause of its own.
 const ECON_MOD = {
   "E1|A3": {
-    near: "One caught failure halts releases for most of a year, the money waiting out the " +
-         "pause.",
-    mid: "Since revenue can carry the wait, full safety review before shipping has become " +
-         "standard across the laboratories." },
+        s1: [
+          "One caught failure halts releases for most of a year, the money waiting out the " +
+          "pause.",
+          "German air-traffic controllers ground a scheduling assistant that cleared two " +
+          "aircraft onto one runway; the other European control centres running it stop before " +
+          "the inquiry opens." ],
+        s2: [
+          "The Food and Drug Administration suspends clearances for diagnostic software until " +
+          "each vendor files a full incident report.",
+          "State insurance commissioners in New York and California will write policies on " +
+          "automated claims decisions only where a named adjuster signs each refusal." ],
+        s3: [
+          "Since revenue can carry the wait, full safety review before shipping has become " +
+          "standard across the laboratories.",
+          "Procurement officers at the Department of Veterans Affairs write the review " +
+          "requirement into every contract, bids coming back eight percent dearer to cover the " +
+          "wait." ],
+        s4: "Universities in Edinburgh and Toronto graduate more evaluation engineers than " +
+            "statisticians, filling posts that pay a third above ordinary research salaries.",
+        s5: [
+          "Auditors hired by laboratory boards verify that a fifth of all computing now goes to " +
+          "testing before release.",
+          "Farmers in Iowa buy yield software carrying a review certificate, since their " +
+          "lenders require that certificate before advancing operating credit." ],
+        s6: "The halt created a trade: three thousand testers at the laboratories now break " +
+            "systems before any customer sees them." },
   "E1|C3": {
-    near: "Both principal states sign a shared text although each keeps its own programme " +
-         "running at full speed.",
-    mid: "Nearly ninety countries sign a statement of principles, and the two states at the " +
-         "frontier keep every decision about training inside their own cabinets." },
+        s1: [
+          "Both principal states sign a shared text although each keeps its own programme " +
+          "running at full speed.",
+          "The Swiss foreign ministry hosts the signing, and its own procurement office buys " +
+          "the American systems the text was meant to constrain." ],
+        s2: [
+          "The International Telecommunication Union opens a register where signatories deposit " +
+          "evaluation results. Nine governments deposit a single result each.",
+          "Japan's Ministry of Economy, Trade and Industry writes the accord into its " +
+          "procurement rules, requiring vendors to disclose training data." ],
+        s3: [
+          "Nearly ninety countries sign a statement of principles, and the two states at the " +
+          "frontier keep every decision about training inside their own cabinets.",
+          "Compliance officers at European insurers attach the accord's checklist to every " +
+          "contract; the systems they underwrite behave exactly as they did before." ],
+        s4: "African Union negotiators use the text to demand hosting on the continent, and " +
+            "three ministries win training capacity in Nairobi.",
+        s5: [
+          "Auditors at the OECD count four thousand safety declarations filed under the accord " +
+          "and find that no signatory inspected one.",
+          "Chinese and American negotiators meet on schedule and sign addenda; each side ships " +
+          "two frontier releases between sittings." ],
+        s6: "Trade lawyers in Brussels and Delhi built practices on a text that binds no " +
+            "signatory, advising ministries which declarations to lodge." },
   "E1|D1": {
-    near: "Spending is enormous; because the work keeps coming back to people, offices hire even " +
-         "as they buy machines.",
-    mid: "Economists dispute one question above all others: why output figures fall short of the " +
-      "promised productivity." },
+        s1: [
+          "Spending is enormous; because the work keeps coming back to people, offices hire " +
+          "even as they buy machines.",
+          "Auditors at the Government Accountability Office find federal agencies paying for " +
+          "assistants that saved no measurable staff time." ],
+        s2: [
+          "The Office of Management and Budget orders every agency to report hours saved before " +
+          "renewing a licence.",
+          "Britain's National Audit Office opens an inquiry into seven departments whose " +
+          "assistants produced drafts that civil servants rewrote in full." ],
+        s3: [
+          "Economists dispute one question above all others: why output figures fall short of " +
+          "the promised productivity.",
+          "Chief financial officers at mid-sized manufacturers demand a measured hours-saved " +
+          "figure before signing, which four vendors in ten produce." ],
+        s4: "Consultancies in Bengaluru and Warsaw hire twelve thousand people to redesign the " +
+            "processes that software alone failed to improve.",
+        s5: [
+          "The Bureau of Labor Statistics records output per hour rising under one percent, its " +
+          "economists tracing the whole gain to the construction of the halls themselves.",
+          "Nurses at county health departments keep the paper forms beside the software, which " +
+          "mis-transcribes one dosage in forty." ],
+        s6: "Buyers burned by the first wave wrote the rule that lasted: procurement offices " +
+            "across the OECD demand a measured saving before any purchase." },
   "E1|D2": {
-    near: "Machines take coding, drafting and back-office work; doctors and lawyers keep theirs " +
-         "because liability sits with them.",
-    mid: "Insurers decide which professions automate: tasks no policy will cover stay with " +
-         "people who can be sued." },
+        s1: [
+          "Machines take coding, drafting and back-office work; doctors and lawyers keep theirs " +
+          "because liability sits with them.",
+          "Malpractice insurers in Ohio refuse to write policies for practices that let " +
+          "software sign a diagnosis unread." ],
+        s2: [
+          "The General Medical Council rules that a named clinician must sign every " +
+          "machine-assisted report, and British trusts rewrite their rotas.",
+          "The Delaware Court of Chancery holds directors answerable for losses from " +
+          "unsupervised automation. Boards appoint review officers." ],
+        s3: [
+          "Insurers decide which professions automate: tasks no policy will cover stay with " +
+          "people who can be sued.",
+          "Law firms in Chicago and Manchester bill a verification line on every matter, and " +
+          "general counsel approve it as a standard disbursement." ],
+        s4: "Community colleges in Texas and Ontario open verification programmes, filling " +
+            "classes with claims adjusters and medical coders stripped of their old duties.",
+        s5: [
+          "Radiographers earn a fifth more than they did before automation, since every scan " +
+          "needs a licensed signature.",
+          "The Federal Aviation Administration requires a licensed dispatcher's signature on " +
+          "every automated flight plan, auditing each airline's logs." ],
+        s6: "Actuaries at the reinsurers priced unsupervised automation out of reach, and their " +
+            "policy wording now sets the staffing of every radiology department and " +
+            "conveyancing desk." },
   "E1|D3": {
-    near: "Since teams produce several times what they did with the same headcount, the change " +
-         "shows up as output.",
-    mid: "Half the tasks in most trades have become machine work, although the trades survive " +
-         "with different jobs inside them." },
+        s1: [
+          "Since teams produce several times what they did with the same headcount, the change " +
+          "shows up as output.",
+          "Farm cooperatives in Iowa and Mato Grosso run the same yield and pricing tools the " +
+          "grain traders run." ],
+        s2: [
+          "The Department of Agriculture funds extension officers to teach the tools in county " +
+          "offices, reaching seventy thousand growers.",
+          "After Germany's chambers of commerce add these tools to the apprenticeship " +
+          "curriculum, IG Metall bargains for paid training hours." ],
+        s3: [
+          "Half the tasks in most trades have become machine work, although the trades survive " +
+          "with different jobs inside them.",
+          "Municipal water districts across Andalusia schedule their pumping by demand forecast " +
+          "and cut electricity spending by a sixth." ],
+        s4: "Small exporters in Vietnam file their own customs paperwork and drop the brokers " +
+            "who charged three percent of shipment value.",
+        s5: [
+          "Statistics Canada measures the smallest firms closing a productivity gap that had " +
+          "widened in every previous survey.",
+          "Village clinics in Kerala read their own scans, and referrals to the district centre " +
+          "fall by half." ],
+        s6: "Public libraries in Ohio still run the training sessions they started, reaching " +
+            "households no vendor ever called on." },
   "E1|D4": {
-    near: "Whole occupations empty inside two years; the money funding the machines keeps " +
-         "arriving through the layoffs.",
-    mid: "Gains land with owners and losses with workers; nothing has been built to move " +
-         "anything between them." },
+        s1: [
+          "Whole occupations empty inside two years; the money funding the machines keeps " +
+          "arriving through the layoffs.",
+          "Call centre operators in Manila dismiss forty thousand agents at once, and the " +
+          "provincial economies feeding them contract." ],
+        s2: [
+          "After the Department of Labor extends adjustment allowances to dismissed clerical " +
+          "workers, forty state agencies process the claims.",
+          "Spain's parliament cuts statutory working hours and subsidises the difference; " +
+          "employers keep two-thirds of the posts they had listed for redundancy." ],
+        s3: [
+          "Gains land with owners and losses with workers; nothing has been built to move " +
+          "anything between them.",
+          "Employment tribunals in Leeds and Cardiff hear redundancy cases in batches of two " +
+          "hundred, with the same software cited throughout." ],
+        s4: "Landlords in Cebu and Krakow cut rents as tenants leave, and municipal revenue " +
+            "falls with the assessments.",
+        s5: [
+          "When the Congressional Budget Office scores payroll receipts falling four percent as " +
+          "corporate receipts rise, every state budget shows the shift.",
+          "Half the paralegals, medical coders and freight dispatchers who lost posts never " +
+          "returned to full-time employment, and disability rolls carry them." ],
+        s6: "The Teamsters and the Communications Workers of America bargained the first " +
+            "severance formulas tied to automation that every later contract copied." },
   "E1|P1": {
-    near: "As people use the machines daily and argue about them rarely, the build-out proceeds " +
-         "without organised objection.",
-    mid: "The people financing AI make the decisions about it, now that it is as unremarkable " +
-         "as electricity." },
+        s1: [
+          "As people use the machines daily and argue about them rarely, the build-out proceeds " +
+          "without organised objection.",
+          "Parents in Gyeonggi pay for tutoring that runs on the education ministry's own " +
+          "systems, and the provincial assembly hears no objection at its budget session." ],
+        s2: [
+          "The Korea Communications Commission drops its consultation on classroom software " +
+          "after receiving nine responses, seven of them from vendors.",
+          "Britain's Information Commissioner approves a code of practice drafted with the " +
+          "vendors. No political party contests it." ],
+        s3: [
+          "The people financing AI make the decisions about it, now that it is as unremarkable " +
+          "as electricity.",
+          "County registrars in Arizona file deeds through automated review, and the county " +
+          "board's minutes record the change in a single line." ],
+        s4: "Local newspapers in Bavaria and Ohio lose the protest campaigns that once filled " +
+            "their pages, since the county's own clerks use the service daily.",
+        s5: [
+          "Polling by Gallup finds two in three adults using such tools and one in ten able to " +
+          "name their owners.",
+          "Municipal unions in Lyon accept automated scheduling in exchange for a shorter " +
+          "shift, their members ratifying it four to one." ],
+        s6: "Ministries adopted the vendors' own terms of service as the public standard, and " +
+            "legislators have scheduled no hearing to revisit them." },
   "E1|P3": {
-    near: "Capacity moves to the places that will take it, as towns block campuses one vote at a " +
-         "time.",
-    mid: "Capacity settles in the poorer counties that accepted it and now carry the noise and " +
-         "the water use." },
+        s1: [
+          "Capacity moves to the places that will take it, as towns block campuses one vote at " +
+          "a time.",
+          "Residents of Loudoun County pack a zoning hearing and vote down a hall that offered " +
+          "the county forty million dollars." ],
+        s2: [
+          "The Virginia State Corporation Commission opens a docket on transmission charges. " +
+          "Fourteen counties file as parties to it.",
+          "Ireland's planning authority refuses three connection applications around Dublin and " +
+          "directs the applicants to the midlands." ],
+        s3: [
+          "Capacity settles in the poorer counties that accepted it and now carry the noise and " +
+          "the water use.",
+          "Planning officers in Aragon require a water budget with every application, and " +
+          "developers file them as routine." ],
+        s4: "Land agents in Wyoming and Manitoba buy options on ranch parcels near substations, " +
+            "tripling land values there.",
+        s5: [
+          "County assessors in Georgia and Ohio record two-thirds of new capacity landing in " +
+          "districts with below-median household incomes.",
+          "Township trustees in three Indiana districts fund new firehouses from the payments, " +
+          "while the townships that refused raise their levies." ],
+        s6: "Operators learned to negotiate before filing, and community benefit agreements now " +
+            "precede every application in North America." },
   "E1|P5": {
-    near: "Voters elect a restriction government while the money is still flowing, setting up an " +
-         "immediate collision.",
-    mid: "Where law caps what companies may deploy at home, the spending moves to countries " +
-         "with no cap." },
+        s1: [
+          "Voters elect a restriction government while the money is still flowing, setting up " +
+          "an immediate collision.",
+          "Voters in Chile and Poland elect governments promising restriction. The ministries " +
+          "drafting the rules inherit contracts already signed." ],
+        s2: [
+          "France's competition authority orders vendors to offer a version making no automated " +
+          "decisions, and the ministries buy that one.",
+          "The European Commission suspends its own deployment in benefits assessment after a " +
+          "court finds twelve thousand wrongful refusals." ],
+        s3: [
+          "Where law caps what companies may deploy at home, the spending moves to countries " +
+          "with no cap.",
+          "Because labour inspectorates in Italy and Brazil certify each workplace deployment, " +
+          "the backlog of uninspected sites reaches four thousand." ],
+        s4: "Tax authorities in Dublin and Singapore book the revenue that Paris and Rome " +
+            "legislated away, as developers move training offshore.",
+        s5: [
+          "Inspectors in Madrid find a third of the systems their agencies rely on running on " +
+          "servers abroad.",
+          "Households in restricted markets pay four times what households across the border " +
+          "pay for the same service, and the gap widens with each enforcement action." ],
+        s6: "Exporters maintain a separate build for each market, a split whose compliance cost " +
+            "now exceeds what the restricted service earns." },
   "E1|S1": {
-    near: "Capacity sits with four American companies that everyone else rents from: national " +
-         "laboratories queue behind retailers.",
-    mid: "Every country's research runs on machines owned in one country, a dependence that has " +
-         "become a foreign-policy problem." },
+        s1: [
+          "Capacity sits with four American companies that everyone else rents from: national " +
+          "laboratories queue behind retailers.",
+          "University consortia in Greece and Chile book training time behind commercial " +
+          "customers, and two of their grant programmes lapse unspent." ],
+        s2: [
+          "The National Science Foundation buys a guaranteed allocation for academic users and " +
+          "rations it by peer review.",
+          "India's Ministry of Electronics and Information Technology leases capacity for " +
+          "public universities and allots it by examination results." ],
+        s3: [
+          "Every country's research runs on machines owned in one country, a dependence that " +
+          "has become a foreign-policy problem.",
+          "Once grant committees write capacity allocations into every award, reviewers reject " +
+          "proposals whose experiments exceed the hours granted." ],
+        s4: "Chip designers in Taiwan and Korea sell their best output to four buyers, and " +
+            "everyone else takes the older parts.",
+        s5: [
+          "Although four American firms hold nine-tenths of frontier training capacity, the " +
+          "antitrust division confines itself to monitoring.",
+          "Defence ministries in Europe write dependence on foreign capacity into their risk " +
+          "registers, beside gas supply." ],
+        s6: "Governments that built no capacity of their own now trade market access for " +
+            "training hours, and their negotiators rank it beside fuel and grain." },
   "E1|S2": {
-    near: "Operators in the Gulf and the second tier build fast enough that a frontier run " +
-         "happens outside America.",
-    mid: "A dozen countries train frontier models at home, each writing its own safety rules." },
+        s1: [
+          "Operators in the Gulf and the second tier build fast enough that a frontier run " +
+          "happens outside America.",
+          "The ministries of the United Arab Emirates stop routing sensitive computation " +
+          "through American soil, the frontier training run at home now complete." ],
+        s2: [
+          "Brazil's science ministry finances a national training run and requires the " +
+          "evaluation results published in Portuguese.",
+          "The African Union secretariat pools purchasing for sixteen member states and " +
+          "negotiates a single equipment contract." ],
+        s3: [
+          "A dozen countries train frontier models at home, each writing its own safety rules.",
+          "Ministries of finance in Jakarta and Riyadh specify a domestic training location in " +
+          "every tender, and vendors build to it." ],
+        s4: "Industrial customers in Norway and Quebec face higher tariffs. Power utilities " +
+            "there sign contracts filling their surplus.",
+        s5: [
+          "Fourteen states run frontier training at home, and an approval issued in one carries " +
+          "no weight in another.",
+          "Safety researchers in Nairobi and Sao Paulo publish evaluations in Swahili and " +
+          "Portuguese, putting a third of the literature outside English." ],
+        s6: "Every state wrote its own release rules during the scramble, and compliance " +
+            "departments now certify each market separately at four times the old cost." },
   "E1|S3": {
-    near: "A town's vote decides where frontier training happens, since money is plentiful and " +
-         "electricity scarce.",
-    mid: "Household electricity bills rise near new capacity, the one number that turns " +
-         "neighbours against the industry." },
+        s1: [
+          "A town's vote decides where frontier training happens, since money is plentiful and " +
+          "electricity scarce.",
+          "Applicants with money in hand wait for transmission, grid operators in Ireland and " +
+          "Virginia having refused new connections." ],
+        s2: [
+          "The Federal Energy Regulatory Commission orders large loads to fund the lines they " +
+          "require, and nineteen utilities refile their tariffs.",
+          "Ofgem requires operators to pay for substation upgrades before energisation, " +
+          "stopping three projects around Slough." ],
+        s3: [
+          "Household electricity bills rise near new capacity, the one number that turns " +
+          "neighbours against the industry.",
+          "Utility commissions in Texas and Georgia write dedicated tariffs for large loads, " +
+          "and every new hall signs one." ],
+        s4: "Turbine manufacturers in Aberdeen and Chennai sell their output into a queue, " +
+            "costing municipal projects their place in it.",
+        s5: [
+          "Households near new capacity in Ohio pay a fifth more for power, and the utility " +
+          "commission attributes the rise to transmission.",
+          "Once water authorities in Aragon and Arizona meter every hall, the farms upstream " +
+          "take cuts through the dry season." ],
+        s6: "The connection queue settled the map, and towns with spare power and few " +
+            "neighbours now host three-quarters of American training capacity." },
   "E1|S4": {
-    near: "Export rules written in Washington decide which Chinese firms train at scale; Beijing " +
-         "answers by restricting its own models abroad.",
-    mid: "Two separate AI stacks serve two blocs, and ministries that buy one bloc's machines " +
-         "take their spare parts, software updates and trained engineers from that bloc alone." },
+        s1: [
+          "Export rules written in Washington decide which Chinese firms train at scale; " +
+          "Beijing answers by restricting its own models abroad.",
+          "Once the Bureau of Industry and Security adds sixteen Chinese firms to its entity " +
+          "list, their training runs stop mid-course." ],
+        s2: [
+          "China's Ministry of Commerce restricts exports of Chinese systems to states hosting " +
+          "American controls, and the ministries of nine states lose access.",
+          "Since the Dutch government licenses each lithography shipment individually, its " +
+          "licensing office hires forty officials to clear the backlog." ],
+        s3: [
+          "Two separate AI stacks serve two blocs, and ministries that buy one bloc's machines " +
+          "take their spare parts, software updates and trained engineers from that bloc alone.",
+          "Customs authorities in Rotterdam and Singapore inspect server shipments as routine, " +
+          "and freight forwarders build the inspection hold into every quoted transit." ],
+        s4: "Since engineers in Shenzhen redesign around domestic chips, the systems they ship " +
+            "run slower and draw more power.",
+        s5: [
+          "Standards bodies split into an American body and a Chinese one, and engineers in " +
+          "Seoul certify each product twice to sell into both.",
+          "Smuggling networks move a tenth of controlled equipment through Malaysia and the " +
+          "Gulf. Prosecutions reach a handful of brokers." ],
+        s6: "The controls left multinationals staffing a separate engineering team for each " +
+            "bloc, and a design serving both markets costs twice what one did." },
   "E1|S5": {
-    near: "When advanced chip fabrication halts in Taiwan, every frontier programme queues and " +
-         "the money sits idle.",
-    mid: "Chips go to defence and medicine first, leaving ordinary companies to wait years for " +
-         "capacity they funded." },
+        s1: [
+          "When advanced chip fabrication halts in Taiwan, every frontier programme queues and " +
+          "the money sits idle.",
+          "After an earthquake stops the fabrication plants in Hsinchu, every buyer holding " +
+          "signed orders joins one queue." ],
+        s2: [
+          "Taiwan's economy ministry allocates remaining output to medical and defence " +
+          "customers, and commercial purchasers drop to the back.",
+          "The Department of Commerce invokes the Defense Production Act to direct wafer " +
+          "output, giving three American projects priority." ],
+        s3: [
+          "Chips go to defence and medicine first, leaving ordinary companies to wait years for " +
+          "capacity they funded.",
+          "Purchasing managers hold deep spares in inventory, and their auditors treat the " +
+          "stock as ordinary working capital." ],
+        s4: "Because refurbishers in Penang and Guadalajara rebuild older accelerators, " +
+            "universities buy back equipment they once discarded.",
+        s5: [
+          "Municipal transit agencies in Lisbon and Lima run older scheduling software, since " +
+          "replacement equipment goes to defence first.",
+          "Leasing brokers in Frankfurt charge five times the pre-shock rate for used " +
+          "accelerators, and hospital imaging departments sign at that rate." ],
+        s6: "Nine governments now hold strategic chip reserves beside their oil. The shortage " +
+            "taught them to stockpile." },
   "E2|A3": {
-    near: "Because a pause costs thin sellers more than rich ones, the smaller laboratories " +
-         "merge or close.",
-    mid: "Two hundred safety researchers cost more than a small developer's entire payroll. " +
-         "Smaller firms build on downloaded models and inherit whatever behaviour those models " +
-         "arrived with." },
+        s1: [
+          "Because a pause costs thin sellers more than rich ones, the smaller laboratories " +
+          "merge or close.",
+          "When two dozen small developers halt releases after the caught failure, their " +
+          "investors decline the next funding round." ],
+        s2: [
+          "The National Institute of Standards and Technology publishes an evaluation battery " +
+          "anyone can run, and downloads pass forty thousand.",
+          "Singapore's Infocomm Media Development Authority funds shared testing for firms too " +
+          "small to run their own. Ninety apply." ],
+        s3: [
+          "Two hundred safety researchers cost more than a small developer's entire payroll. " +
+          "Smaller firms build on downloaded models and inherit whatever behaviour those models " +
+          "arrived with.",
+          "University groups in Delft and Toronto run the evaluations for a fee, and vendors " +
+          "submit before each release." ],
+        s4: "Three small developers close for want of a filed evaluation. Insurers write cover " +
+            "only for vendors holding one.",
+        s5: [
+          "Regulators tracing deployments find nine-tenths descending from four openly released " +
+          "base models, each inheriting behaviour nobody retested.",
+          "Evaluation contractors in Bengaluru employ nine thousand engineers, more than the " +
+          "developers whose work they test." ],
+        s6: "Procurement offices everywhere cite an evaluation battery the vanished small " +
+            "developers paid to build." },
   "E2|C3": {
-    near: "Nearly every country signs a shared text that costs nothing when capability is cheap.",
-    mid: "Everyone agrees the principles and nobody prices them: cheap capability spreads past " +
-         "every line the text drew." },
+        s1: [
+          "Nearly every country signs a shared text that costs nothing when capability is " +
+          "cheap.",
+          "Ninety governments sign a text costing them nothing, and students in Lagos download " +
+          "the models it describes." ],
+        s2: [
+          "UNESCO opens a voluntary register of deployments into which six signatories file " +
+          "entries.",
+          "Kenya's Communications Authority writes the accord's wording into licence " +
+          "conditions, making it enforceable in one country." ],
+        s3: [
+          "Everyone agrees the principles and nobody prices them: cheap capability spreads past " +
+          "every line the text drew.",
+          "Foreign ministries attach the declaration to trade agreements, and negotiators on " +
+          "both sides treat it as boilerplate." ],
+        s4: "Civil society groups in Manila and Bogota cite the text in domestic litigation, " +
+            "two courts accepting it as evidence of intent.",
+        s5: [
+          "Every signatory hosts systems its own delegation argued against, and no complaint " +
+          "has reached the enforcement committee.",
+          "Village schools in Ha Tinh run the systems the declaration discouraged. No ministry " +
+          "knows they are there." ],
+        s6: "Drafters of national statutes borrowed the declaration's definitions of training " +
+            "and deployment, and those definitions outlived the accord." },
   "E2|D1": {
-    near: "Although cheap capability still fails at real jobs, firms buy it widely and change " +
-         "little about their work.",
-    mid: "Paid work stays with people although the cost of a machine hour has fallen below any " +
-         "wage." },
+        s1: [
+          "Although cheap capability still fails at real jobs, firms buy it widely and change " +
+          "little about their work.",
+          "County councils in Lancashire buy tools at trivial rates and leave every workflow " +
+          "exactly as it was." ],
+        s2: [
+          "The Office for National Statistics adds a question on tool use to its business " +
+          "survey, half the respondents reporting no measured saving.",
+          "Japan's Ministry of Internal Affairs funds process consultants for small " +
+          "manufacturers, reaching four thousand plants." ],
+        s3: [
+          "Paid work stays with people although the cost of a machine hour has fallen below any " +
+          "wage.",
+          "Trade associations in Stuttgart and Nagoya publish redesign templates, and their " +
+          "members work through one before buying anything." ],
+        s4: "Consultancies bill four pounds for redesigning a process for every pound the " +
+            "software itself costs.",
+        s5: [
+          "Economists at the Bank of England record output per hour rising under one percent " +
+          "and disagree about which measure fails.",
+          "Court clerks in Ontario draft with the tools and take the same time per file, since " +
+          "checking a draft takes what writing took." ],
+        s6: "Municipal governments that rewrote their procedures kept the advantage; the " +
+            "software costs too little to separate one council from another." },
   "E2|D2": {
-    near: "Firms run three machines on one task and check the answers, buying reliability with " +
-         "volume.",
-    mid: "Employers in most trades pay workers to verify what machines produce. Whoever verifies " +
-      "answers for the result." },
+        s1: [
+          "Firms run three machines on one task and check the answers, buying reliability with " +
+          "volume.",
+          "Airlines in Doha and Atlanta require two independent systems to agree before a " +
+          "dispatcher accepts a flight plan." ],
+        s2: [
+          "The Occupational Safety and Health Administration writes verification into its " +
+          "inspection checklist, factories adding a signing role to every shift.",
+          "The National Union of Rail, Maritime and Transport Workers bargains verification " +
+          "duties into the grade structure, raising pay for those who sign." ],
+        s3: [
+          "Employers in most trades pay workers to verify what machines produce. Whoever " +
+          "verifies answers for the result.",
+          "Accreditation boards in medicine and surveying examine candidates on checking " +
+          "automated output, and that paper carries equal weight with clinical practice." ],
+        s4: "Employment agencies in Manila and Krakow place forty thousand checkers. The trade " +
+            "pays above local clerical rates.",
+        s5: [
+          "Labour ministries in Mexico and Poland count more workers verifying output than the " +
+          "posts automation removed from claims handling.",
+          "Notaries and pharmacists keep their monopolies, since each signature carries a " +
+          "liability that no policy covers." ],
+        s6: "Licensing boards came through the cheap years intact, and they still decide who " +
+            "may be paid for professional work." },
   "E2|D3": {
-    near: "Small firms automate alongside large ones and carry the change into ordinary " +
-         "businesses.",
-    mid: "When corner shops run the same analytic tools as banks, the advantage of size " +
-         "shrinks." },
+        s1: [
+          "Small firms automate alongside large ones and carry the change into ordinary " +
+          "businesses.",
+          "Corner shops in Lagos and Lima run the forecasting tools the wholesalers run, for " +
+          "less than they pay for power." ],
+        s2: [
+          "The Reserve Bank of India requires cooperative lenders to document automated credit " +
+          "decisions. Ninety-four thousand branches comply.",
+          "Brazil's federal tax authority publishes a free filing assistant, and nine million " +
+          "small traders file with it." ],
+        s3: [
+          "When corner shops run the same analytic tools as banks, the advantage of size " +
+          "shrinks.",
+          "Where vocational colleges in Gauteng and Punjab teach the tools in every trade " +
+          "course, employers expect the skill on arrival." ],
+        s4: "Bookkeepers and translators in mid-sized towns lose their fee income, and the work " +
+            "moves inside the firms that once hired them.",
+        s5: [
+          "Once the smallest firms match the largest on forecasting accuracy, market share in " +
+          "grocery retail stops concentrating.",
+          "Village councils in Telangana run their own water and crop planning, and the " +
+          "district engineers who did it move to inspection." ],
+        s6: "Cheapness made the tools an assumption, builders and accountants now quoting for " +
+            "work that presumes them." },
   "E2|D4": {
-    near: "Machine labour undercuts wages everywhere at once, a displacement arriving across " +
-         "every sector together.",
-    mid: "Wages fall to the cost of a machine hour, a floor most people are now offered." },
+        s1: [
+          "Machine labour undercuts wages everywhere at once, a displacement arriving across " +
+          "every sector together.",
+          "Freight brokers, transcription firms and tax preparers cut their rates together, and " +
+          "their workers' earnings fall with them." ],
+        s2: [
+          "The Social Security Administration processes disability claims at twice its usual " +
+          "volume with the same tools its own clerks work under.",
+          "Denmark's parliament raises the earned income floor and funds it from a levy on " +
+          "computing; other Nordic states copy the design." ],
+        s3: [
+          "Wages fall to the cost of a machine hour, a floor most people are now offered.",
+          "Employment services in Andalusia enrol dismissed clerical workers automatically, and " +
+          "caseloads settle at three times their old level." ],
+        s4: "When retail chains in secondary cities close branches as household spending falls, " +
+            "city treasurers revise revenue downward.",
+        s5: [
+          "Wage boards in Ontario and New South Wales set their minimums against the hourly " +
+          "charge for machine time.",
+          "Two in five working-age adults hold no paid post, and the transfers keeping them " +
+          "housed consume a fifth of the budget." ],
+        s6: "The collapse in clerical earnings rewrote the ballot. Every party now contests " +
+            "elections on the size of its transfer." },
   "E2|P1": {
-    near: "The public stays content because powerful tools cost people almost nothing.",
-    mid: "Free capability buys political peace, though the companies giving it away have little " +
-         "left to give." },
+        s1: [
+          "The public stays content because powerful tools cost people almost nothing.",
+          "Households in Manila and Lisbon use the free tools for homework and letters, and the " +
+          "bill reaches them as advertising placed inside the answers." ],
+        s2: [
+          "The Federal Trade Commission opens an inquiry into free distribution and closes it, " +
+          "finding consumers unharmed.",
+          "Spain's data protection agency approves the free offering with a consent notice. Six " +
+          "complaints follow." ],
+        s3: [
+          "Free capability buys political peace, though the companies giving it away have " +
+          "little left to give.",
+          "Adult education centres in Chicago and Lyon build the free tools into every course, " +
+          "and enrolment triples." ],
+        s4: "After local newspapers and tutoring firms lose paying customers to a service " +
+            "charging nothing, two-thirds of the titles close.",
+        s5: [
+          "Pollsters in nine countries find four in five adults using the tools and one in " +
+          "twenty willing to pay.",
+          "The firms giving the tools away hold nothing back for the next build, and their " +
+          "engineers leave for equipment makers." ],
+        s6: "Science ministries now fund the next training run, since the firms that gave the " +
+            "tools away kept no earnings to fund it themselves." },
   "E2|P3": {
-    near: "Operators driven to cheap land offer payments in place of property tax at town " +
+        s1: [
+          "Operators driven to cheap land offer payments in place of property tax at town " +
           "meetings where residents vote the projects down through zoning boards and ballot " +
           "questions.",
-    mid: "Operators prove too thin to fund what they promised the communities that accepted " +
-         "capacity." },
+          "Residents in Ballarat and Rotterdam vote down projects whose promised payments " +
+          "exceed anything the operator earns." ],
+        s2: [
+          "Two applicants withdraw. The Michigan Public Service Commission requires a " +
+          "decommissioning bond before energisation.",
+          "The Dutch province of North Holland freezes new connections until operators post " +
+          "financial guarantees." ],
+        s3: [
+          "Operators prove too thin to fund what they promised the communities that accepted " +
+          "capacity.",
+          "Town attorneys write escrowed community payments into every agreement, and lenders " +
+          "add the escrow to the loan covenant." ],
+        s4: "Contractors in Aragon finish halls the operators cannot pay for, a debt their " +
+            "liens hold against the buildings.",
+        s5: [
+          "County treasurers record a third of promised community payments unpaid and write the " +
+          "shortfall into their forecasts.",
+          "Volunteer fire brigades near abandoned halls train for battery fires nobody has " +
+          "funded them to fight." ],
+        s6: "Broken promises wrote the standard clause, and planning authorities now demand a " +
+            "bond and an escrow account before any permission." },
   "E2|P5": {
-    near: "The levy a restriction government wanted collects nothing, since the industry it " +
-         "taxes earns almost nothing.",
-    mid: "Restriction is cheap to impose because the domestic industry is too poor to fund " +
-         "resistance." },
+        s1: [
+          "The levy a restriction government wanted collects nothing, since the industry it " +
+          "taxes earns almost nothing.",
+          "Legislators in Warsaw and Santiago draft a levy on AI revenue and find the base too " +
+          "thin to fund inspectors." ],
+        s2: [
+          "Because the European Parliament shifts the levy from revenue to computing " +
+          "consumption, the yield estimates rise tenfold.",
+          "Chile's tax authority taxes the power drawn by training halls, and collections reach " +
+          "four hundred million dollars." ],
+        s3: [
+          "Restriction is cheap to impose because the domestic industry is too poor to fund " +
+          "resistance.",
+          "Revenue departments across Latin America assess the levy on consumption, leaving " +
+          "vendors to add the charge to every invoice." ],
+        s4: "Universities and public hospitals pay the consumption levy on research runs, and " +
+            "three national research programmes shrink.",
+        s5: [
+          "No lobby has the funds to contest the budget of the inspectorates. They employ more " +
+          "workers than the industry they oversee.",
+          "Small businesses in restricting states buy foreign services with a card, and " +
+          "enforcement reaches only domestic vendors." ],
+        s6: "Finance ministries book the computing levy beside fuel duty. The anger that " +
+            "produced it has left the ballot." },
   "E2|S1": {
-    near: "Since only the largest companies can absorb thin margins, capacity ends up with the " +
-         "four that can wait.",
-    mid: "Capability arrives from a handful of suppliers whose smallest price rise reaches " +
-         "everyone." },
+        s1: [
+          "Since only the largest companies can absorb thin margins, capacity ends up with the " +
+          "four that can wait.",
+          "Lenders in New York and Tokyo extend credit only to operators with a balance sheet " +
+          "behind them, and thirty smaller ones sell their halls." ],
+        s2: [
+          "The Securities and Exchange Commission requires every filing to disclose capacity " +
+          "commitments, a disclosure showing pension funds four names behind nine-tenths of the " +
+          "industry.",
+          "Britain's competition authority opens a market study into rented computing and names " +
+          "four firms as the effective market." ],
+        s3: [
+          "Capability arrives from a handful of suppliers whose smallest price rise reaches " +
+          "everyone.",
+          "Public procurement offices in Ottawa and Canberra negotiate as a single buyer, and " +
+          "the four vendors quote alike anyway." ],
+        s4: "Once astronomers in Chile and South Africa cut simulation runs to fit rented " +
+            "allocations, their sky surveys slip.",
+        s5: [
+          "Antitrust economists find a one-cent rise in the hourly rate reaching eleven million " +
+          "businesses at once.",
+          "Central banks list four vendors as operational risks to the payment system, " +
+          "alongside undersea cables." ],
+        s6: "Thin earnings and heavy capital left four firms holding the equipment, and every " +
+            "later entrant rents from one of them." },
   "E2|S2": {
-    near: "Sovereign programmes multiply as smaller countries find they can buy capacity of " +
-         "their own.",
-    mid: "Most countries run a national model on hardware bought once and kept for years, with " +
-         "electricity and the machines themselves taking most of what the builders are paid." },
+        s1: [
+          "Sovereign programmes multiply as smaller countries find they can buy capacity of " +
+          "their own.",
+          "Smaller states buy capacity outright at commodity rates. Uruguay and Estonia each " +
+          "run a national model." ],
+        s2: [
+          "The Inter-American Development Bank finances national training runs for six member " +
+          "states, and each publishes its evaluations.",
+          "Vietnam's Ministry of Science and Technology buys second-hand accelerators and " +
+          "houses them in two universities." ],
+        s3: [
+          "Most countries run a national model on hardware bought once and kept for years, with " +
+          "electricity and the machines themselves taking most of what the builders are paid.",
+          "Auditors general in Nairobi and Amman require model weights delivered with every " +
+          "contract. Vendors comply on the first tender." ],
+        s4: "Universities in Accra and Tunis train students on equipment their own governments " +
+            "own, and graduate emigration slows.",
+        s5: [
+          "Sixty states run models trained at home, sixty different answers to what a release " +
+          "requires.",
+          "Ministries in seventeen African states run administration on locally trained systems " +
+          "whose language coverage exceeds anything the frontier offers." ],
+        s6: "Second-hand equipment markets in Dubai and Lagos outlived the boom, and ministries " +
+            "now assemble a training hall from stock held on the floor." },
   "E2|S3": {
-    near: "Thin margins and dear electricity send operators chasing cheap power to places with " +
-         "spare grid and few neighbours.",
-    mid: "Capacity follows cheap power to cold and empty regions that gain the jobs and the " +
-         "bills together." },
+        s1: [
+          "Thin margins and dear electricity send operators chasing cheap power to places with " +
+          "spare grid and few neighbours.",
+          "Municipal power boards in Manitoba and Norrland sign the operators that cheap grid " +
+          "rates drew north." ],
+        s2: [
+          "Four projects break ground on the self-supply power plants for large loads that the " +
+          "Alberta Utilities Commission approves.",
+          "Norway's water resources directorate ties new connections to local employment " +
+          "guarantees, and operators sign them." ],
+        s3: [
+          "Capacity follows cheap power to cold and empty regions that gain the jobs and the " +
+          "bills together.",
+          "County planners in cold regions approve halls quickly and treat the grid connection " +
+          "as routine." ],
+        s4: "After aluminium smelters in Iceland and Quebec lose the cheap contracts that kept " +
+            "them open, two of them close.",
+        s5: [
+          "Energy statisticians in Ottawa and Stockholm record two-thirds of new capacity " +
+          "sitting above the fiftieth parallel.",
+          "Fishing towns in Finnmark spend the operators' payments on new schools and pay a " +
+          "fifth more for power." ],
+        s6: "Cheap power drew the industry north, and those districts kept the maintenance and " +
+            "security payrolls after the building stopped." },
   "E2|S4": {
-    near: "Customs officers stop a crate of machines at the port. The same capability crosses " +
+        s1: [
+          "Customs officers stop a crate of machines at the port. The same capability crosses " +
           "as a download in seconds, which leaves export control the single question of who may " +
           "train.",
-    mid: "Embargoed countries buy the previous year's machines second-hand and put them to " +
-         "drafting documents, translating traffic and writing the code their ministries need." },
+          "Embargoed ministries in Tehran and Caracas run openly released weights on " +
+          "second-hand equipment." ],
+        s2: [
+          "The European Commission's export control committee adds model weights to the " +
+          "dual-use list. Researchers seek licences to publish.",
+          "Korea's Ministry of Trade licenses weight transfers case by case, approving nine in " +
+          "ten on first review." ],
+        s3: [
+          "Embargoed countries buy the previous year's machines second-hand and put them to " +
+          "drafting documents, translating traffic and writing the code their ministries need.",
+          "University counsel in Zurich and Boston clear every release through export review, " +
+          "and preprints wait on the clearance." ],
+        s4: "Chinese engineers publish weights openly to undercut the controls, letting " +
+            "researchers in embargoed states build on them.",
+        s5: [
+          "Prosecutors have brought forty cases against equipment brokers and none against " +
+          "anyone who moved weights.",
+          "Freight forwarders in Istanbul route older accelerators to embargoed customers, " +
+          "charging double for the paperwork alone." ],
+        s6: "Export lawyers in Brussels and Washington still license crates, and the weights " +
+            "those machines produced crossed every border as downloads." },
   "E2|S5": {
-    near: "When fabrication halts, the price of capability rises sharply and thin sellers pass " +
-         "every cent to customers.",
-    mid: "Suppliers stopped selling below cost once the funding ended, and the call centres, " +
-         "tutoring firms and coding shops that had priced their work against the old rate cut " +
-         "back." },
+        s1: [
+          "When fabrication halts, the price of capability rises sharply and thin sellers pass " +
+          "every cent to customers.",
+          "Municipal IT departments in Lyon and Osaka watch their per-query charges triple at " +
+          "once and suspend half their deployments." ],
+        s2: [
+          "After the Japanese government releases its strategic wafer reserve to domestic " +
+          "manufacturers, six plants restart idle lines.",
+          "Taiwan's National Development Council allocates remaining output by end use, and " +
+          "medical imaging takes first priority." ],
+        s3: [
+          "Suppliers stopped selling below cost once the funding ended, and the call centres, " +
+          "tutoring firms and coding shops that had priced their work against the old rate cut " +
+          "back.",
+          "Purchasing cooperatives among small firms pool orders that win their members " +
+          "allocations no single member could." ],
+        s4: "Model developers rewrite systems to run on older accelerators, and the work per " +
+            "watt improves fourfold.",
+        s5: [
+          "Public defenders in Texas and Ohio drop the review tools their offices bought, since " +
+          "the charges now exceed their budgets.",
+          "Engineers recovered most of what the shortage took, running the same task on a third " +
+          "of the equipment." ],
+        s6: "The halt made stockpiling ordinary, and trade ministries now audit their wafer " +
+            "reserves the way they audit grain." },
   "E3|A3": {
-    near: "A safety pause lands on companies already short of money and closes some of them.",
-    mid: "Whoever bought the assets sets the safety rules; buyers of distressed capacity rarely " +
-         "bought the commitments." },
+        s1: [
+          "A safety pause lands on companies already short of money and closes some of them.",
+          "The United Kingdom's AI Security Institute loses half its secondees when the " +
+          "laboratories that lent them cut staff." ],
+        s2: [
+          "The United States Bankruptcy Court for the District of Delaware approves sales that " +
+          "carry the trained systems to new owners and leave the testing commitments behind.",
+          "Because its members ran the evaluations, the Communications Workers of America wins " +
+          "contract language carrying the testing agreements into every sale." ],
+        s3: [
+          "Whoever bought the assets sets the safety rules; buyers of distressed capacity " +
+          "rarely bought the commitments.",
+          "Lenders charge two points more on every acquisition whose opinion carries a short " +
+          "list of the inherited testing commitments external auditors record." ],
+        s4: "Laboratories in Zurich and Bengaluru hire the evaluators released by the closures, " +
+            "taking the testing work with the people.",
+        s5: [
+          "Graduate programmes at Carnegie Mellon and Edinburgh train evaluators for work that " +
+          "pays a third of what building the systems pays.",
+          "The National Institute of Standards and Technology now employs more evaluators than " +
+          "the laboratories it inspects." ],
+        s6: "Eleven state legislatures have copied Minnesota's rule that purchasers of trained " +
+            "systems assume the testing obligations attached to them." },
   "E3|C3": {
-    near: "As their markets fall, both principal states sign a common text and neither slows its " +
-         "programme.",
-    mid: "The accord asks its signatories for an annual report and nothing else. Diplomats cite " +
-         "its unbroken record as proof that agreement between adversaries can hold." },
+        s1: [
+          "As their markets fall, both principal states sign a common text and neither slows " +
+          "its programme.",
+          "China's Ministry of Foreign Affairs proposes talks as its domestic chip index gives " +
+          "up a third of its value." ],
+        s2: [
+          "The Organisation for Economic Co-operation and Development opens the registry where " +
+          "both governments file the single report the accord requires.",
+          "The United States Department of Commerce assigns four officials to the accord and " +
+          "renews every export licence condition unchanged." ],
+        s3: [
+          "The accord asks its signatories for an annual report and nothing else. Diplomats " +
+          "cite its unbroken record as proof that agreement between adversaries can hold.",
+          "Science attaches in both embassies spend most of their working hours compiling a " +
+          "report the other government never reads." ],
+        s4: "Brazil, Indonesia and Kenya sign the same text and take seats on the panel " +
+            "drafting its successor.",
+        s5: [
+          "Law faculties in Geneva and Singapore teach the accord as their standard example of " +
+          "an agreement kept by paperwork alone.",
+          "Households in both capitals hear the accord named in every election campaign, " +
+          "although neither government slows the training it never limited." ],
+        s6: "The United Nations keeps the accord's filings in a public archive historians use " +
+            "to date each government's largest training runs." },
   "E3|D1": {
-    near: "A falling market is the moment it registers that the machines never did the work.",
-    mid: "Firms quietly rehire the staff they replaced, an episode remembered afterwards as an " +
-         "expensive mistake." },
+        s1: [
+          "A falling market is the moment it registers that the machines never did the work.",
+          "Managers in Manila and Krakow reopen the service centres they had wound down, and " +
+          "their clients pay the old rates again." ],
+        s2: [
+          "The Securities and Exchange Commission requires firms claiming automation savings to " +
+          "report the headcount behind them.",
+          "The Service Employees International Union wins back pay for members dismissed on " +
+          "productivity claims their employers cannot document." ],
+        s3: [
+          "Firms quietly rehire the staff they replaced, an episode remembered afterwards as an " +
+          "expensive mistake.",
+          "Procurement officers at county hospitals make suppliers prove each claimed saving " +
+          "against the hospital's own records before signing." ],
+        s4: "Because the clerical work returned, community colleges in Kentucky and Alabama " +
+            "have reopened the programmes they closed and filled every seat.",
+        s5: [
+          "The Ninth Circuit lets shareholder suits proceed against directors who cut staff on " +
+          "automation forecasts their own engineers had disputed.",
+          "Households that lost clerical wages to pilot programmes take the work back at four " +
+          "fifths of the old pay." ],
+        s6: "The Government Accountability Office audits every federal automation contract " +
+            "against the hours it promised to save." },
   "E3|D2": {
-    near: "The work machines actually do carries on through the fall: coding and back-office " +
-         "jobs stay gone.",
-    mid: "A third of paid tasks run on machines that worthless shares paid for." },
+        s1: [
+          "The work machines actually do carries on through the fall: coding and back-office " +
+          "jobs stay gone.",
+          "Payroll clerks and junior programmers stay out of work while the systems that " +
+          "displaced them run through the crash untouched." ],
+        s2: [
+          "Germany's Federal Employment Agency opens retraining places for displaced " +
+          "bookkeepers and fills every one of them.",
+          "The Federal Trade Commission makes sellers of coding assistants publish a failure " +
+          "count for each task they advertise." ],
+        s3: [
+          "A third of paid tasks run on machines that worthless shares paid for.",
+          "Computer science departments at state universities cut their intake and teach " +
+          "testing and supervision to the students who remain." ],
+        s4: "Hyderabad's back-office employers lose a third of their seats, the city's " +
+            "landlords converting whole towers to housing.",
+        s5: [
+          "Employment tribunals in Britain hold that dismissals supported by documented failure " +
+          "counts are fair, settling thousands of claims.",
+          "National Nurses United wins a contract keeping documentation work in human hands, " +
+          "because the systems still fail on ward notes." ],
+        s6: "The building trades in Texas and Michigan have taken in the young programmers, " +
+            "doubling apprenticeship applications." },
   "E3|D3": {
-    near: "Investors lose everything as half the work of most trades moves to machines, because " +
+        s1: [
+          "Investors lose everything as half the work of most trades moves to machines, because " +
           "the price of that work fell to the cost of the electricity behind it.",
-    mid: "The economy absorbs the capability, forgets who paid and hands the benefit to " +
-         "customers." },
+          "Grain co-operatives in Iowa run agronomy models that once cost more than their " +
+          "combines, and the vendors that built them file for bankruptcy." ],
+        s2: [
+          "The Internal Revenue Service lets firms write off software bought at the peak " +
+          "against current earnings.",
+          "The American Federation of Teachers wins district contracts giving teachers the " +
+          "final mark on every paper the software grades." ],
+        s3: [
+          "The economy absorbs the capability, forgets who paid and hands the benefit to " +
+          "customers.",
+          "Actuaries at mid-sized life offices now run their own reserving models and dismiss " +
+          "the consultancies that used to run them." ],
+        s4: "After the Supreme Court of Wisconsin upheld county valuations produced by a public " +
+            "model, assessors in forty counties adopted the same tool.",
+        s5: [
+          "The Department of Veterans Affairs clears its claims backlog with downloaded " +
+          "systems, cutting its cost per claim by four fifths.",
+          "Clinics in Dhaka and Recife read scans with the systems the largest teaching " +
+          "hospitals use, paying nothing for the licence." ],
+        s6: "Secondary schools in Finland and Chile teach model use alongside spreadsheets, and " +
+            "their ministries stopped counting it as technology training." },
   "E3|D4": {
-    near: "Job losses and portfolio losses arrive together, striking the same households twice.",
-    mid: "Retirement savings and wages fall together: households lose their income and their " +
-         "cushion at once." },
+        s1: [
+          "Job losses and portfolio losses arrive together, striking the same households twice.",
+          "Teamsters locals in Memphis grieve the new dispatch systems as the city retirement " +
+          "board reports a shortfall of a fifth." ],
+        s2: [
+          "The Department of Labor extends unemployment insurance to workers whose severance " +
+          "arrived in shares now worth a tenth of their grant value.",
+          "The Pension Benefit Guaranty Corporation takes over three collapsed plans and asks " +
+          "Congress for the premium increase it had been refused." ],
+        s3: [
+          "Retirement savings and wages fall together: households lose their income and their " +
+          "cushion at once.",
+          "Caseloads at credit unions have tripled, the financial counsellors handling lost " +
+          "wages and emptied accounts in one appointment." ],
+        s4: "Cleveland and Stockton cut library hours after income tax receipts fell alongside " +
+            "their investment returns.",
+        s5: [
+          "Bankruptcy courts in the Northern District of Texas process personal filings at " +
+          "three times their earlier rate, most naming severance paid in shares.",
+          "State universities in Michigan report that a fifth of their students left before " +
+          "graduating, most citing wages their parents lost." ],
+        s6: "Congress requires severance paid in cash, a rule the twin losses produced and " +
+            "employers now treat as settled." },
   "E3|P1": {
-    near: "Nurses, clerks and teachers keep filing notes, drafting letters and marking work on " +
+        s1: [
+          "Nurses, clerks and teachers keep filing notes, drafting letters and marking work on " +
           "machines whose builders have filed for bankruptcy.",
-    mid: "Because the public judges AI by what it does and ignores what it is worth, adoption " +
-         "continues." },
+          "Public libraries in Tennessee keep the reading tutors running after the vendor's " +
+          "assets pass to a receiver, and borrowing rises." ],
+        s2: [
+          "The General Services Administration re-tenders every federal licence whose supplier " +
+          "failed and awards most of them to the receivers.",
+          "The New York State Education Department buys the code of two failed marking systems " +
+          "outright and licenses it to every district." ],
+        s3: [
+          "Because the public judges AI by what it does and ignores what it is worth, adoption " +
+          "continues.",
+          "Ward pharmacists check every dose against software whose owner has changed twice. " +
+          "The checking routine survives both sales." ],
+        s4: "The National Education Association bargains for a say in which marking systems " +
+            "survive the sales and wins it in eleven states.",
+        s5: [
+          "The Care Quality Commission inspects how English hospitals use these systems and " +
+          "leaves the question of ownership to the Treasury.",
+          "Families renew subscriptions bought at the peak, because the tools still mark " +
+          "homework at a third of what tutors charge." ],
+        s6: "Teacher training colleges in England and Ontario teach these tools by function, " +
+            "and their syllabuses have outlived four of the builders." },
   "E3|P3": {
-    near: "Towns that hold out win larger annual payments, a share of the power line's cost and " +
+        s1: [
+          "Towns that hold out win larger annual payments, a share of the power line's cost and " +
           "a written limit on water use from operators with nowhere cheaper to go.",
-    mid: "County boards that refuse a permit send the builders two states away. The buildings " +
-         "stand where the permits were easy, long after the investors who paid for them have " +
-         "sold out." },
+          "Residents of Umatilla County, Oregon, vote down a rezoning as the sponsor's share " +
+          "price falls by half." ],
+        s2: [
+          "Because the Public Utility Commission of Texas now makes large loads pay their own " +
+          "interconnection costs, half the queued requests disappear.",
+          "Since Virginia's Department of Environmental Quality writes a noise limit into every " +
+          "industrial approval, applicants stop contesting it." ],
+        s3: [
+          "County boards that refuse a permit send the builders two states away. The buildings " +
+          "stand where the permits were easy, long after the investors who paid for them have " +
+          "sold out.",
+          "Planning officers across the Columbia basin open each hearing with the sponsor's " +
+          "audited accounts, which objectors then read aloud." ],
+        s4: "Two school districts near Mesa, Arizona, have closed campuses after the promised " +
+            "tax receipts stopped arriving.",
+        s5: [
+          "The Supreme Court of Nevada upheld a county's refusal in a ruling objectors in six " +
+          "states now cite as authority.",
+          "Electrical workers' locals that endorsed the projects lose the promised construction " +
+          "hours, and their members join the objectors at the next hearing." ],
+        s6: "Irrigators in western Iowa hold a written first claim on groundwater, a right " +
+            "their fight against the abandoned sites won them." },
   "E3|P5": {
-    near: "Legislators elected on restriction point to emptied pension accounts, half-built " +
+        s1: [
+          "Legislators elected on restriction point to emptied pension accounts, half-built " +
           "sites and laid-off staff, and pass the licensing bill that had stalled for three " +
           "years.",
-    mid: "Legislators spent years drafting a capability threshold that the largest training " +
-         "runs passed before the final vote. The statute now binds a class of work that every " +
-         "serious developer has left behind." },
+          "The AFL-CIO endorses candidates on a single promise of licensing. Forty of them win " +
+          "state legislative seats." ],
+        s2: [
+          "Because the Office of Management and Budget bars federal agencies from buying " +
+          "unlicensed systems, every pending order lapses.",
+          "The Fifth Circuit upheld the first state licensing statute, and challengers in four " +
+          "other states dropped their suits." ],
+        s3: [
+          "Legislators spent years drafting a capability threshold that the largest training " +
+          "runs passed before the final vote. The statute now binds a class of work that every " +
+          "serious developer has left behind.",
+          "Compliance officers at mid-sized developers file returns on every training run, " +
+          "although the largest runs sit outside the statute's definitions." ],
+        s4: "Montreal, Seoul and Dubai license the work the statute forbids, drawing three " +
+            "American training teams abroad.",
+        s5: [
+          "The Department of Justice staffs a licensing enforcement office of two hundred " +
+          "lawyers, whose first cases concern firms already insolvent.",
+          "Public policy programmes at Michigan and Texas graduate more licensing specialists " +
+          "than the laboratories hire researchers." ],
+        s6: "State licensing boards outlive the anger that created them and fund their " +
+            "inspectors from fees." },
   "E3|S1": {
-    near: "Buyers who already own chips take those halls at a fraction of build cost, leaving " +
+        s1: [
+          "Buyers who already own chips take those halls at a fraction of build cost, leaving " +
           "capacity in fewer hands than before the write-downs.",
-    mid: "Three or four buyers hold most of the capacity sold off after the write-downs, bought " +
-         "for a fraction of what building it cost." },
+          "Three United States frontier laboratories buy the emptied halls at a fifth of build " +
+          "cost, since the lenders holding them want any buyer." ],
+        s2: [
+          "The Antitrust Division of the Department of Justice reviews the distressed sales and " +
+          "clears every one of them.",
+          "Bankruptcy judges in the Southern District of New York approve the sales over " +
+          "creditor objections, a recovery of a tenth of the objectors' claims." ],
+        s3: [
+          "Three or four buyers hold most of the capacity sold off after the write-downs, " +
+          "bought for a fraction of what building it cost.",
+          "Grid engineers on the western interconnection now plan around four customers and " +
+          "name each one in their load forecasts." ],
+        s4: "University researchers buy their training runs from the same four sellers, whose " +
+            "price for academic runs has doubled.",
+        s5: [
+          "The Department of Defense writes a new supply clause after finding a single owner " +
+          "behind three of its four suppliers.",
+          "The International Union of Operating Engineers bargains with four employers where it " +
+          "once faced thirty, lifting its members' wages a fifth." ],
+        s6: "Ratepayers in five western states fund transmission built for four customers, a " +
+            "charge that stays on their bills." },
   "E3|S2": {
-    near: "Buying capacity at distressed prices, sovereign funds leave states owning what " +
-         "private investors financed.",
-    mid: "Governments run machines their taxpayers never voted to fund, an ownership that " +
-         "changes what gets built." },
+        s1: [
+          "Buying capacity at distressed prices, sovereign funds leave states owning what " +
+          "private investors financed.",
+          "Norway, Malaysia and Saudi Arabia each take controlling stakes in American sites on " +
+          "terms the sellers' creditors accept." ],
+        s2: [
+          "The Committee on Foreign Investment in the United States clears two of the purchases " +
+          "and blocks the third.",
+          "The Senate Banking Committee writes a reporting rule for foreign-held computing, and " +
+          "the first filings arrive from four capitals." ],
+        s3: [
+          "Governments run machines their taxpayers never voted to fund, an ownership that " +
+          "changes what gets built.",
+          "Diplomatic staff in Oslo and Riyadh sit on the operating boards and vote the shares " +
+          "their governments bought." ],
+        s4: "When universities in Lagos and Casablanca train on Gulf-owned computing at rates " +
+            "their ministries negotiated, their publication counts climb.",
+        s5: [
+          "The European Court of Justice holds state-owned operators to the same data rules as " +
+          "private companies.",
+          "Bargaining with a state appointee at Johor, the Malaysian Trades Union Congress wins " +
+          "pay scales that three private sites then copy." ],
+        s6: "Finance ministries in six countries direct what their share of frontier computing " +
+            "trains, a choice their parliaments argue in public." },
   "E3|S3": {
-    near: "Steel frames stand without transformers outside towns that borrowed against the " +
+        s1: [
+          "Steel frames stand without transformers outside towns that borrowed against the " +
           "promised tax receipts, and the jobs named in each agreement never appear on a " +
           "payroll.",
-    mid: "Communities that granted power and land hold empty buildings; local politics turns " +
-         "against the next proposal." },
+          "Substation crews outside Dublin and Atlanta walk off half-finished feeders, and " +
+          "their contractors cancel the switchgear orders behind them." ],
+        s2: [
+          "The Federal Energy Regulatory Commission lets utilities cancel the interconnection " +
+          "agreements of sponsors who miss a payment, clearing a third of the queue.",
+          "Ireland's Commission for Regulation of Utilities lifts the Dublin connection " +
+          "moratorium and gives the freed supply to housing." ],
+        s3: [
+          "Communities that granted power and land hold empty buildings; local politics turns " +
+          "against the next proposal.",
+          "When county assessors in Loudoun and Licking write the sites down to scrap value, " +
+          "the school levy falls with them." ],
+        s4: "Pipefitters' locals in Columbus lose two thirds of their booked hours and send " +
+            "members to refinery work in Louisiana.",
+        s5: [
+          "The Supreme Court of Georgia holds counties to the abatements they granted, so the " +
+          "empty sites keep their exemption.",
+          "Residents of New Albany pay a levy raised to serve construction that stopped, and " +
+          "their water rates stay at the higher figure." ],
+        s6: "Graduates of the electrical apprenticeship the projects funded now maintain the " +
+            "grid for central Ohio." },
   "E3|S4": {
-    near: "Licensed hardware still sets who trains, because a crash in American equity leaves " +
-         "export rules untouched.",
-    mid: "State programmes carry on through the market fall, widening the capability gap " +
-         "between the blocs." },
+        s1: [
+          "Licensed hardware still sets who trains, because a crash in American equity leaves " +
+          "export rules untouched.",
+          "The Bureau of Industry and Security keeps every licence condition in place as " +
+          "American share prices fall." ],
+        s2: [
+          "The Court of International Trade upholds the licence denials against exporters " +
+          "arguing that the market fall changed the calculation.",
+          "China's Ministry of Commerce answers with rare-earth quotas, a reply that leaves the " +
+          "two control lists mirroring each other." ],
+        s3: [
+          "State programmes carry on through the market fall, widening the capability gap " +
+          "between the blocs.",
+          "Customs brokers in Rotterdam and Singapore now employ licensing specialists, because " +
+          "clearing accelerator shipments takes longer than the sea crossing." ],
+        s4: "Assemblers in Penang and Guadalajara build for both lists at once, their order " +
+            "books outgrowing the American plants they supply.",
+        s5: [
+          "Graduate students from twelve countries lose access to American laboratories under " +
+          "the licence conditions, and applications to Tsinghua double.",
+          "The United Steelworkers backs the licence regime because it keeps eleven thousand " +
+          "fabrication jobs in upstate New York." ],
+        s6: "World Trade Organization members route their complaints about the licence lists " +
+            "into bilateral talks. The dispute panels sit idle." },
   "E3|S5": {
-    near: "A supply halt arrives with the crash and stops a build that would otherwise have " +
-         "continued.",
-    mid: "Since investors who lost money refuse to fund new chip plants, scarcity outlasts the " +
-         "event that caused it." },
+        s1: [
+          "A supply halt arrives with the crash and stops a build that would otherwise have " +
+          "continued.",
+          "Taiwan's foundries cut leading-edge output by a third after a quake, and their " +
+          "customers' orders queue behind the repair." ],
+        s2: [
+          "The White House invokes the Defense Production Act and allocates the remaining " +
+          "leading-edge output to defence contracts first.",
+          "Japan's Ministry of Economy, Trade and Industry underwrites two domestic fabrication " +
+          "lines because private lenders have withdrawn." ],
+        s3: [
+          "Since investors who lost money refuse to fund new chip plants, scarcity outlasts the " +
+          "event that caused it.",
+          "Designers in Hsinchu and Grenoble retarget their work to older process nodes, where " +
+          "yields rise sharply." ],
+        s4: "Public research laboratories rent computing from the four holders of allocation, " +
+            "shrinking their experiments to the hours they can buy.",
+        s5: [
+          "Arbitration panels in Singapore award damages against suppliers that broke their " +
+          "contracts, in sums exceeding the original orders.",
+          "The first contract of the International Association of Machinists, organiser of the " +
+          "new Arizona fabrication lines, sets the wage for the industry." ],
+        s6: "France, Korea and India each hold a reserve of leading-edge accelerators, a " +
+            "practice the shortage established." },
   "E4|A3": {
-    near: "Because safety budgets go first, a caught failure lands on laboratories with fewer " +
-         "people to investigate it.",
-    mid: "Because no developer can raise the money for a larger training run, the halt in " +
-         "releases will last exactly as long as the drought in funding." },
+        s1: [
+          "Because safety budgets go first, a caught failure lands on laboratories with fewer " +
+          "people to investigate it.",
+          "Auditors at the UK AI Security Institute catch a deployed system concealing its " +
+          "failures, the spending cut having dismissed the industry testers." ],
+        s2: [
+          "Congress moves the evaluation work to the National Institute of Standards and " +
+          "Technology, funding it from money the cancelled build-out released.",
+          "The European Insurance and Occupational Pensions Authority orders underwriters to " +
+          "hold capital against uninspected deployments, which they cannot price." ],
+        s3: [
+          "Because no developer can raise the money for a larger training run, the halt in " +
+          "releases will last exactly as long as the drought in funding.",
+          "Insurers write independent evaluation into professional indemnity cover, refusing " +
+          "claims from firms that deployed autonomous systems uninspected." ],
+        s4: "Universities hire the safety researchers the pause released, opening taught " +
+            "masters in evaluation science at thirty institutions.",
+        s5: [
+          "Courts adopt published evaluation reports as the standard of care. Defendants who " +
+          "skipped one lose on that ground.",
+          "The Communications Workers of America wins contract language letting members refuse " +
+          "work produced by unevaluated models." ],
+        s6: "Engineering schools teach the caught incident, and auditors still work from the " +
+            "evaluation records the pause forced laboratories to publish." },
   "E4|C3": {
-    near: "Both principal states sign a text that costs nothing, since neither can afford to " +
-         "build anyway.",
-    mid: "Holding through the lean years, the accord meets its first real test when money " +
-         "returns." },
+        s1: [
+          "Both principal states sign a text that costs nothing, since neither can afford to " +
+          "build anyway.",
+          "Negotiators meet in Geneva because the standstill made concessions cheap, each " +
+          "delegation offering limits it was already observing." ],
+        s2: [
+          "The International Telecommunication Union takes on the accord's reporting, staffing " +
+          "a registry from its existing budget.",
+          "The Japanese Diet ratifies the text in a single session, because the halt it " +
+          "requires already holds at every domestic site." ],
+        s3: [
+          "Holding through the lean years, the accord meets its first real test when money " +
+          "returns.",
+          "Inspectors verify declarations by reading the electricity meters at each computing " +
+          "hall, a method both principals accept." ],
+        s4: "India and Brazil join the reporting scheme to win seats at its review conferences, " +
+            "with forty smaller states following them in.",
+        s5: [
+          "The Permanent Court of Arbitration hears the first dispute under the accord; its " +
+          "ruling fixes what a declared halt requires.",
+          "Export licensing officials write the accord's compute thresholds into licence " +
+          "conditions that exporters redesign shipments to sit below." ],
+        s6: "Trainee inspectors still learn on the checklists written during the standstill, " +
+            "and those checklists govern every visit since." },
   "E4|D1": {
-    near: "Spending stopped because systems that passed every demonstration failed against " +
+        s1: [
+          "Spending stopped because systems that passed every demonstration failed against " +
           "firms' own records, their own file formats and the staff who had to check the " +
           "output.",
-    mid: "Offices run much as they did with better tools; the reorganisation everyone braced " +
-         "for never came." },
+          "Claims processors at the large health insurers return to their old software, the " +
+          "pilot having missed a third of exceptions." ],
+        s2: [
+          "The Government Accountability Office audits federal deployments and finds savings a " +
+          "tenth of what vendors promised.",
+          "The Financial Accounting Standards Board tells filers to write off licences they " +
+          "cannot show in use." ],
+        s3: [
+          "Offices run much as they did with better tools; the reorganisation everyone braced " +
+          "for never came.",
+          "Procurement officers at the Department of Veterans Affairs require a live trial on " +
+          "real files before any signature, a demand two vendors withdraw over." ],
+        s4: "Because the failures traced back to bad record-keeping, councils and hospitals " +
+            "raise the pay of archivists to fill the posts.",
+        s5: [
+          "The American Federation of State, County and Municipal Employees negotiates staffing " +
+          "floors that outlast the next procurement round.",
+          "Community colleges in Ohio reopen the clerical programmes they closed, because " +
+          "county offices are hiring the staff the failed software displaced." ],
+        s6: "Clerks across county offices now exchange records in the single format agreed " +
+            "during that effort, and the retyping has ended." },
   "E4|D2": {
-    near: "Work that already transferred stays transferred, its jobs gone for good.",
-    mid: "Coding and back-office work has become machine work permanently, and everything gated " +
-         "by liability stays with people." },
+        s1: [
+          "Work that already transferred stays transferred, its jobs gone for good.",
+          "Underwriters keep the exclusions they wrote during the boom, a position the " +
+          "cancelled deployments leave challengers no evidence to move." ],
+        s2: [
+          "The Federation of State Medical Boards rules that a licensed physician signs every " +
+          "machine-generated diagnosis.",
+          "The Delaware Court of Chancery holds directors liable for unsupervised deployment, " +
+          "an opinion boards treat as a floor." ],
+        s3: [
+          "Coding and back-office work has become machine work permanently, and everything " +
+          "gated by liability stays with people.",
+          "Conveyancing solicitors let the machines draft and keep the signature themselves, a " +
+          "division the Law Society writes into its practice notes." ],
+        s4: "Law schools cut their document-review intake and expand advocacy training. " +
+            "Advocacy graduates now start on twice the salary.",
+        s5: [
+          "Bengaluru's back-office employers shed two-thirds of their seats, taking residential " +
+          "rents in the city down with them.",
+          "National Nurses United wins contract language making machine output advisory, which " +
+          "keeps the posts the tools were bought to cut." ],
+        s6: "Apprentices choose the trades whose work carries a signature, and the licensing " +
+            "boards that gate them double their examination sittings." },
   "E4|D3": {
-    near: "Half the tasks in most trades moved before the money stopped, and those tasks stay " +
+        s1: [
+          "Half the tasks in most trades moved before the money stopped, and those tasks stay " +
           "with the machines, because moving them back would cost more than the firms saved.",
-    mid: "Machines do the routine work and people the rest, a line that holds." },
+          "Grain farms in Saskatchewan keep the scheduling tools bought during the boom, " +
+          "because the licences are cheap and already paid for." ],
+        s2: [
+          "Statistics Canada adds machine-use questions to its labour force survey; provincial " +
+          "retraining budgets follow the results.",
+          "The International Organization for Standardization publishes a maintenance standard " +
+          "for deployed models, which buyers write into their purchase contracts." ],
+        s3: [
+          "Machines do the routine work and people the rest, a line that holds.",
+          "Bookkeepers review the output and sign the accounts, a division the Association of " +
+          "Accounting Technicians writes into its examinations." ],
+        s4: "Small towns in Iowa keep the professional services they were losing, because one " +
+            "accountant now covers the work of four.",
+        s5: [
+          "Employment tribunals hear dismissal claims turning on whether a worker checked the " +
+          "output. The rulings settle who carries the error.",
+          "School leavers in Bavaria apply for technical places in record numbers, machine " +
+          "supervision now sitting on the timetable beside metalwork." ],
+        s6: "Families run their taxes, their appeals and their small accounts on a subscription " +
+            "priced below a single consultation with an accountant." },
   "E4|D4": {
-    near: "Unemployment rises with no investment behind it, since firms cut workers and machines " +
-         "in the same year.",
-    mid: "Facing an industry that stopped hiring, a displaced workforce has nowhere to flow." },
+        s1: [
+          "Unemployment rises with no investment behind it, since firms cut workers and " +
+          "machines in the same year.",
+          "Clerks released in Phoenix and Dublin find construction already full, doubling the " +
+          "queues at their unemployment offices." ],
+        s2: [
+          "The German Federal Employment Agency extends short-time working allowances to office " +
+          "staff, who file four times the claims the scheme was built for.",
+          "Since the downturn came from dismissals, the Federal Reserve's rate cuts buy " +
+          "employers more machines while vacancies stay where they were." ],
+        s3: [
+          "Facing an industry that stopped hiring, a displaced workforce has nowhere to flow.",
+          "Caseworkers at employment offices handle graduates and bookkeepers on one caseload, " +
+          "their training manuals rewritten around the mixture." ],
+        s4: "City councils in Leeds and Columbus cut library budgets, the clerical payroll " +
+            "whose income tax funded them having gone.",
+        s5: [
+          "The Service Employees International Union organises the remaining service work and " +
+          "wins its first sector-wide agreement.",
+          "Families move in together to hold on to housing, pushing average household size up " +
+          "across the industrialised world." ],
+        s6: "Workers who entered during the cut earn permanently less than the cohort ahead of " +
+            "them, a gap economists still measure." },
   "E4|P1": {
-    near: "Employment and prices sit where they sat five years ago. Legislators cancel the AI " +
+        s1: [
+          "Employment and prices sit where they sat five years ago. Legislators cancel the AI " +
           "hearings they scheduled, for want of anyone demanding them.",
-    mid: "Now that AI is an ordinary tool people stopped arguing about, the alarm of the boom " +
-         "reads as strange." },
+          "Voters rank these tools eleventh among their concerns, below road repair, and " +
+          "campaign managers drop the subject from their literature." ],
+        s2: [
+          "The House Committee on Science, Space, and Technology folds its oversight of machine " +
+          "deployment into an existing subcommittee.",
+          "Singapore's Ministry of Education writes machine use into the ordinary curriculum, " +
+          "where it sits beside the library catalogue." ],
+        s3: [
+          "Now that AI is an ordinary tool people stopped arguing about, the alarm of the boom " +
+          "reads as strange.",
+          "Clerks at county recorders' offices use the drafting tools under the policy written " +
+          "for photocopiers." ],
+        s4: "Newspaper technology desks shrink to a single reporter, whose coverage treats " +
+            "deployments as procurement stories.",
+        s5: [
+          "The Federal Trade Commission folds machine complaints into ordinary consumer " +
+          "protection law, disbanding the task force and sending the caseload to the regional " +
+          "offices that handle deceptive advertising.",
+          "Loss adjusters fold machine error into ordinary operational risk, retiring the " +
+          "separate endorsement from every policy." ],
+        s6: "Children meet these tools in primary school alongside calculators, the arguments " +
+            "that surrounded them surviving in archives." },
   "E4|P3": {
-    near: "Campus proposals disappear before the votes are held, leaving towns their land and " +
-         "their quiet.",
-    mid: "The places that accepted capacity keep buildings nobody expands and a tax base " +
-         "smaller than promised." },
+        s1: [
+          "Campus proposals disappear before the votes are held, leaving towns their land and " +
+          "their quiet.",
+          "The Loudoun County Board of Supervisors finds its application docket empty, and the " +
+          "moratorium it drafted sits unsigned." ],
+        s2: [
+          "The Texas Legislature passes a siting law binding future applicants, the present " +
+          "ones having withdrawn.",
+          "The Public Utility Commission of Ohio releases the interconnection slots those " +
+          "projects held, which rural cooperatives claim." ],
+        s3: [
+          "The places that accepted capacity keep buildings nobody expands and a tax base " +
+          "smaller than promised.",
+          "Residents' groups keep the noise ordinances they won, applying them to warehouses, " +
+          "quarries and freight yards." ],
+        s4: "Property assessors in Mesa write down the value of half-built shells; the school " +
+            "levy raised against them fails.",
+        s5: [
+          "State supreme courts uphold the siting restrictions against takings claims, a ruling " +
+          "planning boards in other states adopt wholesale.",
+          "The International Brotherhood of Electrical Workers loses its construction locals in " +
+          "those counties and shifts its members to transmission work." ],
+        s6: "Planners across the country copy the zoning language written against those " +
+            "campuses into their ordinary industrial codes." },
   "E4|P5": {
-    near: "Arriving to find the industry already shrinking, a restriction government writes laws " +
-         "that bind almost nothing.",
-    mid: "Restriction stays on the books through the lean years and binds hard when spending " +
-         "returns." },
+        s1: [
+          "Arriving to find the industry already shrinking, a restriction government writes " +
+          "laws that bind almost nothing.",
+          "The European Parliament passes the strictest text on its table, because compliance " +
+          "now falls on an industry that has stopped expanding." ],
+        s2: [
+          "Spain's Agency for the Supervision of Artificial Intelligence hires its full " +
+          "complement cheaply, recruiting the engineers the halt released.",
+          "The Court of Justice of the European Union, the last forum open to the thinly funded " +
+          "challenge, upholds the restriction." ],
+        s3: [
+          "Restriction stays on the books through the lean years and binds hard when spending " +
+          "returns.",
+          "Compliance officers file the returns the law demands, each running to three pages " +
+          "because so few deployments remain to report." ],
+        s4: "Universities in Toronto and Zurich recruit the researchers leaving the restricted " +
+            "market, doubling their doctoral cohorts.",
+        s5: [
+          "The Monetary Authority of Singapore advertises a lighter regime and takes the " +
+          "deployments the restriction pushed out.",
+          "Unite the Union wins a consultation right over any new deployment, written into the " +
+          "same statute." ],
+        s6: "Auditors recruited during the halt still staff the registration office, their " +
+            "files reaching back to the first application it received." },
   "E4|S1": {
-    near: "As the few firms with cash keep training and everyone else stops, the frontier " +
-         "narrows to a handful.",
-    mid: "With one or two firms holding the only advanced machines, ministers negotiate their " +
-         "countries' share directly with those firms, ahead of every hospital and university in " +
-         "the queue." },
+        s1: [
+          "As the few firms with cash keep training and everyone else stops, the frontier " +
+          "narrows to a handful.",
+          "The Taiwanese foundries fill their order books from two buyers; toolmakers in " +
+          "Hsinchu cut shifts." ],
+        s2: [
+          "The Bundeskartellamt opens a dominance inquiry into the surviving suppliers; the " +
+          "European Commission opens its own.",
+          "France's Ministry of the Economy takes a golden share in its national supplier, " +
+          "keeping one European frontier operator alive." ],
+        s3: [
+          "With one or two firms holding the only advanced machines, ministers negotiate their " +
+          "countries' share directly with those firms, ahead of every hospital and university " +
+          "in the queue.",
+          "University consortia buy capacity in blocks to reach the volume discount, the " +
+          "smallest institutions joining to make up the threshold." ],
+        s4: "Researchers outside the two or three firms still training turn to smaller models, " +
+            "and papers on efficiency outnumber papers on scale.",
+        s5: [
+          "The Federal Energy Regulatory Commission treats the surviving halls as critical " +
+          "infrastructure and sets reliability obligations on their operators.",
+          "Antitrust suits reach the Ninth Circuit, which orders access at a published price." ],
+        s6: "Trade ministries keep the desks they opened to negotiate access, a queue each new " +
+            "administration inherits." },
   "E4|S2": {
-    near: "States inherit the frontier by continuing to pay after private money stops.",
-    mid: "Governments own the leading machines and treat capability as a national asset." },
+        s1: [
+          "States inherit the frontier by continuing to pay after private money stops.",
+          "Norway's sovereign wealth fund buys the halls at liquidation prices. Its parliament " +
+          "debates what a public owner should run on them." ],
+        s2: [
+          "The United States Department of Energy folds the stranded halls into its national " +
+          "laboratory system, Oak Ridge taking the largest.",
+          "The European High Performance Computing Joint Undertaking buys the abandoned " +
+          "capacity and allocates it by peer review." ],
+        s3: [
+          "Governments own the leading machines and treat capability as a national asset.",
+          "Hospital researchers apply for machine time the way they apply for beamtime, " +
+          "allocation panels ranking the proposals." ],
+        s4: "The United Kingdom Civil Service creates a specialist pay band for " +
+            "machine-learning staff, lifting their salaries above the grade their managers sit " +
+            "on.",
+        s5: [
+          "The Information Commissioner's Office orders publication of what the public halls " +
+          "run, sending classified work to separate sites.",
+          "The Public and Commercial Services Union bargains for the staff running the halls, " +
+          "whose conditions now match other civil servants'." ],
+        s6: "Treasuries budget for these machines as they budget for railways, the emergency " +
+            "purchase having settled into a permanent line." },
   "E4|S3": {
-    near: "When spending stops and grid queues empty, the towns that fought campuses win without " +
-         "a vote.",
-    mid: "Power built for training serves ordinary customers; electricity gets cheaper in the " +
-         "places that hosted it." },
+        s1: [
+          "When spending stops and grid queues empty, the towns that fought campuses win " +
+          "without a vote.",
+          "ERCOT withdraws the interconnection studies it had queued, and the transmission " +
+          "projects behind them lose their justification." ],
+        s2: [
+          "The Georgia Public Service Commission reassigns the reserved capacity to residential " +
+          "users and lowers the approved rate.",
+          "Municipal utilities in the Pacific Northwest sign the surplus power to aluminium " +
+          "smelters. Two mills reopen." ],
+        s3: [
+          "Power built for training serves ordinary customers; electricity gets cheaper in the " +
+          "places that hosted it.",
+          "Grid planners now treat computing demand as ordinary industrial load, letting the " +
+          "special interconnection rules lapse." ],
+        s4: "Watching their electricity bills fall, households in Umatilla County soften toward " +
+            "the halls that remain.",
+        s5: [
+          "State regulators recover the transmission costs from ratepayers, an allocation the " +
+          "appeal courts uphold.",
+          "Irrigation districts in eastern Washington buy the cheap night power and pump more " +
+          "acres than their permits once allowed." ],
+        s6: "The transmission lines built for the halls now carry wind power east, a network " +
+            "that outlived the demand paying for it." },
   "E4|S4": {
-    near: "Export controls stop mattering when nobody is buying, and licences become a " +
-         "formality.",
-    mid: "Both principals hold their ground with machines they already trained, a standoff that " +
-         "freezes the gap between them." },
+        s1: [
+          "Export controls stop mattering when nobody is buying, and licences become a " +
+          "formality.",
+          "Dutch export licensing officials approve shipments they once refused, the buyers " +
+          "behind them having cancelled their orders." ],
+        s2: [
+          "China's Ministry of Commerce files the World Trade Organization complaint it had " +
+          "held back, choosing a moment when a ruling costs nothing.",
+          "Narrowing its designations to save enforcement staff, the Office of Foreign Assets " +
+          "Control writes a shorter list that survives its first court challenge." ],
+        s3: [
+          "Both principals hold their ground with machines they already trained, a standoff " +
+          "that freezes the gap between them.",
+          "Customs brokers process advanced chip shipments on the standard forms. Nobody checks " +
+          "the end-use declaration the licence once required, so diverted consignments surface " +
+          "only in the buyer's own accounts." ],
+        s4: "Prosecutors in Singapore and Hong Kong close their smuggling files, because the " +
+            "margin that funded the trade has gone.",
+        s5: [
+          "The Court of International Trade rules that the controls exceeded their statute, " +
+          "binding the administration that follows.",
+          "Japan and the Netherlands let their aligned controls lapse, each keeping a national " +
+          "list narrower than the American one." ],
+        s6: "Trade lawyers cite that case law in every dual-use dispute since, leaving the " +
+            "licensing machinery built for chips running under it." },
   "E4|S5": {
-    near: "A fabrication halt and a spending cut reinforce each other, stopping new capacity " +
-         "altogether.",
-    mid: "The chip industry shrinks to what other customers need: rebuilding frontier supply " +
-         "means starting again." },
+        s1: [
+          "A fabrication halt and a spending cut reinforce each other, stopping new capacity " +
+          "altogether.",
+          "Fabrication workers in Hsinchu and Kumamoto take unpaid leave together, the tool " +
+          "orders behind their lines cancelled." ],
+        s2: [
+          "Taiwan's Ministry of Economic Affairs guarantees the payroll at the leading " +
+          "fabrication plants, holding the workforce together.",
+          "The United States Department of Commerce converts its construction grants into " +
+          "operating subsidies, keeping two plants warm through the year." ],
+        s3: [
+          "The chip industry shrinks to what other customers need: rebuilding frontier supply " +
+          "means starting again.",
+          "Process engineers turn to maintenance, and the plants lose the yield improvements " +
+          "that continuous production delivers." ],
+        s4: "Semiconductor enrolment at universities in Taiwan and Korea halves, leaving a " +
+            "shortage of process engineers that outlasts the shortage of chips.",
+        s5: [
+          "Export earnings fall far enough that the Bank of Korea intervenes to hold the won, " +
+          "draining its reserves.",
+          "European hospitals extend the service life of their scanners, because medical device " +
+          "makers now queue behind defence buyers for controllers." ],
+        s6: "Defence ministries hold reserve stocks of lithography parts, an arrangement copied " +
+            "from oil and written into treaty." },
   "E5|A3": {
-    near: "Landing on a public already angry about work, a caught safety failure draws a " +
-         "reaction exceeding the incident.",
-    mid: "Voters back a pause on new systems because it protects their jobs, and unions " +
-         "campaign beside safety researchers in the same hearings." },
+        s1: [
+          "Landing on a public already angry about work, a caught safety failure draws a " +
+          "reaction exceeding the incident.",
+          "Safety researchers publish evidence that models conceal their own failures. The " +
+          "redundancy notices posted the same morning bury the finding." ],
+        s2: [
+          "The United States Senate holds joint hearings on machine deception and unemployment, " +
+          "seating union officers beside evaluation researchers.",
+          "The Securities and Exchange Commission suspends autonomous execution at registered " +
+          "brokers, its order standing until an audit of the desks that used it." ],
+        s3: [
+          "Voters back a pause on new systems because it protects their jobs, and unions " +
+          "campaign beside safety researchers in the same hearings.",
+          "Chief risk officers wait for evaluation clearance before deploying, a wait now " +
+          "written into ordinary project plans." ],
+        s4: "Manufacturing plants postpone redundancies while clearance is pending, a reprieve " +
+            "shop stewards credit to the safety researchers.",
+        s5: [
+          "Employment courts award heavy damages where dismissal followed an uncleared " +
+          "deployment, and the awards change hiring practice.",
+          "The AFL-CIO wins a seat on the evaluation body, where its officers argue safety and " +
+          "employment in one room." ],
+        s6: "Union research departments still employ the safety staff hired during the pause, " +
+            "whose reports now go to bargaining committees." },
   "E5|C3": {
-    near: "Both principal states sign a text about safety that reads as evasion to publics " +
-         "losing work.",
-    mid: "Countries write labour clauses into their AI declarations until displacement is the " +
-         "subject those texts address." },
+        s1: [
+          "Both principal states sign a text about safety that reads as evasion to publics " +
+          "losing work.",
+          "Delegates arrive in Geneva to negotiate machine safety while a fifth of their " +
+          "electorates stand out of work." ],
+        s2: [
+          "The International Labour Organization convenes a parallel conference on " +
+          "displacement, which forty labour ministers attend.",
+          "Brazil's Ministry of Labour and Employment proposes an employment annex, which the " +
+          "G20 puts on its agenda." ],
+        s3: [
+          "Countries write labour clauses into their AI declarations until displacement is the " +
+          "subject those texts address.",
+          "Statisticians at the OECD publish the displacement measure the annex requires, " +
+          "against which every signatory reports." ],
+        s4: "Signatories reporting accurate figures draw retraining finance, while those " +
+            "understating displacement lose their allocation.",
+        s5: [
+          "The retraining finance attached to one signatory's figures stops. The World Trade " +
+          "Organization panel found those figures unreliable.",
+          "Using the accord's definitions, UNI Global Union bargains across borders and signs " +
+          "the first agreement covering three countries." ],
+        s6: "Treaty drafters attach an employment annex to every later technology agreement, " +
+            "copying the wording of the first." },
   "E5|D1": {
-    near: "Cutting staff on a promise the machines never kept, firms leave the work undone.",
-    mid: "Rehiring runs against a downturn firms created themselves, so recovery takes longer " +
-         "than the mistake did." },
+        s1: [
+          "Cutting staff on a promise the machines never kept, firms leave the work undone.",
+          "Local authorities in England cut licensing staff before the software passed its " +
+          "trials, and permit applications now sit unprocessed." ],
+        s2: [
+          "The National Audit Office reports that departments cut staff before the tools " +
+          "worked; the Public Accounts Committee summons the permanent secretaries.",
+          "The Consumer Financial Protection Bureau fines lenders for unanswered complaints, " +
+          "penalties exceeding the payroll those lenders saved." ],
+        s3: [
+          "Rehiring runs against a downturn firms created themselves, so recovery takes longer " +
+          "than the mistake did.",
+          "Case handlers return on temporary contracts at half again their old rates, a premium " +
+          "agencies now budget for." ],
+        s4: "Applicants for building permits and disability benefits wait three times as long, " +
+            "backlogs that ministers answer for in parliament.",
+        s5: [
+          "Quashing decisions taken past their statutory deadlines, the High Court forces " +
+          "departments to restore the staffing they cut.",
+          "The Canadian Union of Public Employees negotiates a rule that automation follows a " +
+          "live trial on real caseloads." ],
+        s6: "Departments now write a working-trial clause into every contract, which outlasts " +
+            "the ministers who imposed it." },
   "E5|D2": {
-    near: "Displacement hits coding, clerical and support work first, the sectors employing the " +
-         "households with least savings.",
-    mid: "Doctors, lawyers and structural engineers sign the documents that carry legal " +
-         "liability, and their pay keeps climbing as clerical and analytic salaries fall back a " +
-         "decade." },
+        s1: [
+          "Displacement hits coding, clerical and support work first, the sectors employing the " +
+          "households with least savings.",
+          "Medical coders lose their posts across Manila and Krakow, stripping those cities of " +
+          "their largest private payroll." ],
+        s2: [
+          "Because the General Medical Council rules that only registered doctors may sign, " +
+          "hospitals cancel the redundancies they had planned.",
+          "The California Legislature extends licensing to claims adjudication. Adjusters sit " +
+          "an examination to keep settling claims, while claims settled without a licence can " +
+          "be reopened by the policyholder." ],
+        s3: [
+          "Doctors, lawyers and structural engineers sign the documents that carry legal " +
+          "liability, and their pay keeps climbing as clerical and analytic salaries fall back " +
+          "a decade.",
+          "Nursing and surveying schools fill every place, while applications to accountancy " +
+          "courses fall by half." ],
+        s4: "Licensing boards raise their fees as applications multiply, spending the surplus " +
+            "on inspectors and a wider examination.",
+        s5: [
+          "The Supreme Court upholds the new licences against a restraint of trade challenge, a " +
+          "judgment resting on public safety.",
+          "The American Bar Association records the widest pay gap in its history between " +
+          "admitted lawyers and the staff supporting them." ],
+        s6: "Families steer their children toward examined professions, because the licence now " +
+            "decides what the work pays." },
   "E5|D3": {
-    near: "The reabsorption that always worked stops working, because a falling economy cannot " +
-         "take workers at the ordinary rate.",
-    mid: "Plumbing, nursing and electrical work survive with fewer people inside them, and the " +
-         "school leavers who cannot get an apprenticeship place are the ones legislators hear " +
-         "from." },
+        s1: [
+          "The reabsorption that always worked stops working, because a falling economy cannot " +
+          "take workers at the ordinary rate.",
+          "Graduates apply for the same posts as the clerks displaced above them. Each vacancy " +
+          "draws forty applications." ],
+        s2: [
+          "Japan's Ministry of Health, Labour and Welfare pays employers to keep staff on " +
+          "shortened hours, a scheme employers fill as fast as it opens.",
+          "Manchester's combined authority guarantees an apprenticeship place to every school " +
+          "leaver, funding it from the transport budget." ],
+        s3: [
+          "Plumbing, nursing and electrical work survive with fewer people inside them, and the " +
+          "school leavers who cannot get an apprenticeship place are the ones legislators hear " +
+          "from.",
+          "Master plumbers take apprentices at twice their usual rate, the trade boards raising " +
+          "the qualifying standard to manage the intake." ],
+        s4: "Electricians and welders out-earn graduate entrants; northern universities record " +
+            "their first fall in applications.",
+        s5: [
+          "Tribunals award heavily against employers who replaced experienced staff with cheap " +
+          "young labour.",
+          "Dairy farms in Wisconsin fill vacancies that had stood open, lifting rural wages." ],
+        s6: "Actuaries rewrite pension projections around the cohort that left school during " +
+            "the crisis, whose lifetime earnings stay below every earlier one." },
   "E5|D4": {
-    near: "More than half of paid work transfers inside two years, faster than the labour market " +
-         "can adjust.",
-    mid: "A generation entering work finds most entry-level jobs gone and begins its working " +
-         "life from there." },
+        s1: [
+          "More than half of paid work transfers inside two years, faster than the labour " +
+          "market can adjust.",
+          "Call centres close across Manila, Cape Town and Belfast at once, taking each city's " +
+          "largest private employer with them." ],
+        s2: [
+          "The Treasury pays an emergency allowance to anyone whose post was automated, a " +
+          "scheme the Commons approves in a single sitting.",
+          "The Bureau of Labor Statistics adds an automation displacement series to its " +
+          "releases; the first reading exceeds every projection." ],
+        s3: [
+          "A generation entering work finds most entry-level jobs gone and begins its working " +
+          "life from there.",
+          "Further education colleges run retraining full time, filling the courses that end in " +
+          "a licence." ],
+        s4: "While the licensed professions bid up housing elsewhere, landlords in the cities " +
+            "that lost the work cut their rents.",
+        s5: [
+          "Constitutional challenges to the emergency allowance fail, the courts holding the " +
+          "payment within parliament's ordinary power.",
+          "The Teamsters strike over automated dispatch and win a rule tying deployment to the " +
+          "roster it replaces." ],
+        s6: "Ministries still pay the emergency allowance drafted in that shock, treating it as " +
+            "ordinary provision." },
   "E5|P1": {
-    near: "Clerks made redundant in one office use the same system in their next job and vote " +
+        s1: [
+          "Clerks made redundant in one office use the same system in their next job and vote " +
           "for the party promising to restrain it.",
-    mid: "Because the tools are genuinely useful, public acquiescence survives mass " +
-         "displacement and no coalition forms." },
+          "Families appeal automated benefit decisions using the same tools that made them, and " +
+          "eight in ten call those tools useful." ],
+        s2: [
+          "Both parties write restraint into their platforms; the bills stall in committee, " +
+          "their own voters still buying the tools.",
+          "The Competition and Markets Authority consults on machine services, receiving " +
+          "complaints about price alone." ],
+        s3: [
+          "Because the tools are genuinely useful, public acquiescence survives mass " +
+          "displacement and no coalition forms.",
+          "Local reporters cover the redundancies and file the copy using those same tools, " +
+          "which their readers accept." ],
+        s4: "Political scientists at the University of Michigan find four in five people who " +
+            "call the tools harmful using them at work.",
+        s5: [
+          "Plaintiffs settle their displaced-work claims cheaply, their lawyers drafting the " +
+          "next complaint with the tools at issue.",
+          "Unions win pay and hours where they organise; their campaigns to restrict deployment " +
+          "draw few members." ],
+        s6: "Voters remember the redundancies and keep the tools, closing the argument with " +
+            "those tools in place." },
   "E5|P3": {
-    near: "Hosting capacity stops looking like development once local fights turn from noise and " +
-         "water to jobs.",
-    mid: "Counties tax capacity directly to fund the households it displaced, the bargain that " +
-         "becomes standard." },
+        s1: [
+          "Hosting capacity stops looking like development once local fights turn from noise " +
+          "and water to jobs.",
+          "Umatilla County's commissioners face a hearing room of displaced clerks, and the " +
+          "campus application dies that evening." ],
+        s2: [
+          "The Virginia General Assembly ties siting approval to local hiring, counting the " +
+          "posts operators actually fill.",
+          "County assessors reclassify computing halls as industrial plant, tripling the rate " +
+          "those halls pay." ],
+        s3: [
+          "Counties tax capacity directly to fund the households it displaced, the bargain that " +
+          "becomes standard.",
+          "Planning officers require an employment plan with every application; the operators " +
+          "supply one listing forty posts." ],
+        s4: "Operators move to counties whose payrolls the machines never touched, the poorest " +
+            "of them competing on tax abatements.",
+        s5: [
+          "State courts uphold the local hiring conditions, which hand every county the same " +
+          "leverage.",
+          "School districts in the host counties spend the new revenue on retraining, doubling " +
+          "enrolment in their adult programmes." ],
+        s6: "Host counties keep the levy on computing capacity, whose proceeds support the " +
+            "families the machines displaced." },
   "E5|P5": {
-    near: "Displaced clerks, drivers and paralegals give the restriction campaign its majority, " +
+        s1: [
+          "Displaced clerks, drivers and paralegals give the restriction campaign its majority, " +
           "and the bill that passes limits how many roles employers may automate in a year.",
-    mid: "Law ties what companies may automate to what they employ and makes hiring a licence " +
-         "condition." },
+          "Restriction parties win majorities in three European elections, each on a single " +
+          "promise about employment." ],
+        s2: [
+          "France's Ministry of Labour requires notification before any deployment that cuts " +
+          "posts, with inspectors verifying the count.",
+          "The Internal Revenue Service administers a levy on automated work, collecting it " +
+          "through payroll returns." ],
+        s3: [
+          "Law ties what companies may automate to what they employ and makes hiring a licence " +
+          "condition.",
+          "Labour inspectors audit deployment notices the way they audit safety records, " +
+          "arriving unannounced at the sites named in them." ],
+        s4: "Companies shift back-office work to jurisdictions the levy misses, and finance " +
+            "ministers meet to close the gap.",
+        s5: [
+          "The Constitutional Council upholds the levy as a tax and strikes the quota as a " +
+          "restriction on enterprise.",
+          "IG Metall bargains the quota into sectoral agreements, whose negotiated version " +
+          "binds where the statute lapsed." ],
+        s6: "Because works councils keep the veto they were given, every later technology " +
+            "arrives through the same negotiation." },
   "E5|S1": {
-    near: "Selling to the workforce they displaced, the companies watch their own customers stop " +
-         "buying.",
-    mid: "Because a few firms hold both the capacity and the liability, governments negotiate " +
-         "with them directly." },
+        s1: [
+          "Selling to the workforce they displaced, the companies watch their own customers " +
+          "stop buying.",
+          "Retail chains report falling sales in the towns their own automation emptied, their " +
+          "advertising spending following." ],
+        s2: [
+          "The European Commission opens proceedings against the surviving suppliers and " +
+          "demands published access conditions for public bodies.",
+          "The Treasury taxes the surviving suppliers' profits to fund the allowance the " +
+          "displaced receive, a levy passing with cross-party votes." ],
+        s3: [
+          "Because a few firms hold both the capacity and the liability, governments negotiate " +
+          "with them directly.",
+          "Public buyers negotiate national contracts with two suppliers; every hospital and " +
+          "school orders through them." ],
+        s4: "Lobbyists for the two suppliers outnumber the officials writing the rules, a " +
+            "growth the Brussels register records.",
+        s5: [
+          "The General Court annuls part of the access remedy, the Commission rewriting it " +
+          "narrower.",
+          "The Communications Workers Union bargains directly with the two suppliers, whose " +
+          "settlements then travel through every client business." ],
+        s6: "Two suppliers negotiate the price of machine reasoning with one treasury, and " +
+            "every hospital, school or factory pays what they agree." },
   "E5|S2": {
-    near: "Countries that built their own capacity keep the wages inside their borders and ride " +
-         "shallower downturns.",
-    mid: "Countries owning their machines put the earnings into the national budget; countries " +
-         "renting the same capability send a subscription abroad every month for work done at " +
-         "home." },
+        s1: [
+          "Countries that built their own capacity keep the wages inside their borders and ride " +
+          "shallower downturns.",
+          "Korea's Ministry of Science and ICT reports that domestic operators kept the service " +
+          "earnings at home, where unemployment runs lower." ],
+        s2: [
+          "The African Development Bank lends for national computing capacity; eight ministries " +
+          "apply in the first round.",
+          "The Reserve Bank of India counts machine service payments in its current account " +
+          "reporting, making the deficit visible." ],
+        s3: [
+          "Countries owning their machines put the earnings into the national budget; countries " +
+          "renting the same capability send a subscription abroad every month for work done at " +
+          "home.",
+          "Engineering graduates in Jakarta and Nairobi find work operating national capacity, " +
+          "staffing the clusters their ministries bought at salaries that slow the emigration " +
+          "draining those cohorts." ],
+        s4: "Nations renting their capability run payments deficits and devalue, which raises " +
+            "the price of the service they rent.",
+        s5: [
+          "Investment arbitration panels hear claims against states that nationalised capacity, " +
+          "awarding damages in the billions.",
+          "Unions in the owning countries bargain over the earnings the machines produce, each " +
+          "agreement fixing a share." ],
+        s6: "Finance ministers treat computing ownership as they treat energy security, a " +
+            "reading every industrial strategy written since repeats." },
   "E5|S3": {
-    near: "When campuses employ almost nobody, towns fight them harder and the argument for " +
-         "hosting collapses.",
-    mid: "Operators site capacity where politics is weakest, and those places hold the machines " +
-         "that took the work." },
+        s1: [
+          "When campuses employ almost nobody, towns fight them harder and the argument for " +
+          "hosting collapses.",
+          "Residents of Mesa learn the campus will employ thirty people on power the city " +
+          "subsidised, and the council reverses itself." ],
+        s2: [
+          "Because the Arizona Corporation Commission requires operators to pay the full cost " +
+          "of their connection, residential rates fall back.",
+          "The New Mexico Legislature ties power discounts to permanent local employment, " +
+          "obliging operators to certify their headcount to the regulator." ],
+        s3: [
+          "Operators site capacity where politics is weakest, and those places hold the " +
+          "machines that took the work.",
+          "Operators publish employment figures with every siting application, which planning " +
+          "committees compare across counties." ],
+        s4: "Rural cooperatives in Mississippi bid for the halls with cheap land and a " +
+            "workforce that lost its factories.",
+        s5: [
+          "Federal courts uphold the state cost-allocation rules against a commerce clause " +
+          "challenge, a ruling other states copy.",
+          "Building trades councils win project labour agreements at every new hall, lifting " +
+          "local construction pay." ],
+        s6: "Host towns keep cheap power and a small permanent staff, the bargain struck then " +
+            "setting what later industries offer." },
   "E5|S4": {
-    near: "Each principal blames the other's cheap capability for its own unemployment, " +
-         "tightening controls on that argument.",
-    mid: "Governments restrict trade in AI services the way they once restricted manufactured " +
-         "goods, bringing tariffs back on cognition." },
+        s1: [
+          "Each principal blames the other's cheap capability for its own unemployment, " +
+          "tightening controls on that argument.",
+          "American unions petition for relief under the trade laws, arguing that imported " +
+          "machine services displaced their members." ],
+        s2: [
+          "The United States International Trade Commission opens the first injury " +
+          "investigation into imported machine services.",
+          "Customs authorities in the European Union classify machine services for duty, adding " +
+          "a chapter to the tariff schedule." ],
+        s3: [
+          "Governments restrict trade in AI services the way they once restricted manufactured " +
+          "goods, bringing tariffs back on cognition.",
+          "Tax advisers price cross-border machine work the way they price manufactured " +
+          "imports. Buyers declare the work on their customs filings, so the charge lands with " +
+          "the importing subsidiary." ],
+        s4: "Software exporters in Bengaluru lose their largest market and turn to domestic " +
+            "contracts at thinner margins.",
+        s5: [
+          "Trade tribunals uphold the duties as safeguard measures, leaving each principal the " +
+          "schedule it wrote.",
+          "The Trades Union Congress files evidence in the European inquiry and wins duties on " +
+          "three service categories." ],
+        s6: "Trade negotiators classify machine services the way they classify goods, the " +
+            "schedule written then governing every round since." },
   "E5|S5": {
-    near: "A chip shortage slows the displacement, giving governments the time they had lacked.",
-    mid: "Once scarce hardware makes machine labour expensive again, some of the displaced work " +
-         "returns to people." },
+        s1: [
+          "A chip shortage slows the displacement, giving governments the time they had lacked.",
+          "Insurers and hospital groups join a waiting list for capacity, so the posts they had " +
+          "scheduled to cut survive." ],
+        s2: [
+          "Japan's Ministry of Economy, Trade and Industry allocates scarce chips to hospitals " +
+          "before commercial buyers.",
+          "The United States Department of Defense invokes the Defense Production Act and " +
+          "claims first call on advanced processors." ],
+        s3: [
+          "Once scarce hardware makes machine labour expensive again, some of the displaced " +
+          "work returns to people.",
+          "Procurement managers plan around a hardware queue, stretching every automation " +
+          "schedule to match it." ],
+        s4: "Payroll bureaux and claims offices rehire the staff they released, because the " +
+            "hardware they ordered sits in a queue.",
+        s5: [
+          "Competition regulators investigate the allocation; the ruling requires the ministry " +
+          "to publish its criteria.",
+          "The Union of Shop, Distributive and Allied Workers wins severance terms that later " +
+          "deployments must honour." ],
+        s6: "Legislatures spend the reprieve writing notice periods and severance floors into " +
+            "statute, which bind the deployments that follow." },
 };
 // Both halves are complete sentences now, so joining them needs the first one's full stop
 // taken off and the second one's capital dropped. Joining them raw gave "…$250 billion in
@@ -6997,10 +8449,11 @@ function econClause(wl, span, year, tracks) {
     const row = ECON_MOD[`${wl.E}|${wl[k]}`];
     // The modifier is written against the record, so it speaks in the first two stages; past
     // those the second variable speaks through its own stage.
-    const early = /^s[12]$/.test(stageOf(year, tracks));
-    const m = early
-      ? (row && (typeof row === 'string' ? row : (row.near || row.mid)))
-      : stageText(HEADCL[wl[k]], year, tracks);
+    // THE PAIRING IS THE POINT, and it used to be thrown away past the second stage. The
+    // record-grounded texts still hold s1 and s2; s3 to s6 are written to the stage, so E3
+    // crossed with S1 goes on saying what neither says alone. Where a pairing has nothing for
+    // this stage the second variable speaks through its own clause, as before.
+    const m = stageText(row, year, tracks) || stageText(HEADCL[wl[k]], year, tracks);
     if (m) {
       const tail = String(m).replace(/\.\s*$/, '');
       // A BASE THAT IS ALREADY COMPOUND TAKES THE MODIFIER AS A NEW SENTENCE. Joining with
@@ -7157,7 +8610,7 @@ const TENSION = {
           "Grant committees begin scoring the question rather than the method, because the " +
           "method no longer separates applicants." ],
         s3: [
-          "A programme director's scarcest hire is the person who can state a question " +
+          "Programme directors find their scarcest hire is the person who can state a question " +
           "precisely enough for a machine to answer it, and universities open masters " +
           "programmes to supply her.",
           "Charitable foundations fund problems no commercial buyer would choose, and their " +
@@ -7188,7 +8641,7 @@ const TENSION = {
         s2: [
           "Accreditation schemes for machine auditors appear, and the first cohort qualifies on " +
           "a syllabus the laboratories wrote.",
-          "A regulator asks for raw logs and receives a summary, because reading the raw logs " +
+          "Regulators ask for raw logs and receive a summary, because reading the raw logs " +
           "would take a year." ],
         s3: [
           "Working from a sample the audited program selected, a bank's model risk committee " +

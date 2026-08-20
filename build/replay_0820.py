@@ -25,6 +25,16 @@ STEPS = [
     ('apply_hollow.py', ['g_repair.json'], 'gate faults inside axis G'),
     ('apply_tension.py', ['tension_stages.json'], 'the tension table onto the stage clock'),
     ('apply_hollow.py', ['tension_repair.json'], 'gate faults inside the tension clauses'),
+    ('apply_spans.py', ['span_out.json'], 'the economy tables onto the stage clock, GOVERN dropped'),
+    ('apply_hollow.py', ['framing_repair.json'], 'a framing repeated eight times'),
+    ('apply_hollow.py', ['join_fixes.json'], 'Rule 14 again: 108 clauses off their ", and" join'),
+    ('apply_hollow.py', ['deictic_repair.json'], 'four rewrites that opened on nothing'),
+    ('apply_hollow.py', ['hollow2_fixes.json'], 'the marks the economy clauses reintroduced'),
+    ('apply_hollow.py', ['singular_repair.json'], 'the indefinite singular for the general case'),
+    ('apply_hollow.py', ['singular_repair2.json'], 'three the widened rule then found'),
+    ('apply_hollow.py', ['self_repair.json'], 'clauses naming the drawing'),
+    ('apply_hollow.py', ['self_repair2.json'], 'two more the widened rule found'),
+    ('apply_hollow.py', ['self_repair3.json'], 'the last one'),
 ]
 PATCH = ("""// A stage table falls back down its own sequence, so a table written short still draws.
 export function stageText(row, year, tracks) {

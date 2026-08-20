@@ -99,6 +99,17 @@ SELF = [
     (r'\b(?:past|beyond|off) (?:what )?this scale\b', 'the clause talks about the scale'),
     (r'\bthis (?:document|sheet|drawing|forecast) (?:shows|says|cannot|draws)\b',
      'the clause talks about the document'),
+    # AUGUST, 2026-08-19: "remove all self-referential language". The rule above wanted a verb
+    # after the noun and so missed "the first population statistic in this forecast" and "the
+    # forecast's own question" — a clause naming the drawing as a place or an owner rather than
+    # as an actor. Two of them shipped inside the benefit axis on 2026-08-20.
+    # "on the model of the Terrorism Risk Insurance Act" is ordinary English, so `model` is only
+    # self-reference when the clause is not pointing at something else with `of`.
+    (r'\b(?:in|on|of|across) (?:this|the) (?:forecast|document|sheet|drawing|chart)\b',
+     'the clause talks about the document'),
+    (r'\b(?:in|across) (?:this|the) model\b', 'the clause talks about the document'),
+    (r"\b(?:this|the) (?:forecast|document|sheet|drawing)'s\b",
+     'the clause talks about the document'),
 ]
 # ── August's language rules, 2026-08-19 ─────────────────────────────────────
 # He edited six sentences by hand and each edit is a rule. Three of them are machine-checkable.
@@ -109,9 +120,19 @@ SELF = [
 # Checked SENTENCE-INITIALLY only. Mid-sentence "a doctor signs every diagnosis" reads as
 # ordinary English; it is the clause that OPENS on an indefinite singular and then makes a
 # general claim about all of them that he struck out.
+# The noun list was closed, so "A health system with an organised screening invitation gains most"
+# passed while "A hospital ..." failed. Widened on 2026-08-20 with the institutions this corpus
+# actually writes about, and with one optional modifier, which is how they arrive in practice
+# ("A frontier laboratory", "A diagnostic system"). It found eleven the closed list had missed.
+# A SPECIFIC EVENT KEEPS ITS ARTICLE — "A court granted it a preliminary injunction" is one court
+# on one day — so this reports rather than deciding, and a past-tense main verb is left alone.
 GENERAL_SINGULAR = re.compile(
-    r"(?:^|(?<=[.!?] ))A (job|company|firm|worker|employee|country|user|patient|doctor|lawyer|"
-    r"student|household|city|town|nation|government|hospital|school)\b(?!'s)")
+    r"(?:^|(?<=[.!?] ))A ((?:[a-z]+[ -])?(?:job|company|firm|worker|employee|country|user|patient|"
+    r"doctor|lawyer|student|household|city|town|nation|government|hospital|school|system|service|"
+    r"programme|program|authority|agency|board|department|ministry|regulator|insurer|laboratory|"
+    r"clinic|university|union|fund|buyer|seller|vendor|supplier|operator|developer|manufacturer|"
+    r"regime))\b(?!'s)(?=[^.!?]*\b(?:is|are|has|have|holds?|keeps?|gets?|gives?|takes?|makes?|"
+    r"needs?|wants?|must|may|can|will|now|then|therefore)\b)")
 #
 #   "and machines take tasks whose errors are cheap"  →  "while machines automate low-risk tasks"
 # DO NOT REPEAT A FRAMING. Once a mechanism is established, later clauses name its consequences.
