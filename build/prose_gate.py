@@ -76,7 +76,12 @@ METAPHOR = [
     (r'\b(?:have |has |had )?become the \w+\b', 'a metaphor standing in for a role'),
     (r'\btravels? furthest\b|\bcarr(?:y|ies) furthest\b', 'a distance metaphor'),
     (r'\bmarks the (?:outer )?(?:edge|limit|boundary) of\b', 'a boundary metaphor'),
-    (r'\b\w+ion (?:decides|governs|dictates) \w+\b', 'an abstraction verbing an abstraction'),
+    # A NAMED BODY IS NOT AN ABSTRACTION. The rule catches "adoption decides reach"; it caught
+    # "the Federal Energy Regulatory Commission decides whether" too, which is a body a reader
+    # can look up doing the thing it exists to do. The -ion word has to be a common noun.
+    (r'\b[a-z]+ion (?:decides|governs|dictates) \w+\b', 'an abstraction verbing an abstraction'),
+    (r'(?:^|(?<=[.!?] ))[A-Z][a-z]+ion (?:decides|governs|dictates) \w+\b',
+     'an abstraction verbing an abstraction'),
     (r'\bthe (?:scarce|binding|operative) (?:good|input|limit|constraint)\b',
      'an abstraction as the grammatical subject'),
 ]
@@ -158,6 +163,38 @@ def literals(src):
     return [t for t in re.findall(r'"((?:[^"\\\n]|\\.)*)"', flat) if len(t) > 24]
 
 
+# ── a mark that promises elaboration and does not deliver ───────────────────
+# August, 2026-08-20: "Sometimes these nothing sentences have colons or semicolons, but the
+# subsequent clause does not elaborate or explain (and sometimes is just another nothing
+# statement)." A colon commits the writer: the second half must deliver what the first promises.
+# The test is whether the second half brings anything the first did not — a figure, a named body,
+# or a real number of new content words.
+STOPWORDS = set(
+    "that this they them their with from have has been which when where while then than into "
+    "over under what because since although other same more most will would could should than "
+    "these those there here also only just even much many some such".split())
+
+
+def content_words(text):
+    return {w for w in re.findall(r"[a-z][a-z'-]{3,}", text.lower()) if w not in STOPWORDS}
+
+
+def empty_marks(sents):
+    """Sentences whose colon or semicolon opens onto nothing new."""
+    out = []
+    for x in sents:
+        m = re.search(r'(.+?)[;:]\s+(.+)', x)
+        if not m:
+            continue
+        first, second = m.group(1), m.group(2)
+        if re.search(r'\d', second) or re.search(r'\b[A-Z][a-z]{2,}', second):
+            continue                      # a figure or a named body is delivery
+        if len(content_words(second) - content_words(first)) > 4:
+            continue                      # genuinely new material
+        out.append(x)
+    return out
+
+
 def check(src):
     strings = literals(src)
     faults = []
@@ -217,6 +254,17 @@ def check(src):
     # Rule 14 is a property of the SET, never of one sentence, so it is counted over all of them.
     sents = [x.strip() for t in strings
              for x in re.split(r'(?<=[.!?])\s+', t) if len(x.strip()) > 25]
+    # A colon or semicolon whose second half adds nothing was 31% of marked sentences when
+    # August named it. Counted over the set, because one such sentence is a slip and a page of
+    # them is a habit.
+    marked = [x for x in sents if re.search(r'[;:]\s', x)] if len(sents) > 200 else []
+    if marked:
+        hollow = empty_marks(marked)
+        if len(hollow) / len(marked) > 0.20:
+            faults.append('%.0f%% of %d sentences with a colon or semicolon open onto nothing '
+                          'new; the mark promises elaboration'
+                          % (100 * len(hollow) / len(marked), len(marked)))
+
     if len(sents) > 200:
         hits = [LOOSE.search(x) for x in sents]
         loose = [h for h in hits if h]

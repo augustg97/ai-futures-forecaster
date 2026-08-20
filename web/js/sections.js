@@ -648,8 +648,11 @@ function chartColumn(d, S, top) {
 
 // ── the right column: the controls, one tab per variable ─────────────────────
 // r5 added two axes and neither had a word here, so their tabs read as a bare letter.
+// ONE LABEL PER AXIS, AND THE TABLE IS NOT DERIVED, so an axis added to the registry draws a
+// tab with a blank name until its word is written here. L shipped that way on 2026-08-20.
 const CTAB = { T: 'TEMPO', K: 'TAKEOFF', A: 'ALIGN', C: 'COORD', R: 'RULES',
-               D: 'LABOUR', S: 'SUPPLY', P: 'PUBLIC', E: 'ECONOMY' };
+               D: 'LABOUR', S: 'SUPPLY', P: 'PUBLIC', E: 'ECONOMY',
+               L: 'CONDUCT', G: 'BENEFIT' };
 const CBTN_H = 26;
 
 // Display names for the capability domains. The engine's own `n` is drawn wherever it reads
@@ -693,7 +696,9 @@ function controlColumn(d, S, top) {
       weight: on ? PEN.medium : PEN.hairline, colour: on ? INK.blue : INK.inkLight,
       fill: on ? 'rgba(38,118,214,0.14)' : null,
     });
-    d.text([tx + tw / 2, ty + 1.9], `${a.key} ${CTAB[a.key] || ''}`,
+    // an axis with no word in CTAB takes the first word of its registry name rather than a blank
+    const tab = CTAB[a.key] || String(a.name || '').split(/[ ,]/)[0].toUpperCase();
+    d.text([tx + tw / 2, ty + 1.9], `${a.key} ${tab}`,
            { size: 1.75, align: 'center', track: 0.08, weight: on ? 700 : 500,
              colour: on ? INK.blue : INK.pencil });
     if (set) d.dot([tx + 1.8, ty + th - 1.6], 0.75, { colour: INK.blue });

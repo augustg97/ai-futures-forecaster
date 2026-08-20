@@ -120,6 +120,11 @@ def replace_table(src, name, body):
         elif c == '}':
             depth -= 1
         i += 1
+    old = src[m.end():i - 1]
+    was, now = len(re.findall(r'"', old)) // 2, len(re.findall(r'"', body)) // 2
+    if was and now < was:
+        raise SystemExit('%s: refusing to write %d strings over %d — the read lost %d'
+                         % (name, now, was, was - now))
     return src[:m.start()] + m.group(1) + '{\n' + body + '};' + src[i + 1:]
 
 

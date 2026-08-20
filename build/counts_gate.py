@@ -45,9 +45,12 @@ WORDS = {
     "twenty-one": 21, "twenty-two": 22, "twenty-three": 23, "twenty-four": 24,
     "twenty-five": 25, "twenty-six": 26, "twenty-seven": 27, "twenty-eight": 28,
     "twenty-nine": 29, "thirty": 30, "forty-nine": 49, "fifty": 50,
+    "fifty-five": 55, "sixty-one": 61,
 }
 NUM = r"(\d{1,3}|" + "|".join(sorted(WORDS, key=len, reverse=True)) + r")"
-NOUN = r"(positions?|axes|variables|dossiers)"
+# THE SHEET CALLS THEM CONTROLS, and the gate was only watching the registry's own words. r8
+# added an eleventh axis and the one sentence that would have gone stale said "nine controls".
+NOUN = r"(positions?|axes|variables|dossiers|controls?|settings)"
 COUNT = re.compile(NUM + r"\s+" + NOUN, re.I)
 
 # A sentence carries its own date when it names a registry revision or a year.

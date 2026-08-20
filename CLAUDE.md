@@ -249,6 +249,33 @@ __FW.auditSweep()                      # in the console: the audit (check `contr
   was meant to remains open", "standards written before they all written ahead of the need". Both
   passed `node --check`. The regex that catches them is a doubled word or a stranded participle in
   the COMPOSED text, never in the source.
+- **A READER BLIND TO A VALUE'S SHAPE EMPTIES THE TABLE AND REPORTS SUCCESS.** `read_headcl` knew
+  `s1: "…"` and not `s1: ["…", "…", "…"]`. Run against the tripled table it returned 36 of 324
+  slots with no error, the emitter wrote what it was handed, and 972 clauses vanished behind the
+  line "axis G written · 108 headline clauses". `node --check` passed and every gate passed; only
+  a table-size count caught it. Two rules follow. **`replace_table` refuses to write fewer strings
+  than it found** — an emitter cannot know what a reader missed, but it can see that it is being
+  handed less than is already there. And **every pass is a script over a saved input**, so
+  `build/replay_0820.py` rebuilt the day from the r7 commit in one command.
+
+- **Count the states a surface can occupy before rewriting it.** Repetition is arithmetic before
+  it is writing. A world-line fixed ten positions, each offered one clause per stage, six stages —
+  sixty sentences for seventy-four years, each read about four times. `build/measure_repeat.mjs`
+  holds one setting, steps every year and reports distinct sentences per line and per headline
+  slot. A table still keyed on the four calendar SPANS can say four things a century however well
+  each is written; ECON, ECON_MOD and GOVERN are still on spans.
+
+- **A mark must open onto something.** August: "sometimes these nothing sentences have colons or
+  semicolons, [but] the subsequent clause does not elaborate or explain".
+  `prose_gate.empty_marks()` flags a second half with no figure, no named body and under five new
+  content words. It was 32% of 245 marked sentences; the ceiling is 20%.
+
+- **An axis's inputs are a property of the CORPUS, not of the rule library.** Before adding an
+  axis, sweep its subject terms over the event trunk and count. A generous benefit sweep matched
+  17 of 2,180 events — the feed carries no health or science section at all — where
+  `ev-safety-research` fires on 95. Writing rules does not fix that; only widening the feed does.
+  An axis nothing can move renders a frozen prior as a live reading.
+
 - **Setting `state.pin` does not resample the line.** A sweep that pins axes and reads
   `sheetState()` gets the default world-line every time and reports whatever that one line says.
   To exercise the authored strings, import `narrative.js` in the page and call `describe()` and
