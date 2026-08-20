@@ -13,13 +13,19 @@ path. Do not "tidy" it without moving all four together.
 
 ## Standing rules — these override default behaviour
 
-1. **Never modify `~/AI Atlas` or `~/Systems Works` from this project without August saying
-   so.** The Atlas is read read-only for its staged forecast; the Systems Works is a design
-   reference only (decision of record, 2026-08-11). **Overridden once, on 2026-08-13**, when he
-   asked for the evidence programme's findings to be applied: registry r3 carries 26 re-set
-   priors, three new conditional edges, and a sampler repair. Any further write to the Atlas
-   needs the same explicit instruction, and the changelog entry must name it.
+1. **The Atlas is this project's engine, and this project may change it.** The rule until
+   2026-08-20 was that `~/AI Atlas` could not be touched without August saying so each time; he
+   removed it that day, in the same breath as approving r7. What the rule was protecting is still
+   true and is now the practice rather than the permission: **a registry change is a decision, so
+   it carries its own changelog entry naming what changed, why, and the evidence behind it**, and
+   the self-test — fire counters on every declared edge, the ratio invariant on every tilt — has
+   to pass before anything is emitted. `~/Systems Works` remains a design reference only
+   (decision of record, 2026-08-11); nothing writes to it.
 
+   The registry's history is the argument for keeping that discipline. r3 re-set 26 priors and
+   repaired a sampler that had been dropping any edge whose parent came later in the axis order.
+   r5 rebuilt the position space and every position that kept its letter changed its meaning.
+   r7 added the tenth axis. Each was worth doing and each could have gone in silently.
 2. **This project owns no forecast data.** If the Atlas has not emitted, this build fails
    rather than drawing something plausible. The Atlas gate runs first and refuses the publish.
 

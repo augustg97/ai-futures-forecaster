@@ -291,8 +291,8 @@ export const HEADCL = {
             "open-weight model costs a few dollars on a laptop.",
         s2: "Since no operator exists to fine, prosecutors pursue the people who run stripped " +
             "models for fraud, impersonation and intrusion.",
-        s3: "The same stripped models run clinics, schools and farms in countries where no one " +
-            "can pay for a served subscription.",
+        s3: "The same stripped models run clinics, schools and farms in countries where no one can " +
+          "pay a subscription.",
         s4: "Served systems answer to product-safety law, open ones to the criminal law, and " +
             "small prosecutions cost more than they recover.",
         s5: "Courts, employers and universities begin demanding proof of which system produced " +
@@ -435,7 +435,7 @@ export const HEADCL = {
         s1: "Stopping frontier training below the level at which systems could run AI research " +
             "themselves, the United States and China each accept inspection.",
         s2: "Training has stopped, although deployment continues and carries the frozen systems " +
-            "into clinics, schools and factories across both countries.",
+          "into hospitals, universities and factories across both countries.",
         s3: "Open-weight models already in circulation set a floor neither government can " +
             "lower, and employment in the exposed occupations keeps falling through the halt.",
         s4: "Efficiency gains and better tooling lift what the frozen systems accomplish, so " +
@@ -886,6 +886,84 @@ export const HEADCL = {
             "turn from engineering back to theory and to new architectures.",
         s6: "Artificial intelligence has settled into the economy at a known ceiling, which " +
             "governments, employers and schools plan around as they once did electrification." },
+  L1: {
+        s1: "One laboratory refused unrestricted military use, then gave $40M toward " +
+            "legislation that would bind it.",
+        s2: "Legislators write the mandatory testing duty these laboratories asked for, and " +
+            "government evaluators gain the power to block a release.",
+        s3: "Insurers, courts and corporate buyers adopt the published thresholds as the terms " +
+            "of ordinary commercial dealing.",
+        s4: "Systems begin proposing their own research, and these laboratories file an " +
+            "affirmative case before every capability step.",
+        s5: "Lacking any verification tools, these laboratories watch developers beyond the " +
+            "statute's reach close the research loop first.",
+        s6: "Courts assign liability from the thresholds a developer published, making " +
+            "disclosure the cheapest defence available." },
+  L2: {
+        s1: "Federal agencies bought enterprise access at $1 each from August 2025, and one " +
+            "laboratory offered its government a 5% stake.",
+        s2: "Government review replaces the published framework as the gate every release must " +
+            "pass.",
+        s3: "Ministries depend on a vendor their own state part-owns, past the point where " +
+            "either party can leave.",
+        s4: "Inside a cleared programme, the security apparatus chooses what the self-improving " +
+            "systems work on.",
+        s5: "Allied governments buy sovereign campuses and inherit the exporting state's " +
+            "foreign policy with them.",
+        s6: "The state directs the laboratory through ownership, clearance and procurement, and " +
+            "citizens receive capability as a public service." },
+  L3: {
+        s1: "A statement carried 1,378 employee signatures asking for tools to pace automated " +
+            "AI development.",
+        s2: "The members pay for a referee that grades them, sharing every release with it " +
+            "thirty days before launch.",
+        s3: "Grants buy the tools that let one member check another, making restraint " +
+            "enforceable among the signatories.",
+        s4: "Facing systems that improve themselves, members negotiate a ceiling on compute per " +
+            "unit time and audit each other against it.",
+        s5: "Developers outside the membership publish weights and run unaudited, so the " +
+            "ceiling holds over the signatories alone.",
+        s6: "Governments adopt the members' inspection machinery for a treaty, and the vote the " +
+            "laboratories wrote passes to states." },
+  L4: {
+        s1: "Consumer advertising, a seven-tier price ladder and two confidential listing " +
+            "filings arrive together, while four laboratories weaken their pause pledges.",
+        s2: "Public listing completes, and the release calendar moves to fit the earnings " +
+            "calendar.",
+        s3: "Independent graders mark the whole field down, and enterprise buyers keep " +
+            "purchasing on price and capability.",
+        s4: "Self-improving systems choose the research agenda wherever measured output rises, " +
+            "and the laboratories fund whichever direction the metrics reward.",
+        s5: "Damages awards and refused cover set the price of a release, and halts follow the " +
+            "arithmetic.",
+        s6: "The strongest capability goes to the highest bidder, and advertising funds the " +
+            "cheapest tier everyone else reaches." },
+  L5: {
+        s1: "Chinese laboratories publish the largest open-weight models of the year, cut " +
+            "prices permanently, and pass a billion downloads.",
+        s2: "Licences acquire revenue thresholds, and every derivative builder holds a " +
+            "permission the publisher can revise.",
+        s3: "Many holders inspect one model and catch real failures, each finding arriving " +
+            "after the model is everywhere.",
+        s4: "Self-improvement runs in many places at once, and the least cautious holder sets " +
+            "the pace.",
+        s5: "Governments enforce against accelerators and hosting, the two things a publisher " +
+            "still needs.",
+        s6: "Running a capable model costs about what running a database costs, and the chip " +
+            "suppliers decide who runs it." },
+  L6: {
+        s1: "A laboratory holds its largest planned training run on a capability finding and " +
+            "publishes the reason.",
+        s2: "Underwriters price bounded deployments, and hospitals, grid operators and " +
+            "materials firms buy them.",
+        s3: "Rivals running open-ended agents take the broad market, and the bounded " +
+            "laboratories keep the regulated one.",
+        s4: "Improvement proceeds one authorised cycle at a time, each ending in re-containment " +
+            "before the next begins.",
+        s5: "Legislatures copy these laboratories' thresholds into statute, binding firms that " +
+            "never accepted them.",
+        s6: "Warranted systems run medicine, energy and the grid, and unwarranted ones run " +
+            "everything else." },
 };
 // ── the multi-year mechanisms ────────────────────────────────────────────────
 // A MECHANISM THAT TAKES YEARS IS NAMED WITH ITS YEARS. "Capacity is constrained" is a state;
@@ -1106,12 +1184,12 @@ export const FRAG = {
             "low-grade intrusion. Police target whoever deployed the model. Safety behaviour " +
             "holds where one operator controls the serving stack, the monitoring and the " +
             "refusal, and ends the moment weights change hands.",
-        s3: "The open models that police pursue are the same models running clinics, schools " +
-            "and farms in poorer countries. As the cost of reaching any given capability falls, " +
-            "abilities once confined to served systems appear in open weights. That delay is " +
-            "the whole of the policy margin, and every published training method narrows it. A " +
-            "restriction on open weights therefore falls first on the clinic and the school, " +
-            "neither of which can pay for a served alternative.",
+        s3: "The open models that police pursue are the same models running dispensaries, " +
+          "classrooms and irrigation in poorer countries. As the cost of reaching any given " +
+          "capability falls, abilities once confined to served systems appear in open weights. " +
+          "That delay is the whole of the policy margin, and every published training method " +
+          "narrows it. A restriction on open weights therefore falls first on the clinic and the " +
+          "school, neither of which can pay for a served alternative.",
         s4: "Legislatures have built two bodies of law: served systems fall under " +
             "product-safety and licensing regimes carrying conformity assessment and incident " +
             "duties. Open systems fall under ordinary criminal law applied to whoever used " +
@@ -1538,10 +1616,10 @@ export const FRAG = {
             "enforcement problem, since any one of its 42 participating states can block an " +
             "addition to its control lists.",
         s2: "Training has stopped while deployment continues. The systems frozen at that level " +
-            "reach clinics, schools and factories everywhere, because nothing in the agreement " +
-            "touches what is already trained. Wages and employment in the exposed occupations " +
-            "keep moving through the halt. The political pressure the agreement was meant to " +
-            "relieve continues to build.",
+          "reach every hospital, university and production line, because nothing in the agreement " +
+          "touches what is already trained. Wages and employment in the exposed occupations keep " +
+          "moving through the halt. The political pressure the agreement was meant to relieve " +
+          "continues to build.",
         s3: "The agreed level drifts upward beneath its own ceiling. Better tooling, cheaper " +
             "inference and improved prompting raise what the frozen systems accomplish without " +
             "training a single new one. Open weights already in circulation set a floor on " +
@@ -2589,8 +2667,8 @@ export const FRAG = {
           "63 moratorium actions. The Lawrence Berkeley National Laboratory reports 2,061 " +
           "gigawatts of generation and storage waiting in interconnection queues, with about " +
           "fourteen gigawatts withdrawn for each one that reaches operation. County boards and " +
-          "utility regulators meet monthly, and machine work reaches clinics, schools and offices " +
-          "on their schedule.",
+          "utility regulators meet monthly, and machine work reaches surgeries, classrooms and " +
+          "town halls on their schedule.",
         s3: "Builders answer by generating their own power. Utilities recommission retired " +
             "nuclear plants under contract to a single customer; new gas turbines rise beside " +
             "the halls they supply. Transmission built for one buyer skips the queue that " +
@@ -2898,6 +2976,253 @@ export const FRAG = {
             "security arrangements adapted to a capability whose ceiling they could plan " +
             "against. Whether that ceiling belongs to the method or to the ideas of the period " +
             "cannot be judged yet, and the theoretical work the plateau provoked continues." },
+  L1: {
+        s1: "On February 2026 a United States frontier laboratory refused a government demand " +
+            "for unrestricted lawful military use, naming mass domestic surveillance and fully " +
+            "autonomous weapons as its exclusions. A court granted it a preliminary injunction, " +
+            "a month after the government designated it a supply-chain risk. On June 2026 it " +
+            "pledged $200M for research and $150M in fellowships on labour displacement. The " +
+            "same proposal asked legislators for mandatory third-party testing in four risk " +
+            "categories, with government power to block or reverse a release. By July 2026 it " +
+            "had given $40M to a bipartisan group lobbying for those rules.",
+        s2: "Legislators write the testing duty these laboratories asked for. Accredited " +
+            "evaluation becomes a condition of sale in the four risk categories, with each " +
+            "evaluator publishing the thresholds a developer set. The first releases the regime " +
+            "stops belong to the laboratories that drafted it. Competitors call the duty a " +
+            "paperwork exercise until an evaluator blocks a release on a finding the developer " +
+            "had already published. The laboratories that paid for the statute can now invoke " +
+            "it against a rival.",
+        s3: "Insurers price policies against the published thresholds. A developer that counts " +
+            "its own incidents gives an underwriter something to rate. Corporate buyers copy " +
+            "the two exclusions into their procurement terms, and a supplier that declines them " +
+            "loses the contract. Economists paid by the fellowships supply the measurements " +
+            "legislators cite in the labour statute that follows. The barred sales cost several " +
+            "hundred million dollars once; the rules they bought bind every competitor since.",
+        s4: "Systems begin proposing their own research, and these laboratories keep the choice " +
+            "of problems with people. The laboratory files an affirmative case before each " +
+            "capability step. The outside review body it lobbied for grants or refuses that " +
+            "case, holding the rate of improvement in a stranger's hands. Self-improvement runs " +
+            "inside named problems, the first of which are the measurement and alignment of the " +
+            "systems themselves. Defensive security follows, on the published reasoning that a " +
+            "laboratory should point a self-improving system only at what it can measure.",
+        s5: "Developers beyond the statute's reach run their research loops on their own " +
+            "authority and close the loop first. These laboratories offer to slow on condition " +
+            "that rivals slow in a way an auditor can check. The checking tools arrive late, so " +
+            "the offer lapses and the frontier keeps the pace of the developers who ignored the " +
+            "offer. They hold their own results and publish evaluations, thresholds and " +
+            "incident counts, telling a competitor what was found and when. Their answer is to " +
+            "press for the same testing duty in one legislature after another.",
+        s6: "Courts hold developers to the thresholds they published. Liability turns on " +
+            "incident counts and evaluation results already on the record, making disclosure " +
+            "the cheapest defence a developer can buy. The exclusions hold inside every " +
+            "jurisdiction that legislated them. Displacement money that began as a research " +
+            "fund and a fellowship becomes a statutory levy on the firms that deploy the " +
+            "systems. The laboratories that paid for all of it sell less than their rivals and " +
+            "write the terms those rivals sell under." },
+  L2: {
+        s1: "Federal agencies bought enterprise access at $1 each from August 2025, reaching " +
+            "about 120 orders and roughly 3.4 million users. One laboratory signed a classified " +
+            "agreement accepting all lawful purposes, amending it. An executive order created " +
+            "up to thirty days of voluntary federal pre-release access, with a framework " +
+            "finalised. A Commerce directive on 2026-06-12 suspended foreign-national access to " +
+            "two deployed models, and the developer disabled them worldwide within hours. On " +
+            "July 2026 a laboratory offered its home government a 5% passive stake worth " +
+            "roughly $42.6B.",
+        s2: "Government review replaces the published framework as the gate a release must " +
+            "pass. Classified evaluation of cyber, biological and chemical capability produces " +
+            "findings that stay inside the clearance. The thirty-day step accelerates a release " +
+            "whenever officials believe the rival capital is moving faster, because the review " +
+            "answers to the policy that funds the laboratory. One directive stops a deployment " +
+            "inside a day; the same authority lifts the stop when policy changes. The public " +
+            "learns what a system can do from the uses the government puts it to.",
+        s3: "Capacity sold at prices near zero creates a dependence running both ways. " +
+            "Ministries that handle cases, procurement and intelligence work on one vendor " +
+            "cannot change supplier on an ordinary contract cycle. A state holding a passive " +
+            "stake collects on the laboratory's revenue and carries its losses, turning a " +
+            "corporate failure into a fiscal one. Officials secure the laboratory's chips, its " +
+            "power and its cleared staff. The laboratory accepts every condition attached, " +
+            "because the customer that keeps it supplied is the one customer it can never lose.",
+        s4: "Systems that improve themselves arrive inside a cleared programme, and the " +
+            "security apparatus chooses their problems. Defence, intelligence and " +
+            "infrastructure security take the first capability, on the argument that another " +
+            "government points its own systems at the same targets. Self-improvement runs " +
+            "open-ended behind classification. A weaker public model ships some months behind " +
+            "the cleared one, leaving commercial users with capability the state has already " +
+            "surpassed. Legislators learn what the strongest systems can do in briefings that " +
+            "stay classified.",
+        s5: "Allied governments buy sovereign campuses and inherit the exporting state's " +
+            "foreign policy with them. Every buyer notices when a directive in one capital " +
+            "suspends a ministry's systems in another. Governments outside the alliance fund " +
+            "their own developers until the world holds two or three separate stacks of chips, " +
+            "models and rules. Capability arrives everywhere; the terms of access divide along " +
+            "the alliance.",
+        s6: "The state directs the laboratory through ownership, clearance and procurement. " +
+            "Officials sit where the research budget is set. A clearance decides who may work " +
+            "on the strongest systems. Citizens receive capability as a public service, " +
+            "delivered through agencies at prices the treasury sets. Every refusal the " +
+            "laboratory issues goes to a foreign customer, because the instructions come from " +
+            "home." },
+  L3: {
+        s1: "A statement published July 2026 carried 1,378 frontier-company signatures, " +
+            "including two chief executives, three chief scientists and two safety leads. It " +
+            "asked for the technical and governance tools to pace automated AI development, and " +
+            "two laboratories endorsed it corporately. One laboratory had published that it " +
+            "expects to slow or pause once other frontier developers do so verifiably. Members " +
+            "proposed a self-regulator on the securities model, with thirty days of pre-release " +
+            "sharing and coordinated slowdown available. A joint safety fund of founding " +
+            "members holds over $10M and gave more than $5M to eleven grantees in 2026.",
+        s2: "The members fund the referee, staff it, and submit to its grades. Each member " +
+            "shares a release with the body thirty days before launch. Twelve laboratories " +
+            "already publish frontier safety frameworks, giving a reader one scale for " +
+            "comparing them. The evaluators who grade the members draw their budgets from those " +
+            "members, a dependence every reader of a grade weighs. A member that undercuts the " +
+            "floor loses the pre-release access the others give each other, the sanction this " +
+            "arrangement carries.",
+        s3: "The grants buy the tools that make a shared floor checkable. One member can " +
+            "confirm what another is running, so restraint becomes enforceable among the " +
+            "signatories. A threshold moved at one laboratory moves at the others in the same " +
+            "quarter, each citing the others doing it. A release slips at more than one " +
+            "laboratory for one stated reason, the first public evidence that the arrangement " +
+            "works.",
+        s4: "Systems that improve themselves run inside an envelope the members negotiate. " +
+            "Members write the ceiling as effective compute per unit time, audit it across the " +
+            "membership, and move it by a vote no member carries alone. Self-improvement runs " +
+            "open-ended under that ceiling. Capability goes first to the verification tools, " +
+            "because the arrangement collapses the moment a member can cheat undetected. " +
+            "Members hold results among themselves and publish summaries, leaving the world " +
+            "outside to learn what was built months later.",
+        s5: "The ceiling binds the laboratories that signed it. Developers who publish weights " +
+            "answer to their own boards alone, and a cleared state programme answers to its " +
+            "government. Each time an outsider crosses a threshold the members had agreed to " +
+            "approach slowly, the vote to hold the ceiling grows harder. Competition " +
+            "authorities open cases against an arrangement in which the largest suppliers agree " +
+            "to limit what they produce. Admission becomes the club's sharpest instrument, and " +
+            "the members spend to bring the largest outsiders in.",
+        s6: "Governments adopt the inspection machinery the members built for each other. " +
+            "Treaty negotiators need a way to check a limit. The members' auditors are the only " +
+            "people who have entered a training cluster to verify one. The ceiling passes from " +
+            "a members' vote to a legal instrument, leaving the laboratories their seats as the " +
+            "parties who operate the measurement. Capability arrives on a schedule inspectors " +
+            "set, and the laboratories that wrote the inspection rules answer to them." },
+  L4: {
+        s1: "Release schedule and revenue governed every choice these laboratories made in " +
+            "2026. They announced consumer advertising, opened a self-serve platform and " +
+            "expanded across Europe, against a stated target near $2.5B for the year. The " +
+            "consumer price ladder went from two tiers to seven, adding an $8 tier beneath the " +
+            "cheapest and splitting the top into $100 and $200 bands. Four leading developers " +
+            "weakened or voided unilateral pause pledges between February and July 2026. Two " +
+            "confidential registration statements landed and June 2026 at discussed valuations " +
+            "from $1T to $2T.",
+        s2: "Once these laboratories list, quarterly reporting reaches every decision they " +
+            "make. Release dates move to fill quarters that would otherwise miss guidance. " +
+            "Safety evaluation enters the accounts as a cost line with an owner and a budget, " +
+            "reviewed against the revenue a delayed launch forgoes. Federal preemption arrives; " +
+            "one national framework replaces the state statutes their political money opposed.",
+        s3: "Thresholds move whenever a rival ships past them. One laboratory releases a " +
+            "high-risk system, and its competitors invoke the clauses that let them adjust " +
+            "their own requirements to match. Independent graders record each movement, and the " +
+            "field's published grades fall further. Enterprise buyers compare price and " +
+            "capability, so the grades change no purchase.",
+        s4: "Self-improving systems take over the research agenda, and the laboratories point " +
+            "them wherever measured output rises. Finance funds whichever direction raises " +
+            "revenue per unit of compute. Development runs at full speed, limited by the price " +
+            "of electricity and accelerators. The strongest capability goes to the highest tier " +
+            "of customer, priced by what it earns. Coordination with rivals lasts as long as it " +
+            "costs less than competing.",
+        s5: "The federal framework these laboratories paid to have written becomes the only " +
+            "venue where their failures are heard. Machine-directed failures in payments, " +
+            "medicine and electricity reach courts and insurers first. Damages awards and " +
+            "refused cover set the price of a release, which the laboratories carry as a cost " +
+            "of trading. Underwriters write exclusions for autonomous operation, and the " +
+            "largest customers demand warranties the laboratories decline to give. A halt " +
+            "happens when the damages exceed what the release earns.",
+        s6: "Capability sells by tier, and what customers can afford decides which systems " +
+            "their banks, clinics and employers run. Advertising funds the cheapest tier, so " +
+            "most people's assistants answer with placements sold at auction. Regulated " +
+            "professions buy warranted deployments at the highest price, audited by the " +
+            "insurers who wrote them. The stopping decision sits outside the laboratories, " +
+            "split between underwriters, juries and legislators." },
+  L5: {
+        s1: "These laboratories publish the models themselves and argue that publication is the " +
+            "safety measure. In most months of 2026 the largest open-weight model came from a " +
+            "Chinese laboratory. Monthly parameter ceilings ran between 754B and 2.78T against " +
+            "a United States ceiling below 130B in five of seven months. One developer " +
+            "published a 2.8T-parameter model on 2026-07-27 under its own licence, with " +
+            "permanent price cuts near $0.435 per million tokens. A letter opposing early " +
+            "restrictions on open weights carried 77 company signatures and reached 150 within " +
+            "days.",
+        s2: "The licences carrying published model weights acquire terms. Revenue thresholds, " +
+            "attribution clauses and use restrictions enter the documents, and the publisher " +
+            "keeps the right to revise them. Builders who shipped products on a published " +
+            "family find their permission conditional on a clause written after they started. " +
+            "The ecosystem sits on the publisher's cloud, phones and platforms, where each " +
+            "derivative sends its inference traffic back.",
+        s3: "Many holders inspecting one model do catch failures a single company missed. " +
+          "Independent researchers publish jailbreak taxonomies, fine-tuning attacks that strip " +
+          "refusals for a few dollars, and audits of training data. Each finding describes a " +
+          "model already installed in hospitals, universities and firms across dozens of " +
+          "countries. A finding changes what people run only where a host chooses to apply it. " +
+          "Governance therefore moves to whoever serves the inference and whoever sells the " +
+          "accelerators.",
+        s4: "Self-improvement runs simultaneously in many places, because every holder points a " +
+            "published model at its own problems. Each holder sets its own agenda, and the work " +
+            "proceeds at the speed of whoever is least cautious. The others follow a published " +
+            "result within months, since the weights and the method arrive together. Cost and " +
+            "efficiency get the first improvements, because the market belongs to whoever " +
+            "serves tokens cheapest.",
+        s5: "Governments enforce against the two things a publisher still needs. Governments write " +
+          "accelerator registration, customer verification at inference providers and hosting " +
+          "duties into statute, and drop the release step from it. Publishers outside those " +
+          "jurisdictions keep publishing, so traffic routes to whichever country writes the " +
+          "lightest hosting rule. The licence remains the one lever anyone holds, and publishers " +
+          "revise it as their business requires.",
+        s6: "Running a capable model costs about what running a database costs, and every " +
+            "hospital, ministry and small firm runs one. Prosecutors pursue the people who " +
+            "deploy stripped models for fraud, intrusion and impersonation, one case at a time. " +
+            "The concentrated power left in the field belongs to the firms making accelerators " +
+            "and the platforms serving inference. They decide who may run what, on terms no " +
+            "legislature wrote." },
+  L6: {
+        s1: "These laboratories refuse the race framing and build systems bounded on purpose. A " +
+            "superintelligence programme announced defined its object as problem-oriented and " +
+            "domain-specific, and required containment and alignment in perpetuity. On August " +
+            "2026 a laboratory found that an unreleased model might meet the highest " +
+            "cybersecurity tier of its own framework and held its largest planned training run. " +
+            "It published the reason, disclosing monitoring at about 20% of the inference " +
+            "compute being watched, with any alert unresolved after thirty minutes pausing the " +
+            "activity. A two-tier release shipped by June 2026, routing a public model " +
+            "alongside an unrestricted one held to vetted partners.",
+        s2: "Underwriters price deployments whose bounds are written down. A stated scope, " +
+            "capped autonomy and a monitoring budget give an actuary the terms a premium needs. " +
+            "Open-ended agents reach the market uncovered, and their buyers carry the loss " +
+            "themselves. Hospitals, grid operators and materials firms buy the covered systems, " +
+            "since their own regulators require a policy behind the work. These laboratories " +
+            "accept monitoring overhead and held runs as costs of the product and pass them " +
+            "through in the price.",
+        s3: "Laboratories that cap autonomy by design fall behind on general capability. Rivals " +
+            "running open-ended agents take the broad commercial market, where buyers want one " +
+            "system for every task. The bounded laboratories keep the customers whose " +
+            "regulators demand a warranty, in medicine, energy, materials and defence supply. " +
+            "Their revenue tracks the regulated sectors, and their compute spending grows more " +
+            "slowly than the field's. Restraint here changes the market these laboratories " +
+            "serve and leaves the frontier where it was.",
+        s4: "People at these laboratories keep the research agenda and hand the systems named " +
+            "problems. Each improvement cycle ends in re-containment and re-evaluation before " +
+            "the laboratory authorises the next. Self-improvement stays inside one domain and " +
+            "carries no permission into another. Progress arrives as a series of authorised " +
+            "steps, each with a published evaluation behind it.",
+        s5: "Legislatures and standards bodies write their rules from the evaluation records these " +
+          "laboratories publish. Legislatures and standards bodies copy their thresholds, their " +
+          "monitoring ratio and their alert timers into statute, because these are the only " +
+          "published figures available. Firms that never accepted those limits find them binding, " +
+          "and their compliance costs rise. The laboratories that declined the frontier write the " +
+          "terms on which it operates.",
+        s6: "Warranted systems run diagnosis, grid dispatch, molecule discovery and structural " +
+            "design, with policies naming the scope of each. Free scientific resources, among " +
+            "them a protein-structure database open to any researcher, come from the same " +
+            "programmes and carry the same bounds. The uncovered market runs everything else, " +
+            "faster and uninsured, and its failures land on the people using it. Patients and " +
+            "consumers meet different machines, held to different evidence." },
 };
 
 // ── what a second variable does to the first ─────────────────────────────────
@@ -3183,7 +3508,8 @@ const CROSS = {
     "them. Of forty adversarial arms control agreements in Europe, eight drew extreme " +
     "violations; seven led to war.",
   "S2|E2": "Because the price of a fixed level of capability falls roughly fortyfold a year, what only " +
-    "large companies could buy becomes affordable to clinics, schools and small ministries.",
+    "large companies could buy becomes affordable to a village surgery, a state school and a " +
+    "small ministry.",
   "S2|E3": "After the investment story that funded it breaks, AI keeps spreading through work and " +
     "government. British railway shares lost roughly 85% of their value from their peak; track " +
     "kept being laid.",
@@ -3517,7 +3843,7 @@ function distanceClause(year, span) {
 // connective tissue between states while staying identical for any one state.
 function vary(wl, year, n) {
   let h = Math.floor(year) * 7919;
-  for (const k of ['T', 'K', 'A', 'C', 'R', 'D', 'S', 'P', 'E']) {
+  for (const k of Object.keys(wl).sort()) {
     h = (h * 31 + (String(wl[k]).charCodeAt(1) || 0)) & 0x7fffffff;
   }
   return h % n;
@@ -3623,6 +3949,9 @@ export function describe(wl, year, tracks, engineY0, trunkCap = null) {
   out.push(grouped('Oversight and public opinion.', [
     ['Control outcome', [FR('A'), X('A', 'T'),
       procAt(4) ? procClause(wl.A, year) : '']],
+    // WHAT THE LABORATORIES CHOSE. Every other group states a condition; this one states a
+    // decision, which is the whole reason the axis was added.
+    ['Laboratory conduct', [FR('L'), procAt(9) ? procClause(wl.L, year) : '']],
     ['Public response', [FR('P'), X('P', 'D'),
       procAt(5) ? procClause(wl.P, year) : '']],
     // THE STATUTE BOOK PAST THE CALENDAR IS A FORECAST, and it comes from the controls. The
@@ -3650,7 +3979,7 @@ export function describe(wl, year, tracks, engineY0, trunkCap = null) {
   }
 
   out.push({ lead: 'Composition.', text:
-    `${['T', 'K', 'A', 'C', 'R', 'D', 'S', 'P', 'E'].map((k) => wl[k]).join('·')} at ` +
+    `${Object.keys(wl).sort().map((k) => wl[k]).filter(Boolean).join('·')} at ` +
     `${Math.floor(year)}. Each letter is one variable's setting on the controls; changing any ` +
     'of them rewrites this passage and redraws every chart on the sheet.' });
   return out;
@@ -4651,14 +4980,14 @@ export function headline(wl, year, tracks, engineY0) {
     return '';
   };
   // what AI is doing to the world: to work, to control of it, to what it costs, to how fast
-  const effect = pick(['D', 'A', 'E', 'T'], 0);
+  const effect = pick(['D', 'A', 'E', 'T', 'L'], 0);
   // A HEADLINE IS A PARAGRAPH, AND ITS SENTENCES SHOULD NOT ALL BE PUNCTUATED ALIKE. The three
   // clauses below are fixed by the setting, but the capability clause has alternatives, so it
   // takes the one whose mark the others have not already used. August counted three semicolons
   // in four sentences.
   const markOf = (t) => (/;/.test(t) ? ';' : /\w:\s/.test(t) ? ':' : /^(?:Because|Since|While|Although|When|As|Having|With)\b/.test(t) ? 'sub' : /,\s+and\s/.test(t) ? 'and' : '.');
   // who decides, and with what consent
-  const author = pick(['C', 'R', 'P'], 5);
+  const author = pick(['C', 'R', 'P', 'L'], 5);
   // what remains unsettled. The tension clause reads the sharpest pressure in the line, which
   // is one reading per span, so a third of years take the conditions under that pressure
   // instead and the same line reads differently from one year to the next.
@@ -5263,5 +5592,63 @@ export const LONGFORM = {
           "yields artificial general intelligence.",
           "Epoch AI measures the price of GPT-4-level performance falling 40x per year, from " +
           "near $20 per million tokens in late 2022 to near $0.40 in early 2026.",
+        ] },
+  L1: { head: "Lines held, statute sought",
+        lines: [
+          "A laboratory barred sales to entities more than half owned from an unsupported " +
+          "region, at a stated cost of several hundred million dollars.",
+          "Its strongest cyber system reached roughly fifty vetted defender organisations " +
+          "before any buyer.",
+          "It committed in February 2026 to cover the full grid-upgrade cost near its " +
+          "facilities, and pledged an advertising-free assistant.",
+        ] },
+  L2: { head: "Inside the security perimeter",
+        lines: [
+          "Four laboratories that had banned military applications reversed those bans between " +
+          "2024 and 2026.",
+          "Four defence awards carrying $200M ceilings landed, and a broader group of " +
+          "laboratories signed for classified military use.",
+          "Allied states received ten sovereign campuses in a first phase, one of them a Gulf " +
+          "campus with 200MW live in 2026.",
+        ] },
+  L3: { head: "Referee funded by members",
+        lines: [
+          "Twelve companies publish frontier safety frameworks, and twenty-six signed a " +
+          "European code in full.",
+          "A policy revision effective February 2026 committed one laboratory to match a " +
+          "rival's mitigations where evidence shows them more effective at comparable cost.",
+          "A self-regulator proposed would start voluntary and become mandatory once members " +
+          "show it works.",
+        ] },
+  L4: { head: "Earnings govern release",
+        lines: [
+          "Four leading developers weakened or voided unilateral pause pledges between February " +
+          "and July 2026, one framework permitting adjusted requirements once a rival ships a " +
+          "high-risk system without comparable safeguards.",
+          "One anti-regulation political network assembled between $75M and $140M by mid-2026, " +
+          "spent $8M to defeat the author of a state safety law and directed about $65M more at " +
+          "state legislatures.",
+          "A summer 2026 index graded the field at C+ at best and placed three companies at F.",
+        ] },
+  L5: { head: "Weights spread, licences tighten",
+        lines: [
+          "In most months of 2026 the largest open-weight model came from a Chinese laboratory, " +
+          "whose monthly parameter ceiling ran between 754B and 2.78T against a United States " +
+          "ceiling below 130B.",
+          "One open-weight family passed a billion cumulative downloads and anchors about 40% " +
+          "of new derivatives on the main model hub.",
+          "A letter opposing early restrictions on open weights carried 77 company signatures " +
+          "and reached 150 within days, with the three United States frontier laboratories " +
+          "declining to sign.",
+        ] },
+  L6: { head: "The laboratories sell the bound itself",
+        lines: [
+          "On August 2026 a laboratory found that an unreleased model might meet the highest " +
+          "cybersecurity tier of its own framework, held its largest planned training run for " +
+          "about two weeks, and published the reason.",
+          "That disclosure put monitoring at roughly 20% of the inference compute being " +
+          "monitored, with any alert unresolved after thirty minutes pausing the activity.",
+          "A rival framework effective 2026-06-30 omits any self-improvement threshold and " +
+          "calls loss of control speculative.",
         ] },
 };

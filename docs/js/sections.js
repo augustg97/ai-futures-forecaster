@@ -5,8 +5,8 @@
 // wide, drawn at one fixed scale so lettering keeps the size it was drawn at and nothing has to
 // be zoomed. A section's millimetre space runs x 0 → 300 across and y 0 → H up from its foot.
 
-import { PEN, INK, PAPER } from './draft.js?v=20260820-0024';
-import { dial, manifold, strip, collectives, fmtNum } from './instruments.js?v=20260820-0024';
+import { PEN, INK, PAPER } from './draft.js?v=20260820-0215';
+import { dial, manifold, strip, collectives, fmtNum } from './instruments.js?v=20260820-0215';
 
 export const SHEET_W = 340;
 const PAD = 13;
@@ -1313,15 +1313,22 @@ export function research(d, S, H) {
   // exists now. A present-tense 'every position' inherits whatever set the registry later
   // holds; a dated count of what was measured does not. The box takes its height from its own
   // wrap, because a constant sized to the old sentence would run the new one off its foot.
+  // A COUNT IS DERIVED, NEVER TYPED. This sentence has gone stale three times — at r5, at r6 and
+  // at r7 — because the register's own figure was written out by hand beside a registry that
+  // kept growing. The covered set is dated and fixed; everything about the CURRENT registry is
+  // read from what the parent emitted.
+  const REG_COVERED = 26;
+  const nowPos = S.network.axes.reduce((n, a) => n + a.positions.length, 0);
+  const nowAx = S.network.axes.length;
   const regBody = 'The pass of 17 August 2026 put at least one source about the world behind ' +
-    'each of the 26 positions the registry then held — a measurement, a statute, a filing, a ' +
-    'poll or market data, independent of any scenario document. Thirteen had rested wholly ' +
-    'on a scenario document: T1, T2, T4, A1, A2, A4, C2, C3, C5, D1, D3, P3 and E4, under the ' +
-    'meanings those letters carried at r4. Thirty-one independent world-sources stand behind ' +
-    'that set. The registry now holds 49 positions across nine axes and the register reaches ' +
-    '26 of them; the 23 it stands clear of are all of K, all of R, T5, A5 to A7, C6 to C8, ' +
-    'D4, S4, S5, P4 and P5, and E5. The register is in the repository at ' +
-    'Research/findings/source-register.md.';
+    `each of the ${REG_COVERED} positions the registry then held — a measurement, a statute, ` +
+    'a filing, a poll or market data, independent of any scenario document. Thirteen had ' +
+    'rested wholly on a scenario document: T1, T2, T4, A1, A2, A4, C2, C3, C5, D1, D3, P3 and ' +
+    'E4, under the meanings those letters carried at r4. Thirty-one independent world-sources ' +
+    `stand behind that set. The registry now holds ${nowPos} positions across ${nowAx} axes, ` +
+    `so the register reaches ${REG_COVERED} of them and stands clear of ` +
+    `${nowPos - REG_COVERED}, among them every position on the axes added since. The register ` +
+    'is in the repository at Research/findings/source-register.md.';
   const regH = 12 + d.wrap(regBody, CW - 8, { size: 2.0, track: 0.06, weight: 400 })
                      .length * 2.0 * LEAD;
   d.rect(PAD, y - regH, CW, regH, { weight: PEN.thin, colour: INK.green, alpha: 0.6 });

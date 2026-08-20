@@ -5,14 +5,14 @@
 // on that instrument. It reads the same emitted data and implements the same functions against
 // the same shipped constants (`engine.json`), so the two surfaces cannot drift apart.
 
-import { Draft, PEN, INK, paperTileURL } from './draft.js?v=20260820-0024';
+import { Draft, PEN, INK, paperTileURL } from './draft.js?v=20260820-0215';
 import { SECTIONS, SHEET_W, TABS, CHART, COL, CTL_NOTE_W, balance,
-         proseColumns, measureSections, SHEET_CW } from './sections.js?v=20260820-0024';
-import { column, fmtNum } from './instruments.js?v=20260820-0024';
-import { describe, headline } from './narrative.js?v=20260820-0024';
-import { describeRecord, headlineRecord, RECORD, recordAt, whenOf } from './record.js?v=20260820-0024';
-import { LONGFORM } from './narrative.js?v=20260820-0024';
-import { chooseFigures } from './figures.js?v=20260820-0024';
+         proseColumns, measureSections, SHEET_CW } from './sections.js?v=20260820-0215';
+import { column, fmtNum } from './instruments.js?v=20260820-0215';
+import { describe, headline } from './narrative.js?v=20260820-0215';
+import { describeRecord, headlineRecord, RECORD, recordAt, whenOf } from './record.js?v=20260820-0215';
+import { LONGFORM } from './narrative.js?v=20260820-0215';
+import { chooseFigures } from './figures.js?v=20260820-0215';
 
 // One build number, injected into index.html at ship time, versions BOTH the data fetches and
 // (via the build's import rewrite) every module. A fresh app.js against a stale draft.js is the
@@ -1066,7 +1066,7 @@ function sheetState(measure) {
     // The forecast with nothing set, kept as a ghost line so a setting's effect is a visible gap
     baselineBands: (cond || state.alt !== null) ? D.bands.annual : null,
     altOrPinned: !!(cond || state.alt !== null),
-    lineLabel: ['T', 'K', 'A', 'C', 'R', 'D', 'S', 'P', 'E'].map((k) => wl[k]).join('·'),
+    lineLabel: D.network.axes.map((a) => wl[a.key]).filter(Boolean).join('·'),
     effect: (k, p) => (eff.map[`${k}:${p}`] ?? null),
     isRecord,
     headline: isRecord ? headlineRecord(state.yr, trunkCap)

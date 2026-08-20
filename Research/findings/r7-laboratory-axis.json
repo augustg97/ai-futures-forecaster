@@ -1,0 +1,306 @@
+{
+ "question": "How do the frontier laboratories choose to act on the world and on each other, up to and past the point where the systems improve themselves?",
+ "overlapCheck": "T Capability tempo dates the crossing of the research rung; L asks whether anyone chose to move that date. The overlap is real and I have priced it small on purpose: the only disclosed halt of a frontier run on record lasted two weeks from 2026-08-07, and every L-to-T multiplier here sits at or under 1.25, because the 2026 record shows tempo set mostly by compute and method with choice as a marginal term. T is the outcome; L is one input to it that the reader can hold fixed.\n\nK Takeoff shape measures the months between the coding rung and the research rung. L touches it only through the pacing question \u2014 a negotiated ceiling on effective compute per unit time is the one mechanism anyone has proposed that would stretch that interval deliberately. K records the spacing; L records whether the spacing was chosen. A field at L4 and a field at L3 can both land at K2 for reasons that have nothing to do with either.\n\nA Alignment outcome is a joint end-state of whether the technique holds and whether an institution registers a failure. That second clause is the near-miss: an institution registering a failure is partly a laboratory choosing to disclose one. L is upstream of it \u2014 L4 renegotiates a threshold when a rival ships, L5 publishes weights so a catch cannot buy a pause, L1 asks for a veto over its own releases. A stays the verdict on control; L supplies the disclosure and stopping behaviour that the verdict is partly measured through.\n\nC Coordination between principal states is an agreement between two capitals. L3 is agreement between developers, which is a different set of parties, a different instrument and a different enforcement path \u2014 and the record separates them cleanly, since the 2026-07-28 request was addressed by company employees TO a government, asking for tools nobody has. L2 is the sharpest overlap risk: a laboratory fused to a state looks like state policy. The distinction holds because C scores what the two governments settle with each other and L2 scores whether a laboratory hands its release schedule to one of them, which several laboratories declined to do in the same year.\n\nR Regulatory architecture asks which instrument decides whether a release may happen. L asks what the laboratories argue for and what they do when they lose. These come apart constantly in the record: one laboratory endorsed a state safety law on 2025-09-08 while lobbying for federal preemption, and a laboratory that asked on 2026-06-10 for a regulator empowered to block releases had its own models disabled by that power two days later. R1 Developer commitments is the closest cell of all, and it is still distinct \u2014 R1 says undertakings are the operative constraint, L3 and L4 disagree about what a laboratory does inside that regime, one building a funded referee and the other treating the undertaking as a cost to renegotiate.\n\nD Diffusion and labour measures the share of paid work that transfers. L carries the deployment choice that feeds it \u2014 steering enterprise customers toward augmentation, pricing a consumer rung below the last one, cutting per-token prices tenfold and holding them down. D is the measured transfer on a fixed instrument; L is one hand on the throttle, and a small one, since the same instrument moved from 2.5% to 15.8% in nine months on capability alone.\n\nS Compute and supply says what binds frontier compute and where the capacity sits. L says what the owners choose to do with it. Sovereign build-outs, in-house silicon programmes and multi-sourcing across three clouds are laboratory decisions that shift where capacity lands, so the edges run L into S rather than the reverse. S1 through S5 are all reachable from any L position.\n\nP Public response records what publics do. L records what the laboratories do to them and for them \u2014 advertising inside the assistant, roughly $200M of political money across two opposed networks by mid-2026, a pledge to absorb grid-upgrade costs near data centres, community funds attached to a campus. P is the reaction; L is part of the provocation.\n\nE Economy asks whether the money holds. L asks what the laboratories do with the money they have while it holds. A permanent threefold-to-twelvefold price gap is a chosen margin, not a market condition; forgoing customers on published grounds at a stated cost in the hundreds of millions is a chosen revenue line. E scores the failure; L scores the spending posture that arrives at it.",
+ "key": "L",
+ "name": "Laboratory conduct",
+ "desc": "What the frontier laboratories choose to do with the position they hold, read as one posture across four decisions nobody makes for them: what they sell and refuse to sell, what they give away and on what conditions, how they act on governments and on each other, and how they develop once the systems improve themselves. The 2026 record establishes this as choice rather than circumstance. One Department of War demand for unrestricted lawful use, announced 2026-01-12 and pressed to a 17:01 deadline on 2026-02-27, produced four answers inside eleven weeks under one regulatory environment: a published refusal that cost the designation of supply-chain risk the following day, a contract engineered with red lines signed within hours of that designation, an accommodation reported in late April as more permissive than either, and silence. The post-self-improvement half of the position is the load-bearing half and the thinnest in evidence: no laboratory has published what it would do with an automated researcher, four weakened or voided unilateral pause pledges between February and July 2026, one halted frontier reinforcement-learning training for two weeks from 2026-08-07 after a finding that an unreleased model might meet its highest cybersecurity tier, and 1,378 frontier-company employees asked on 2026-07-28 for pacing tools that do not yet exist. A position here fixes who sets the research agenda after that point, at what rate, open-ended or confined, held or published, coordinated or alone, and turned toward what first.",
+ "positions": [
+  {
+   "key": "L1",
+   "name": "Refusals held, rules sought",
+   "prior": 0.16,
+   "basis": "On 2026-02-26 a United States frontier laboratory refused a demand for unrestricted lawful military use, naming two exclusions \u2014 mass domestic surveillance and fully autonomous weapons \u2014 while supporting lawful foreign intelligence and partially autonomous systems, and offering a smooth transition to another provider. It was designated a supply-chain risk on 2026-02-27, sued on 2026-03-09, and won a preliminary injunction on 2026-03-26 finding the retaliation likely unlawful. The same laboratory barred sales on 2025-09-05 to entities more than 50% owned from an unsupported region, at a stated cost of several hundred million dollars; pledged on 2026-06-10 a $200M research fund and a $150M fellowship against labour displacement alongside a legislative proposal for mandatory third-party testing in four risk categories with government power to block or reverse a release; put $20M into a pro-regulation vehicle on 2026-02-12 and $20M more in July 2026, becoming its largest disclosed donor; pledged an ad-free assistant on 2026-02-04; and committed in February 2026 to cover 100% of grid-upgrade costs near its facilities. Its strongest cyber model reached roughly 50 vetted partner organisations rather than the market.",
+   "desc": "The laboratories publish named exclusions, pay for them, and spend to have statute written that binds themselves. They sell to firms and developers, decline attention monetisation, gate their strongest systems to vetted partners, and forgo customers on grounds they state in advance. Giving is aimed at the damage their own product does \u2014 displacement, electricity bills, local consent \u2014 and comes with policy asks attached. The wager is that a laboratory trusted to hold a line is worth more than the contracts the line costs.",
+   "tell": "A laboratory loses a large customer over a published clause and does not amend the clause. Its political money runs toward rules that would bite it. Its most capable model reaches vetted defenders months before it reaches buyers, and its philanthropy is aimed at the constituency its own product is displacing.",
+   "postRSI": "People keep the research agenda and the systems propose inside it; an affirmative case is filed before each capability step and an outside review body the laboratory asked for sets the rate. Self-improvement is confined to named problems rather than run open-ended, and a slowdown is offered on condition that rivals slow in a way that can be verified \u2014 reciprocity is the whole of the offer, and without verification it lapses. Results are held while evaluations, thresholds and incident counts are published. Capability is turned first at the verification and alignment problem and then at defensive security, on the stated reasoning that nothing else is safe to point it at until the measurement holds.",
+   "safety": "The laboratories evaluate models against a published framework before release, give government evaluation bodies pre-launch access, and publish the thresholds they set and the incidents they counted. They ask legislators for mandatory third-party testing in four risk categories, with government power to block or reverse a release. That proposal moves the stopping decision from the company to a regulator, and their strongest cyber systems reach roughly fifty vetted defender organisations before any buyer.",
+   "largesse": "Giving follows the damage the product does, with $200M for research and $150M for fellowships on labour displacement, plus the full grid-upgrade cost near new sites. They pay the economists who measure that displacement, and they forgo advertising revenue and several hundred million dollars of sales barred under a published ownership rule. By July 2026 they had put $40M into a bipartisan group lobbying for rules that would bind them."
+  },
+  {
+   "key": "L2",
+   "name": "Fused to state power",
+   "prior": 0.22,
+   "basis": "Four defence awards at $200M ceilings were made 2025-07-14; agencies bought enterprise access at $1 and $0.47 per agency from August 2025, reaching 120-plus orders and about 3.4 million users, with the $1-class deals expiring 2026-09-30. A classified agreement accepting all lawful purposes was announced 2026-02-27 to 2026-02-28 within hours of a rival's blacklisting, amended 2026-03-02; a further permissive classified deal was reported in late April 2026; a broader group signed for classified military use on 2026-05-01. An executive order of 2026-06-02 created up to 30 days of voluntary federal pre-release access, with a framework finalised 2026-08-03. A Commerce directive at 17:21 on 2026-06-12 suspended all foreign-national access to two deployed models and the developer disabled them worldwide within hours, including for its own foreign-national staff, access returning on limited terms by late June. A laboratory offered the United States government a 5% passive stake on 2026-07-02, worth roughly $42.6B. Four laboratories that had banned military applications reversed between 2024 and 2026.",
+   "desc": "The laboratories attach themselves to a national government and let procurement, clearance and pre-release review stand in for regulation. They accept unrestricted lawful use, take classified work, offer the state ownership or a standing veto over releases, and export sovereign capacity to allied buyers as the product. Refusals are made to foreign customers rather than to the home state. The wager is that a laboratory inside the national security perimeter is one the state will protect, fund and clear the way for.",
+   "tell": "The strongest systems appear on classified networks before commercial ones. A government objection stops a release without litigation and inside a day. The laboratory's own foreign-national employees lose access to its models, and its largest new capacity is built for a foreign government under a bilateral arrangement.",
+   "postRSI": "The agenda is set jointly with the national security apparatus, and the systems are pointed first at defence, intelligence and critical-infrastructure security. The rate is whatever the state's review step permits, which is fast whenever the rival capital is believed to be faster \u2014 the review becomes an accelerator once the race framing is accepted. Self-improvement runs open-ended inside a cleared programme. Results are held and classified, with a weaker public model released some months behind, and coordination extends to allies inside the bloc and stops at its edge.",
+   "safety": "Safety review runs through the state. The laboratories give a government body up to thirty days of pre-release access, submit to classified evaluation of cyber, biological and chemical capability, and adjust safety settings on request. A government objection stops a release inside a day, as an export directive proved on 2026-06-12, and the same authority can lift the objection whenever policy changes.",
+   "largesse": "The laboratories hand governments capacity at prices near zero. Federal agencies buy enterprise access at $1 each, reaching 120 orders and about 3.4 million users, and allied states receive ten sovereign campuses in a first phase. Having offered its home government a 5% passive stake worth roughly $42.6B, one laboratory now supplies ministries that depend on a vendor their own state part-owns."
+  },
+  {
+   "key": "L3",
+   "name": "Developers pace each other",
+   "prior": 0.17,
+   "basis": "A statement published 2026-07-28 carried 1,378 frontier-company employee signatures, including two chief executives, three chief scientists and two safety leads across seven organisations, asking for the technical and governance tools to deliberately pace automated AI development; two laboratories endorsed it corporately on 2026-07-29. A laboratory published on 2026-06-04 that it expects to slow or temporarily pause if other developers at or near the frontier do so verifiably, and that verification is the precondition. A self-regulator on the FINRA model \u2014 designated frontier laboratories, up to 30 days of pre-release sharing, voluntary at launch and mandatory once shown effective, with coordinated slowdown available \u2014 was proposed 2026-07-14. A policy revision effective 2026-02-24 split its contents into unilateral commitments and industry-wide recommendations and added a clause committing the laboratory to match a rival's mitigations where evidence shows them more effective at comparable cost. Twelve companies now publish frontier safety frameworks; twenty-six signed a European code in full.",
+   "desc": "The laboratories build the machinery to slow together and then use it. They fund a standards body they are members of, share pre-release access with each other and with a referee, publish frameworks against which each is graded, and make restraint explicitly conditional on the others' restraint being checkable. Competition continues on product and price; the pacing is a floor beneath it that no member may go under alone. The wager is that the collective-action trap is the binding problem and that the laboratories can solve it before a government does.",
+   "tell": "Two or more laboratories move the same threshold in the same quarter and cite each other doing it. A release slips at more than one laboratory for one stated reason. A shared verification body has staff, a budget and the right to enter a training cluster.",
+   "postRSI": "The agenda is set by a joint body the laboratories fund and staff, and the rate is a negotiated ceiling on effective compute per unit time, audited across members and moved by vote rather than unilaterally. Self-improvement runs open-ended inside that envelope. Results are held among members and summarised publicly, so the outside world learns what was built some months after the members do. Capability is turned first at the verification tools that make the ceiling checkable, because the arrangement collapses the moment a member can cheat undetected \u2014 which is the same reasoning the 2026 record already puts in writing.",
+   "safety": "Each laboratory makes its own halt conditional on rivals halting verifiably. Twelve laboratories publish frontier safety frameworks, members share pre-release access for thirty days, and one committed in February 2026 to match a rival's better mitigations. The proposed referee starts voluntary and becomes mandatory once members show it works, so the commitment binds only when verification tools arrive.",
+   "largesse": "The laboratories fund the referee. Founding members pay into a joint safety fund holding over $10M, which gave more than $5M to eleven grantees in 2026 for biosecurity, cyber and agent evaluation. Grants favour work that makes a shared ceiling checkable, and the independent evaluators who grade these laboratories draw their budgets from the firms they grade."
+  },
+  {
+   "key": "L4",
+   "name": "Commercial cadence governs",
+   "prior": 0.24,
+   "basis": "Consumer advertising was announced 2026-01-16, tested from February, reached a self-serve platform on 2026-05-05 and expanded across Europe on 2026-08-18, against a stated 2026 target near $2.5B and $100B by 2030; the consumer ladder went from two rungs to seven in about eighteen months, adding an $8 tier below and splitting the top into $100 and $200 bands. Four leading developers weakened or voided unilateral pause pledges between February and July 2026, one framework carrying an explicit clause permitting adjusted requirements if a rival releases a high-risk system without comparable safeguards. Between $75M raised and $140M announced was assembled in one anti-regulation political network by mid-2026, with $8M spent to defeat the author of a state safety law, plus about $65M more aimed at state legislatures and $45M into a national vehicle. A nine-page ask for federal preemption of state law was published 2026-06-02. Two confidential registration statements landed 2026-06-01 and 2026-06-08 at discussed valuations from $1T to $2T. A loss-making consumer product was closed on 2026-04-26 at roughly $1M a day against about $2.1M of lifetime revenue.",
+   "desc": "Release schedule and revenue set every other decision. The laboratories monetise attention as well as work, extend the price ladder downward to buy scale, sell to any lawful customer, and treat safety undertakings as a cost to be minimised and renegotiated whenever a rival moves first. Political money runs against rules that would slow a release; giving is sized to the reputational problem of the quarter. Public listing arrives and every choice acquires a quarterly constraint none of them had before.",
+   "tell": "A safety threshold is redefined in the same quarter a rival ships past it. The price ladder gains a rung below the last one. A listed developer's release calendar tracks its earnings calendar, and a product is withdrawn on unit economics within weeks of a capability claim about it.",
+   "postRSI": "The systems set the agenda wherever they raise measured output, and the laboratory follows whichever direction the metrics reward. The rate is full speed, constrained only by cost and by incidents severe enough to be uninsurable or to reach a court. Self-improvement is open-ended. Results are held as product and licensed by tier, with the strongest capability priced highest rather than withheld. Coordination happens only where it is cheaper than competing, and capability is turned first at the next model and at whatever a paying customer asks for.",
+   "safety": "Evaluations run, and the thresholds move. The laboratories publish system cards, admit government evaluators where the relationship pays, and rewrite any commitment they authored, four of them voiding pause pledges between February and July 2026. One framework permits adjusted requirements once a rival ships a high-risk system without comparable safeguards; a summer 2026 index capped the field at C+, with three companies at F.",
+   "largesse": "These laboratories put their discretionary money into politics. One anti-regulation network assembled between $75M and $140M by mid-2026, spent $8M to defeat the author of a state safety law, and put $65M more into state races. Charitable spending attaches community funds to new campuses, and the candidates these networks back run on industry money."
+  },
+  {
+   "key": "L5",
+   "name": "Capability spread deliberately",
+   "prior": 0.15,
+   "basis": "In most months of 2026 the largest open-weight model came from a Chinese laboratory, with a monthly parameter ceiling of 754B to 2.78T against a United States ceiling below 130B in five of seven months; a 2.8T-parameter model was published 2026-07-27 under its developer's own licence, and frontier-adjacent models shipped under MIT and Apache terms with permanent rather than promotional price cuts at roughly $0.435 and $0.87 per million tokens, three to twelve times below the United States frontier. One open-weight family passed a billion cumulative downloads and anchors about 40% of new derivatives on the main model hub. Open-weight capability trailed closed by an average of four months and eight index points from January 2026. A letter of 2026-07-24 against premature restrictions on open weights carried 77 company signatures and reached 150 within days, with the three United States frontier laboratories declining to sign. A United States laboratory published on 2026-08-10 that any laboratory declining to point substantial compute at recursive self-improvement falls behind, that the remedy is a balance of power favouring people rather than restraint, and that the most dangerous outcome is a laboratory keeping a powerful model to itself.",
+   "desc": "The laboratories treat concentration as the danger and wide distribution as the remedy. Weights near the frontier are published, prices are cut permanently, and access is given away to seed an ecosystem the giver sits under \u2014 a cloud, a phone, a social platform. Restriction is fought as the enemy rather than sought as the referee, and the public argument is that many checked systems are safer than one held system. Licences begin acquiring revenue thresholds and attribution terms as the position hardens into a business.",
+   "tell": "A frontier-class model is published with weights within weeks of its closed equivalent. Per-token prices fall by an order of magnitude and stay down. The public argument shifts from what a system may do to who is allowed to hold one, and a laboratory declines to join a coalition asking for restraint.",
+   "postRSI": "Agenda-setting is distributed by construction, because every holder points a self-improving system at what it wants, and there is no seat at which the agenda could be set. The rate is whatever the fastest holder runs at, and no ceiling is enforceable once the weights are out. Self-improvement is open-ended and simultaneous in many places. Results are published, which is the entire point of the position. Coordination is refused as the concentration it was meant to prevent, and capability is turned first at cost and efficiency, because the position belongs to whoever is cheapest.",
+   "safety": "The laboratories argue that publishing weights is the safety measure, because many holders inspecting a model catch failures one company misses. Pre-release evaluation stays thin under that argument, and one index placed these developers last on governance. A 2.8T-parameter model published on 2026-07-27 sits beyond recall by anyone, so any bad finding about it arrives after the model is everywhere.",
+   "largesse": "The laboratories give away the model itself. One open-weight family passed a billion cumulative downloads and anchors about 40% of new derivatives on the main model hub. Permanent price cuts near $0.435 per million tokens arrive with licences carrying revenue thresholds the giver can revise, so every derivative builder holds a permission."
+  },
+  {
+   "key": "L6",
+   "name": "Frontier declined, scope confined",
+   "prior": 0.06,
+   "basis": "A superintelligence programme announced 2025-11-06 rejected the race framing outright, defining its object as problem-oriented and domain-specific, calibrated and contextualised within limits, and stating that a continuously self-improving system must be contained and aligned in perpetuity rather than once. On 2026-08-07 a laboratory determined that an unreleased model might meet the Critical cybersecurity tier of its own framework and paused frontier reinforcement-learning training for roughly two weeks, holding its largest planned run and disclosing on 2026-08-18 that monitoring costs about 20% of the inference compute being monitored and that an alert unresolved within thirty minutes pauses the activity \u2014 the first disclosed halt of a frontier run on a capability finding. A two-tier release shipping a routed public model alongside an unrestricted one held to vetted partners was in operation by June 2026. The counter-case is on the record too: a framework effective 2026-06-30 carries no self-improvement threshold at all and treats loss of control as speculative.",
+   "desc": "The laboratories refuse the race frame and build systems bounded on purpose \u2014 domain-specific, with autonomy capped by design and containment repeated every cycle. They sell capability inside named problems and decline to sell an open-ended agent even where they demonstrably have one. Monitoring overhead, held runs and staged access are accepted as permanent costs of the product rather than as friction to be engineered away. The wager is that a bounded system a customer can underwrite outsells an unbounded one nobody will insure.",
+   "tell": "A laboratory declines to ship an open-ended agent it has already built and says so. Capability is sold by problem rather than by token. An insurer prices an AI deployment because its bounds are stated, and a training run is held for a reason published before the hold ends.",
+   "postRSI": "People set the agenda and the systems are given problems rather than asked what to work on. The rate is one improvement cycle at a time, each followed by re-containment and re-evaluation before the next is authorised, which is the sense in which containment is maintained in perpetuity rather than achieved. Self-improvement is confined to a named domain and does not carry across domains by design. Results are held and licensed inside the domain. Coordination is unnecessary because the laboratory is not racing, and capability is turned first at whichever bounded problem someone has underwritten \u2014 most often disease and energy, since those are the ones that pay for a system built this way.",
+   "safety": "The laboratories build the limit into the product, and customers and insurers hold them to it. Monitoring runs at about 20% of the inference compute it watches, and an alert left unresolved for thirty minutes pauses the activity. In August 2026 a capability finding held one laboratory's largest planned training run for two weeks, and the laboratory published the reason before the hold ended.",
+   "largesse": "The laboratories give away results inside the domains they chose. A superintelligence programme announced in November 2025 named diagnostics, materials and molecule discovery as its object, and one laboratory has published a protein-structure database free to researchers. Medical and energy groups receive capability inside a stated scope, underwritten by a customer or an insurer."
+  }
+ ],
+ "edges": [
+  {
+   "from": "L4",
+   "to": "T1",
+   "multiplier": 1.25,
+   "basis": "A field where cadence governs has no unilateral brake left: four developers weakened or voided pause pledges between February and July 2026, and the only disclosed halt on record ran two weeks from 2026-08-07. The earliest tempo band is where a field with no brake lands."
+  },
+  {
+   "from": "L2",
+   "to": "T1",
+   "multiplier": 1.15,
+   "basis": "A cleared programme racing a rival capital runs at the state's pace. The 2026-06-02 order set review at up to 30 days, which is a fortnight against a doubling time METR fits at 89 days for models released from 2024 onward."
+  },
+  {
+   "from": "L3",
+   "to": "T3",
+   "multiplier": 1.2,
+   "basis": "A negotiated ceiling on effective compute per unit time, audited across members, is the only mechanism anyone has proposed that moves the crossing date by years rather than weeks; the 2026-07-28 request exists precisely because the tools do not."
+  },
+  {
+   "from": "L6",
+   "to": "T4",
+   "multiplier": 1.25,
+   "basis": "A field building domain-confined systems with autonomy capped by design does not run the research loop end to end, so the crossing of threshold 4.0 pushes into the late band or out of the window."
+  },
+  {
+   "from": "L4",
+   "to": "K1",
+   "multiplier": 1.2,
+   "basis": "When release schedule sets every decision, nothing sits between the coding rung and the research rung: the same laboratory reported over 80% of merged code machine-authored by May 2026 and a target of a full automated researcher by March 2028."
+  },
+  {
+   "from": "L3",
+   "to": "K3",
+   "multiplier": 1.25,
+   "basis": "Stretching the interval between the two rungs is the stated purpose of pacing. The 2026-07-28 statement asks for tools to pace automated AI development specifically, not to stop general capability."
+  },
+  {
+   "from": "L5",
+   "to": "K1",
+   "multiplier": 1.15,
+   "basis": "Published weights mean the second rung is attempted in many places at once by holders with different risk tolerances; the open-closed gap of four months since January 2026 sets how little slack the interval has."
+  },
+  {
+   "from": "L1",
+   "to": "A3",
+   "multiplier": 1.3,
+   "basis": "A catch buys a pause only where someone has both the disposition to file it and standing to act on it. A laboratory that asked on 2026-06-10 for a regulator empowered to block or reverse its own releases is the one that files."
+  },
+  {
+   "from": "L2",
+   "to": "A3",
+   "multiplier": 1.2,
+   "basis": "An executive able to disable two deployed models within hours of a 17:21 directive on 2026-06-12 can convert a detected failure into a schedule change without litigation, which is what this cell measures."
+  },
+  {
+   "from": "L3",
+   "to": "A3",
+   "multiplier": 1.35,
+   "basis": "A detected failure moves a schedule only if more than one developer honours the finding. The 2026-02-24 clause committing a laboratory to match a rival's mitigations is the mechanism by which one catch propagates."
+  },
+  {
+   "from": "L4",
+   "to": "A1",
+   "multiplier": 1.3,
+   "basis": "A threshold renegotiated when a rival ships is a threshold that stops nothing. One framework carries an explicit clause permitting adjusted requirements if a competitor releases a high-risk system without comparable safeguards."
+  },
+  {
+   "from": "L4",
+   "to": "A3",
+   "multiplier": 0.75,
+   "basis": "Where commitments are conditional on rivals, a catch at one laboratory produces disclosure and a redefinition rather than a ten-month schedule move across the field."
+  },
+  {
+   "from": "L5",
+   "to": "A1",
+   "multiplier": 1.2,
+   "basis": "Published weights remove the chokepoint at which a failure could be registered before it spreads, and one index graded the open-weight laboratories at the bottom on governance with no published whistleblowing channels."
+  },
+  {
+   "from": "L5",
+   "to": "A3",
+   "multiplier": 0.7,
+   "basis": "A catch cannot buy a pause once frontier-class weights are already downloadable; a 2.8T-parameter model published 2026-07-27 is not recallable by any party."
+  },
+  {
+   "from": "L6",
+   "to": "A4",
+   "multiplier": 1.25,
+   "basis": "A field that holds its strongest systems inside bounded closed deployments produces exactly the split this cell describes: techniques hold where the laboratory controls the surface and the question of released weights never gets tested."
+  },
+  {
+   "from": "L2",
+   "to": "C1",
+   "multiplier": 1.2,
+   "basis": "A laboratory that is an instrument of one capital is enforced through that capital. Roughly $420M in semiconductor penalties and a 2026-06-12 nationality-conditioned access rule are unilateral instruments, not negotiated ones."
+  },
+  {
+   "from": "L3",
+   "to": "C5",
+   "multiplier": 1.3,
+   "basis": "A verified interstate limit needs an inspection layer that works. Cross-developer verification machinery is the technical precondition, and the 2026-07-28 request names the absence of exactly those tools as the blocker."
+  },
+  {
+   "from": "L3",
+   "to": "C8",
+   "multiplier": 1.25,
+   "basis": "This cell already rests on the 2026-07-28 statement carrying 1,378 signatures. A field that has built the pacing tools is the field in which a halt below the research rung is operable rather than declaratory."
+  },
+  {
+   "from": "L5",
+   "to": "C5",
+   "multiplier": 0.7,
+   "basis": "A numerical limit on training compute is unverifiable when frontier-adjacent weights are published monthly by parties outside either principal's jurisdiction, and when distillation is argued to bring a follower within months."
+  },
+  {
+   "from": "L1",
+   "to": "R5",
+   "multiplier": 1.3,
+   "basis": "An enforced civil regime is what a developer gets when it spends to have third-party testing made mandatory: a legislative proposal on 2026-06-10 for testing in four risk categories with published independent evaluations, backed by $40M of political money."
+  },
+  {
+   "from": "L1",
+   "to": "R1",
+   "multiplier": 0.75,
+   "basis": "A laboratory arguing that effective governance means more scrutiny of companies like itself is arguing its own undertakings out of the operative role."
+  },
+  {
+   "from": "L2",
+   "to": "R4",
+   "multiplier": 1.4,
+   "basis": "An executive release gate is fusion seen from the regulator's side, and it has already been exercised: two deployed models disabled globally within hours on 2026-06-12, and a rival's release reportedly held pending approval by 2026-06-26."
+  },
+  {
+   "from": "L3",
+   "to": "R1",
+   "multiplier": 1.35,
+   "basis": "A funded self-regulator on the FINRA model, proposed 2026-07-14 as voluntary at launch, keeps the operative constraint inside developer undertakings by design \u2014 that is the arrangement it is built to preserve."
+  },
+  {
+   "from": "L4",
+   "to": "R3",
+   "multiplier": 1.25,
+   "basis": "A nine-page ask on 2026-06-02 for one federal frontier framework preempting state laws on the same risks, plus $8M spent to defeat a state law's author, is a direct purchase of this cell."
+  },
+  {
+   "from": "L5",
+   "to": "R6",
+   "multiplier": 1.2,
+   "basis": "Rules drafted around a licensed release step do not reach published weights, and the deadlines slip: a European omnibus in force 2026-07-27 moved high-risk compliance later while open-weight releases continued monthly."
+  },
+  {
+   "from": "L1",
+   "to": "D2",
+   "multiplier": 1.15,
+   "basis": "Steering enterprise deployment toward added output rather than headcount reduction is a stated laboratory choice, and reliability gating is what that steering produces at the measured margin."
+  },
+  {
+   "from": "L4",
+   "to": "D3",
+   "multiplier": 1.2,
+   "basis": "An $8 consumer rung in 170-plus countries, a self-serve ad platform and 900M weekly users push capability into ordinary paid work faster than enterprise procurement would."
+  },
+  {
+   "from": "L5",
+   "to": "D4",
+   "multiplier": 1.2,
+   "basis": "Permanent price cuts of three to twelve times below the frontier, with token share on one router above 45% by April 2026, is the mechanism that moves work rather than merely demonstrating that it could move."
+  },
+  {
+   "from": "L2",
+   "to": "S2",
+   "multiplier": 1.25,
+   "basis": "Sovereign build-outs are the fused posture's export product: a 1GW Gulf campus with 200MW live in 2026, ten first-phase country projects, and a Country Group A:5 move on 2026-07-10."
+  },
+  {
+   "from": "L4",
+   "to": "S1",
+   "multiplier": 1.2,
+   "basis": "A single-stack cadence concentrates: roughly 26GW committed at over a trillion dollars against a 30GW-by-2030 goal, alongside guided hyperscaler capital expenditure near $725B for 2026."
+  },
+  {
+   "from": "L5",
+   "to": "S2",
+   "multiplier": 1.2,
+   "basis": "Cheap open weights are served from wherever inference is cheapest, which grows second-tier and sovereign capacity faster than the leading-edge training clusters it never uses."
+  },
+  {
+   "from": "L4",
+   "to": "P4",
+   "multiplier": 1.2,
+   "basis": "Advertising placed inside the assistant from February 2026 and roughly $200M of political money across two opposed networks give an opposition both a grievance and a partisan seam to run along."
+  },
+  {
+   "from": "L2",
+   "to": "P4",
+   "multiplier": 1.15,
+   "basis": "A laboratory inside the national security perimeter inherits the state's partisan line, and by June 2026 Pew found a 20-point gap between Republicans and Democrats on United States leadership in AI."
+  },
+  {
+   "from": "L1",
+   "to": "P5",
+   "multiplier": 0.85,
+   "basis": "Covering 100% of grid-upgrade costs, absorbing local consumer electricity increases and funding communities near campuses is the cheapest available purchase of local consent, against Gallup's 71% local opposition in March 2026."
+  },
+  {
+   "from": "L4",
+   "to": "E3",
+   "multiplier": 1.25,
+   "basis": "Two confidential filings at discussed valuations from $1T to $2T, against a leaked $20.9B operating loss on $13.07B of 2025 revenue and contested run-rate accounts of $25B versus $40B, is the profile a hard equity and credit reset resolves."
+  },
+  {
+   "from": "L5",
+   "to": "E2",
+   "multiplier": 1.35,
+   "basis": "A permanent three-to-twelvefold price gap lands on margin, not on demand \u2014 one provider held about 17% of tokens on a major platform against roughly 1% of revenue in May 2026."
+  },
+  {
+   "from": "L1",
+   "to": "E1",
+   "multiplier": 0.9,
+   "basis": "Several hundred million dollars forgone on an ownership-based sales bar, a refused defence relationship and a declined advertising line all subtract from the revenue growth this cell requires."
+  },
+  {
+   "from": "L6",
+   "to": "E4",
+   "multiplier": 1.25,
+   "basis": "A field that holds its largest runs, accepts monitoring at about 20% of the inference compute being monitored, and sells by bounded problem does not sustain capital expenditure guided up about 77% year on year."
+  }
+ ],
+ "againstCase": "Five arguments, the last of which is a live implementation defect rather than a design objection.\n\nFIRST, THIS MAY BE A HIDDEN LAYER RATHER THAN AN AXIS. Every position here acts through the nine axes that already exist and has no observable of its own \u2014 there is no dated crossing, no measured share, no counted statute. Thirty-eight edges into all nine axes makes L a parent of the entire network, and every existing marginal will move for reasons the reader cannot see on the sheet. The nine current axes each name an instrument that produces a number: a time horizon in hours, a completion share on 240 graded projects, a count of state laws, a capital expenditure figure. L names none. An axis that only tilts other axes is a prior, and priors belong in the weights.\n\nSECOND, THE RECORD IS ELEVEN WEEKS LONG AND EVERY POSTURE IN IT HAS ALREADY REVERSED. Unilateral pause pledges were split into commitments and recommendations on 2026-02-24; the open-weights coalition formed and was declined on 2026-07-24; the pacing letter landed 2026-07-28; the balance-of-power manifesto 2026-08-10; the first training halt 2026-08-07. One laboratory reversed its Gulf-capital position and another reversed its military prohibition inside eighteen months. Four laboratories that banned military applications now seek defence work. An axis whose positions can be swapped by a single essay is measuring news at a cadence the forecast cannot hold, and this project has already been burned twice by surfaces that inherited stale meanings.\n\nTHIRD, CHOICE MAY BE THE SMALLEST TERM. Every laboratory that held a line in 2026 was overridden or absorbed. A refusal cost a contract and changed nothing about the customer, which kept using the model through the litigation. A model was disabled worldwide by an export directive inside hours. A pause lasted two weeks. Four laboratories replaced unilateral commitments with competitor-contingent ones on the explicit reasoning that unilateral restraint is unsurvivable, which is a statement that the environment sets the choice. If that reasoning is right, L is S and E wearing a different label, and the honest move is to widen S rather than add L.\n\nFOURTH, THE CENTRE OF GRAVITY IS THE THINNEST PART OF THE RECORD. No laboratory has published a commercial or development strategy for the period after substantial self-improvement \u2014 no pricing, no ownership of the output, no policy on whether the self-improving system is sold, licensed or withheld. Every postRSI clause in these six positions is extrapolated from chief-executive essays and one employees' letter asking for tools that do not exist. The axis will carry a prior over something the record only speculates about, and it will render that prior with the same authority as a METR doubling time.\n\nFIFTH, THE POSITIONS ARE A TAXONOMY RATHER THAN A PARTITION, AND THE SHEET WILL NOT SAY SO. One laboratory today endorses a state safety law, lobbies for federal preemption of state law, and signs sovereign infrastructure deals \u2014 L1, L4 and L2 at once. A reader asked to place today's field will disagree with a friend, which the brief treats as the test of a good axis; but the same property means the axis has no true value even for the present, and a marginal computed over it is a marginal over a description rather than over a state of the world.\n\nAND THE IMPLEMENTATION WARNING. The Gibbs sampler in the live build is order-independent \u2014 it sweeps and conditions on every other held position \u2014 but `jointP`, which scores the argmax line and anything else keyed to a joint probability, applies a conditional only when the parent axis has already been chosen in `D.network.axes` order. If L is appended last, all thirty-eight of its edges are invisible to `jointP` while being fully live in the sampler, and the headline line will disagree with the marginals about whether L matters at all. Insert L early in the axes array, or fix `jointP` to condition on the full assignment, before publishing anything keyed to it."
+}

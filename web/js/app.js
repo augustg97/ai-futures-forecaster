@@ -1066,7 +1066,7 @@ function sheetState(measure) {
     // The forecast with nothing set, kept as a ghost line so a setting's effect is a visible gap
     baselineBands: (cond || state.alt !== null) ? D.bands.annual : null,
     altOrPinned: !!(cond || state.alt !== null),
-    lineLabel: ['T', 'K', 'A', 'C', 'R', 'D', 'S', 'P', 'E'].map((k) => wl[k]).join('·'),
+    lineLabel: D.network.axes.map((a) => wl[a.key]).filter(Boolean).join('·'),
     effect: (k, p) => (eff.map[`${k}:${p}`] ?? null),
     isRecord,
     headline: isRecord ? headlineRecord(state.yr, trunkCap)
