@@ -276,6 +276,11 @@ __FW.auditSweep()                      # in the console: the audit (check `contr
   `ev-safety-research` fires on 95. Writing rules does not fix that; only widening the feed does.
   An axis nothing can move renders a frozen prior as a live reading.
 
+- **`auditSweep()` LEAVES THE CANVAS IN THE LAST STATE IT SWEPT.** It draws every section at four
+  dates, seven selections and five pin sets, and does not restore the view. A screenshot taken
+  after it shows a collapsed tab strip and a quarter-size sheet, which looks exactly like the
+  zero-width fit bug. Reload before screenshotting; the sweep's numbers are still good.
+
 - **Setting `state.pin` does not resample the line.** A sweep that pins axes and reads
   `sheetState()` gets the default world-line every time and reports whatever that one line says.
   To exercise the authored strings, import `narrative.js` in the page and call `describe()` and
