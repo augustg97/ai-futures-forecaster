@@ -186,3 +186,33 @@ plate now letters what each position key MEANS beside its arithmetic, so a reade
 and can judge the application against the development that drove it. The drawing's job is to
 make the parent's arithmetic checkable; it could not do that while the positions were lettered
 in the parent's internal keys.
+
+### Addendum 2026-08-22 · the defect has a size, and one firing carries the board
+
+Two findings from tonight's pull, both quantified over the full 40-entry window.
+
+**The direction of an update never varies with the event.** 40 applications, 11 distinct rules,
+**11 distinct sign patterns**. No rule has applied two different directions, ever. A rule's vector
+is a property of the rule; the event chooses which rule fires and how hard, and nothing else.
+Tonight added the cleanest pair yet: `ev-enforcement-action` applied one identical vector
+(C1 −0.05pp, C4 +0.11pp) both to a $400m Justice Department settlement with TikTok and to a judge
+**throwing out** seven economic espionage counts. Enforcement landing and enforcement collapsing
+move *Coordination between principal states* the same way.
+
+**Magnitude and direction are set independently, so a misdirected firing is not small.** Magnitude
+comes from the impact class times the repeat damping; direction comes from the rule. The single
+`ev-export-retaliation` firing on 2026-08-21 — the only `notable` in forty, `magnitude 0.008`
+against a window median of `0.00045`, `repeat_k 0.0` so the r2 novelty floor damped it not at all —
+contributed **2.400pp** of absolute position motion. Nineteen firings of `ev-capital-commitment`
+contributed 1.127pp. It is 94.7% of the window's net `S.S3` move and 120% of the net `C.C1` move,
+which are the board's two largest, and its driver is House ranking members asking the Commerce
+Secretary to explain export-control policy.
+
+The novelty floor guards **repetition**. Nothing guards **direction at magnitude**, and the two
+compound: the rules that fire hardest are the ones that fire rarely, so they arrive undamped.
+
+**This sharpens the recommendation without changing it.** A direction term read from the finding
+is the fix. Failing that, the symmetric widening should be **conditioned on impact class** — a
+`notable` firing is exactly where an unread direction costs the most, and exactly where the current
+design applies the least damping. Held; the change is the parent's. See
+[`../nightly-2026-08-22.md`](../nightly-2026-08-22.md).

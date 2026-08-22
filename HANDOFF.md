@@ -197,6 +197,16 @@ nearest-looking cell. See [`Research/nightly-2026-08-18.md`](Research/nightly-20
   08-16 windows, one sign pattern. A3 has risen on every night it moved since the r3 re-set, and E1
   likewise. The fix is the parent's, and the recommendation is a direction term or a symmetric
   widening of A. Held.
+
+  **Sized 2026-08-22.** Across the whole 40-entry window: 11 rules, **11 sign patterns**, no rule
+  has ever applied two directions. And because magnitude comes from the impact class while
+  direction comes from the rule, one misdirected firing outruns a week of correct ones — the single
+  `notable` application in forty (`ev-export-retaliation`, 08-21, `repeat_k 0.0`) contributed
+  **2.400pp** of position motion against 1.127pp from nineteen `ev-capital-commitment` firings, and
+  is 94.7% of the net `S.S3` move and 120% of the net `C.C1` move. The novelty floor damps
+  repetition; nothing damps direction at magnitude. The addendum recommends conditioning the
+  symmetric widening on impact class. See
+  [`Research/nightly-2026-08-22.md`](Research/nightly-2026-08-22.md).
 - The A axis (alignment outcome) reports NO MEASURED EFFECT BY 2040 on all four positions. That
   is true of the model as built — nothing downstream in `tracks()` reads A, and no conditional
   links it to T. Whether that is a modelling gap or a property of the axis is worth a look in
