@@ -27,7 +27,13 @@ their origin flag, conditional count — and prints what moved, calling out a co
 held version in those words. It refuses nothing; coverage still owns refusal. Fourth setting for
 the same shape: **a surface reads a proxy and reports it as the quantity.**
 
-**Live:** https://augustg97.github.io/ai-futures-forecaster/ · build `20260824-1131` (registry r8-2026-08-20, emitted 2026-08-24)
+**Live:** https://augustg97.github.io/ai-futures-forecaster/ · redrawn nightly, so the build
+stamp here would be stale by morning (it was, by five days, until 2026-08-24). Read it from the
+sheet: `curl -s https://augustg97.github.io/ai-futures-forecaster/ | grep -o '__BUILD = "[^"]*"'`,
+and check something the build DRAWS beside it — `data/forecast/network.json` carries the registry
+version and the date it was emitted. Registry as of 2026-08-24: `r8-2026-08-20`, 11 axes, 61
+positions.
+
 **Local:** `python3 build/serve.py 8154` (serves `web/`, never `docs/`) · working
 directory `~/Forecast Works`, repo `augustg97/ai-futures-forecaster`
 
