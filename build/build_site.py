@@ -183,6 +183,83 @@ def pull():
              cp["bonus"]["positions"]))
 
 
+def registry_drift(ref="HEAD"):
+    """Announce a registry that changed CONTENT, whatever its version says.
+
+    The nightly's only registry announcement used to be the version string
+    printed by `pull()`. On 2026-08-24 the parent's weekly schema review added
+    a sub-axis, `D.watch-labor`, and emitted it under the SAME version,
+    `r8-2026-08-20`, with the same changelog: the registry moved and every
+    watcher keyed to the version string saw a quiet night. Same family as
+    every defect this project has found — a surface reading a proxy for the
+    quantity it claims to report.
+
+    This reads nothing but the emitted file and the last committed copy of it,
+    and it never refuses a build. The coverage gate owns refusal, and it owns
+    the right things: an axis or a position the authored layer cannot letter.
+    A sub-axis needs no re-keying, because `axisNotes()` derives its block from
+    the data and draws an `origin`-carrying one as provisional. It still has to
+    be SAID, because a new sub-axis is the parent telling us an axis is hearing
+    events no rule explains.
+    """
+    net_path = os.path.join(WEB, "data", "forecast", "network.json")
+    now = json.load(open(net_path))
+    try:
+        prev = json.loads(subprocess.check_output(
+            ["git", "show", ref + ":web/data/forecast/network.json"],
+            cwd=ROOT, stderr=subprocess.DEVNULL).decode("utf-8"))
+    except Exception:
+        print("registry drift · no previous build committed, nothing to compare")
+        return
+
+    def shape(d):
+        ax, pos, sub = {}, {}, {}
+        for a in d["axes"]:
+            ax[a["key"]] = a.get("name", "")
+            pos[a["key"]] = [p[0] for p in a["positions"]]
+            sub[a["key"]] = {s["key"]: bool(s.get("origin"))
+                             for s in (a.get("subaxes") or [])}
+        return ax, pos, sub
+
+    pax, ppos, psub = shape(prev)
+    nax, npos, nsub = shape(now)
+    moves = []
+    for k in sorted(set(nax) - set(pax)):
+        moves.append("axis %s (%s) is new" % (k, nax[k]))
+    for k in sorted(set(pax) - set(nax)):
+        moves.append("axis %s was withdrawn" % k)
+    for k in sorted(set(nax) & set(pax)):
+        gained = [x for x in npos[k] if x not in ppos[k]]
+        lost = [x for x in ppos[k] if x not in npos[k]]
+        if gained or lost:
+            moves.append("axis %s positions: +%s -%s"
+                         % (k, " ".join(gained) or "none",
+                            " ".join(lost) or "none"))
+        for s in sorted(set(nsub[k]) - set(psub.get(k, {}))):
+            moves.append("sub-axis %s is new%s"
+                         % (s, " · added by the schema review on its own "
+                              "authority, drawn as provisional"
+                            if nsub[k][s] else ""))
+        for s in sorted(set(psub.get(k, {})) - set(nsub[k])):
+            moves.append("sub-axis %s was withdrawn" % s)
+    if len(now.get("conditionals", [])) != len(prev.get("conditionals", [])):
+        moves.append("conditionals: %d to %d"
+                     % (len(prev.get("conditionals", [])),
+                        len(now.get("conditionals", []))))
+
+    if not moves:
+        print("registry drift · none · %s" % now.get("version"))
+        return
+    same_version = now.get("version") == prev.get("version")
+    print("REGISTRY DRIFT · %s dated %s%s"
+          % (now.get("version"), now.get("date"),
+             "  ← THE VERSION STRING DID NOT MOVE; the registry did"
+             if same_version else
+             "  (was %s)" % prev.get("version")))
+    for m in moves:
+        print("  " + m)
+
+
 def coverage_gate():
     """Refuse to publish a registry the drawing cannot letter.
 
@@ -277,6 +354,7 @@ def main():
     if dev:
         print("dev pull done — serve the repo and open /web/")
         return
+    registry_drift()
     coverage_gate()
     count_gate()
     prose_gate()

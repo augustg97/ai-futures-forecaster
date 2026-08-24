@@ -15,7 +15,19 @@ now derives from `S.network.conditionals`, and `build/counts_gate.py` (exit 6) r
 count of axes, positions, variables or dossiers that neither matches the live registry nor dates
 itself. A letter inherits a new meaning; a quantifier inherits a new domain.
 
-**Live:** https://augustg97.github.io/ai-futures-forecaster/ · build `20260819-1145` (registry r6-2026-08-18)
+**2026-08-24: the registry moved and its version string held.** The parent's weekly schema review
+added a fifth machine-made sub-axis — `D.watch-labor`, twelve unexplained labour and institutions
+events in seven days — and emitted it under `r8-2026-08-20`, last night's version, with an
+identical changelog. Axes held at 11 and positions at 61, because a sub-axis is neither, so
+coverage and counts were both right to pass, and `axisNotes()` already files an `origin`-carrying
+sub-axis under "provisional, awaiting approval". What went unsaid was that anything had changed:
+the build's only registry statement was the version string. `registry_drift()` in `build_site.py`
+now compares the emitted registry against the last committed copy — axes, positions, sub-axes with
+their origin flag, conditional count — and prints what moved, calling out a content change under a
+held version in those words. It refuses nothing; coverage still owns refusal. Fourth setting for
+the same shape: **a surface reads a proxy and reports it as the quantity.**
+
+**Live:** https://augustg97.github.io/ai-futures-forecaster/ · build `20260824-1131` (registry r8-2026-08-20, emitted 2026-08-24)
 **Local:** `python3 build/serve.py 8154` (serves `web/`, never `docs/`) · working
 directory `~/Forecast Works`, repo `augustg97/ai-futures-forecaster`
 
