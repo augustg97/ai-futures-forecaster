@@ -769,9 +769,12 @@ function drawMorningPlate(d, S, box) {
     : `LATEST ${show.length} APPLICATIONS ON RECORD · TO ${stamp}`,
     { size: 2.2, colour: INK.red, weight: 700, track: 0.16 });
   const rowH = Math.min(34, (h * 0.62 - 26) / show.length);
+  // The count above it is branch-aware and this line was not, so on a morning the parent
+  // applies nothing the plate falls back to the record and still letters the remainder
+  // "TODAY" — a span the branch never measured. Same defect the stamp above already fixed.
   if (dropped > 0) {
     d.text([x + w, y + h - 8], `${dropped} FURTHER APPLICATION${dropped > 1 ? 'S' : ''} ` +
-           'TODAY, BELOW THE FOLD OF THIS PLATE',
+           `${today.length ? 'TODAY' : 'ON RECORD'}, BELOW THE FOLD OF THIS PLATE`,
            { size: 1.8, align: 'right', colour: INK.red, track: 0.12 });
   }
   // The cloud ringed the last element of the parent's array and the caption called it the
