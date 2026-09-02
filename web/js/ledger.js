@@ -41,6 +41,44 @@ const TRACK_NAME = {
   jobs: 'employment against its 2026 level', appr: 'public approval of AI',
   laws: 'the count of AI statutes and regulations in force', cap: 'the capability index',
 };
+// World electricity generating capacity was near 9,500 GW in 2026 and has grown two to three
+// per cent a year. An AI load larger than all generation cannot be served, so the compute track
+// is read up to the year it passes that ceiling and no further; the readout gate carries the
+// same figures and refuses a reading lettered past it.
+export const WORLD_GW_2026 = 9500, WORLD_GW_GROWTH = 1.025;
+const worldGW = (y) => WORLD_GW_2026 * Math.pow(WORLD_GW_GROWTH, y - 2026);
+// A TRACK THAT STOPS MOVING AND HOLDS ITS VALUE TO THE END OF THE RUN IS AT ITS CAP: the
+// parent's saturation, which the sheet letters as a cap, with the year it was reached, and
+// never as a reading of that year. A plateau shorter than CAP_MIN_YEARS is a flat spell and a
+// track that never moved is flat.
+const CAP_MIN_YEARS = 8;
+export function capState(tracks, key) {
+  const v = tracks[key];
+  if (!v || v.length < 2) return null;
+  const n = v.length, years = tracks.year;
+  let last = 0;
+  for (let i = 1; i < n; i++) {
+    if (Math.abs(v[i] - v[i - 1]) > 1e-9 * Math.max(1, Math.abs(v[i]))) last = i;
+  }
+  const out = {};
+  if (key === 'gw') {
+    for (let i = 0; i < n; i++) if (v[i] > worldGW(years[i])) { out.ceiling = years[i]; break; }
+    for (let i = 0; i < n; i++) if (v[i] >= WORLD_GW_2026) { out.world2026 = years[i]; break; }
+  }
+  if (last > 0 && n - 1 - last >= CAP_MIN_YEARS) {
+    out.since = years[last]; out.value = v[n - 1];
+    out.top = key === 'cap' && v[n - 1] >= 6;
+  }
+  return Object.keys(out).length ? out : null;
+}
+export function capsFor(tracks) {
+  const out = {};
+  for (const k of ['cap', 'gw', 'rev', 'jobs', 'appr', 'laws', 'copies', 'speed']) {
+    const c = capState(tracks, k);
+    if (c) out[k] = c;
+  }
+  return out;
+}
 // An entry appears in full while it is within FULL_YEARS of the date, then as a dated
 // clause (its short form, `s`) until CLAUSE_YEARS, then not at all. A condition still in
 // force is carried by NOW with the year it began; a standing event the headline keeps —
@@ -192,6 +230,13 @@ const REV_CMP = [
   [0.2, 'make a large software business and a small share of the economy'],
   [0, 'run years behind the capital being spent on them'],
 ];
+const REV_CMP_N = [
+  [12, 'more than a tenth of world output'],
+  [4, 'about the revenue of the world automotive industry'],
+  [1.4, 'more than worldwide semiconductor sales of 2026'],
+  [0.2, 'the size of a large software business'],
+  [0, 'a small share of the economy'],
+];
 const LAW_CMP = [
   [600, 'ten times the count of 2026'], [250, 'four times the count of 2026'],
   [120, 'twice the count of 2026'], [0, 'the count of 2026 and a little more'],
@@ -216,6 +261,37 @@ function rateClause(tracks, i, key, noun, pct = false) {
   if (mult > 1.08) return `${noun} is up modestly over five years.`;
   if (mult > 0.95) return `${noun} has been flat for five years.`;
   return `${noun} is down ${((1 - mult) * 100).toFixed(0)}% in five years.`;
+}
+const fmtV = (k, v) => (k === 'gw' ? `${gwFmt(v)} gigawatts` : k === 'rev' ? `${money(v)} a year`
+  : k === 'jobs' ? `${Math.abs(v).toFixed(0)}% ${v < 0 ? 'below' : 'above'} its 2026 level`
+  : k === 'appr' ? `${v.toFixed(0)}%` : k === 'laws' ? `${Math.round(v)} measures`
+  : k === 'cap' ? v.toFixed(1) : String(v));
+// The sentence a capped quantity gets at a year past its cap: the value, the year it was
+// reached, its comparison, and that the model's track stops there. Compute past the world's
+// generating capacity is read no further.
+function capSentence(key, cs, Y) {
+  if (!cs) return null;
+  if (key === 'gw' && cs.ceiling && Y >= cs.ceiling) {
+    const first = cs.world2026
+      ? `Installed AI computing capacity passed ${gwFmt(WORLD_GW_2026)} gigawatts in ${cs.world2026}, all the generating capacity that existed worldwide in 2026. `
+      : '';
+    return `${first}From ${cs.ceiling} the model's compute track exceeds the whole of world generating capacity in its own year and is not read past that point.`;
+  }
+  if (cs.since == null || Y < cs.since) return null;
+  const v = cs.value, y = cs.since;
+  switch (key) {
+    case 'gw': return `Installed AI computing capacity reached ${gwFmt(v)} gigawatts in ${y}, ${band(v, GW_CMP)}, where the model's compute track stops.`;
+    case 'rev': return `Sales of AI services reached ${money(v)} a year in ${y}, ${band(v, REV_CMP_N)}, where the model's revenue track saturates.`;
+    case 'jobs': return v <= -2
+      ? `Employment reached ${Math.abs(v).toFixed(0)}% below its 2026 level in ${y}, where the model's employment track stops.`
+      : `Employment has held within two points of its 2026 level since ${y}, where the model's employment track stops.`;
+    case 'appr': return `Approval of AI reached ${v.toFixed(0)}% in ${y}, where the model's approval track stops.`;
+    case 'laws': return `The count of AI statutes and regulations in force reached ${Math.round(v)} in ${y}, where the model's statute track stops.`;
+    case 'cap': return cs.top
+      ? `The capability index has stood at 6.0, the top of its scale, since ${y}; the ladder has no rung above it.`
+      : `The capability index has stood at ${v.toFixed(1)} since ${y}, where the model's capability track stops.`;
+    default: return null;
+  }
 }
 function jobsFigure(v) {
   return v > -2 ? 'Employment is within two points of its 2026 level'
@@ -319,6 +395,12 @@ export function chronicle(wl, year, tracks, events, engine, network) {
         appr = tracks.appr[i], laws = tracks.laws[i];
   const past = L.entries.filter((e) => Math.floor(e.y) <= Y);
   const ahead = L.entries.filter((e) => Math.floor(e.y) > Y);
+  const caps = capsFor(tracks);
+  const capS = (k) => capSentence(k, caps[k], Y);
+  // The ledger's end: the last dated entry the model produced on this path. Past it the
+  // chronicle says so, and the far decades read as what they are.
+  const dated = L.entries.filter((e) => e.kind !== 'calendar');
+  const ledgerEnd = dated.length ? Math.floor(dated[dated.length - 1].y) : y0;
   const used = new Set();
   for (const e of past) if (e.k === 'sc-crossing' || e.k === 'sar-crossing' || e.kind === 'milestone') used.add(keyOf(e));
   const latest = (ids, within) => {
@@ -330,7 +412,7 @@ export function chronicle(wl, year, tracks, events, engine, network) {
   const age = (e) => Y - Math.floor(e.y);
   // An event the headline keeps is drawn in full for three years and in its short dated form
   // after that, so the year of the correction, the law, the deal stays on the sheet.
-  const dated = (e) => (age(e) <= FULL_YEARS ? e.t : e.s || e.t);
+  const datedForm = (e) => (age(e) <= FULL_YEARS ? e.t : e.s || e.t);
   // A criterion in the headline carries the year it came into force where a rule dates it,
   // once the event that dated it has left the headline.
   const tagged = (pos) => {
@@ -371,28 +453,33 @@ export function chronicle(wl, year, tracks, events, engine, network) {
   }
   // 2 · money: the dated capital event, then compute and revenue with their comparisons
   const capEv = take(latest(EVENT_GROUPS.capital, Infinity));
-  const s2 = capEv ? dated(capEv) : tagged(wl.E);
-  const s3 = `Installed AI computing capacity stands near ${gwFmt(gw)} gigawatts, ${band(gw, GW_CMP)}.`;
-  const s4 = `Sales of AI services, at ${money(rev)} a year, ${band(rev, REV_CMP)}.`;
+  const s2 = capEv ? datedForm(capEv) : tagged(wl.E);
+  const s3 = capS('gw') || `Installed AI computing capacity stands near ${gwFmt(gw)} gigawatts, ${band(gw, GW_CMP)}.`;
+  const s4 = capS('rev') || `Sales of AI services, at ${money(rev)} a year, ${band(rev, REV_CMP)}.`;
   // 3 · work
   const wc = (jobs <= -2 || wl.D === 'D1') ? WORK_CLAUSE[wl.D] : null;
-  let s5 = jobsFigure(jobs);
-  if (wc) s5 += wc.mode === 'appos' ? `, ${wc.text}.` : `; ${wc.text}.`; else s5 += '.';
+  let s5 = capS('jobs');
+  if (!s5) {
+    s5 = jobsFigure(jobs);
+    if (wc) s5 += wc.mode === 'appos' ? `, ${wc.text}.` : `; ${wc.text}.`; else s5 += '.';
+  }
   const labEv = take(latest(EVENT_GROUPS.labour, Infinity));
-  const s6 = labEv ? dated(labEv) : '';
+  const s6 = labEv ? datedForm(labEv) : '';
   // 4 · who decides
   const s7 = tagged(wl.C);
   const ruleEv = take(latest(EVENT_GROUPS.rules, FULL_YEARS));
   const s8 = ruleEv ? ruleEv.t : '';
   // 5 · the public
-  const s9 = `Approval of AI stands at ${appr.toFixed(0)}%.`;
+  const s9 = capS('appr') || `Approval of AI stands at ${appr.toFixed(0)}%.`;
   const s10 = tagged(wl.P);
   // 6 · the year's own event, when one falls within a year of the date and is not yet said
   const saidThisYear = [capEv, labEv, ruleEv].some((e) => e && Math.floor(e.y) === Y);
   const own = saidThisYear ? null : past.filter((e) => Math.floor(e.y) === Y && e.kind === 'event' &&
                                  !used.has(keyOf(e))).pop();
   const s11 = own ? own.t : '';
-  const headline = assemble([s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11]);
+  // 7 · past the last dated entry on this path, the headline says so
+  const s12 = Y > ledgerEnd ? `After ${ledgerEnd} the model dates nothing on this path.` : '';
+  const headline = assemble([s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12]);
 
   // ── the passage: since 2026 · now · ahead ──────────────────────────────────
   const paras = [];
@@ -425,6 +512,13 @@ export function chronicle(wl, year, tracks, events, engine, network) {
     }
     groups.push(group(LANE_HEAD[lane], items, fullKeys));
   }
+  if (groups.every((g) => g.items.length === 1 && g.items[0].kind === 'note')) {
+    groups.length = 0;
+    groups.push(group(null, [{
+      t: `Nothing dated falls between ${since0} and ${Y} on this path. The ledger of this path ends in ${ledgerEnd}.`,
+      src: 'ledger:end', kind: 'note', key: 'ledger:end:since', y: Y, cites: [],
+      prov: { end: ledgerEnd } }]));
+  }
   paras.push({ lead: `Since ${since0}.`, groups,
                text: groups.map((g) => g.text).join(' '),
                src: groups.map((g) => g.src).join('; ') });
@@ -452,17 +546,20 @@ export function chronicle(wl, year, tracks, events, engine, network) {
     if (items.length) nowGroups.push(group(LANE_HEAD[lane], items));
   }
   const qty = [
-    ['gw', gw, `Installed AI computing capacity is ${gwFmt(gw)} gigawatts, ${band(gw, GW_CMP)}. ` +
+    ['cap', cap, capS('cap') || ''],
+    ['gw', gw, capS('gw') || `Installed AI computing capacity is ${gwFmt(gw)} gigawatts, ${band(gw, GW_CMP)}. ` +
                rateClause(tracks, i, 'gw', 'Capacity')],
-    ['rev', rev, `Sales of AI services are ${money(rev)} a year and ${band(rev, REV_CMP)}. ` +
+    ['rev', rev, capS('rev') || `Sales of AI services are ${money(rev)} a year and ${band(rev, REV_CMP)}. ` +
                  rateClause(tracks, i, 'rev', 'Revenue')],
-    ['jobs', jobs, `${jobsFigure(jobs)}. ${rateClause(tracks, i, 'jobs', 'Employment', true)}`],
-    ['appr', appr, `Approval of AI stands at ${appr.toFixed(0)}%. ${apprClause(appr)} ` +
+    ['jobs', jobs, capS('jobs') || `${jobsFigure(jobs)}. ${rateClause(tracks, i, 'jobs', 'Employment', true)}`],
+    ['appr', appr, capS('appr') || `Approval of AI stands at ${appr.toFixed(0)}%. ${apprClause(appr)} ` +
                    rateClause(tracks, i, 'appr', 'Approval', true)],
-    ['laws', laws, `About ${Math.round(laws / 10) * 10} AI statutes and regulations are in force, ` +
+    ['laws', laws, capS('laws') || `About ${Math.round(laws / 10) * 10} AI statutes and regulations are in force, ` +
                    `${band(laws, LAW_CMP)}. ${rateClause(tracks, i, 'laws', 'The statute count')}`],
-  ].map(([k, v, t]) => ({ t: t.trim(), src: `track:${k}`, kind: 'quantity', key: `track:${k}@now`,
-                          y: Y, cites: [], prov: { track: k, value: v, year: Y } }));
+  ].filter(([, , t]) => t)
+   .map(([k, v, t]) => ({ t: t.trim(), src: `track:${k}`, kind: 'quantity', key: `track:${k}@now`,
+                          y: Y, cites: [], prov: { track: k, value: v, year: Y, cap: caps[k] || null,
+                                                   capped: !!capS(k) } }));
   nowGroups.push(group('Quantities', qty));
   paras.push({ lead: 'Now.', groups: nowGroups,
                text: nowGroups.map((g) => g.text).join(' '),
@@ -470,11 +567,10 @@ export function chronicle(wl, year, tracks, events, engine, network) {
 
   const next = ahead.filter((e) => e.kind !== 'calendar' && e.kind !== 'onset').slice(0, 6);
   const nextItems = next.map((e) => item(e, `In ${Math.floor(e.y)}, ${e.f}.`));
-  const lastY = L.entries.length ? Math.floor(L.entries[L.entries.length - 1].y) : Y;
   if (!nextItems.length) {
-    nextItems.push({ t: `No further dated step falls on this path after ${lastY}.`,
+    nextItems.push({ t: `The ledger of this path ends in ${ledgerEnd}. The model dates nothing after it.`,
                      src: 'ledger:end', kind: 'note', key: 'ledger:end', y: Y, cites: [],
-                     prov: { end: lastY } });
+                     prov: { end: ledgerEnd } });
   }
   const calAhead = ahead.filter((e) => e.kind === 'calendar' && Math.floor(e.y) - Y <= 3);
   const aheadGroups = [group('Next on this path', nextItems)];
@@ -485,7 +581,54 @@ export function chronicle(wl, year, tracks, events, engine, network) {
                text: aheadGroups.map((g) => g.text).join(' '),
                src: aheadGroups.map((g) => g.src).join('; ') });
 
-  return { headline, paras, ledger: L };
+  return { headline, paras, ledger: L, caps, ledgerEnd };
+}
+
+// The last dated entry the model produced on a path, for the notes that name it.
+export function ledgerEndOf(wl, tracks, events, engine) {
+  const L = buildLedger(wl, tracks, events, engine);
+  const dated = L.entries.filter((e) => e.kind !== 'calendar');
+  return dated.length ? Math.floor(dated[dated.length - 1].y) : engine.y0;
+}
+// What a track does on the active path, for the note a recorder opens.
+export function trackNote(tracks, key, Y) {
+  const cs = capState(tracks, key), y1 = tracks.year[tracks.year.length - 1];
+  const name = TRACK_NAME[key] || key;
+  if (!cs) return `On the active path the track of ${name} is still moving at ${y1}.`;
+  const parts = [];
+  if (cs.since != null) {
+    parts.push(`On the active path the track of ${name} reaches ${fmtV(key, cs.value)} in ` +
+               `${cs.since} and holds it to ${y1}` +
+               (Y >= cs.since ? `; at the date on the index it has held it for ${Y - cs.since} years` : '') +
+               '. The sheet letters it as a cap from that year, never as a reading.');
+  }
+  if (cs.ceiling) {
+    parts.push(`It passes the whole of world generating capacity in ${cs.ceiling}, so the sheet ` +
+               'reads it no further.');
+  }
+  return parts.join(' ');
+}
+// Where the tracks stop on the active path, for the note the chart's caption opens.
+export function capsSummary(tracks, ledgerEnd) {
+  const y1 = tracks.year[tracks.year.length - 1];
+  const out = [];
+  const c = capState(tracks, 'cap');
+  if (c && c.since != null) {
+    out.push(c.top ? `The capability index reaches 6.0, the top of the ladder, in ${c.since} and holds it to ${y1}.`
+                   : `The capability index stops at ${c.value.toFixed(1)} in ${c.since} and holds it to ${y1}.`);
+  }
+  for (const [k, noun] of [['rev', 'Revenue'], ['jobs', 'Employment'], ['appr', 'Approval'],
+                           ['laws', 'The statute count']]) {
+    const cs = capState(tracks, k);
+    if (cs && cs.since != null) out.push(`${noun} reaches ${fmtV(k, cs.value)} in ${cs.since} and holds it.`);
+  }
+  const g = capState(tracks, 'gw');
+  if (g && g.ceiling) out.push(`Compute passes the whole of world generating capacity in ${g.ceiling}.`);
+  else if (g && g.since != null) out.push(`Compute stops at ${fmtV('gw', g.value)} in ${g.since}.`);
+  out.push(`The ledger of this path ends in ${ledgerEnd}; the model dates nothing after it. ` +
+           'Past these years the chronicle letters the tracks as caps and the passage says where ' +
+           'the ledger ends.');
+  return out.join(' ');
 }
 
 // ── what a line opens onto ───────────────────────────────────────────────────
@@ -496,9 +639,6 @@ export function provenanceNote(it, engine, network, plain = (t) => t) {
   const p = it.prov || {};
   const lines = [];
   let title = 'SOURCE';
-  const fmtV = (k, v) => (k === 'gw' ? `${gwFmt(v)} gigawatts` : k === 'rev' ? `${money(v)} a year`
-    : k === 'jobs' ? `${v.toFixed(0)}% against 2026` : k === 'appr' ? `${v.toFixed(0)}%`
-    : k === 'laws' ? `${Math.round(v)} measures` : String(v));
   if (p.milestone) {
     title = `CAPABILITY MILESTONE ${p.milestone}`;
     lines.push(`The capability index of the active path first reaches ${p.milestone}.0 in ` +
@@ -528,7 +668,16 @@ export function provenanceNote(it, engine, network, plain = (t) => t) {
   } else if (p.track) {
     title = `TRACK · ${String(p.track).toUpperCase()}`;
     lines.push(`The track of ${TRACK_NAME[p.track] || p.track} on the active path reads ` +
-               `${fmtV(p.track, p.value)} in ${p.year}. The five-year rate is read from the same track.`);
+               `${fmtV(p.track, p.value)} in ${p.year}.` +
+               (p.capped ? '' : ' The five-year rate is read from the same track.'));
+    if (p.cap && p.cap.ceiling && p.year >= p.cap.ceiling) {
+      lines.push(`The track exceeds the whole of world generating capacity from ${p.cap.ceiling} ` +
+                 `(${gwFmt(WORLD_GW_2026)} gigawatts in 2026, growing ${((WORLD_GW_GROWTH - 1) * 100).toFixed(1)}% a year), ` +
+                 'so the sheet reads it no further.');
+    } else if (p.cap && p.cap.since != null && p.year >= p.cap.since) {
+      lines.push(`The track holds this value from ${p.cap.since} to the end of the run, so the ` +
+                 'sheet letters it as a cap and never as a reading of the year.');
+    }
   } else if (p.position) {
     const a = (network.axes || []).find((z) => z.key === p.axis);
     const pos = a && a.positions.find((q) => q[0] === p.position);
@@ -554,8 +703,10 @@ export function provenanceNote(it, engine, network, plain = (t) => t) {
                'The model does not generate it and the controls do not move it.');
   } else if (p.end != null) {
     title = 'END OF THE LEDGER';
-    lines.push(`The active path carries no dated entry after ${p.end}. The far decades wait on ` +
-               'the model programme (Research/plan-2026-09-02-chronicle.md, section 3).');
+    lines.push(`The active path carries no dated entry after ${p.end}: no milestone, template, ` +
+               'onset or level. What the quantities show past it is the model\'s caps, lettered ' +
+               'as caps. The far decades wait on the model programme ' +
+               '(Research/plan-2026-09-02-chronicle.md, section 3).');
   } else if (p.empty) {
     title = 'EMPTY LANE';
     lines.push(`No milestone, event, onset or level falls in this lane between ${p.from} and ` +

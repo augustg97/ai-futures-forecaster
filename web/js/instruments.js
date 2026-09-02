@@ -202,7 +202,7 @@ export function manifold(d, x, y, w, h, series, { id = null, unit = '%' } = {}) 
 // engraved on the left and the pen sitting at the current date.
 export function strip(d, x, y, w, h, { data, years, y0, y1, colour = null, label, unit = '',
                                        now = null, id = null, dash = null, extra = null,
-                                       fmt = (v) => v.toFixed(0) }) {
+                                       fmt = (v) => v.toFixed(0), cap = null }) {
   const c = colour ?? INK.ink;
   d.rect(x, y, w, h, { weight: PEN.hairline, colour: INK.inkLight });
   for (let i = 1; i < 4; i++) {
@@ -235,12 +235,15 @@ export function strip(d, x, y, w, h, { data, years, y0, y1, colour = null, label
   if (now !== null) {
     const nx = X(now);
     d.line([nx, y], [nx, y + h], { weight: PEN.hairline, colour: INK.red });
-    const i = Math.max(0, Math.min(data.length - 1, Math.round(now - years[0])));
+    // the reading is the year's value, the same index every other instrument reads at
+    const i = Math.max(0, Math.min(data.length - 1, Math.floor(now - years[0])));
     const py = Y(data[i]);
     d.dot([nx, py], 0.55, { colour: INK.red });
     // The label band along the top of the frame is the recorder's own lettering. A reading that
     // lands in it is unreadable, so it drops to the underside of the pen instead.
-    const str = fmt(data[i]);
+    // A reading past the track's cap is annunciated as one: the value the track stopped at
+    // and the year it stopped, so the pen never letters a saturated model as a forecast.
+    const str = fmt(data[i]) + (cap && now >= cap.since ? ` · ${cap.word} ${cap.since}` : '');
     const rw = d.textWidth(str, { size: 1.6, face: 'figure', weight: 700 });
     const right = nx + 1.2 + rw < x + w - 1;
     const inLabelBand = py + 1.4 + 1.6 > y + h - 3.2;
@@ -267,7 +270,7 @@ export function strip(d, x, y, w, h, { data, years, y0, y1, colour = null, label
 
 const WORLD_LABOUR = 3.6e9;         // ILO global labour force, order of magnitude
 
-export function collectives(d, x, y, w, { n, speed, id = null, prev = null }) {
+export function collectives(d, x, y, w, { n, speed, id = null, prev = null, cap = null }) {
   const top = y;
   d.text([x, y], 'AGENT COLLECTIVES',
          { size: 2.0, weight: 700, track: 0.14, colour: INK.ink });
@@ -287,7 +290,7 @@ export function collectives(d, x, y, w, { n, speed, id = null, prev = null }) {
   const bw = w, bx = x;
 
   // ── population, on a decade ladder ────────────────────────────────────────
-  d.text([x, y], 'CONCURRENT INSTANCES',
+  d.text([x, y], 'CONCURRENT INSTANCES' + (cap ? ` · AT CAP SINCE ${cap.since}` : ''),
          { size: 1.5, track: 0.10, colour: INK.pencilLight });
   d.text([x + w, y], fmtNum(n),
          { size: 2.3, align: 'right', face: 'figure', weight: 700, colour: INK.ink });

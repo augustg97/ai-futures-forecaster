@@ -175,6 +175,40 @@ JOBS_FLOOR = -30.0
 FROZEN_YEARS = 20
 
 
+# ── caps: no quantity lettered past its cap ──────────────────────────────────
+# The composer reports where each track of a path stops (`caps`), and past that year the
+# composed text may carry the value only as a cap with its year. These are the shapes a
+# present-tense reading takes; one of them past the cap is a fault.
+READING = {
+    "gw": re.compile(r"stands near [\d,]+ gigawatts|capacity is [\d,]+ gigawatts"),
+    "rev": re.compile(r", at \$[\d.]+ (?:trillion|billion) a year,|services are \$[\d.]+ (?:trillion|billion) a year"),
+    "jobs": re.compile(r"Employment is \d+% below|Employment is within two points"),
+    "appr": re.compile(r"Approval of AI stands at \d+%"),
+    "laws": re.compile(r"About \d+ AI statutes and regulations are in force"),
+}
+CAP_WORDS = re.compile(r"track (?:stops|saturates)|is not read past|no rung above")
+
+
+def cap_year(key, cap):
+    if not cap:
+        return None
+    if key == "gw" and cap.get("ceiling"):
+        return cap["ceiling"]
+    return cap.get("since")
+
+
+def check_caps(year, text):
+    """Faults where a capped quantity is lettered as a reading of the year."""
+    faults = []
+    for key, rx in READING.items():
+        cy = cap_year(key, (year.get("caps") or {}).get(key))
+        if cy is None or year["y"] < cy:
+            continue
+        if rx.search(text):
+            faults.append((key, "%s lettered as a reading in %d, capped since %d" % (key, year["y"], cy)))
+    return faults
+
+
 def check_sanity(tracks, label):
     faults = []
     yrs = tracks["year"]
@@ -263,6 +297,23 @@ def main():
                 if len(examples[rule]) < 3:
                     examples[rule].append("%s · %d · %s" % (
                         "likeliest" if line["mainline"] else "exemplar", yr["y"], text))
+    # 2b · caps, over the composed headline and the quantities of NOW
+    cap_faults, cap_years, cap_examples = 0, 0, []
+    for line in sweep["lines"]:
+        for yr in line["years"]:
+            text = yr["headline"] + " " + " ".join(
+                g["text"] for p in yr["paras"] for g in (p["groups"] or []) if g.get("head") == "Quantities")
+            capped = any(cap_year(k, (yr.get("caps") or {}).get(k)) is not None and
+                         yr["y"] >= cap_year(k, (yr.get("caps") or {}).get(k)) for k in READING)
+            cap_years += 1 if capped else 0
+            f = check_caps(yr, text)
+            cap_faults += len(f)
+            if f and len(cap_examples) < 4:
+                cap_examples.append(("likeliest" if line["mainline"] else "exemplar", yr["y"], f[0][1]))
+            if capped and not CAP_WORDS.search(text) and len(cap_examples) < 4:
+                cap_faults += 1
+                cap_examples.append(("likeliest" if line["mainline"] else "exemplar", yr["y"],
+                                     "capped year carries no cap sentence"))
     # 3 · repetition, on the likeliest path
     rep = []
     for line in sweep["lines"]:
@@ -292,7 +343,7 @@ def main():
     for i, L in enumerate([l for l in ex if not l.get("mainline")][:int(n_ex)]):
         sanity += check_sanity(L["tracks"], "exemplar %d" % i)
 
-    faults = unsourced + sum(lang.values()) + len(rep)
+    faults = unsourced + sum(lang.values()) + len(rep) + cap_faults
     mode = "STRICT" if strict else "report mode"
     print("readout gate (%s) · %d paths · %d composed years" % (mode, len(sweep["lines"]), heads))
     print("  provenance: %d of %d composed groups carry no src; %d of %d lines carry no src or kind"
@@ -301,6 +352,10 @@ def main():
     for rule in sorted(lang, key=lambda r: -lang[r]):
         for ex_ in examples[rule][:2]:
             print("    %-11s %5d   e.g. %s" % (rule, lang[rule], ex_))
+    print("  caps: %d faults over %d composed years past a cap (no quantity lettered past its cap)"
+          % (cap_faults, cap_years))
+    for ex in cap_examples:
+        print("    %s · %d · %s" % ex)
     print("  repetition: %d findings" % len(rep))
     for kind, text in rep[:6]:
         print("    %-8s %s" % (kind, text))

@@ -138,6 +138,12 @@ The design is `Research/plan-2026-09-02-chronicle.md`; the review it answers is
   form `s`** for as long as it stands; SINCE draws `s` for entries past their three years. A
   criterion whose onset a rule dates carries its year once the dating event has left the
   headline. Every template, milestone and domain text has `t`, `s`, `f` and `m`.
+- **No quantity is lettered past its cap** (P3). `capState()` finds where each track of the
+  active path stops and where compute passes world generating capacity; past that year the
+  composer, the recorders and the notes letter the value as a cap with its year, never as a
+  reading. The readout gate's `check_caps` refuses otherwise. Past the ledger's last dated
+  entry the headline, SINCE and AHEAD say the ledger has ended. A new track needs a
+  `capSentence` case and a `READING` pattern in the gate before it reaches the sheet.
 
 The traps below that name FRAG, CROSS, ECON_MOD, HEADCL, spans, stages or the calendar lanes
 describe the vignette layer that P1 retired; they are kept as the history of why the chronicle

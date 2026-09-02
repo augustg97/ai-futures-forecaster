@@ -9,7 +9,7 @@ import { Draft, PEN, INK, paperTileURL } from './draft.js';
 import { SECTIONS, SHEET_W, TABS, CHART, COL, CTL_NOTE_W, balance,
          proseColumns, measureSections, SHEET_CW, NOTE_TITLE } from './sections.js';
 import { column, fmtNum } from './instruments.js';
-import { chronicle, provenanceNote } from './ledger.js';
+import { chronicle, provenanceNote, capsFor, trackNote, capsSummary, ledgerEndOf } from './ledger.js';
 import { describeRecord, headlineRecord, RECORD, recordAt, whenOf } from './record.js';
 import { LONGFORM } from './narrative.js';
 import { chooseFigures } from './figures.js';
@@ -429,6 +429,17 @@ function selectionNotes() {
   const [kind, ...rest] = sel.split(':');
   const m = activeMarginals();
   if (kind === 'prov') return null;   // drawn by the readout, under the line that opened it
+  if (kind === 'band') {
+    const ex = D.engine.explainers.why_shape;
+    const t = m.T || {};
+    const body = String((ex && ex.b) || '').replace(/\{t(\d)\}/g, (_, k) =>
+      ((t[`T${k}`] || 0) * 100).toFixed(0));
+    const tr = activeTracks();
+    const end = ledgerEndOf(activeMain(), tr, activeEvents(), D.engine);
+    return [{ h: (ex && ex.t) || 'Why the band has this shape', p: [body] },
+            { h: 'Where the tracks of this path stop', p: [capsSummary(tr, end)] },
+            { h: 'Grounding', p: [((ex && ex.cites) || []).join(' · ')] }];
+  }
   if (kind === 'axis') {
     const a = D.network.axes.find((z) => z.key === rest[0]);
     return a ? axisNotes(a) : null;
@@ -523,7 +534,13 @@ function selectionNotes() {
     const key = kind === 'trk' ? rest[0] : null;
     const ex = D.engine.explainers.stats_each || {};
     const e = ex[key] || ex[['cap','gw','rev','jobs','laws','appr','twh','co2'][+rest[0]] || 'rev'];
-    return e ? [{ h: e.t, p: [e.b] }, { h: 'Grounding', p: [(e.cites || []).join(' · ')] }] : null;
+    if (!e) return null;
+    // what this track does on the active path: where it stops, and that the sheet letters
+    // a stopped track as a cap
+    const tr = activeTracks();
+    const tk = key || ['cap','gw','rev','jobs','laws','appr','twh','co2'][+rest[0]] || 'rev';
+    const on = tr[tk] ? [{ h: 'On this path', p: [trackNote(tr, tk, Math.floor(state.yr))] }] : [];
+    return [{ h: e.t, p: [e.b] }].concat(on, [{ h: 'Grounding', p: [(e.cites || []).join(' · ')] }]);
   }
   if (kind === 'alt') {
     const e = D.exemplars.lines[+rest[0]];
@@ -1172,6 +1189,9 @@ function sheetState(measure) {
     isRecord,
     headline: isRecord ? headlineRecord(state.yr, trunkCap) : ch.headline,
     ledger: ch ? ch.ledger : null,
+    // where each track of the active path stops, for the recorders' annunciators
+    caps: capsFor(tr),
+    ledgerEnd: ch ? ch.ledgerEnd : null,
     record: RECORD, recordAt, chartView: state.chartView,
     recordWindow: state.recordWindow,
     prose: proseColumns(measure, paras),
@@ -1360,6 +1380,7 @@ function hoverLabel(hit) {
   if (kind === 'crisis') { const c = hit.payload; return ['CRISIS POINT', c ? c.q : '']; }
   if (kind === 'prov') { const it = hit.payload;
     return ['SOURCE', (it ? it.src : hit.id.slice(5)) + ' · press for its entry']; }
+  if (kind === 'band') return ['THE BAND', 'why it has this shape, and where this path\'s tracks stop'];
   if (kind === 'mile') return ['MILESTONE DATUM', D.engine.ladder[+rest[0]] || ''];
   if (kind === 'dom') { const dm = D.engine.domains[+rest[0]];
     return dm ? ['CAPABILITY DOMAIN', dm.n] : null; }
@@ -1598,6 +1619,8 @@ function auditSweep({ tol = 0.6 } = {}) {
   // a line of the passage opened onto its source: the first line of SINCE, a condition in
   // NOW, and the last line of AHEAD, resolved against what the year composes
   for (const which of ['first', 'criterion', 'last']) cases.push({ yr: 2035, sel: `prov?${which}`, pin: {} });
+  cases.push({ yr: 2077, sel: 'band', pin: {} });
+  cases.push({ yr: 2095, sel: null, pin: {} });
   const out = { cases: cases.length, collisions: [], offSheet: [], overflows: [], byCase: [] };
   state.hovered = null;
   for (const c of cases) {

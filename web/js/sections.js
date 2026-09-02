@@ -413,7 +413,7 @@ function instrumentColumn(d, S, top) {
       c: INK.pencil, wash: 'rgba(38,38,40,0.16)' },
   ], { id: 'manifold' });
   y -= 24 + 8;
-  d.text([x, y], `${fmtNum(tr.gw[i0])} GW · ${fmtNum(tr.twh[i0])} TWH/YR`,
+  d.text([x, y], `${fmtNum(tr.gw[i0])} GW · ${fmtNum(tr.twh[i0])} TWH/YR${capTag(S, 'gw')}`,
          { size: 1.9, face: 'figure', colour: INK.warm, weight: 700 });
   y -= 6;
 
@@ -444,6 +444,7 @@ function instrumentColumn(d, S, top) {
   y -= collectives(d, x, y, w, {
     n: tr.copies[i0], speed: tr.speed[i0], id: 'tally',
     prev: tr.copies[Math.max(0, i0 - 5)],
+    cap: (() => { const f = capFlag(S, 'copies'); return f && S.yr >= f.since ? f : null; })(),
   }) + 3;
   return top - y;
 }
@@ -455,7 +456,7 @@ function instrumentColumn(d, S, top) {
 export function recorders(d, S, H) {
   const top = H - 8;
   let y = head(d, top, 'BEHAVIOUR OVER TIME',
-    'Seven quantities the same sampled line produces, 2026 to 2100, with the pen standing at ' +
+    'Six quantities the same sampled line produces, 2026 to 2100, with the pen standing at ' +
     'the date. Click any strip for what it measures and where its numbers come from.');
   const panels = behaviourPanels(S);
   const n = panels.length;
@@ -468,6 +469,7 @@ export function recorders(d, S, H) {
     strip(d, PAD + i * (pw + gap) + 8, y - ph, pw - 9, ph, {
       data: p.d, years: S.tracks.year, y0: lo - pad, y1: hi + pad, colour: p.c,
       label: p.label, unit: p.unit, now: Math.max(S.engine.y0, S.yr), id: p.id, fmt: p.fmt,
+      cap: p.cap,
     });
   });
   y -= ph + 4;
@@ -506,12 +508,18 @@ function chartColumn(d, S, top) {
     'sampled futures at the tenth to ninetieth percentile, the middle half hatched closer. ' +
     'Chain-dot rules are the capability milestones.', { x, w });
   viewSwitch(d, S, x, w, top);
+  // The caption opens the band's own entry: why it has this shape, and where the tracks of
+  // the active path stop.
+  d.region('band', x, y + 1.5, w - 62, top - 6.0 - (y + 1.5), null);
 
   const bx = CHART.bx, bw = CHART.bw, bh = CHART_H, by = y - bh;
   const X = CHART.x;
   const Yv = (v) => by + Math.max(0, Math.min(6.4, v)) / 6.4 * bh;
 
   d.rect(bx, by, bw, bh, { weight: PEN.thin, colour: INK.ink });
+  // The caption under the index says a click on the chart changes the date. The frame is
+  // that region, registered first so every mark on it wins the hit-test by area.
+  d.region('ctl:time', bx, by, bw, bh);
   for (let yr = 2015; yr < 2100; yr += 5) {
     const major = yr % 10 === 0;
     d.line([X(yr), by], [X(yr), by + bh],
@@ -701,7 +709,7 @@ function chartColumn(d, S, top) {
     d.rect(x, bandTop - NOTE_BAND + 4, w, NOTE_BAND - 4,
            { weight: PEN.hairline, colour: INK.inkLight });
     d.text([x + 4, bandTop - 5], 'KEY', { size: 2.1, weight: 700, track: 0.16, colour: INK.ink });
-    d.text([x + w - 4, bandTop - 5], 'CLICK A MILESTONE OR CRISIS POINT FOR ITS ENTRY',
+    d.text([x + w - 4, bandTop - 5], 'CLICK A MILESTONE, A CRISIS POINT, OR THE CAPTION FOR THE BAND',
            { size: 1.6, align: 'right', colour: INK.pencilLight, track: 0.08 });
     keys.forEach((it, i) => {
       const ly = bandTop - 11 - i * 4.6;
@@ -1165,6 +1173,19 @@ readout.height = (S) => {
   return readout.reserve;
 };
 
+// The annunciation a recorder carries past its track's cap: the year the track stopped, or the
+// year compute passed the whole of world generating capacity.
+export function capFlag(S, key) {
+  const c = (S.caps || {})[key];
+  if (!c) return null;
+  if (c.ceiling) return { since: c.ceiling, word: 'CEILING' };
+  if (c.since != null) return { since: c.since, word: 'CAP' };
+  return null;
+}
+const capTag = (S, key) => {
+  const f = capFlag(S, key);
+  return f && S.yr >= f.since ? ` · ${f.word} ${f.since}` : '';
+};
 function behaviourPanels(S) {
   const tr = S.tracks;
   return [
@@ -1191,7 +1212,7 @@ function behaviourPanels(S) {
       fmt: (v) => fmtNum(v),
       note: 'Load times grid intensity, which falls faster where the build-out is ' +
             'coordinated or diversified.' },
-  ];
+  ].map((p) => ({ ...p, cap: capFlag(S, p.id.slice(4)) }));
 }
 
 // ── 4 · instruments ──────────────────────────────────────────────────────────
@@ -1234,7 +1255,7 @@ export function details(d, S, H) {
     { k: 'ROW', v: Math.max(0, 1 - tr.us[i0] - tr.cn[i0] - tr.eu[i0]),
       c: INK.pencil, wash: 'rgba(52,50,48,0.16)' },
   ], { id: 'manifold' });
-  d.text([bx, tops - 60], `TOTAL ${fmtNum(tr.gw[i0])} GW · ${fmtNum(tr.twh[i0])} TWH/YR`,
+  d.text([bx, tops - 60], `TOTAL ${fmtNum(tr.gw[i0])} GW · ${fmtNum(tr.twh[i0])} TWH/YR${capTag(S, 'gw')}`,
          { size: 2.1, face: 'figure', colour: INK.warm, weight: 700 });
   d.textBlock([bx, tops - 64], 'The total is the modelled build-out on this line. The energy ' +
     'figure is that capacity run at the utilisation the parent model assumes.', colW,
@@ -1270,6 +1291,7 @@ export function details(d, S, H) {
   collectives(d, cx, dy - 4.0, colW, {
     n: tr.copies[i0], speed: tr.speed[i0], id: 'tally',
     prev: tr.copies[Math.max(0, i0 - 5)],
+    cap: (() => { const f = capFlag(S, 'copies'); return f && S.yr >= f.since ? f : null; })(),
   });
   if (S.plateNote) noteBlock(d, PAD, 44, CW, S.plateNote, { title: S.plateNote.title });
   return H;
@@ -1296,6 +1318,7 @@ export function behaviour(d, S, H) {
     strip(d, px + 10, py + 15, cw - 12, ch - 15, {
       data: p.d, years: yrs, y0: lo - pad, y1: hi + pad, colour: p.c,
       label: p.label, unit: p.unit, now: Math.max(S.engine.y0, S.yr), id: p.id, fmt: p.fmt,
+      cap: p.cap,
     });
     d.text([px + 10, py + 11.4], String(yrs[0]),
            { size: 1.6, colour: INK.pencilLight, face: 'figure' });

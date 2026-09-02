@@ -1,5 +1,36 @@
 # AI Futures Forecaster — live state
 
+**2026-09-02, evening: P3 of the chronicle plan is in — the horizon interim.** The slider still
+runs to 2100, and past a path's caps and its last dated entry the sheet says what it is
+reading. `capState()` in `ledger.js` finds where each track of the active path stops — a track
+that holds one value for eight years or more to the end of the run is at its cap — and where
+compute passes the whole of world generating capacity (9,500 GW in 2026, 2.5% a year; the
+readout gate carries the same figures). Past that year a quantity is lettered as a cap with the
+year it was reached and never as a reading of the year: "Sales of AI services reached $30.0
+trillion a year in 2045, more than a tenth of world output, where the model's revenue track
+saturates"; "Employment reached 35% below its 2026 level in 2060, where the model's employment
+track stops"; "From 2060 the model's compute track exceeds the whole of world generating
+capacity in its own year and is not read past that point"; and, in NOW, "The capability index
+has stood at 6.0, the top of its scale, since 2036; the ladder has no rung above it". The
+recorders on the board and on the behaviour tab annunciate the same thing at the pen
+(`30.0 · CAP 2045`, `22,832 · CEILING 2060`), the compute total and the agent tally carry it,
+and a recorder's note gains a paragraph on what its track does on this path.
+
+**Past the last dated entry the passage stops and says so.** The headline closes with "After
+2075 the model dates nothing on this path"; SINCE collapses to one line naming the ledger's end
+when every lane is empty; AHEAD reads "The ledger of this path ends in 2075. The model dates
+nothing after it." The chart's caption now opens the band's own note: the parent's
+`why_shape` explainer with its tempo slots filled, and a paragraph computed from the active
+path on where its tracks stop and where its ledger ends — the saturation sentence the plan
+asked for. The chart frame is now the date region its caption always claimed ("click the chart
+to change the date" did nothing before); every mark on it still wins the hit-test by area.
+
+**The readout gate refuses a quantity lettered past its cap** (`check_caps`): the composer
+reports each path's caps with every composed year, and a present-tense reading of a capped
+track past its cap is a fault. 0 faults over 294 composed years past a cap; provenance,
+language and repetition unchanged at 0. The 76 sanity findings on the parent's tracks stay
+reported and refuse nothing — they are the case for the model programme, P4.
+
 **2026-09-02, later still: P2 of the chronicle plan is in — the layout.** The passage flows
 across the three columns at group boundaries, so the columns end level however long NOW runs:
 `proseColumns()` tries every set of cuts over the blocks (a group, with its section heading

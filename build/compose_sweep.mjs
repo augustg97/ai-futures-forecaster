@@ -40,6 +40,7 @@ for (const [li, L] of lines.entries()) {
                                                  kind: it.kind || null, key: it.key || null })) })),
       })),
       ledger: ch.ledger.entries.length,
+      caps: ch.caps, ledgerEnd: ch.ledgerEnd,
     });
   }
   out.lines.push(row);
