@@ -309,6 +309,45 @@ def coverage_gate():
                     "\n  ".join(faults), os.path.relpath(cov_path, ROOT)))
     print("coverage OK · %s · %d axes, %d positions"
           % (net.get("version"), len(reg), sum(len(v) for v in reg.values())))
+    table_coverage()
+
+
+def node_bin():
+    """The nightly runs from a scheduled task whose PATH may not carry Homebrew."""
+    for cand in [shutil.which("node"), "/opt/homebrew/bin/node", "/usr/local/bin/node"]:
+        if cand and os.path.isfile(cand):
+            return cand
+    return None
+
+
+def table_coverage():
+    """Refuse a position the authored TABLES cannot letter, whatever the declaration says.
+
+    The declaration is the drawing's claim about itself, and on 2026-09-01 it claimed K4 while
+    HEADCL and FRAG had no K4 row — a path carrying it drew no takeoff clause, silently. The
+    tables are read by `build/table_coverage.mjs`; a missing HEADCL or FRAG row refuses, the
+    LONGFORM and PROCESS gaps and the CROSS pairings are reported.
+    """
+    node = node_bin()
+    if not node:
+        print("TABLE COVERAGE SKIPPED — node not found; the tables were not checked. "
+              "Say so out loud.")
+        return
+    raw = subprocess.check_output(
+        [node, os.path.join(ROOT, "build", "table_coverage.mjs")], cwd=ROOT)
+    tc = json.loads(raw.decode("utf-8"))
+    miss = tc["missing"]
+    if miss["HEADCL"] or miss["FRAG"]:
+        fail(4, "AUTHORED TABLES CANNOT LETTER THE REGISTRY — refusing to publish.\n"
+                 "  HEADCL lacks: %s\n  FRAG lacks: %s\n"
+                 "A path carrying one of these draws no clause for it and nothing reports the "
+                 "gap. Write the rows, then rebuild."
+                 % (" ".join(miss["HEADCL"]) or "none", " ".join(miss["FRAG"]) or "none"))
+    cross = " · ".join("%s %d/%d" % (c["pair"], c["have"], c["of"]) for c in tc["cross"])
+    print("tables OK · HEADCL and FRAG letter all %d positions · LONGFORM lacks %s · "
+          "PROCESS lacks %d · CROSS pairs written: %s"
+          % (tc["positions"], " ".join(miss["LONGFORM"]) or "none",
+             len(miss["PROCESS"]), cross))
 
 
 def count_gate():
@@ -346,6 +385,22 @@ def prose_gate():
         fail(5, "prose gate refused the authored layer (see above)")
 
 
+def readout_gate():
+    """Judge the COMPOSED readout: provenance, the language standard, and sanity of quantities.
+
+    `build/readout_gate.py` runs the composer over the likeliest path and a set of exemplars
+    and reads what the sheet would letter (plan-2026-09-02, P0). It runs in REPORT mode until
+    the chronicle composer lands, so the nightly keeps publishing while its numbers are on the
+    record; READOUT_STRICT=1 makes it refuse, exit 7, which is the setting from P1 onward.
+    """
+    strict = os.environ.get("READOUT_STRICT") == "1"
+    rc = subprocess.call([sys.executable,
+                          os.path.join(ROOT, "build", "readout_gate.py")]
+                         + (["--strict"] if strict else []))
+    if rc:
+        fail(7, "readout gate refused the composed passage (see above)")
+
+
 def main():
     dev = "--dev" in sys.argv
     if not dev:
@@ -358,6 +413,7 @@ def main():
     coverage_gate()
     count_gate()
     prose_gate()
+    readout_gate()
     stamp = _dt.datetime.now().strftime("%Y%m%d-%H%M")
     os.makedirs(DOCS, exist_ok=True)
     for item in os.listdir(DOCS):

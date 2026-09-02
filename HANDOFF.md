@@ -1,5 +1,43 @@
 # AI Futures Forecaster — live state
 
+**2026-09-02: P0 of the chronicle plan is in** ([`Research/plan-2026-09-02-chronicle.md`](Research/plan-2026-09-02-chronicle.md);
+the review it answers is [`Research/review-2026-09-01.md`](Research/review-2026-09-01.md)).
+The six defects of the review are fixed in `web/`; `docs/` is untouched here and the nightly
+rebuild publishes it. What changed, and what to know:
+
+- **CROSS lookups try both orientations** (`crossText`), so the three slots that never fired
+  (C×S, E×S, T×C) draw where a pairing is written. On the likeliest path two are still
+  unwritten, `E3|S1` and `T2|C1`; the readout gate reports them. HEADCL, FRAG and LONGFORM
+  carry **K4** rows now. `build/table_coverage.mjs` reads the tables themselves and
+  `coverage_gate()` refuses a position HEADCL or FRAG cannot letter; it reports LONGFORM
+  (lacks G1–G6) and the CROSS pairs written, counting either orientation (A×T 20/35, E×D
+  10/20, P×D 6/20, C×S 11/40, E×S 10/25, T×C 11/40).
+- **Every path label is derived from the registry** (`lineLabel()`); the alternatives plate
+  letters eleven axes.
+- **A control button prints the quantity its axis drives** (`EFF_PRIMARY`), the first that
+  moves; the tempo axes read the share of sampled paths past the research milestone by 2035.
+  Under intervention only the axis's own quantities are consulted, so L and G letter NO TRACK
+  READS THIS VARIABLE and A4/A5 letter NO DIRECT EFFECT; under observation any movement counts.
+  **Fixing this exposed a common-random-number defect**: `gibbs()` skipped the uniform for a
+  pinned axis, so every later draw slid by one and every G button printed the same −4pp
+  under intervention, G having no outgoing edge and no track. A pinned axis now spends its draw.
+  CLAUDE.md rule 15 is amended.
+- **The research rows letter the r4 name** their figure was researched under, with a note
+  under the heading; re-keying or withdrawal is held for the programme (P5).
+- **The 30-day lookback never reaches behind the registry's date** (`registryDate()`), so the
+  dials read 12 days against r8's 2026-08-20 rather than 30 days across the r5 rebuild.
+- **`build/readout_gate.py` runs on every build, in report mode**: provenance per composed
+  unit (100% unsourced until P1), the language standard's rules 1 to 4 over composed
+  headlines (232 of 374 carry a fault today), and sanity of quantities (the likeliest path's
+  compute passes world generating capacity in 2060; revenue is frozen at $30 trillion from
+  2045; employment at −35% from 2060). `READOUT_STRICT=1` makes it refuse with exit 7; that is
+  the setting from P1. `build/compose_sweep.mjs` is the composer run to order for it.
+- **The audit sweep carries two findings that predate P0**, identical on the last published
+  build: one chart-label collision at 2041 (GENERALLY SUPERINTELLIGENT against 12% NO
+  SUPERINTELLIGENCE THIS WINDOW) and the axis-note title running off the controls column when
+  the C axis's entry is open. `controlPasses: true`, 0 overflows. Neither is in P0's scope;
+  both belong to P2's layout pass.
+
 The parent rebuilt its registry twice on 2026-08-17 — `r5-2026-08-17`, then `r6-2026-08-18`.
 Seven axes and 26 positions became **nine and 49**; two axes are new (**K** takeoff shape, **R**
 regulatory architecture); and every position that kept its letter changed its meaning, four of

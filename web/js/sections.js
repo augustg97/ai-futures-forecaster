@@ -679,11 +679,12 @@ function controlColumn(d, S, top) {
   rule(d, y - 2.2, x, w - RSW - 3, { weight: PEN.thin, colour: INK.inkLight });
   y -= 6.2;
   d.textBlock([x, y], 'One tab per variable. Choosing a setting fixes that variable and ' +
-    'redraws the document; the figure at the foot of a button is what the setting moves ' +
-    'hardest by 2040, measured in the conditioning mode now in force. Choosing it again ' +
-    'releases the variable.', w,
+    'redraws the document; the figure at the foot of a button is what the setting does to ' +
+    'the quantity this variable drives, by 2040, or to the share of sampled paths past the ' +
+    'research milestone by 2035, measured in the conditioning mode now in force. Choosing ' +
+    'it again releases the variable.', w,
     { size: 1.7, lead: 1.38, colour: INK.pencil });
-  y -= 15;
+  y -= 17.4;
 
   // the tab strip
   const cols = 4, tw = (w - (cols - 1) * 1.6) / cols, th = 6.4;
@@ -744,7 +745,7 @@ function controlColumn(d, S, top) {
              colour: pin === p[0] ? INK.blue : pin ? INK.pencilLight : INK.inkLight });
     d.line([x + 3.0, by2 + 4.4], [x + w - 2.6, by2 + 4.4],
            { weight: PEN.hairline, colour: INK.inkLight, alpha: 0.7 });
-    if (eff) {
+    if (eff && !eff.none) {
       d.text([x + 3.4, by2 + 1.8], eff.label,
              { size: 1.45, track: 0.08, colour: INK.pencilLight });
       d.text([x + w - 2.6, by2 + 1.8], eff.text,
@@ -753,10 +754,12 @@ function controlColumn(d, S, top) {
       // The two modes give different answers, and for alignment they differ enormously:
       // under intervention it moves nothing measurable, under observation it is one of the
       // largest controls on the sheet. A bare "no measured effect" beside a chart that
-      // visibly moves is the reader's problem to resolve, so the line names the mode.
+      // visibly moves is the reader's problem to resolve, so the line names the mode. An
+      // axis no track reads at all says that, which is a fact about the model.
       d.text([x + 3.4, by2 + 1.8],
-             S.obs ? 'NO MEASURED EFFECT UNDER OBSERVATION'
-                   : 'NO MEASURED EFFECT UNDER INTERVENTION',
+             eff && eff.noTrack && !S.obs ? 'NO TRACK READS THIS VARIABLE'
+               : S.obs ? 'NO MEASURED EFFECT UNDER OBSERVATION'
+                       : 'NO DIRECT EFFECT UNDER INTERVENTION',
              { size: 1.45, track: 0.08, colour: INK.pencilLight });
     }
     y = by2 - 2.2;
@@ -1370,10 +1373,16 @@ export function research(d, S, H) {
   // recommendations, per axis
   d.text([PAD, y], 'PRIOR REVISIONS',
          { size: 2.6, weight: 700, track: 0.14, colour: INK.ink });
-  d.text([PAD + CW, y], 'APPLIED 13 AUG (r3) AND 17 AUG (r4)',
+  d.text([PAD + CW, y], 'r4 NAMES · APPLIED 13 AUG (r3) AND 17 AUG (r4)',
          { size: 1.8, align: 'right', track: 0.14, colour: INK.inkLight });
   rule(d, y - 2.2, PAD, CW, { weight: PEN.thin, colour: INK.inkLight });
   y -= 6.4;
+  y -= d.textBlock([PAD, y], 'Each row carries the name its figure was researched under, at ' +
+    'registry r4. The rebuild of 17 August 2026 kept the letters and moved their meanings, so ' +
+    'the control on the forecast tab with the same letter may now name something else. ' +
+    'Re-keying these figures to the live positions, or withdrawing the ones with no ' +
+    'destination, is held for the evidence programme.', CW,
+    { size: 1.8, lead: LEAD, colour: INK.pencil }) + 3.0;
   // Split the axes into two columns FIRST, then draw each independently. Flowing them with a
   // shared cursor and a switch mid-loop redrew every axis in the second column at the same y.
   const colW = (CW - 12) / 2;
@@ -1399,7 +1408,10 @@ export function research(d, S, H) {
       cy -= 3.6;
       for (const [p, r] of recs) {
         const up = r.to > r.from;
-        d.text([x, cy], p[1].split(' (')[0].toUpperCase(),
+        // The name the figure was researched under, never the live name of the letter: the
+        // letters were re-assigned at r5 and the live name beside an r4 figure misattributed
+        // thirteen of these rows (review of 2026-09-01, defect 5).
+        d.text([x, cy], (r.name || p[1].split(' (')[0]).toUpperCase(),
                { size: 1.85, colour: INK.pencil, track: 0.04 });
         d.text([x + colW - 30, cy], r.from.toFixed(3),
                { size: 1.85, align: 'right', face: 'figure', colour: INK.pencilLight });

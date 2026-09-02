@@ -1688,6 +1688,28 @@ export const HEADCL = {
           "literature fills with claims nobody has tried to reproduce.",
           "Engineers build from machine designs no laboratory tested, and the failures surface " +
           "late, in batteries and bridges already carrying load." ] },
+  // K4 HAD NO ROW, so a path carrying it drew no takeoff clause and nothing said so; the
+  // coverage declaration listed it as covered (review of 2026-09-01, defect 2). Written under
+  // the language standard of plan-2026-09-02 from the registry's own criterion: the two
+  // milestones fall more than five years apart, and the figures are the ones K3 already
+  // cites, because the first stage of a long gap is the same world as a medium one.
+  K4: {
+        s1: "Machines write most production code at the frontier laboratories, and the " +
+            "researchers who decide which experiments to run are still people.",
+        s2: "Frontier laboratories report a fourfold gain in research output from " +
+            "machine-written code, well short of the twentyfold gain that would mark the " +
+            "research loop closed.",
+        s3: "Automated systems that post-train other models still score about half of what " +
+            "human researchers score on the same tasks, so laboratories keep hiring " +
+            "researchers while their engineering teams shrink.",
+        s4: "Five years after machines took over production coding, human researchers still " +
+            "choose what each laboratory investigates, and research output grows at the pace " +
+            "of their hiring.",
+        s5: "A decade after the coding milestone, machine assistants draft and run " +
+            "experiments, and a human researcher signs off on each programme.",
+        s6: "Decades after machines took over production coding, laboratories still hire " +
+            "for the people who choose research problems, and the research loop closed late " +
+            "where it closed at all." },
   L1: {
         s1: [
           "One laboratory refused unrestricted military use, then gave $40M toward legislation " +
@@ -4309,6 +4331,29 @@ export const FRAG = {
             "Whether the loop that produces better machines ever closes remains to be shown. So " +
             "does whether automated experiment lifts the physical limit and starts the whole " +
             "progression again on different terms." },
+  K4: {
+        s1: "Machines write most production code at the frontier laboratories, and the " +
+            "research that improves them stays with people. One United States frontier " +
+            "laboratory reports that machines now write more than four-fifths of its own " +
+            "production code, and its researchers report a median output multiplier of " +
+            "four against the twentyfold gain that would mark the research loop closed. " +
+            "Automated systems post-training other models score between 25% and 28%, against " +
+            "51% for the humans doing that work.",
+        s2: "The gap between machines writing the code and machines choosing the research " +
+            "runs past five years. Laboratories organise around it: engineering teams shrink " +
+            "and research hiring continues.",
+        s3: "Custom software is cheap for small organisations, since machines write it to " +
+            "order. The rate of new research ideas grows at the pace of the researchers who " +
+            "choose them.",
+        s4: "Five years after the coding milestone, human researchers still set every " +
+            "laboratory's programme. Discovery speeds up where computation settles a question " +
+            "and stalls where an answer waits on an experiment a person has to design.",
+        s5: "A decade on, machine assistants draft and run experiments, and a researcher signs " +
+            "off on each programme. Research output grows with the number of people who can " +
+            "choose a problem well.",
+        s6: "Decades after the coding milestone, laboratories still hire for the people who " +
+            "choose research problems. The research loop closed late where it closed, into a " +
+            "world that had already absorbed cheap software." },
   L1: {
         s1: "On February 2026 a United States frontier laboratory refused a government demand " +
             "for unrestricted lawful military use, naming mass domestic surveillance and fully " +
@@ -5818,6 +5863,24 @@ const CROSS = {
     "question the evidence leaves open.",
 };
 
+// THREE OF THE SIX CROSS SLOTS NEVER FIRED. `describe()` asked for `C1|S1`, `E3|S1` and
+// `T2|C1`; the table was authored as `S1|C1`, `S1|E1` and `C1|T1`, and a missing key returned
+// an empty string that nothing reported (review of 2026-09-01, defect 1). A pairing is a
+// pairing whichever way round it was written, so the lookup tries both, and `crossSlots()`
+// says which of the six resolved so the table-coverage gate can count what is still unwritten.
+export const CROSS_SLOTS = [['C', 'S'], ['E', 'S'], ['E', 'D'], ['A', 'T'], ['P', 'D'], ['T', 'C']];
+function crossText(wl, a, b) {
+  return CROSS[`${wl[a]}|${wl[b]}`] || CROSS[`${wl[b]}|${wl[a]}`] || '';
+}
+export function crossSlots(wl) {
+  return CROSS_SLOTS.map(([a, b]) => ({
+    a, b, key: `${wl[a]}|${wl[b]}`, found: !!crossText(wl, a, b),
+  }));
+}
+export function crossPairKnown(x, y) {
+  return !!(CROSS[`${x}|${y}`] || CROSS[`${y}|${x}`]);
+}
+
 // ── clauses keyed on a quantity at the date ──────────────────────────────────
 function band(v, rows) {
   for (const [t, s] of rows) if (v >= t) return s;
@@ -6124,7 +6187,7 @@ export function describe(wl, year, tracks, engineY0, trunkCap = null) {
   // the run against itself reported the index as flat in 2026, when it had just climbed a rung.
   const prev = i >= 5 ? tracks.cap[i - 5]
     : (trunkCap ? trunkCap(year - 5) : tracks.cap[0]);
-  const X = (a, b) => CROSS[`${wl[a]}|${wl[b]}`] || '';
+  const X = (a, b) => crossText(wl, a, b);
   // Each position's paragraph is the stage this line has reached, not its span.
   const FR = (ax) => stageText(FRAG[wl[ax]], year, tracks);
   const out = [];
@@ -9292,6 +9355,17 @@ export const LONGFORM = {
           "recorded.",
           "Automated systems post-training other models scored 25% to 28% against a human score " +
           "of 51%, roughly half the human uplift.",
+        ] },
+  K4: { head: "The second problem resists the first",
+        lines: [
+          "Seven forecaster groups price the gap between the coding milestone and the " +
+          "research milestone at 3.6 to 37 months; only the widest, a Metaculus panel at 37 " +
+          "months, approaches a gap past five years.",
+          "One United States frontier laboratory reported that machines wrote more than " +
+          "four-fifths of its own production code while its researchers reported a median " +
+          "output multiplier of four.",
+          "Automated systems post-training other models scored 25% to 28% against a human " +
+          "score of 51%, roughly half the human uplift.",
         ] },
   P1: { head: "Consent by habit",
         lines: [

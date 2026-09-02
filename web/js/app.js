@@ -204,24 +204,33 @@ function drawAxis(ax, held, u, weights, T) {
   for (let k = 0; k < w.length; k++) { r -= w[k]; if (r <= 0) return names[k]; }
   return names[names.length - 1];
 }
+// A PINNED AXIS STILL SPENDS ITS DRAW. Common random numbers hold only if the nth uniform
+// lands on the same axis in the baseline and in the test; skipping the draw for a pinned axis
+// shifted every later draw by one, so the "effect" of a setting was mostly the other axes
+// re-rolling. It surfaced when every benefit button printed the same −4pp under intervention
+// (2026-09-02): G has no outgoing edge and enters no track, so its true effect there is zero,
+// and −4pp was the stream sliding. Each axis takes one uniform per pass whether or not it is
+// pinned, and a pinned axis discards it.
 function gibbs(nextU, weights, pinned) {
   const T = fastTables(), axes = T.axes, wl = {};
   const held = [];
   for (const ax of axes) {
+    const u = nextU();
     if (pinned[ax]) { wl[ax] = pinned[ax]; continue; }
     const names = T.pos[ax], base = weights[ax];
     let tot = 0;
     for (const n of names) tot += base[n];
-    let r = nextU() * tot, chosen = names[names.length - 1];
+    let r = u * tot, chosen = names[names.length - 1];
     for (const n of names) { r -= base[n]; if (r <= 0) { chosen = n; break; } }
     wl[ax] = chosen;
   }
   for (let sweep = 0; sweep < GIBBS_SWEEPS; sweep++) {
     for (const ax of axes) {
+      const u = nextU();
       if (pinned[ax]) continue;
       held.length = 0;
       for (const other of axes) if (other !== ax) held.push(wl[other]);
-      wl[ax] = drawAxis(ax, held, nextU(), weights, T);
+      wl[ax] = drawAxis(ax, held, u, weights, T);
     }
   }
   return wl;
@@ -350,13 +359,26 @@ function activeLayers() {
 // that number rather than the 30 it was asking for.
 const LOOKBACK_D = 30;
 function daysBetween(a, b) { return Math.round((Date.parse(b) - Date.parse(a)) / 864e5); }
+// The registry's own date, read from its version string (`r8-2026-08-20`). A baseline older
+// than the registry compares two position spaces: on 2026-09-01 the 30-day target landed on
+// 2026-08-02, before the r5 rebuild, and the largest "drifts" on the dials were E2 −25pp,
+// A3 −21pp and P3 −20pp — the rebuild, drawn as the world moving (review of 2026-09-01,
+// defect 6). The lookback never reaches behind the registry it is comparing against, and the
+// span it letters is the span it measured.
+function registryDate() {
+  const m = String((D.network || {}).version || '').match(/(\d{4}-\d{2}-\d{2})/);
+  return m ? m[1] : null;
+}
 function lookback() {
   const h = D.marginals.history;
   if (!h || h.length < 2 || cond) return { m: {}, days: null };
   const to = h[h.length - 1].date;
-  const want = new Date(Date.parse(to) - LOOKBACK_D * 864e5).toISOString().slice(0, 10);
-  let pick = h[0];
+  let want = new Date(Date.parse(to) - LOOKBACK_D * 864e5).toISOString().slice(0, 10);
+  const reg = registryDate();
+  if (reg && want < reg) want = reg;
+  let pick = null;
   for (const r of h) if (r.date <= want) pick = r;      // newest row at or before the target
+  if (!pick) pick = h.find((r) => r.date >= want) || h[0];  // else the oldest row after it
   const days = daysBetween(pick.date, to);
   return { m: pick.marginals || {}, days: days > 0 ? days : null };
 }
@@ -481,7 +503,7 @@ function selectionNotes() {
     const ev = activeEvents()[+rest[0]];
     if (!ev) return null;
     return [{ h: `Waypoint · ${Math.floor(ev.year)}`, p: [ev.text,
-      `Instantiated on the active world-line (${['T','K','A','C','R','D','S','P','E'].map((k) => activeMain()[k]).join('·')}) from a cited template. A composed line re-instantiates its own.`] },
+      `Instantiated on the active world-line (${lineLabel(activeMain())}) from a cited template. A composed line re-instantiates its own.`] },
             { h: 'Grounding', p: [(ev.cites || []).join(' · ')] }];
   }
   if (kind === 'delta') {
@@ -506,7 +528,7 @@ function selectionNotes() {
     const e = D.exemplars.lines[+rest[0]];
     if (!e) return null;
     return [{ h: 'Alternative world-line', p: [
-      'Composition ' + ['T','K','A','C','R','D','S','P','E'].map((k) => e.wl[k]).join('·') + '. ' +
+      'Composition ' + lineLabel(e.wl) + '. ' +
       altPhrase(e) + '.',
       'One sampled future from the ensemble, drawn in full: its own capability path, its own ' +
       'waypoints, its own outcome layers. Selecting it makes it the active line everywhere on ' +
@@ -516,6 +538,13 @@ function selectionNotes() {
   return null;
 }
 
+// A LABEL LISTS EVERY AXIS THE REGISTRY CARRIES. Four sites lettered a path with a literal of
+// nine letters written before r7 and r8 added L and G, so every alternative on the sheet
+// omitted two of the eleven variables a reader had just set (review of 2026-09-01, defect 3).
+// The registry is the only list of axes.
+function lineLabel(wl) {
+  return D.network.axes.map((a) => wl[a.key]).filter(Boolean).join('·');
+}
 function altPhrase(e) {
   const ml = D.mainline.wl;
   const diffs = Object.keys(ml).filter((k) => e.wl[k] !== ml[k]);
@@ -657,7 +686,7 @@ function drawAltsPlate(d, S, box) {
       pts.push([gx + ((yr - 2026) / 74) * gw, gy + (capAt(kn, yr) / 6.4) * gh]);
     }
     d.polyline(pts, { weight: PEN.medium, colour: on ? INK.ochre : INK.blue });
-    d.text([cx + 6, cy + ch - 12], ['T','K','A','C','R','D','S','P','E'].map((k) => e.wl[k]).join('·'),
+    d.text([cx + 6, cy + ch - 12], lineLabel(e.wl),
            { size: 2.0, face: 'figure', weight: 700, colour: on ? INK.ochre : INK.ink });
     d.text([cx + 6, cy + ch - 15.6], pk.label,
            { size: 1.4, colour: INK.pencilLight, track: 0.12 });
@@ -878,24 +907,47 @@ function drawMorningPlate(d, S, box) {
 
 
 // ── what a setting does to the forecast ──────────────────────────────────────
-// A control that only changes a number teaches nothing. Each button carries the movement it
-// makes in the median capability index at 2040, measured the way the chart measures it: sample
-// the network with that setting held, take the median of the sampled paths, subtract the
-// median without it. It is the same arithmetic for all 26 positions, so the figures compare.
-const EFF_N = 48, EFF_YEAR = 2040;
-// Capability alone is the wrong readout for most of these variables: by 2040 the median has
-// already saturated the ladder under half the settings, so four of the seven rows would report
-// nothing. Each position is measured against all seven quantities the model carries and prints
-// the one it moves hardest, scaled by what counts as a movement in that quantity.
-const EFF_READ = [
-  ['MEDIAN CAPABILITY', (t, i) => t.cap[i], (d) => (d > 0 ? '+' : '') + d.toFixed(2), 0.15],
-  ['COMPUTE', (t, i) => t.gw[i], (d) => (d > 0 ? '+' : '−') + fmtNum(Math.abs(d)) + ' GW', 250],
-  ['AI REVENUE', (t, i) => t.rev[i], (d) => (d > 0 ? '+' : '−') + Math.abs(d).toFixed(1) + ' $T', 0.5],
-  ['EMPLOYMENT', (t, i) => t.jobs[i], (d) => (d > 0 ? '+' : '−') + Math.abs(d).toFixed(1) + 'PP', 1.0],
-  ['MEASURES IN FORCE', (t, i) => t.laws[i], (d) => (d > 0 ? '+' : '−') + Math.round(Math.abs(d)), 10],
-  ['APPROVAL', (t, i) => t.appr[i], (d) => (d > 0 ? '+' : '−') + Math.abs(d).toFixed(1) + 'PP', 1.5],
-  ['AI EMISSIONS', (t, i) => t.co2[i], (d) => (d > 0 ? '+' : '−') + fmtNum(Math.abs(d)) + ' MT', 80],
-];
+// A control that only changes a number teaches nothing. Each button carries the movement its
+// setting makes in THE QUANTITY THAT VARIABLE DRIVES, measured the way the chart measures it:
+// sample the network with that setting held, take the mean across the samples, subtract the
+// same mean without it. Common random numbers, so the only difference is the setting.
+//
+// It used to print whichever of seven quantities moved hardest on a scaled ratio. Emissions has
+// the widest scale, so emissions won the ratio on 42 of 61 buttons, and the six benefit buttons
+// printed one identical revenue figure because G enters no track (review of 2026-09-01, defect
+// 4). A proxy under a button is worse than nothing. Each axis now names the quantities it
+// enters, in the order a reader should meet them, and the button prints the first that moves.
+// An axis that moves none of them says so.
+//
+// The 2040 capability median saturates under half the settings, which is why the tempo axes
+// read the share of sampled paths past the research milestone by 2035 rather than the median.
+const EFF_N = 48, EFF_YEAR = 2040, CROSS_YEAR = 2035, RESEARCH_RUNG = 4.0;
+const sgn = (d) => (d > 0 ? '+' : '−');
+const EFF_READ = {
+  cross: ['RESEARCH LOOP BY 2035',
+          (t) => (t.cap[Math.min(t.cap.length - 1, CROSS_YEAR - D.engine.y0)] >= RESEARCH_RUNG ? 100 : 0),
+          (d) => sgn(d) + Math.abs(d).toFixed(0) + 'PP'],
+  cap:   ['MEDIAN CAPABILITY 2040', (t, i) => t.cap[i], (d) => (d > 0 ? '+' : '') + d.toFixed(2)],
+  gw:    ['COMPUTE 2040', (t, i) => t.gw[i], (d) => sgn(d) + fmtNum(Math.abs(d)) + ' GW'],
+  rev:   ['AI REVENUE 2040', (t, i) => t.rev[i], (d) => sgn(d) + Math.abs(d).toFixed(1) + ' $T'],
+  jobs:  ['EMPLOYMENT 2040', (t, i) => t.jobs[i], (d) => sgn(d) + Math.abs(d).toFixed(1) + 'PP'],
+  laws:  ['MEASURES IN FORCE 2040', (t, i) => t.laws[i], (d) => sgn(d) + Math.round(Math.abs(d))],
+  appr:  ['APPROVAL 2040', (t, i) => t.appr[i], (d) => sgn(d) + Math.abs(d).toFixed(1) + 'PP'],
+  us:    ['US COMPUTE SHARE 2040', (t, i) => t.us[i] * 100, (d) => sgn(d) + Math.abs(d).toFixed(1) + 'PP'],
+  co2:   ['AI EMISSIONS 2040', (t, i) => t.co2[i], (d) => sgn(d) + fmtNum(Math.abs(d)) + ' MT'],
+};
+const EFF_KEYS = Object.keys(EFF_READ);
+// The quantities each axis enters in `tracksJS()` and `capPath()`, first the one it drives.
+// K, L and G enter no track: K is not read by `capPath()` (plan-2026-09-02, M1), and L and G
+// act only through the edges. An axis the parent adds later is read against every quantity.
+const EFF_PRIMARY = {
+  T: ['cross', 'cap'], K: ['cross', 'cap'], A: ['cross', 'cap'],
+  C: ['appr', 'us'], R: ['laws', 'us'], D: ['jobs', 'rev'], S: ['gw', 'co2'],
+  P: ['appr'], E: ['rev', 'gw'], L: [], G: [],
+};
+// the smallest movement that would print as other than zero, per quantity
+const EFF_MIN = { cross: 0.5, cap: 0.005, gw: 0.5, rev: 0.05, jobs: 0.05, laws: 0.5,
+                  appr: 0.05, us: 0.05, co2: 0.5 };
 let effCache = { sig: null, base: null, map: {} };
 
 // Common random numbers. Drawing a fresh stream for each setting makes the comparison mostly
@@ -916,6 +968,16 @@ function effUniforms() {
   }
   return EFF_U;
 }
+function effAccumulate(sums, tr) {
+  const i = Math.max(0, Math.min(tr.year.length - 1, EFF_YEAR - D.engine.y0));
+  for (const k of EFF_KEYS) sums[k] += EFF_READ[k][1](tr, i);
+}
+function effMeans(sums, n) {
+  const out = {};
+  for (const k of EFF_KEYS) out[k] = sums[k] / Math.max(1, n);
+  return out;
+}
+function effZero() { const s = {}; for (const k of EFF_KEYS) s[k] = 0; return s; }
 // THE FIGURE UNDER A BUTTON HAS TO ANSWER THE QUESTION THE DOCUMENT IS ASKING.
 // This measured the intervened sampler in both modes, so alignment reported "no measured
 // effect": under intervention A reaches the model through one edge (C given A1) and enters
@@ -936,24 +998,16 @@ function readoutsEnsemble(pinned) {
     ? D.ens2k.lines.filter((wl) => keys.every((k) => wl[k] === pinned[k]))
     : D.ens2k.lines;
   if (lines.length < OBS_MIN) return null;
-  const sums = EFF_READ.map(() => 0);
-  for (const wl of lines) {
-    const tr = tracksJS(wl);
-    const i = Math.max(0, Math.min(tr.year.length - 1, EFF_YEAR - D.engine.y0));
-    EFF_READ.forEach((r, k) => { sums[k] += r[1](tr, i); });
-  }
-  return sums.map((s) => s / lines.length);
+  const sums = effZero();
+  for (const wl of lines) effAccumulate(sums, tracksJS(wl));
+  return effMeans(sums, lines.length);
 }
 function readoutsFor(pinned, obs = false) {
   if (obs) { const e = readoutsEnsemble(pinned); if (e) return e; }
   const w = baseWeights(), U = effUniforms();
-  const sums = EFF_READ.map(() => 0);
-  for (let n = 0; n < EFF_N; n++) {
-    const tr = tracksJS(sampleFixed(U[n], w, pinned));
-    const i = Math.max(0, Math.min(tr.year.length - 1, EFF_YEAR - D.engine.y0));
-    EFF_READ.forEach((r, k) => { sums[k] += r[1](tr, i); });
-  }
-  return sums.map((s) => s / EFF_N);
+  const sums = effZero();
+  for (let n = 0; n < EFF_N; n++) effAccumulate(sums, tracksJS(sampleFixed(U[n], w, pinned)));
+  return effMeans(sums, EFF_N);
 }
 function effectsFor(pin, obs = state.obs) {
   const sig = JSON.stringify(pin) + (obs ? '|obs' : '|do');
@@ -961,16 +1015,29 @@ function effectsFor(pin, obs = state.obs) {
   const base = readoutsFor(pin, obs);
   const map = {};
   for (const a of D.network.axes) {
+    const primary = EFF_PRIMARY[a.key] || [];
+    // UNDER INTERVENTION A BUTTON REPORTS THE AXIS'S OWN MECHANISM, so only the quantities it
+    // enters are consulted, and an axis that enters none says so. Under observation learning
+    // the setting reweights every other variable, so any movement is the model's answer, in
+    // the order the axis's own quantities come first. An axis with no entry here (one the
+    // parent adds later) is read against everything in both modes.
+    const rest = EFF_KEYS.filter((k) => !primary.includes(k));
+    const order = (obs || !EFF_PRIMARY[a.key]) ? primary.concat(rest) : primary;
     for (const p of a.positions) {
       const key = `${a.key}:${p[0]}`;
       if (pin[a.key] === p[0]) { map[key] = 0; continue; }   // set: it is the baseline
       const v = readoutsFor({ ...pin, [a.key]: p[0] }, obs);
-      let best = null, score = 0;
-      EFF_READ.forEach((r, k) => {
-        const d = v[k] - base[k], s = Math.abs(d) / r[3];
-        if (s > score && s >= 1) { score = s; best = { label: r[0], text: r[2](d), d }; }
-      });
-      map[key] = best;
+      let best = null;
+      for (const k of order) {
+        const d = v[k] - base[k];
+        if (Math.abs(d) >= EFF_MIN[k]) {
+          best = { label: EFF_READ[k][0], text: EFF_READ[k][2](d), d, key: k };
+          break;
+        }
+      }
+      // Nothing moved. `noTrack` says whether that is because no track reads the axis at
+      // all, which is a fact about the model the button should state.
+      map[key] = best || { none: true, noTrack: primary.length === 0 };
     }
   }
   effCache = { sig, base, map };
@@ -1026,11 +1093,27 @@ const PRIOR_R2 = {
   'P:P1': 0.259, 'P:P2': 0.312, 'P:P3': 0.429,
   'E:E1': 0.289, 'E:E2': 0.441, 'E:E3': 0.196, 'E:E4': 0.074,
 };
+// THE FIGURES WERE RESEARCHED AGAINST THE r4 MEANINGS OF THEIR LETTERS. The r5 rebuild of
+// 2026-08-17 kept the letters and moved the meanings, so P1, which the programme recommended
+// raising to 0.380 as populist backlash, now names acquiescence through use, and the sheet
+// lettered the live name beside the old figure (HANDOFF 2026-08-18; review of 2026-09-01,
+// defect 5). Each row carries the name its figure was researched under. Re-keying the 23 with
+// a destination and withdrawing the three without one is the programme's decision, held.
+const R4_NAMES = {
+  'T:T1': 'explosive', 'T:T2': 'fast', 'T:T3': 'gradual', 'T:T4': 'no SC in window',
+  'A:A1': 'fails undetected', 'A:A2': 'near-miss managed', 'A:A3': 'tractable', 'A:A4': 'untested',
+  'C:C1': 'none, a race', 'C:C2': 'securitization', 'C:C3': 'verified deal',
+  'C:C4': 'fragmented', 'C:C5': 'moratorium',
+  'D:D1': 'shock', 'D:D2': 'uneven', 'D:D3': 'slow',
+  'S:S1': 'concentration', 'S:S2': 'diversified', 'S:S3': 'constrained',
+  'P:P1': 'backlash', 'P:P2': 'acquiescence', 'P:P3': 'polarised',
+  'E:E1': 'boom', 'E:E2': 'correction survives', 'E:E3': 'deflates hard', 'E:E4': 'demand crisis',
+};
 function recommend(axis, pos) {
   const key = `${axis}:${pos}`;
   const from = PRIOR_R2[key], to = RESEARCHED[key];
   if (from === undefined || to === undefined) return null;
-  return Math.abs(to - from) < 0.005 ? null : { from, to };
+  return Math.abs(to - from) < 0.005 ? null : { from, to, name: `${pos} ${R4_NAMES[key] || ''} (r4)` };
 }
 
 // ── the state handed to the sections ─────────────────────────────────────────
@@ -1264,7 +1347,7 @@ function hoverLabel(hit) {
   if (kind === 'site') { const p = hit.payload;
     return p ? ['COMPUTE SITE', `${p.s.n} — ~${p.gwSite.toFixed(1)} GW modelled`] : null; }
   if (kind === 'alt') { const e = hit.payload;
-    return e ? ['ALTERNATIVE', ['T','K','A','C','R','D','S','P','E'].map((k) => e.wl[k]).join('·')] : null; }
+    return e ? ['ALTERNATIVE', lineLabel(e.wl)] : null; }
   if (kind === 'delta') { const e = hit.payload; return e ? ['EVIDENCE APPLICATION', e.rule] : null; }
   if (kind === 'trk') return ['BEHAVIOUR TRACE', 'click for its mechanism'];
   if (kind === 'stat') return ['READING', hit.payload ? hit.payload[0] : ''];

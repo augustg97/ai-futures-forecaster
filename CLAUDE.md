@@ -91,9 +91,12 @@ path. Do not "tidy" it without moving all four together.
 15. **Measure a setting's effect with COMMON RANDOM NUMBERS.** `effectsFor()` reuses one fixed
     matrix of uniforms across every setting, so the only difference between the baseline and the
     test is the setting. A fresh stream per setting makes the comparison resampling noise, and
-    every button reports the same figure. Measure against all seven tracked quantities and print
-    the one that moves hardest — the 2040 capability median has saturated under half the
-    settings and would report nothing for four of the seven rows.
+    every button reports the same figure. Each axis names the quantities it enters
+    (`EFF_PRIMARY` in `app.js`) and the button prints the first that moves; an axis that moves
+    nothing says so. The seven-quantity argmax this replaced printed emissions on 42 of 61
+    buttons, because emissions has the widest scale. The 2040 capability median saturates
+    under half the settings, which is why the tempo axes read the share of sampled paths
+    past the research milestone by 2035.
 
 ## Commands
 
