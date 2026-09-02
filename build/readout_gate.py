@@ -186,7 +186,7 @@ READING = {
     "appr": re.compile(r"Approval of AI stands at \d+%"),
     "laws": re.compile(r"About \d+ AI statutes and regulations are in force"),
 }
-CAP_WORDS = re.compile(r"track (?:stops|saturates)|is not read past|no rung above")
+CAP_WORDS = re.compile(r"track (?:stops|saturates)|is not read past|no rung above|has settled at|has held within")
 
 
 def cap_year(key, cap):
@@ -222,7 +222,10 @@ def check_sanity(tracks, label):
     if y:
         faults.append(("ceiling", "%s: installed AI compute passes world generating capacity in %d "
                                   "(%.0f GW)" % (label, y, tracks["gw"][yrs.index(y)])))
-    y = first(lambda k: tracks["rev"][k] > 0.25 * WORLD_GDP_2026 * WORLD_GDP_GROWTH ** (yrs[k] - 2026))
+    # the path's own world output where the parent emits it (r9), the trend assumption before
+    gwp = tracks.get("gwp")
+    y = first(lambda k: tracks["rev"][k] > 0.25 * (gwp[k] if gwp else
+                                                   WORLD_GDP_2026 * WORLD_GDP_GROWTH ** (yrs[k] - 2026)))
     if y:
         faults.append(("ceiling", "%s: AI revenue passes a quarter of world output in %d" % (label, y)))
     y = first(lambda k: tracks["jobs"][k] < JOBS_FLOOR)

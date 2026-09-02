@@ -21,14 +21,19 @@ const engine = F('engine.json'), network = F('network.json'), main = F('mainline
       ex = F('exemplars.json');
 const N = Number(process.argv[2] || 12), STEP = Number(process.argv[3] || 3);
 
-const lines = [{ wl: main.wl, tracks: main.tracks, events: main.events, mainline: true }]
+const bands = F('bands.json');
+const lines = [{ wl: main.wl, tracks: main.tracks, events: main.events, mainline: true,
+                 onsets: main.onsets || null, crossings: main.crossings || null,
+                 trackBands: bands.tracks || null }]
   .concat(ex.lines.filter((l) => !l.mainline).slice(0, N));
 const out = { generated: new Date().toISOString(), y0: engine.y0, y1: engine.y1, lines: [] };
 for (const [li, L] of lines.entries()) {
   const step = li === 0 ? 1 : STEP;
   const row = { wl: L.wl, mainline: !!L.mainline, years: [] };
   for (let y = engine.y0 + 1; y <= engine.y1; y += step) {
-    const ch = chronicle(L.wl, y, L.tracks, L.events || [], engine, network);
+    const ch = chronicle(L.wl, y, L.tracks, L.events || [], engine, network,
+                         { onsets: L.onsets || null, crossings: L.crossings || null,
+                           trackBands: L.trackBands || null });
     row.years.push({
       y, headline: ch.headline,
       paras: ch.paras.map((p) => ({

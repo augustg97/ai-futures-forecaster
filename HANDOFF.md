@@ -1,5 +1,64 @@
 # AI Futures Forecaster — live state
 
+**2026-09-02, night: P4's first tranche is in — the model programme, in the parent.** The
+Atlas is on GitHub as `augustg97/ai-atlas`, so the work went where the plan puts it: registry
+**r9-2026-09-02** on the Atlas branch `claude/ai-futures-forecaster-review-t7fvqb`, held for
+August's merge, with its changelog entry and self-tests. **Merge order: the Atlas branch first,
+then this one.** This client reads the r9 emission behind fallbacks, so it draws an r8 emission
+too, but the r9 data files committed here come from a local emit of that branch and the nightly
+overwrites them with whatever the Atlas's `main` emits.
+
+What r9 does (`Research/timelines/worldlines.py`, `axes.py`, `forecast_emit.py`):
+
+- **M1 · K reaches the capability path.** The coding crossing sits K's gap before T's research
+  crossing (K1 0.75 y, K2 1.5, K3 3.5, K4 6.5; floor 2027.2); the published mainline said K1
+  and drew 1.6 years, and the chronicle lettered "about three years after" beside "within twelve
+  months". A gap that cannot fit (T1 or T2 with K4) is clamped and counted; the self-test bounds
+  the share under a tenth of the ensemble.
+- **M4 · tracks as dynamics against ceilings.** Compute grows logistically toward the share of
+  world generating capacity (9,500 GW in 2026, 2.5% a year) its supply position can reach
+  (S1 30%, S2 35%, S3 12%, S4 20%, S5 15%); revenue toward its diffusion band's share of a world
+  output ($115T, 3% at trend) whose growth the benefit position lifts by up to 6 points, tapering
+  to trend over forty years after the research crossing; the machine share of paid work toward
+  the band's own ceiling with re-employment absorbing part of it over twelve years, so employment
+  dips and settles; approval mean-reverts to the level its position sets, lowered by employment
+  loss, raised where a verified limit holds; statutes saturate at 1,200; agent copies follow
+  compute. E damps the growth excess of compute where the r8 form multiplied the growth factor
+  and shrank compute 29% a year for seventy years on demand-crisis lines. The 76 nightly sanity
+  findings are 18, all of them the ladder's top rung or a band's own ceiling. Every track has an
+  ensemble band (`bands.json.tracks`, p10/p50/p90 over 2,000 lines) and two new series, `gwp`
+  (world output) and `work` (the machine share), plus `hz`.
+- **M2 · effects.** Templates carry effects: a correction cuts the compute growth excess by
+  45% for three years, an incident shocks approval six points and speeds statutes, a labour
+  statute raises re-employment for good. The registry carries `ONSETS`, moved from
+  `narrative.js`, and the D bands are dated by the machine share (a tenth, a third, a half). The
+  library is still 38 templates; growth to about 120 cited templates is the next tranche, and
+  it is why the far decades of the drawn path are still thin (2050s and 2070s empty on the
+  medoid: every far-field template requires A2 or A3 and the medoid holds A4).
+- **M5 · the time horizon.** METR's 50% horizon in hours, anchored to the rungs (16 h at 2.6,
+  one working month at 3.0, one working year at 4.0), emitted as `hz`; above the research rung
+  it is no longer a measurement and NOW says so.
+- **M6 · the medoid is drawn.** `mainline.json` is the medoid of the 2,000-line ensemble
+  (`kind: "medoid"`, `agree` 0.30), the argmax carried beside it (`argmax: {wl, p}`). Today
+  they differ on four axes: **T3·K1·A4·C1·R4·D2·S3·P3·E3·L4·G2** drawn, against the argmax
+  T2·K1·A2·C1·R4·D2·S1·P3·E3·L4·G4. The band note letters both. `mainline_kind` in
+  `engine.json` is the switch; a conditioned view draws the medoid of its own ensemble.
+
+On this side: **`web/js/engine.js` is the port** (capPath, tracksJS, instantiateJS, onsets,
+medoid) against the emitted constants with the r8 arithmetic as fallback, and
+**`build/port_gate.mjs` (exit 8) recomputes the parent's emitted knots and tracks for the
+mainline and 25 exemplars and refuses on any divergence** — 30,000 values, 0 divergences, the
+crossings agreeing. The chronicle reads the emitted onsets and crossings, letters the year's own
+shares ("8% of world output in 2050", "11% of the world's generating capacity in 2077"), the
+spread of the sampled futures beside each quantity, the horizon, and world output itself; the
+recorders draw the p10 to p90 band behind the pen; employment and approval that hold a value
+read as settled, since they are equilibria. `{survives}` now follows the parent's rule (E2 and
+E3). K and G have readouts on the controls.
+
+Verified: gates strict, 0 faults; sweep 32 cases, 0 collisions; measure_repeat 74 of 74. The
+comparison "about a tenth of world output" on the $12 trillion level now says "in 2026", since
+world output on a path grows.
+
 **2026-09-02, evening: P3 of the chronicle plan is in — the horizon interim.** The slider still
 runs to 2100, and past a path's caps and its last dated entry the sheet says what it is
 reading. `capState()` in `ledger.js` finds where each track of the active path stops — a track

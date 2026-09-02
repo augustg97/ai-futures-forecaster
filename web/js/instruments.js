@@ -202,7 +202,7 @@ export function manifold(d, x, y, w, h, series, { id = null, unit = '%' } = {}) 
 // engraved on the left and the pen sitting at the current date.
 export function strip(d, x, y, w, h, { data, years, y0, y1, colour = null, label, unit = '',
                                        now = null, id = null, dash = null, extra = null,
-                                       fmt = (v) => v.toFixed(0), cap = null }) {
+                                       fmt = (v) => v.toFixed(0), cap = null, band = null }) {
   const c = colour ?? INK.ink;
   d.rect(x, y, w, h, { weight: PEN.hairline, colour: INK.inkLight });
   for (let i = 1; i < 4; i++) {
@@ -222,6 +222,14 @@ export function strip(d, x, y, w, h, { data, years, y0, y1, colour = null, label
     });
     d.stroke({ weight: PEN.thin, colour: col, dash: dsh });
   };
+  // the spread of the sampled futures behind the pen line: the tenth to ninetieth
+  // percentile of the ensemble, the quantity's own band (r9)
+  if (band && band.lo && band.hi) {
+    const pts = [];
+    for (let i = 0; i < band.hi.length; i++) pts.push([X(years[i]), Y(band.hi[i])]);
+    for (let i = band.lo.length - 1; i >= 0; i--) pts.push([X(years[i]), Y(band.lo[i])]);
+    d.fillPoly(pts, 'rgba(38,118,214,0.10)');
+  }
   if (extra) draw(extra.data, extra.c ?? INK.pencilLight, [2.2, 1.4]);
   draw(data, c, dash);
   d.text([x + 0.8, y + h - 2.0], label,
@@ -381,6 +389,8 @@ export function tally(d, x, y, w, opts) {
 
 
 export function fmtNum(v) {
+  // billions, since r9: the machine population follows compute and passes a billion copies
+  if (v >= 1e9) return (v / 1e9).toFixed(1) + 'B';
   if (v >= 1e6) return (v / 1e6).toFixed(1) + 'M';
   if (v >= 1e3) return (v / 1e3).toFixed(0) + 'K';
   return String(Math.round(v));

@@ -44,6 +44,7 @@ EXTRA = [(os.path.join(ATLAS, "data", "witness", "countries-110m.json"),
 
 
 # Exit codes are the nightly task's contract (see build/nightly.sh):
+#   8 the client's port diverges from the parent's emission ·
 #   1 the Atlas gate refused · 2 the pull or the extractor failed ·
 #   3 push or live-verification failed · 4 the registry moved past the drawing.
 # On 2026-08-17 every one of these was 1, so a climate extractor that no longer matched the
@@ -385,6 +386,22 @@ def prose_gate():
         fail(5, "prose gate refused the authored layer (see above)")
 
 
+def port_gate():
+    """The client's port of the engine must reproduce the parent's own emission.
+
+    A conditioned path on the sheet is drawn by web/js/engine.js, written against
+    the constants the parent emits (rule 10). Two implementations of one model
+    are safe only while something checks that they agree — on 2026-08-17 they
+    silently did not — so build/port_gate.mjs recomputes the parent's emitted
+    knots and tracks for the mainline and a sample of exemplars, given the
+    parent's own events, and refuses on any divergence past the parent's
+    rounding. Exit 8.
+    """
+    rc = subprocess.call([node_bin(), os.path.join(ROOT, "build", "port_gate.mjs")], cwd=ROOT)
+    if rc != 0:
+        fail(8, "the port diverges from the parent's emission (see above)")
+
+
 def readout_gate():
     """Judge the COMPOSED readout: provenance, the language standard, and sanity of quantities.
 
@@ -415,6 +432,7 @@ def main():
     coverage_gate()
     count_gate()
     prose_gate()
+    port_gate()
     readout_gate()
     stamp = _dt.datetime.now().strftime("%Y%m%d-%H%M")
     os.makedirs(DOCS, exist_ok=True)

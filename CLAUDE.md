@@ -138,6 +138,16 @@ The design is `Research/plan-2026-09-02-chronicle.md`; the review it answers is
   form `s`** for as long as it stands; SINCE draws `s` for entries past their three years. A
   criterion whose onset a rule dates carries its year once the dating event has left the
   headline. Every template, milestone and domain text has `t`, `s`, `f` and `m`.
+- **The Atlas is `augustg97/ai-atlas` on GitHub and this project changes it on a branch**
+  (P4). A model change is a registry version with a changelog entry and a self-test in the
+  Atlas, emitted locally, pulled here, and proved by `build/port_gate.mjs` (exit 8): the
+  client's `web/js/engine.js` must reproduce the parent's emitted knots and tracks within the
+  parent's rounding. Never mirror a constant; extend the emission and read it, with the r8
+  arithmetic as the fallback. The forecaster's `pull()` reads `~/AI Atlas`; in a session
+  without August's machine, symlink the clone there.
+- **The drawn path is the medoid of the ensemble, lettered as such** (`mainline.kind`), with
+  the argmax beside it; a conditioned view draws the medoid of its own lines. The band note
+  says which and where they differ.
 - **No quantity is lettered past its cap** (P3). `capState()` finds where each track of the
   active path stops and where compute passes world generating capacity; past that year the
   composer, the recorders and the notes letter the value as a cap with its year, never as a
@@ -217,6 +227,12 @@ __FW.auditSweep()                      # in the console: the audit (check `contr
   and TODAY included, and a fallback that takes the first slot regardless puts two labels on
   each other the moment the fixed ones are in the way. It seeds itself and takes the
   least-overlapping slot when none is clear.
+- **The forecaster's pull resolves `~` to the process's home.** Run as root here, it looked
+  for `/root/AI Atlas` and reported every staged file missing while the Atlas sat under
+  `/home/user`. Symlink both.
+- **The climate extractor reads `worldlines.py` by shape**: the map indexed by `wl["S"]`, the
+  bonus condition on `wl["C"]`, the hours, the utilisation and the floor. A rewrite of
+  `tracks()` that binds those to locals breaks the pull with exit 2.
 - **A note title wider than its block runs off the sheet.** `noteBlock()` wraps it and
   `sheetState()` adds the same lines to the note's height, from the same `wrap()`.
 

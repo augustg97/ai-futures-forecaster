@@ -47,6 +47,7 @@ const TRACK_NAME = {
 // same figures and refuses a reading lettered past it.
 export const WORLD_GW_2026 = 9500, WORLD_GW_GROWTH = 1.025;
 const worldGW = (y) => WORLD_GW_2026 * Math.pow(WORLD_GW_GROWTH, y - 2026);
+const GWP_BASE = 115;   // world output in 2026, $ trillion, the parent's own anchor
 // A TRACK THAT STOPS MOVING AND HOLDS ITS VALUE TO THE END OF THE RUN IS AT ITS CAP: the
 // parent's saturation, which the sheet letters as a cap, with the year it was reached, and
 // never as a reading of that year. A plateau shorter than CAP_MIN_YEARS is a flat spell and a
@@ -117,10 +118,14 @@ function templateIdOf(e, templates) {
 }
 
 // ── the ledger ───────────────────────────────────────────────────────────────
-export function buildLedger(wl, tracks, events, engine) {
+export function buildLedger(wl, tracks, events, engine, given = {}) {
   const entries = [];
   const cross = {};
-  for (const r of [3, 4, 5, 6]) cross[r] = firstYear(tracks, 'cap', (v) => v >= r);
+  for (const r of [3, 4, 5, 6]) {
+    // the parent's exact crossing year where it emits one (r9), else the annual track's
+    cross[r] = given.crossings && given.crossings[String(r)] != null
+      ? Math.floor(given.crossings[String(r)]) : firstYear(tracks, 'cap', (v) => v >= r);
+  }
   const evs = (events || []).map((e) => ({ ...e, id: templateIdOf(e, engine.templates) }));
   const tied = new Set(evs.map((e) => e.id));
   const spec = (id) => (engine.templates || []).find((t) => t.id === id) || null;
@@ -174,10 +179,15 @@ export function buildLedger(wl, tracks, events, engine) {
   const byId = {};
   for (const e of evs) if (e.id && !(e.id in byId)) byId[e.id] = e.year;
   const onsets = {}, onsetKind = {};
+  // the rule that dates a position: the registry's own since r9, the authored table before it
+  const RULES = engine.onsets || ONSET;
   for (const ax in wl) {
-    const pos = wl[ax], rule = ONSET[pos];
+    const pos = wl[ax], rule = RULES[pos];
     let y = null, kind = null;
-    if (rule) {
+    if (given.onsets && given.onsets[pos] != null && rule) {
+      y = given.onsets[pos];
+      kind = rule.template ? 'template' : rule.milestone ? 'milestone' : rule.track ? 'track' : 'year';
+    } else if (rule) {
       if (rule.template) { y = byId[rule.template] ?? null; kind = 'template'; }
       else if (rule.milestone) { y = cross[rule.milestone]; kind = 'milestone'; }
       else if (rule.track) {
@@ -189,14 +199,18 @@ export function buildLedger(wl, tracks, events, engine) {
     if (rule && (rule.track || rule.year) && y) {
       const crit = String(CRITERION[pos] || '').replace(/\.\s*$/, '');
       const t = `From ${Math.floor(y)}, ${lower(crit)}.`;
-      entries.push({ y, kind: 'onset', lane: rule.lane || 'capital', k: pos, t, s: t,
+      entries.push({ y, kind: 'onset', lane: rule.lane || AXIS_LANE[ax] || 'capital', k: pos, t, s: t,
                      f: lower(crit), m: '', src: `onset:${pos}`, cites: [],
                      prov: { position: pos, axis: ax, onset: y, onsetKind: kind } });
     }
   }
+  const derived = { ...tracks };
+  if (tracks.gwp) derived.revshare = tracks.rev.map((v, i) => v / tracks.gwp[i]);
+  if (engine.dynamics) derived.gwshare = tracks.gw.map((v, i) => v / worldGW(tracks.year[i]));
   for (const th of THRESHOLDS) {
+    if (!derived[th.key]) continue;
     for (const [level, cmp] of th.levels) {
-      const y = firstYear(tracks, th.key,
+      const y = firstYear(derived, th.key,
         (v) => (th.dir === 'down' ? v <= level : v >= level));
       if (!y || y <= engine.y0) continue;
       const t = th.t(level, cmp, y);
@@ -224,14 +238,22 @@ const GW_CMP = [
   [0, 'a small share of national grids'],
 ];
 const REV_CMP = [
-  [12, 'exceed a tenth of world output'],
-  [4, 'rival the revenue of the world automotive industry'],
+  [12, 'exceed a tenth of world output in 2026'],
+  [4, 'rival the revenue of the world automotive industry in 2026'],
   [1.4, 'exceed worldwide semiconductor sales of 2026'],
   [0.2, 'make a large software business and a small share of the economy'],
   [0, 'run years behind the capital being spent on them'],
 ];
+const pct = (x, d = 0) => `${(x * 100).toFixed(d)}%`;
+// A working measure of the time horizon, in the units a reader uses for the length of a task.
+function hzFmt(h) {
+  if (h < 48) return `${Math.round(h)} hours`;
+  if (h < 400) return `about ${Math.round(h / 40)} working weeks`;
+  if (h < 1900) return `about ${Math.round(h / 167)} working months`;
+  return 'about a working year';
+}
 const REV_CMP_N = [
-  [12, 'more than a tenth of world output'],
+  [12, 'more than a tenth of world output in 2026'],
   [4, 'about the revenue of the world automotive industry'],
   [1.4, 'more than worldwide semiconductor sales of 2026'],
   [0.2, 'the size of a large software business'],
@@ -282,10 +304,12 @@ function capSentence(key, cs, Y) {
   switch (key) {
     case 'gw': return `Installed AI computing capacity reached ${gwFmt(v)} gigawatts in ${y}, ${band(v, GW_CMP)}, where the model's compute track stops.`;
     case 'rev': return `Sales of AI services reached ${money(v)} a year in ${y}, ${band(v, REV_CMP_N)}, where the model's revenue track saturates.`;
+    // employment and approval settle: re-employment absorbs what it can and approval reverts
+    // to the level its position sets, so a held value is an equilibrium and is lettered as one
     case 'jobs': return v <= -2
-      ? `Employment reached ${Math.abs(v).toFixed(0)}% below its 2026 level in ${y}, where the model's employment track stops.`
-      : `Employment has held within two points of its 2026 level since ${y}, where the model's employment track stops.`;
-    case 'appr': return `Approval of AI reached ${v.toFixed(0)}% in ${y}, where the model's approval track stops.`;
+      ? `Employment has settled at ${Math.abs(v).toFixed(0)}% below its 2026 level since ${y}.`
+      : `Employment has held within two points of its 2026 level since ${y}.`;
+    case 'appr': return `Approval of AI has settled at ${v.toFixed(0)}% since ${y}.`;
     case 'laws': return `The count of AI statutes and regulations in force reached ${Math.round(v)} in ${y}, where the model's statute track stops.`;
     case 'cap': return cs.top
       ? `The capability index has stood at 6.0, the top of its scale, since ${y}; the ladder has no rung above it.`
@@ -386,11 +410,11 @@ function group(head, items, full = []) {
            src: items.map((i) => i.src).join('; ') };
 }
 
-export function chronicle(wl, year, tracks, events, engine, network) {
+export function chronicle(wl, year, tracks, events, engine, network, given = {}) {
   const Y = Math.floor(year);
   const y0 = engine.y0, y1 = engine.y1;
   const i = Math.max(0, Math.min(tracks.year.length - 1, Y - y0));
-  const L = buildLedger(wl, tracks, events, engine);
+  const L = buildLedger(wl, tracks, events, engine, given);
   const cap = tracks.cap[i], gw = tracks.gw[i], rev = tracks.rev[i], jobs = tracks.jobs[i],
         appr = tracks.appr[i], laws = tracks.laws[i];
   const past = L.entries.filter((e) => Math.floor(e.y) <= Y);
@@ -454,8 +478,14 @@ export function chronicle(wl, year, tracks, events, engine, network) {
   // 2 · money: the dated capital event, then compute and revenue with their comparisons
   const capEv = take(latest(EVENT_GROUPS.capital, Infinity));
   const s2 = capEv ? datedForm(capEv) : tagged(wl.E);
-  const s3 = capS('gw') || `Installed AI computing capacity stands near ${gwFmt(gw)} gigawatts, ${band(gw, GW_CMP)}.`;
-  const s4 = capS('rev') || `Sales of AI services, at ${money(rev)} a year, ${band(rev, REV_CMP)}.`;
+  const gwp = tracks.gwp ? tracks.gwp[i] : null;
+  const live = !!engine.dynamics;
+  const s3 = capS('gw') || (live
+    ? `Installed AI computing capacity stands near ${gwFmt(gw)} gigawatts, ${band(gw, GW_CMP)} and ${pct(gw / worldGW(Y))} of the world's generating capacity in ${Y}.`
+    : `Installed AI computing capacity stands near ${gwFmt(gw)} gigawatts, ${band(gw, GW_CMP)}.`);
+  const s4 = capS('rev') || (gwp
+    ? `Sales of AI services, at ${money(rev)} a year, are ${pct(rev / gwp, rev / gwp < 0.02 ? 1 : 0)} of world output in ${Y}.`
+    : `Sales of AI services, at ${money(rev)} a year, ${band(rev, REV_CMP)}.`);
   // 3 · work
   const wc = (jobs <= -2 || wl.D === 'D1') ? WORK_CLAUSE[wl.D] : null;
   let s5 = capS('jobs');
@@ -545,17 +575,38 @@ export function chronicle(wl, year, tracks, events, engine, network) {
     }
     if (items.length) nowGroups.push(group(LANE_HEAD[lane], items));
   }
+  // the spread of the sampled futures at this date, for the quantities the parent bands
+  const TB = given.trackBands;
+  const spread = (k, fmt) => {
+    if (!TB || !TB[k] || !TB.year) return '';
+    const j = TB.year.indexOf(Y);
+    if (j < 0) return '';
+    return ` Across ${TB.n.toLocaleString('en-US')} sampled futures the middle four-fifths run from ${fmt(TB[k].p10[j])} to ${fmt(TB[k].p90[j])}.`;
+  };
+  const hz = tracks.hz ? tracks.hz[i] : null;
+  const hzLine = hz == null ? '' : (cap < 4.0
+    ? `AI agents complete tasks of about ${hzFmt(hz)} on their own at a 50% success rate, against 16 hours in mid-2026.`
+    : `The time-horizon measure stopped at the research rung${c[4] ? ` in ${c[4]}` : ''}: no human has been timed at longer tasks.`);
   const qty = [
     ['cap', cap, capS('cap') || ''],
-    ['gw', gw, capS('gw') || `Installed AI computing capacity is ${gwFmt(gw)} gigawatts, ${band(gw, GW_CMP)}. ` +
-               rateClause(tracks, i, 'gw', 'Capacity')],
-    ['rev', rev, capS('rev') || `Sales of AI services are ${money(rev)} a year and ${band(rev, REV_CMP)}. ` +
-                 rateClause(tracks, i, 'rev', 'Revenue')],
-    ['jobs', jobs, capS('jobs') || `${jobsFigure(jobs)}. ${rateClause(tracks, i, 'jobs', 'Employment', true)}`],
+    ['hz', hz, hzLine],
+    ['gw', gw, capS('gw') || (live
+       ? `Installed AI computing capacity is ${gwFmt(gw)} gigawatts, ${band(gw, GW_CMP)} and ${pct(gw / worldGW(Y))} of the world's generating capacity in ${Y}. `
+       : `Installed AI computing capacity is ${gwFmt(gw)} gigawatts, ${band(gw, GW_CMP)}. `) +
+               rateClause(tracks, i, 'gw', 'Capacity') + spread('gw', (v) => `${gwFmt(v)} gigawatts`)],
+    ['rev', rev, capS('rev') || (gwp
+       ? `Sales of AI services are ${money(rev)} a year, ${pct(rev / gwp, rev / gwp < 0.02 ? 1 : 0)} of world output in ${Y}. `
+       : `Sales of AI services are ${money(rev)} a year and ${band(rev, REV_CMP)}. `) +
+                 rateClause(tracks, i, 'rev', 'Revenue') + spread('rev', (v) => `${money(v)} a year`)],
+    ['gwp', gwp, gwp == null ? '' :
+       `World output on this path is ${money(gwp)}, ${(gwp / GWP_BASE).toFixed(1)} times its 2026 size. The model lifts trend growth by the share of the capability gains the benefit position lets through, tapering after the research crossing.`],
+    ['jobs', jobs, capS('jobs') || `${jobsFigure(jobs)}. ${rateClause(tracks, i, 'jobs', 'Employment', true)}` +
+                   spread('jobs', (v) => `${Math.abs(v).toFixed(0)}% ${v < 0 ? 'below' : 'above'}`)],
     ['appr', appr, capS('appr') || `Approval of AI stands at ${appr.toFixed(0)}%. ${apprClause(appr)} ` +
-                   rateClause(tracks, i, 'appr', 'Approval', true)],
+                   rateClause(tracks, i, 'appr', 'Approval', true) + spread('appr', (v) => `${v.toFixed(0)}%`)],
     ['laws', laws, capS('laws') || `About ${Math.round(laws / 10) * 10} AI statutes and regulations are in force, ` +
-                   `${band(laws, LAW_CMP)}. ${rateClause(tracks, i, 'laws', 'The statute count')}`],
+                   `${band(laws, LAW_CMP)}. ${rateClause(tracks, i, 'laws', 'The statute count')}` +
+                   spread('laws', (v) => `${Math.round(v / 10) * 10}`)],
   ].filter(([, , t]) => t)
    .map(([k, v, t]) => ({ t: t.trim(), src: `track:${k}`, kind: 'quantity', key: `track:${k}@now`,
                           y: Y, cites: [], prov: { track: k, value: v, year: Y, cap: caps[k] || null,
@@ -617,10 +668,10 @@ export function capsSummary(tracks, ledgerEnd) {
     out.push(c.top ? `The capability index reaches 6.0, the top of the ladder, in ${c.since} and holds it to ${y1}.`
                    : `The capability index stops at ${c.value.toFixed(1)} in ${c.since} and holds it to ${y1}.`);
   }
-  for (const [k, noun] of [['rev', 'Revenue'], ['jobs', 'Employment'], ['appr', 'Approval'],
-                           ['laws', 'The statute count']]) {
+  for (const [k, noun, verb] of [['rev', 'Revenue', 'reaches'], ['jobs', 'Employment', 'settles at'],
+                                 ['appr', 'Approval', 'settles at'], ['laws', 'The statute count', 'reaches']]) {
     const cs = capState(tracks, k);
-    if (cs && cs.since != null) out.push(`${noun} reaches ${fmtV(k, cs.value)} in ${cs.since} and holds it.`);
+    if (cs && cs.since != null) out.push(`${noun} ${verb} ${fmtV(k, cs.value)} in ${cs.since} and holds it.`);
   }
   const g = capState(tracks, 'gw');
   if (g && g.ceiling) out.push(`Compute passes the whole of world generating capacity in ${g.ceiling}.`);
@@ -665,6 +716,19 @@ export function provenanceNote(it, engine, network, plain = (t) => t) {
     lines.push(`The track of ${TRACK_NAME[p.track] || p.track} on the active path first passes ` +
                `${fmtV(p.track, p.level)} in ${p.year}.`);
     lines.push('The level and its comparison are authored; the track is the parent model\'s.');
+  } else if (p.track === 'hz') {
+    title = 'TRACK · TIME HORIZON';
+    lines.push('METR\'s 50% time horizon in hours, read off the capability index between the ' +
+               'rungs: 16 hours at the 2026 anchor, one working month at the coding rung, one ' +
+               'working year at the research rung. Above the research rung no human has been ' +
+               'timed at the task, so the series is emitted at the rung-4 figure and is no ' +
+               'longer a measurement.');
+  } else if (p.track === 'gwp') {
+    title = 'TRACK · WORLD OUTPUT';
+    lines.push('World output on the active path: $115 trillion in 2026 growing 3% a year at ' +
+               'trend, lifted by the benefit position\'s share of the capability above the ' +
+               'coding rung, two index units at most, tapering to trend over forty years after ' +
+               'the research crossing. The revenue share and the comparisons read against it.');
   } else if (p.track) {
     title = `TRACK · ${String(p.track).toUpperCase()}`;
     lines.push(`The track of ${TRACK_NAME[p.track] || p.track} on the active path reads ` +

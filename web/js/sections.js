@@ -457,19 +457,20 @@ export function recorders(d, S, H) {
   const top = H - 8;
   let y = head(d, top, 'BEHAVIOUR OVER TIME',
     'Six quantities the same sampled line produces, 2026 to 2100, with the pen standing at ' +
-    'the date. Click any strip for what it measures and where its numbers come from.');
+    'the date; the blue band is the tenth to ninetieth percentile of the sampled futures. ' +
+    'Click any strip for what it measures and where its numbers come from.');
   const panels = behaviourPanels(S);
   const n = panels.length;
   const gap = 5;
   const pw = (CW - gap * (n - 1)) / n;
   const ph = 34;
   panels.forEach((p, i) => {
-    const lo = Math.min(...p.d), hi = Math.max(...p.d);
+    const [lo, hi] = panelRange(p);
     const pad = (hi - lo) * 0.08 || 1;
     strip(d, PAD + i * (pw + gap) + 8, y - ph, pw - 9, ph, {
       data: p.d, years: S.tracks.year, y0: lo - pad, y1: hi + pad, colour: p.c,
       label: p.label, unit: p.unit, now: Math.max(S.engine.y0, S.yr), id: p.id, fmt: p.fmt,
-      cap: p.cap,
+      cap: p.cap, band: p.band,
     });
   });
   y -= ph + 4;
@@ -1179,7 +1180,8 @@ export function capFlag(S, key) {
   const c = (S.caps || {})[key];
   if (!c) return null;
   if (c.ceiling) return { since: c.ceiling, word: 'CEILING' };
-  if (c.since != null) return { since: c.since, word: 'CAP' };
+  // employment and approval settle to an equilibrium; the others stop at a ceiling
+  if (c.since != null) return { since: c.since, word: (key === 'jobs' || key === 'appr') ? 'SETTLED' : 'CAP' };
   return null;
 }
 const capTag = (S, key) => {
@@ -1212,8 +1214,16 @@ function behaviourPanels(S) {
       fmt: (v) => fmtNum(v),
       note: 'Load times grid intensity, which falls faster where the build-out is ' +
             'coordinated or diversified.' },
-  ].map((p) => ({ ...p, cap: capFlag(S, p.id.slice(4)) }));
+  ].map((p) => {
+    const k = p.id.slice(4);
+    const tb = S.trackBands && S.trackBands[k];
+    return { ...p, cap: capFlag(S, k), band: tb ? { lo: tb.p10, hi: tb.p90 } : null };
+  });
 }
+const panelRange = (p) => {
+  const vals = p.d.concat(p.band ? p.band.lo.concat(p.band.hi) : []);
+  return [Math.min(...vals), Math.max(...vals)];
+};
 
 // ── 4 · instruments ──────────────────────────────────────────────────────────
 export function details(d, S, H) {
@@ -1303,8 +1313,9 @@ details.height = (S) => 48 + Math.max(126, S.engine.domains.length * 9.4 + 56) +
 export function behaviour(d, S, H) {
   const y = head(d, H - 8, 'BEHAVIOUR OVER TIME',
     'Six quantities on the active world-line, 2026 to 2100. Each pen sits at the date on the ' +
-    'index and its reading is printed beside it. Every chart derives its scale from its own ' +
-    'series, so the shapes stay comparable across settings while the magnitudes differ.');
+    'index and its reading is printed beside it; the blue band is the tenth to ninetieth ' +
+    'percentile of the sampled futures. Every chart derives its scale from its own series and ' +
+    'its band, so the shapes stay comparable across settings while the magnitudes differ.');
   dateStrip(d, PAD + 44, y - 4, CW - 44, S);
   const tr = S.tracks, yrs = tr.year;
   const foot = S.plateNote ? S.plateNote.h + 26 : 12;
@@ -1313,12 +1324,12 @@ export function behaviour(d, S, H) {
   panels.forEach((p, i) => {
     const px = PAD + (i % 3) * (cw + 12);
     const py = foot + 10 + (1 - Math.floor(i / 3)) * (ch + 24);
-    const lo = Math.min(...p.d), hi = Math.max(...p.d);
+    const [lo, hi] = panelRange(p);
     const pad = (hi - lo) * 0.08 || 1;
     strip(d, px + 10, py + 15, cw - 12, ch - 15, {
       data: p.d, years: yrs, y0: lo - pad, y1: hi + pad, colour: p.c,
       label: p.label, unit: p.unit, now: Math.max(S.engine.y0, S.yr), id: p.id, fmt: p.fmt,
-      cap: p.cap,
+      cap: p.cap, band: p.band,
     });
     d.text([px + 10, py + 11.4], String(yrs[0]),
            { size: 1.6, colour: INK.pencilLight, face: 'figure' });
