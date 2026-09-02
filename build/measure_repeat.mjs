@@ -1,74 +1,45 @@
 // HOW OFTEN THE SHEET REPEATS ITSELF, MEASURED RATHER THAN NOTICED.
 //
-// August: "our sentences still repeat across years - they should not, our language should be as
-// dynamic as the events we are forecasting." Hold one setting of all ten controls, step the year
-// across the whole forecast, and count how many of the sentences the headline composes are
-// distinct. Reported per slot, because a slot still keyed on the four calendar spans can only
-// ever say four things however well each is written.
+// Hold one path, step the year across the whole forecast, and count how many of the sentences
+// the chronicle composes are distinct, and how many consecutive years any one sentence is
+// drawn in full. The chronicle's rule is that an entry appears in full while it is within three
+// years of the date, then as a dated clause, then not at all (plan-2026-09-02, §2).
 //
-//   node build/measure_repeat.mjs [lines]
-import { headline, stageOf } from '../web/js/narrative.js';
+//   node build/measure_repeat.mjs
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { chronicle } from '../web/js/ledger.js';
 
-const AXES = { T: 5, K: 4, A: 5, C: 5, R: 5, D: 6, S: 5, P: 5, E: 5, L: 6, G: 6 };
-const Y0 = 2026, Y1 = 2100;
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const F = (n) => JSON.parse(fs.readFileSync(path.join(ROOT, 'web', 'data', 'forecast', n), 'utf8'));
+const engine = F('engine.json'), network = F('network.json'), main = F('mainline.json'),
+      ex = F('exemplars.json');
+const sents = (t) => String(t || '').split(/(?<=[.!?])\s+/).map((s) => s.trim()).filter((s) => s.length > 15);
 
-// a world-line's capability track: a logistic climb whose crossing year the line itself sets
-function tracks(crossAt, seed) {
-  const t = { year: [], cap: [], appr: [], jobs: [], rev: [], gw: [], laws: [] };
-  for (let y = Y0; y <= Y1; y++) {
-    const u = (y - crossAt) / 6, k = y - Y0;
-    t.year.push(y);
-    t.cap.push(1.2 + 6.3 / (1 + Math.exp(-u)));
-    // the four tracked quantities the headline reads, each varied by the line so the tension
-    // clause is exercised rather than pinned to one branch
-    t.appr.push(45 - (seed % 5) * 6 - k * 0.25);
-    t.jobs.push(-(k * (0.15 + (seed % 4) * 0.08)));
-    t.rev.push(1 + k * (0.05 + (seed % 3) * 0.06));
-    t.gw.push(60 + k * 4);
-    t.laws.push(90 + k * 6);
-  }
-  return t;
-}
-
-function lines(n) {
-  const keys = Object.keys(AXES), out = [];
-  for (let i = 0; i < n; i++) {
-    const wl = {};
-    let h = i * 2654435761 % 2147483647;
-    for (const k of keys) {
-      h = (h * 1103515245 + 12345) & 0x7fffffff;
-      wl[k] = k + (1 + (h % AXES[k]));
-    }
-    out.push(wl);
-  }
-  return out;
-}
-
-const N = Number(process.argv[2] || 24);
-const perLine = [], slotSets = [new Set(), new Set(), new Set(), new Set()];
-let totalSent = 0, worst = { n: 0 };
-for (const [i, wl] of lines(N).entries()) {
-  const tr = tracks(2029 + (i % 9), i);
+for (const L of [{ wl: main.wl, tracks: main.tracks, events: main.events, name: 'likeliest path' },
+                 ...ex.lines.slice(0, 3).map((l, k) => ({ ...l, name: `exemplar ${k}` }))]) {
   const seen = new Map();
-  let sent = 0;
-  for (let y = Y0 + 1; y <= Y1; y++) {
-    const h = headline(wl, y, tr, Y0);
-    const parts = String(h || '').split(/(?<=[.!?])\s+/).filter((x) => x.trim().length > 20);
-    parts.forEach((p, k) => { if (k < 4) slotSets[k].add(p); });
-    for (const p of parts) {
-      sent++;
-      seen.set(p, (seen.get(p) || 0) + 1);
-      if ((seen.get(p) || 0) > worst.n) worst = { n: seen.get(p), text: p };
+  let total = 0, headDistinct = new Set(), runs = new Map(), worstRun = 0, worstText = '';
+  let prevSet = new Set();
+  for (let y = engine.y0 + 1; y <= engine.y1; y++) {
+    const ch = chronicle(L.wl, y, L.tracks, L.events || [], engine, network);
+    headDistinct.add(ch.headline);
+    const cur = new Set();
+    for (const p of ch.paras) {
+      if (!/^Since/.test(p.lead)) continue;   // the standing conditions repeat by design
+      for (const g of p.groups) for (const s of sents(g.text)) {
+        total++; seen.set(s, (seen.get(s) || 0) + 1); cur.add(s);
+      }
     }
+    for (const s of cur) {
+      const r = prevSet.has(s) ? (runs.get(s) || 1) + 1 : 1;
+      runs.set(s, r);
+      if (r > worstRun) { worstRun = r; worstText = s; }
+    }
+    prevSet = cur;
   }
-  totalSent += sent;
-  perLine.push({ sent, distinct: seen.size });
+  console.log(`${L.name} · ${engine.y1 - engine.y0} years · headlines distinct ${headDistinct.size}/${engine.y1 - engine.y0}`);
+  console.log(`  since-2026 sentences: ${total} drawn, ${seen.size} distinct (each ${(total / Math.max(1, seen.size)).toFixed(1)}×)`);
+  console.log(`  longest run of one sentence in consecutive years: ${worstRun} — ${worstText.slice(0, 90)}`);
 }
-const avgS = perLine.reduce((a, x) => a + x.sent, 0) / perLine.length;
-const avgD = perLine.reduce((a, x) => a + x.distinct, 0) / perLine.length;
-console.log(`${N} world-lines · ${Y0 + 1} to ${Y1}`);
-console.log(`per line: ${avgS.toFixed(0)} sentences, ${avgD.toFixed(1)} distinct `
-  + `(each said ${(avgS / avgD).toFixed(2)} times)`);
-console.log(`most repeated inside one line: ${worst.n} times — ${String(worst.text).slice(0, 88)}`);
-console.log(`distinct across all ${N} lines, by position in the headline: `
-  + slotSets.map((s) => s.size).join(' · '));

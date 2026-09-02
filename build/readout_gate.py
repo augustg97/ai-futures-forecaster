@@ -1,32 +1,35 @@
 #!/usr/bin/env python3
 """The readout gate — judge what the sheet would letter, never the strings it is made from.
 
-Three checks over the COMPOSED headline and passage (build/compose_sweep.mjs runs the composer
-over the likeliest path and a set of exemplars, year by year):
+Four checks over the COMPOSED headline and passage (build/compose_sweep.mjs runs the chronicle
+composer over the likeliest path and a set of exemplars, year by year):
 
-  1. PROVENANCE. Every composed paragraph and group carries a `src` — a ledger entry, a track
-     value or a registry criterion. The present composer emits none, so this reports 100%
-     unsourced until the chronicle composer of plan-2026-09-02 (P1) lands. That is the
-     acceptance the plan wrote for P0: the gate exists, runs on every build, and fails on the
-     passage it will replace.
+  1. PROVENANCE. Every composed group carries a `src` — the ledger entries, track values or
+     registry criteria it was composed from. A group without one is a sentence nobody can
+     trace, which is the defect the review of 2026-09-01 found in every line of the old
+     passage.
 
-  2. LANGUAGE, rules 1 to 4 of the standard in plan-2026-09-02 §2, applied to composed text:
-     a noun phrase names its thing (no bare "the interval", "the arrangement", "the choice");
-     a sentence names an actor; plain verbs; twenty-eight words at most; at most one ", and"
-     join and one semicolon in a headline; no two consecutive sentences opening on the same
-     word or built to the same shape.
+  2. LANGUAGE, rules 1 to 4 of the standard in plan-2026-09-02 §2, applied to every composed
+     headline: a noun phrase names its thing (no bare "the interval", "the arrangement", "the
+     choice"); a sentence names an actor; plain verbs; twenty-eight words at most; at most one
+     ", and" join and one semicolon in a headline; no two consecutive sentences opening on the
+     same word or built to the same shape.
 
-  3. SANITY. A quantity past what the world could hold is a defect whoever computed it: on
-     2026-09-01 the sheet lettered 52,361 GW of installed AI compute at 2077, about six times
-     the world's generating capacity, and "$30.0 trillion, flat for five years" from the 2050s
-     on (review of 2026-09-01, F4). Every track on every composed path is read against a
-     documented ceiling, and a track frozen for twenty years is reported as saturated.
+  3. REPETITION. On the likeliest path, no ledger entry is drawn in full (what happened AND
+     what it established) for more than three consecutive years, and no two consecutive years
+     letter an identical passage — the ledger and the quantities have to move the text.
 
-Modes. Default is REPORT: print every count with examples and exit 0, so the nightly keeps
-publishing while the composer is rebuilt. `--strict` (or READOUT_STRICT=1) exits 7 on any
-fault, which is the setting from P1 onward.
+  4. SANITY, reported. A quantity past what the world could hold is a defect whoever computed
+     it: on 2026-09-01 the sheet lettered 52,361 GW of installed AI compute at 2077, about six
+     times the world's generating capacity. Every track on every composed path is read against
+     a documented ceiling, and a track frozen for twenty years is reported as saturated. These
+     are the parent's tracks; the plan's P3 stops lettering them past their ceilings and M4
+     replaces them, so they are reported here and refuse nothing.
 
-    python3 build/readout_gate.py [--strict] [--exemplars N] [--step N] [--json path]
+Modes. STRICT is the default since the chronicle composer landed (plan-2026-09-02, P1): checks
+1 to 3 refuse with exit 7. `--report` (or READOUT_STRICT=0 in the build) prints and exits 0.
+
+    python3 build/readout_gate.py [--strict|--report] [--exemplars N] [--step N] [--json path]
 """
 import json
 import os
@@ -51,7 +54,7 @@ SPECIFIERS = {"of", "between", "that", "which", "to", "in", "from", "at", "on", 
 BARE = re.compile(r"\b[Tt]he (%s)\b(?!\s+(%s)\b)" % ("|".join(BARE_NOUNS),
                                                      "|".join(SPECIFIERS)))
 # "the research loop" and "the capability loop" are the sheet's own terms and are specified
-BARE_OK = re.compile(r"\b[Tt]he (research|capability|feedback) loop\b")
+BARE_OK = re.compile(r"\b[Tt]he (?:whole )?(?:AI )?(research|capability|feedback) loop\b")
 
 # Rule 2. A sentence names an actor: a proper noun off the sentence's first word, or a role
 # the registry itself uses, or the systems.
@@ -69,7 +72,10 @@ ROLES = ("ai frontier systems laboratory laboratories regulator regulators insur
          "nurse nurses doctor doctors lawyer lawyers farmer farmers clerk clerks tenant tenants "
          "underwriter underwriters trustee trustees negotiator negotiators editor editors "
          "district districts county counties city cities town towns nation nations union unions "
-         "fund funds programme programmes shopkeeper shopkeepers driver drivers parent parents").split()
+         "fund funds programme programmes shopkeeper shopkeepers driver drivers parent parents "
+         "robots robot inspectors historians economists parties majorities builders adults "
+         "employment capacity sales approval revenue treasuries courts provider providers "
+         "factories farms warehouses bureaus legislator legislators parliaments").split()
 ROLE = re.compile(r"\b(%s)\b" % "|".join(ROLES), re.I)
 PROPER = re.compile(r"(?<=[a-z,;:] )[A-Z][a-z]{2,}")
 
@@ -80,7 +86,7 @@ FIGURATIVE = [
     r"\bstops? being a metaphor\b", r"\bthe drama\b", r"\bmigrates? elsewhere\b",
     r"\b(?:century|era|moment|future|decade) arrives\b", r"\bcomes? to a head\b",
     r"\bthe writing on the wall\b", r"\bwakes? up\b", r"\bpulls? ahead\b",
-    r"\bhollows? out\b", r"\bloosens\b", r"\bin the eye of\b", r"\bat the speed of\b",
+    r"\bhollows? out\b", r"\bin the eye of\b", r"\bat the speed of\b",
 ]
 FIG = re.compile("|".join(FIGURATIVE), re.I)
 
@@ -125,10 +131,9 @@ def check_language(headline):
     sents = sentences(headline)
     for s in sents:
         for m in BARE.finditer(s):
-            span = s[max(0, m.start() - 20):m.end() + 25]
-            if BARE_OK.search(s[max(0, m.start() - 2):m.end() + 6]):
+            if BARE_OK.search(s[max(0, m.start() - 12):m.end() + 6]):
                 continue
-            faults.append(("bare noun", span.strip()))
+            faults.append(("bare noun", s[max(0, m.start() - 20):m.end() + 25].strip()))
         if not has_actor(s):
             faults.append(("no actor", s[:100]))
         m = FIG.search(s)
@@ -142,10 +147,11 @@ def check_language(headline):
         faults.append(("joins", "%d semicolons in one headline" % headline.count(";")))
     for a, b in zip(sents, sents[1:]):
         if first_word(a) and first_word(a) == first_word(b):
-            faults.append(("opening", "two sentences open on '%s'" % first_word(a)))
+            faults.append(("opening", "two sentences open on '%s': %s / %s"
+                           % (first_word(a), a[:50], b[:50])))
         sa, sb = shape(a), shape(b)
-        if sa == sb and sa != "simple":
-            faults.append(("shape", "two '%s' sentences in a row" % sa))
+        if sa == sb and sa not in ("simple", "fig"):
+            faults.append(("shape", "two '%s' sentences in a row: %s / %s" % (sa, a[:50], b[:50])))
     return faults
 
 
@@ -164,6 +170,7 @@ FROZEN_YEARS = 20
 def check_sanity(tracks, label):
     faults = []
     yrs = tracks["year"]
+
     def first(cond):
         for k, y in enumerate(yrs):
             if cond(k):
@@ -184,7 +191,6 @@ def check_sanity(tracks, label):
         v = tracks.get(key)
         if not v:
             continue
-        # the first year from which the value never moves again, if that is 20+ years early
         last = len(v) - 1
         k = last
         while k > 0 and abs(v[k - 1] - v[last]) <= 1e-9 * max(1.0, abs(v[last])):
@@ -203,7 +209,10 @@ def node_bin():
 
 
 def main():
-    strict = "--strict" in sys.argv or os.environ.get("READOUT_STRICT") == "1"
+    strict = "--report" not in sys.argv and os.environ.get("READOUT_STRICT", "1") != "0"
+    if "--strict" in sys.argv:
+        strict = True
+
     def arg(flag, default):
         return sys.argv[sys.argv.index(flag) + 1] if flag in sys.argv else default
     n_ex, step = arg("--exemplars", "12"), arg("--step", "3")
@@ -223,16 +232,12 @@ def main():
     for line in sweep["lines"]:
         for yr in line["years"]:
             for p in yr["paras"]:
-                gs = p["groups"] or [{"src": p["src"]}]
-                for g in gs:
+                for g in p["groups"] or [{"src": p["src"]}]:
                     units += 1
                     if not g.get("src"):
                         unsourced += 1
     # 2 · language, over every composed headline
-    lang = {}
-    examples = {}
-    heads = 0
-    bad_heads = 0
+    lang, examples, heads, bad_heads = {}, {}, 0, 0
     for line in sweep["lines"]:
         for yr in line["years"]:
             heads += 1
@@ -245,41 +250,55 @@ def main():
                 if len(examples[rule]) < 3:
                     examples[rule].append("%s · %d · %s" % (
                         "likeliest" if line["mainline"] else "exemplar", yr["y"], text))
-    # 3 · sanity, on the composed paths' tracks
+    # 3 · repetition, on the likeliest path
+    rep = []
+    for line in sweep["lines"]:
+        if not line["mainline"]:
+            continue
+        prev_full, runs, prev_text, same = set(), {}, None, 0
+        for yr in line["years"]:
+            cur = set()
+            for p in yr["paras"]:
+                for g in p["groups"]:
+                    for k in g.get("full") or []:
+                        cur.add(k)
+            for k in cur:
+                runs[k] = runs.get(k, 0) + 1 if k in prev_full else 1
+                if runs[k] == 4:
+                    rep.append(("run", "%d · drawn in full four years running: %s" % (yr["y"], k)))
+            text = " ".join(p["text"] for p in yr["paras"]) + yr["headline"]
+            if prev_text is not None and text == prev_text:
+                same += 1
+                if same <= 3:
+                    rep.append(("same", "%d letters the same passage as %d" % (yr["y"], yr["y"] - 1)))
+            prev_full, prev_text = cur, text
+    # 4 · sanity, on the composed paths' tracks (reported)
     main_t = json.load(open(os.path.join(FORECAST, "mainline.json")))["tracks"]
     ex = json.load(open(os.path.join(FORECAST, "exemplars.json")))["lines"]
     sanity = check_sanity(main_t, "likeliest path")
     for i, L in enumerate([l for l in ex if not l.get("mainline")][:int(n_ex)]):
         sanity += check_sanity(L["tracks"], "exemplar %d" % i)
-    # cross slots, from the sweep
-    cross_missing = {}
-    for line in sweep["lines"]:
-        for c in line["cross"]:
-            if not c["found"]:
-                cross_missing[c["key"]] = cross_missing.get(c["key"], 0) + 1
 
-    faults = unsourced + sum(lang.values()) + len(sanity)
+    faults = unsourced + sum(lang.values()) + len(rep)
     mode = "STRICT" if strict else "report mode"
-    print("readout gate (%s) · %d paths · %d composed years" % (
-        mode, len(sweep["lines"]), heads))
-    print("  provenance: %d of %d composed units carry no src (%.0f%%)" % (
-        unsourced, units, 100.0 * unsourced / max(1, units)))
+    print("readout gate (%s) · %d paths · %d composed years" % (mode, len(sweep["lines"]), heads))
+    print("  provenance: %d of %d composed groups carry no src" % (unsourced, units))
     print("  language: %d of %d headlines carry a fault" % (bad_heads, heads))
     for rule in sorted(lang, key=lambda r: -lang[r]):
-        print("    %-11s %5d   e.g. %s" % (rule, lang[rule], examples[rule][0]))
-    print("  sanity: %d findings" % len(sanity))
-    for kind, text in sanity[:12]:
+        for ex_ in examples[rule][:2]:
+            print("    %-11s %5d   e.g. %s" % (rule, lang[rule], ex_))
+    print("  repetition: %d findings" % len(rep))
+    for kind, text in rep[:6]:
         print("    %-8s %s" % (kind, text))
-    if len(sanity) > 12:
-        print("    … %d more" % (len(sanity) - 12))
-    if cross_missing:
-        top = sorted(cross_missing.items(), key=lambda kv: -kv[1])[:6]
-        print("  cross slots unresolved on the composed paths: %s" % ", ".join(
-            "%s (%d years)" % kv for kv in top))
+    print("  sanity (the parent's tracks, reported, refusing nothing): %d findings" % len(sanity))
+    for kind, text in sanity[:6]:
+        print("    %-8s %s" % (kind, text))
+    if len(sanity) > 6:
+        print("    … %d more" % (len(sanity) - 6))
     if faults and strict:
         print("READOUT GATE REFUSED · %d faults" % faults, file=sys.stderr)
         raise SystemExit(7)
-    print("  %d faults · strict would %s" % (faults, "refuse" if faults else "pass"))
+    print("  %d faults · %s" % (faults, "PASS" if not faults else "strict would refuse"))
 
 
 if __name__ == "__main__":

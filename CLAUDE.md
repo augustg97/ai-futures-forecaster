@@ -98,6 +98,37 @@ path. Do not "tidy" it without moving all four together.
     under half the settings, which is why the tempo axes read the share of sampled paths
     past the research milestone by 2035.
 
+## The chronicle (2026-09-02)
+
+The forecast readout is a chronicle of the active path, composed by `web/js/ledger.js` from
+the ledger of dated events the model emits — milestone crossings, instantiated templates,
+position onsets, track thresholds, the calendar — the way `record.js` composes the record.
+`web/js/narrative.js` holds only authored tables keyed to things the model emits: one entry per
+template (`TEMPLATE_TEXT`), one sentence per position (`CRITERION`), the milestones, the
+domains, the thresholds, the onset rules, and the kept `MARKERS`, `PROCESS` and `LONGFORM`.
+The design is `Research/plan-2026-09-02-chronicle.md`; the review it answers is
+`Research/review-2026-09-01.md`. Rules that follow from it:
+
+- **Every composed group carries `src`**, and `build/readout_gate.py` refuses a build without
+  one. Nothing on the forecast side is chosen by a hash.
+- **The language standard governs every authored string** (plan §2): every noun phrase names
+  its thing; who, what and how much in every clause; plain verbs; twenty-eight words at most;
+  a comparison beside every figure; explicit dates. The readout gate tests the composed
+  headline for rules 1 to 4 and refuses. Write a template's text in the register of the
+  record, faithful to its source, and never in the parent's summary register.
+- **An entry is drawn in full for three years, as a dated clause for fifteen, then not at
+  all**; a condition still in force is carried by NOW with the year it began. The gate refuses
+  an entry drawn in full four years running.
+- **A new template reaches the sheet the night it arrives, in the parent's own words**, marked
+  `template:<id>`; `build/table_coverage.mjs` reports it and the build refuses until
+  `TEMPLATE_TEXT` carries it. A new position refuses until `CRITERION` carries it.
+- **A pinned path composes its own chronicle** from `cond.events`; the record year (≤ 2026)
+  still composes from `record.js`.
+
+The traps below that name FRAG, CROSS, ECON_MOD, HEADCL, spans, stages or the calendar lanes
+describe the vignette layer that P1 retired; they are kept as the history of why the chronicle
+exists.
+
 ## Commands
 
 ```bash

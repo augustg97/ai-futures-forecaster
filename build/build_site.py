@@ -337,17 +337,17 @@ def table_coverage():
         [node, os.path.join(ROOT, "build", "table_coverage.mjs")], cwd=ROOT)
     tc = json.loads(raw.decode("utf-8"))
     miss = tc["missing"]
-    if miss["HEADCL"] or miss["FRAG"]:
-        fail(4, "AUTHORED TABLES CANNOT LETTER THE REGISTRY — refusing to publish.\n"
-                 "  HEADCL lacks: %s\n  FRAG lacks: %s\n"
-                 "A path carrying one of these draws no clause for it and nothing reports the "
-                 "gap. Write the rows, then rebuild."
-                 % (" ".join(miss["HEADCL"]) or "none", " ".join(miss["FRAG"]) or "none"))
-    cross = " · ".join("%s %d/%d" % (c["pair"], c["have"], c["of"]) for c in tc["cross"])
-    print("tables OK · HEADCL and FRAG letter all %d positions · LONGFORM lacks %s · "
-          "PROCESS lacks %d · CROSS pairs written: %s"
-          % (tc["positions"], " ".join(miss["LONGFORM"]) or "none",
-             len(miss["PROCESS"]), cross))
+    if miss["CRITERION"] or miss["TEMPLATE_TEXT"]:
+        fail(4, "AUTHORED TABLES CANNOT LETTER THE ENGINE — refusing to publish.\n"
+                 "  CRITERION lacks positions: %s\n  TEMPLATE_TEXT lacks templates: %s\n"
+                 "A path carrying one of these draws the parent's own words for it, or "
+                 "nothing. Write the rows, then rebuild."
+                 % (" ".join(miss["CRITERION"]) or "none",
+                    " ".join(miss["TEMPLATE_TEXT"]) or "none"))
+    print("tables OK · a criterion for all %d positions · text for all %d templates · "
+          "onset rules on %d positions · LONGFORM lacks %s"
+          % (tc["positions"], tc["templates"], tc["onsetRules"],
+             " ".join(miss["LONGFORM"]) or "none"))
 
 
 def count_gate():
@@ -389,11 +389,13 @@ def readout_gate():
     """Judge the COMPOSED readout: provenance, the language standard, and sanity of quantities.
 
     `build/readout_gate.py` runs the composer over the likeliest path and a set of exemplars
-    and reads what the sheet would letter (plan-2026-09-02, P0). It runs in REPORT mode until
-    the chronicle composer lands, so the nightly keeps publishing while its numbers are on the
-    record; READOUT_STRICT=1 makes it refuse, exit 7, which is the setting from P1 onward.
+    and reads what the sheet would letter (plan-2026-09-02, P0). Since the chronicle composer
+    landed (P1) it is STRICT: a composed line without a source, a headline that breaks the
+    language standard's assembler rules, or a Since-2026 entry drawn in full for more than
+    three years running refuses the publish with exit 7. READOUT_STRICT=0 drops it to report
+    mode, out loud, for a night when the composer must ship with a known fault.
     """
-    strict = os.environ.get("READOUT_STRICT") == "1"
+    strict = os.environ.get("READOUT_STRICT", "1") != "0"
     rc = subprocess.call([sys.executable,
                           os.path.join(ROOT, "build", "readout_gate.py")]
                          + (["--strict"] if strict else []))

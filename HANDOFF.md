@@ -1,5 +1,42 @@
 # AI Futures Forecaster — live state
 
+**2026-09-02, later: P1 of the chronicle plan is in.** The forecast readout is a chronicle.
+`web/js/ledger.js` builds the ledger of the active path — milestone crossings from the
+capability track, the instantiated templates (ids recovered from the emitted text where the
+parent gives none), each position's onset by rule, the levels the tracks pass, the dated
+calendar — and composes the headline and the passage from it, the way `record.js` composes the
+record. `narrative.js` is now tables only: `TEMPLATE_TEXT` (38 templates, each with what
+happened, a dated clause for AHEAD, and what it established), `MILESTONE_TEXT`, `DOMAIN_TEXT`,
+`THRESHOLDS`, `CRITERION` (61 sentences, one per position), `WORK_CLAUSE`, `ONSET` (29 rules),
+`LADDER_NOW`, plus the kept `MARKERS`, `PROCESS` and `LONGFORM`. HEADCL, FRAG, RUNG_SHORT,
+CROSS, ECON, ECON_MOD, TENSION, PAIRS and the stage clock are gone: 9,652 lines to 1,258,
+2,897 authored strings to 467, every one of them keyed to a thing the model emits.
+
+The passage is three paragraphs across the three columns — SINCE {Y−15}, NOW, AHEAD ON THIS
+PATH — and the headline is a fixed construction: capability dated, the capital event and the
+two figures, work, who decides, the public, the year's own event. The assembler enforces the
+language standard's rule 4 on the composed output: at most one ", and" join and one semicolon in
+a headline, twenty-eight words at most, no two neighbours opening on the same word (a dated
+event sentence moves its date to the end). An entry appears in full for three years, as a dated
+clause for fifteen, then leaves the lane; a condition still in force is carried by NOW with the
+year it began.
+
+**The readout gate is strict** (`build/readout_gate.py`, exit 7): provenance on every composed
+group, the language standard over every composed headline, and repetition on the likeliest
+path. It passes on the likeliest path at every year and on twelve exemplars every third year:
+0 unsourced of 2,648 groups, 0 language faults in 374 headlines, 0 repetition findings.
+`measure_repeat.mjs` reads 74 distinct headlines in 74 years. `READOUT_STRICT=0` drops it to
+report mode, out loud. The 76 sanity findings (compute past world capacity in 2060, revenue
+frozen at $30 trillion from 2045, employment at −35% from 2060) are the parent's tracks,
+reported nightly and refusing nothing until P3.
+
+What the chronicle shows about the model, now that it composes only what the model emits:
+past 2050 the likeliest path carries three entries in forty years, and the far decades read
+thin. That is the honest state (plan-2026-09-02 §3, the model programme). The alternatives
+plate's captions, the branches plate and the controls' readouts are P5.
+
+The audit sweep's two findings predate P0 and stand (below). `docs/` is untouched here.
+
 **2026-09-02: P0 of the chronicle plan is in** ([`Research/plan-2026-09-02-chronicle.md`](Research/plan-2026-09-02-chronicle.md);
 the review it answers is [`Research/review-2026-09-01.md`](Research/review-2026-09-01.md)).
 The six defects of the review are fixed in `web/`; `docs/` is untouched here and the nightly

@@ -1,36 +1,32 @@
-// build/table_coverage.mjs — which registry positions the authored TABLES can letter.
+// build/table_coverage.mjs — which registry positions and engine templates the authored
+// tables can letter.
 //
 // The coverage gate compares the pulled registry against `registry-covered.json`, which is the
 // drawing's own declaration. A declaration can be wrong: on 2026-09-01 it listed K4 as covered
-// while HEADCL and FRAG had no K4 row, so a path carrying K4 drew no takeoff clause and nothing
-// said so (review of 2026-09-01, defect 2). This reads the tables themselves and prints what
-// they lack, and which of the six CROSS pairings `describe()` asks for are written. The build
-// refuses on a missing HEADCL or FRAG row and reports the rest.
+// while the tables had no K4 row, so a path carrying K4 drew no takeoff clause and nothing said
+// so (review of 2026-09-01, defect 2). This reads the tables themselves. Since the chronicle
+// (plan-2026-09-02, P1) the tables are CRITERION, one sentence per position; TEMPLATE_TEXT, one
+// entry per engine template; and LONGFORM, the entry a position opens on click. The build
+// refuses on a position without a criterion or a template without text, and reports LONGFORM.
 //
 //   node build/table_coverage.mjs        → JSON on stdout
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { HEADCL, FRAG, LONGFORM, PROCESS, CROSS_SLOTS, crossPairKnown } from '../web/js/narrative.js';
+import { CRITERION, TEMPLATE_TEXT, LONGFORM, ONSET } from '../web/js/narrative.js';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const net = JSON.parse(fs.readFileSync(path.join(ROOT, 'web', 'data', 'forecast', 'network.json'), 'utf8'));
-const axes = {};
-for (const a of net.axes) axes[a.key] = a.positions.map((p) => p[0]);
-const all = Object.values(axes).flat();
+const F = (n) => JSON.parse(fs.readFileSync(path.join(ROOT, 'web', 'data', 'forecast', n), 'utf8'));
+const net = F('network.json'), engine = F('engine.json');
+const all = net.axes.flatMap((a) => a.positions.map((p) => p[0]));
+const templates = (engine.templates || []).map((t) => t.id);
 
 const missing = {
-  HEADCL: all.filter((p) => !HEADCL[p]),
-  FRAG: all.filter((p) => !FRAG[p]),
+  CRITERION: all.filter((p) => !CRITERION[p]),
+  TEMPLATE_TEXT: templates.filter((id) => !TEMPLATE_TEXT[id]),
   LONGFORM: all.filter((p) => !LONGFORM[p]),
-  PROCESS: all.filter((p) => !PROCESS[p]),
 };
-const cross = CROSS_SLOTS.map(([a, b]) => {
-  const pairs = [];
-  for (const x of axes[a] || []) for (const y of axes[b] || []) pairs.push([x, y]);
-  const have = pairs.filter(([x, y]) => crossPairKnown(x, y)).length;
-  return { pair: `${a}|${b}`, have, of: pairs.length };
-});
+const onsetRules = all.filter((p) => ONSET[p]).length;
 process.stdout.write(JSON.stringify({
-  version: net.version, positions: all.length, missing, cross,
+  version: net.version, positions: all.length, templates: templates.length, missing, onsetRules,
 }));

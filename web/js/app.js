@@ -9,7 +9,7 @@ import { Draft, PEN, INK, paperTileURL } from './draft.js';
 import { SECTIONS, SHEET_W, TABS, CHART, COL, CTL_NOTE_W, balance,
          proseColumns, measureSections, SHEET_CW } from './sections.js';
 import { column, fmtNum } from './instruments.js';
-import { describe, headline } from './narrative.js';
+import { chronicle } from './ledger.js';
 import { describeRecord, headlineRecord, RECORD, recordAt, whenOf } from './record.js';
 import { LONGFORM } from './narrative.js';
 import { chooseFigures } from './figures.js';
@@ -1134,8 +1134,12 @@ function sheetState(measure) {
   // for 2026 says Nvidia closed at an all-time high in April. A CONTROL SETS A FUTURE; IT
   // CANNOT REWRITE WHAT HAS HAPPENED.
   const isRecord = state.yr < D.engine.y0 + 1;
-  const paras = isRecord ? describeRecord(state.yr, trunkCap)
-                         : describe(wl, state.yr, tr, D.engine.y0, trunkCap);
+  // THE FORECAST IS A CHRONICLE OF THE ACTIVE PATH: its ledger of dated events — milestones,
+  // instantiated templates, position onsets, track thresholds, the calendar — composed the way
+  // the record is composed (plan-2026-09-02, P1). The headline and the passage come from one
+  // ledger, so they cannot disagree.
+  const ch = isRecord ? null : chronicle(wl, state.yr, tr, activeEvents(), D.engine, D.network);
+  const paras = isRecord ? describeRecord(state.yr, trunkCap) : ch.paras;
   const S = {
     yr: state.yr, NOW: NOW_Y, TRUNK, pin: state.pin, obs: state.obs, build: DATA_V,
     engine: D.engine, network: D.network, crisis: D.crisis, grounding: D.grounding,
@@ -1155,8 +1159,8 @@ function sheetState(measure) {
     lineLabel: D.network.axes.map((a) => wl[a.key]).filter(Boolean).join('·'),
     effect: (k, p) => (eff.map[`${k}:${p}`] ?? null),
     isRecord,
-    headline: isRecord ? headlineRecord(state.yr, trunkCap)
-                       : headline(wl, state.yr, tr, D.engine.y0),
+    headline: isRecord ? headlineRecord(state.yr, trunkCap) : ch.headline,
+    ledger: ch ? ch.ledger : null,
     record: RECORD, recordAt, chartView: state.chartView,
     recordWindow: state.recordWindow,
     prose: proseColumns(measure, paras),
