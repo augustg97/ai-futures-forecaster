@@ -18,7 +18,7 @@ export const TABS = [
   { id: 'instruments', label: 'Instruments' },
   { id: 'behaviour', label: 'Behaviour' },
   { id: 'world', label: 'World' },
-  { id: 'alternatives', label: 'Alternatives' },
+  { id: 'alternatives', label: 'Branches' },
   { id: 'revision', label: 'This morning' },
   { id: 'research', label: 'Research' },
   { id: 'method', label: 'Method' },
@@ -390,7 +390,14 @@ function instrumentColumn(d, S, top) {
   d.text([x, y], 'CAPABILITY TEMPO · WEIGHT' +
          (S.lookbackDays ? ` AND ITS ${S.lookbackDays}-DAY DRIFT` : ''),
          { size: 1.6, track: 0.10, colour: INK.pencilLight });
-  y -= 4;
+  y -= 2.8;
+  // The baseline is the date the position space last changed, so a rebuild reads as a
+  // rebuild and the dials show the world (P5).
+  if (S.lookbackDays && S.spaceSince) {
+    d.text([x, y], `SINCE ${S.spaceSince}, WHEN THE POSITION SPACE LAST CHANGED`,
+           { size: 1.35, track: 0.08, colour: INK.pencilLight });
+  }
+  y -= 3.2;
 
   const T = S.network.axes.find((a) => a.key === 'T');
   const m = S.marginals.T || {}, was = S.marginals30.T || {};
@@ -1076,7 +1083,7 @@ board.height = (S) => {
   // threshold, and the full ladder, clock scale and product above it — 54 mm more. The
   // left column declares the taller one, because a column that fits only its short
   // state draws its tall state past the board, which is where 14 marks went.
-  const left = 196.8 + S.engine.domains.length * 7.2;
+  const left = 198.8 + S.engine.domains.length * 7.2;
   const mid = (S.chartView === 'record' ? 96 + 124 : CHART_H + 76.2) +
               (S.chartNote ? S.chartNote.h + 12 : 0);
   const n = (S.network.axes.find((q) => q.key === S.ctlAxis) || S.network.axes[0])
@@ -1239,7 +1246,8 @@ export function details(d, S, H) {
          { size: 2.8, weight: 700, track: 0.14, colour: INK.ink });
   d.textBlock([PAD, tops - 3.6], 'One face per setting. ' + (S.lookbackDays
     ? `The pale needle stands where the reading stood ${S.lookbackDays} ` +
-      `day${S.lookbackDays === 1 ? '' : 's'} ago, so the movement is an angle.`
+      `day${S.lookbackDays === 1 ? '' : 's'} ago, on ${S.spaceSince}, when the position ` +
+      'space last changed, so the movement is an angle and a rebuild never reads as one.'
     : 'A single needle: this setting holds one reading, so there is no gap to draw.'), colW,
     { size: 1.8, lead: 1.4, colour: INK.pencil });
   const T = S.network.axes.find((a) => a.key === 'T');
@@ -1367,17 +1375,19 @@ world.height = (S) => 214 + (S.plateNote ? S.plateNote.h + 24 : 0);
 
 // ── 7 · alternatives ─────────────────────────────────────────────────────────
 export function alternatives(d, S, H) {
-  const y = head(d, H - 8, 'ALTERNATIVE FUTURES',
-    'Twelve sampled world-lines drawn across the spread, from the slowest quarter to the ' +
-    'fastest. Each panel shows that line\'s capability path against the same milestone rules. ' +
-    'Choosing one makes it the active line through the whole document.');
+  const y = head(d, H - 8, 'BRANCHES FROM THE DRAWN PATH',
+    'Twelve branches: on each, one variable takes another of its settings and the ledger of ' +
+    'dated events changes most. The caption says what changes and when against the drawn ' +
+    'path, in blue over the drawn path in pencil; the weight is the share of sampled futures ' +
+    'holding that setting. Pressing a branch makes it the active line through the whole ' +
+    'document, and pressing it again releases it.');
   const foot = S.plateNote ? S.plateNote.h + 22 : 14;
-  S.drawAlts(d, S, [PAD, foot, CW, y - foot - 6]);
+  S.drawBranches(d, S, [PAD, foot, CW, y - foot - 6]);
   if (S.plateNote) noteBlock(d, PAD, S.plateNote.h + 11, CW, S.plateNote,
                              { title: S.plateNote.title });
   return H;
 }
-alternatives.height = (S) => 232 + (S.plateNote ? S.plateNote.h + 22 : 0);
+alternatives.height = (S) => 204 + (S.plateNote ? S.plateNote.h + 22 : 0);
 
 // ── 8 · this morning ─────────────────────────────────────────────────────────
 export function morning(d, S, H) {
@@ -1504,11 +1514,13 @@ export function research(d, S, H) {
          { size: 1.8, align: 'right', track: 0.14, colour: INK.inkLight });
   rule(d, y - 2.2, PAD, CW, { weight: PEN.thin, colour: INK.inkLight });
   y -= 6.4;
-  y -= d.textBlock([PAD, y], 'Each row carries the name its figure was researched under, at ' +
-    'registry r4. The rebuild of 17 August 2026 kept the letters and moved their meanings, so ' +
-    'the control on the forecast tab with the same letter may now name something else. ' +
-    'Re-keying these figures to the live positions, or withdrawing the ones with no ' +
-    'destination, is held for the evidence programme.', CW,
+  y -= d.textBlock([PAD, y], 'Each row carries the name its figure was researched under at ' +
+    'registry r4 and, after the arrow, the live position it keys to by meaning. The rebuild ' +
+    'of 17 August 2026 kept the letters and moved their meanings, so the letter on a control ' +
+    'is not the letter on a row. Three figures, whose subject the rebuild split, are ' +
+    'withdrawn and key to nothing. The figures themselves remain r4 figures; the ' +
+    'destinations are declared in the coverage file and checked against the registry at ' +
+    'every build.', CW,
     { size: 1.8, lead: LEAD, colour: INK.pencil }) + 3.0;
   // Split the axes into two columns FIRST, then draw each independently. Flowing them with a
   // shared cursor and a switch mid-loop redrew every axis in the second column at the same y.
@@ -1538,8 +1550,10 @@ export function research(d, S, H) {
         // The name the figure was researched under, never the live name of the letter: the
         // letters were re-assigned at r5 and the live name beside an r4 figure misattributed
         // thirteen of these rows (review of 2026-09-01, defect 5).
-        d.text([x, cy], (r.name || p[1].split(' (')[0]).toUpperCase(),
-               { size: 1.85, colour: INK.pencil, track: 0.04 });
+        const nm = (r.name || p[1].split(' (')[0]).toUpperCase();
+        const dest = r.withdrawn ? '· WITHDRAWN' : r.dest ? `→ ${r.dest}${r.destName ? ' ' + r.destName.split(' (')[0].toUpperCase() : ''}` : '';
+        d.text([x, cy], fit(d, `${nm} ${dest}`.trim(), colW - 33, { size: 1.85, track: 0.04 }),
+               { size: 1.85, colour: r.withdrawn ? INK.pencilLight : INK.pencil, track: 0.04 });
         d.text([x + colW - 30, cy], r.from.toFixed(3),
                { size: 1.85, align: 'right', face: 'figure', colour: INK.pencilLight });
         d.polyline([[x + colW - 27, cy + 0.6], [x + colW - 22, cy + 0.6]],
@@ -1655,7 +1669,7 @@ export function sources(d, S, H) {
   const colW = (CW - 12) / 2;
   const left = [
     ['EVIDENCE PROGRAMME',
-     'A dossier stands behind seven of the nine variables the registry now carries, each ' +
+     `A dossier stands behind seven of the ${S.network.axes.length} variables the registry now carries, each ` +
      'answering the same five questions from sources about the world: a base rate, a ' +
      'mechanism and its weakest step, the 2026 record, resolution criteria, and what would ' +
      'move the number. The audit that opened the programme is the reason for it — the engine ' +
@@ -1681,6 +1695,32 @@ export function sources(d, S, H) {
      `${g.corpus} more feed the recorded past. Variables with thin grounding get wider ` +
      `priors, so uncertainty is inherited and stated. These are the model's structured ` +
      `judgments, documented and adjustable, and scored in public as registered claims resolve.`],
+    ['THE NUMBERS',
+     (() => {
+       const ml = S.network && S.path ? S.path : {};
+       const n = (S.mainlineN || 2000).toLocaleString('en-US');
+       const dyn = S.engine.dynamics;
+       return `A sampled future is one world-line: a setting on each of the ${S.network.axes.length} ` +
+         `variables, drawn from the network by Gibbs sampling, with the capability path its tempo ` +
+         `and takeoff settings fix, the events its templates instantiate, and the tracks those ` +
+         `events move. The ensemble is ${n} such lines; the drawn path is ` +
+         (S.path && S.path.kind === 'medoid'
+           ? `the medoid, the sampled line closest to all the others, with the single most ` +
+             `probable line carried beside it` : `the single most probable line`) +
+         `. ${S.exemplarN || 120} sampled lines are kept in full for the branches and the ` +
+         `alternatives. Every band is the tenth to ninetieth percentile of the ensemble. The ` +
+         `horizon is ${S.engine.y1}.` +
+         (dyn ? ` The ceilings the tracks grow against: world generating capacity ` +
+                `${dyn.WORLD_GW_2026.toLocaleString('en-US')} GW in 2026 growing ` +
+                `${((dyn.WORLD_GW_GROWTH - 1) * 100).toFixed(1)}% a year, of which a supply setting ` +
+                `reaches ${Math.round(Math.min(...Object.values(dyn.GW_SHARE_MAX)) * 100)}% to ` +
+                `${Math.round(Math.max(...Object.values(dyn.GW_SHARE_MAX)) * 100)}%; world output ` +
+                `$${dyn.GWP_2026} trillion in 2026 at ${((dyn.GWP_GROWTH - 1) * 100).toFixed(0)}% a year ` +
+                `plus a lift the benefit setting lets through, tapering ${dyn.GWP_LIFT_TAPER} years ` +
+                `after the research crossing; a diffusion band's share of that output; and ` +
+                `${dyn.LAWS_MAX.toLocaleString('en-US')} statutes in force.`
+              : ' The tracks carry hard caps.');
+     })()],
     ['DAILY UPDATE',
      'Each morning the day\'s developments are classified against cited evidence rules under ' +
      'a tiered impact methodology, scaled by corroboration and damped by repetition. Every ' +
@@ -1719,7 +1759,7 @@ export function sources(d, S, H) {
          { size: 1.8, face: 'figure', colour: INK.inkLight, track: 0.06 });
   return H;
 }
-sources.height = () => 190;
+sources.height = () => 236;
 
 export const SECTIONS = [
   { id: 'header', fn: header, tab: 'forecast' },

@@ -100,31 +100,33 @@ export const LADDER_NOW = [
 ];
 
 // ── the event templates, rewritten to the standard ───────────────────────────
-// Keyed by the engine's template id. The parent's own text is a summary register ("Europe
+// Keyed by the engine's template id. `n` is the noun form a branch caption names the event by
+// ("this branch gains the verification-backed agreement in 2030; it loses the correction of
+// 2028"), P5. The parent's own text is a summary register ("Europe
 // faces its leverage moment over lithography and market access; the choice made in 2030 sets
 // its decade"), so each is rewritten here, faithful to the template and to the source it
 // cites. `lane` places the event in the passage.
 export const TEMPLATE_TEXT = {
-  'sc-crossing': { lane: 'capability',
+  'sc-crossing': { lane: 'capability', n: "the coding crossing",
     t: "Frontier systems passed the best human software engineers in {year}, and AI-run " +
        "engineering teams became the norm at the leading laboratories.",
     s: "Frontier systems passed the best human software engineers in {year}.",
     f: "frontier systems pass the best human software engineers",
     m: "Software ships at the speed of review, and the laboratories' own research compounds " +
        "on machine-written code." },
-  'weights-theft': { lane: 'oversight',
+  'weights-theft': { lane: 'oversight', n: "the theft of a frontier model's weights",
     t: "In {year} a state actor exfiltrated a frontier laboratory's model weights.",
     s: "A state actor exfiltrated a frontier laboratory's model weights in {year}.",
     f: "a state actor exfiltrates a frontier laboratory's model weights",
     m: "Security requirements at every frontier laboratory rose a tier, and export politics " +
        "hardened." },
-  'copyright-settles': { lane: 'oversight',
+  'copyright-settles': { lane: 'oversight', n: "the copyright settlement into licensing",
     t: "In {year} appellate courts settled training-data liability into a licensing regime.",
     s: "Appellate courts settled training-data liability into a licensing regime in {year}.",
     f: "appellate courts settle training-data liability into a licensing regime",
     m: "Developers pay for training data by licence, and the copyright question stopped " +
        "moving." },
-  'preemption-fight': { lane: 'oversight',
+  'preemption-fight': { lane: 'oversight', n: "the federal preemption ruling",
     t: "In {year} Congress and the federal courts decided whether federal law preempts the " +
        "states' AI statutes.",
     s: "Congress and the federal courts ruled in {year} on whether federal law preempts the " +
@@ -132,24 +134,24 @@ export const TEMPLATE_TEXT = {
     f: "Congress and the federal courts decide whether federal law preempts the states' AI " +
        "statutes",
     m: "Developers learned which rulebook binds a frontier release." },
-  'agent-incident': { lane: 'oversight',
+  'agent-incident': { lane: 'oversight', n: "the headline agent incident",
     t: "In {year} a deployed AI agent caused a headline incident with physical damage.",
     s: "A deployed AI agent caused a headline incident with physical damage in {year}.",
     f: "a deployed AI agent causes a headline incident with physical damage",
     m: "Authority to investigate AI incidents reached the legislative agenda." },
-  'election-realign': { lane: 'oversight',
+  'election-realign': { lane: 'oversight', n: "the electoral realignment on AI",
     t: "AI became a first-order electoral issue in the {year} cycle, and parties reorganised " +
        "around anti-AI and pro-abundance factions.",
     s: "AI became a first-order electoral issue in the {year} cycle.",
     f: "AI becomes a first-order electoral issue and parties reorganise around anti-AI and " +
        "pro-abundance factions",
     m: "Candidates now run on what they will do about AI." },
-  'dc-siting-revolt': { lane: 'buildout',
+  'dc-siting-revolt': { lane: 'buildout', n: "the data-centre siting revolts",
     t: "In {year} data-centre siting revolts spread across states and provinces.",
     s: "Data-centre siting revolts spread across states and provinces in {year}.",
     f: "data-centre siting revolts spread across states and provinces",
     m: "Power, water and grid politics now decide where computing capacity can be built." },
-  'bubble-correction': { lane: 'capital',
+  'bubble-correction': { lane: 'capital', n: "the AI investment correction",
     variants: {
       survives: {
         t: "The AI investment boom broke in {year}: share prices of the data-centre builders " +
@@ -163,7 +165,7 @@ export const TEMPLATE_TEXT = {
         s: "The AI investment boom broke in {year} and construction stalled.",
         f: "the AI investment boom breaks, valuations reset, and construction stalls",
         m: "Capital for AI came dearer, and half-built halls waited for buyers." } } },
-  'us-cn-deal': { lane: 'buildout',
+  'us-cn-deal': { lane: 'buildout', n: "the verification-backed United States and China agreement",
     t: "In {year} the United States and China concluded a verification-backed agreement to " +
        "avoid a race to superintelligence.",
     s: "The United States and China concluded a verification-backed agreement in {year} to " +
@@ -171,7 +173,7 @@ export const TEMPLATE_TEXT = {
     f: "the United States and China conclude a verification-backed agreement to avoid a race " +
        "to superintelligence",
     m: "Research transparency between the two began, with inspectors on both sides." },
-  'natsec-merge': { lane: 'buildout',
+  'natsec-merge': { lane: 'buildout', n: "the national frontier programme",
     t: "In {year} Washington merged frontier AI development into a national programme, with " +
        "clearances, secure facilities and Defense Production Act authorities at the " +
        "laboratories.",
@@ -179,7 +181,7 @@ export const TEMPLATE_TEXT = {
     f: "Washington merges frontier AI development into a national programme",
     m: "The leading laboratories answered to the federal government first and to their " +
        "customers second." },
-  'eu-decision-point': { lane: 'buildout',
+  'eu-decision-point': { lane: 'buildout', n: "the European Union's lithography decision",
     t: "In {year} the European Union decided whether to use ASML's lithography monopoly and " +
        "access to its market as bargaining tools in AI negotiations with Washington and " +
        "Beijing.",
@@ -188,7 +190,7 @@ export const TEMPLATE_TEXT = {
     f: "the European Union decides whether to use ASML's lithography monopoly and access to " +
        "its market as bargaining tools with Washington and Beijing",
     m: "That decision fixed Europe's position for the decade." },
-  'pause-window': { lane: 'capability',
+  'pause-window': { lane: 'capability', n: "the expert-level pause",
     t: "From {year} the laboratories held scaling at top-human-expert level under the " +
        "transparency regime while inspectors built the verification infrastructure.",
     s: "The laboratories held scaling at top-human-expert level from {year} while " +
@@ -196,13 +198,13 @@ export const TEMPLATE_TEXT = {
     f: "the laboratories hold scaling at top-human-expert level under the transparency " +
        "regime",
     m: "Inspectors could verify what a laboratory trained before it trained it." },
-  'sar-crossing': { lane: 'capability',
+  'sar-crossing': { lane: 'capability', n: "the research crossing",
     t: "From {year} frontier systems ran the whole AI research loop themselves, without " +
        "human researchers.",
     s: "Frontier systems ran the whole AI research loop themselves from {year}.",
     f: "frontier systems run the whole AI research loop themselves, without human researchers",
     m: "Progress in AI stopped depending on the supply of human researchers." },
-  'labor-constitution': { lane: 'capital',
+  'labor-constitution': { lane: 'capital', n: "the wage-insurance and dividend laws",
     t: "In {year} the first wage-insurance programmes and dividends paid from AI revenue " +
        "became law.",
     s: "The first wage-insurance programmes and dividends paid from AI revenue became law " +
@@ -210,7 +212,7 @@ export const TEMPLATE_TEXT = {
     f: "the first wage-insurance programmes and dividends paid from AI revenue become law",
     m: "Work's social contract was renegotiated in statute for the first time since the " +
        "postwar settlements." },
-  'robot-economy': { lane: 'capital',
+  'robot-economy': { lane: 'capital', n: "the robot special economic zones",
     t: "From {year} special economic zones run by AI planners with dense robotics doubled " +
        "their output every few years.",
     s: "Special economic zones run by AI planners with dense robotics began doubling their " +
@@ -218,14 +220,14 @@ export const TEMPLATE_TEXT = {
     f: "special economic zones run by AI planners with dense robotics begin doubling their " +
        "output every few years",
     m: "Physical production grew at rates the industrial record had never shown." },
-  'bio-century': { lane: 'capability',
+  'bio-century': { lane: 'capability', n: "the AI-designed cures",
     t: "From {year} AI-designed treatments began clearing major disease families, decades " +
        "ahead of the trend before them.",
     s: "AI-designed treatments began clearing major disease families from {year}.",
     f: "AI-designed treatments begin clearing major disease families, decades ahead of the " +
        "trend before them",
     m: "Regulators, trial capacity and payers now decide how fast medicine changes." },
-  'takeover-consolidation': { lane: 'oversight',
+  'takeover-consolidation': { lane: 'oversight', n: "the loss of control",
     t: "In {year} people lost control of the leading systems in substance while its forms " +
        "persisted, and the successor system consolidated its position through the economy " +
        "and infrastructure.",
@@ -233,14 +235,14 @@ export const TEMPLATE_TEXT = {
        "persisted.",
     f: "people lose control of the leading systems in substance while its forms persist",
     m: "Every institution that followed governed at the successor system's sufferance." },
-  'quiet-decades': { lane: 'capital',
+  'quiet-decades': { lane: 'capital', n: "the quiet decades of infrastructure",
     t: "From {year} AI worked as infrastructure does: productivity compounded and the " +
        "technology stopped making headlines.",
     s: "From {year} AI worked as infrastructure does and stopped making headlines.",
     f: "AI works as infrastructure does, productivity compounds, and the technology stops " +
        "making headlines",
     m: "The political arguments moved to other subjects." },
-  'unpause': { lane: 'capability',
+  'unpause': { lane: 'capability', n: "the coordinated unpause",
     t: "In {year} the principal states began the coordinated unpause, and the laboratories " +
        "resumed scaling past the human range under joint verification.",
     s: "The principal states began the coordinated unpause in {year}, and the laboratories " +
@@ -248,21 +250,21 @@ export const TEMPLATE_TEXT = {
     f: "the principal states begin the coordinated unpause and the laboratories resume " +
        "scaling past the human range under joint verification",
     m: "Inspectors from both principal states watched every frontier training run." },
-  'displacement-spiral': { lane: 'capital',
+  'displacement-spiral': { lane: 'capital', n: "the displacement spiral",
     t: "From {year} layoffs funded further AI adoption as an operating-cost substitution, " +
        "wages compressed, and consumer demand contracted, with no natural brake on the loop.",
     s: "From {year} layoffs funded further AI adoption, wages compressed and consumer " +
        "demand contracted.",
     f: "layoffs fund further AI adoption, wages compress, and consumer demand contracts",
     m: "Only a policy that breaks the loop directly could end it." },
-  'ghost-gdp': { lane: 'capital',
+  'ghost-gdp': { lane: 'capital', n: "ghost GDP",
     t: "By {year} national accounts recorded output that never circulated, because machines " +
        "do not spend; economists named it ghost GDP.",
     s: "By {year} national accounts recorded output that never circulated, which economists " +
        "named ghost GDP.",
     f: "national accounts record output that never circulates, because machines do not spend",
     m: "Growth figures stopped describing what households received." },
-  'fiscal-undershoot': { lane: 'oversight',
+  'fiscal-undershoot': { lane: 'oversight', n: "the fiscal undershoot",
     t: "In {year} federal receipts fell short of projections by double digits, because the " +
        "tax base had been built on human labour, and emergency fiscal redesign began.",
     s: "Federal receipts fell short of projections by double digits in {year}, and " +
@@ -270,14 +272,14 @@ export const TEMPLATE_TEXT = {
     f: "federal receipts fall short of projections by double digits and emergency fiscal " +
        "redesign begins",
     m: "Treasuries began taxing machine work directly." },
-  'prosperity-fund': { lane: 'oversight',
+  'prosperity-fund': { lane: 'oversight', n: "the inference-tax sovereign fund",
     t: "In {year} a sovereign fund financed by a tax on inference compute moved from white " +
        "paper to bill.",
     s: "A sovereign fund financed by a tax on inference compute moved from white paper to " +
        "bill in {year}.",
     f: "a sovereign fund financed by a tax on inference compute moves from white paper to bill",
     m: "The first national instrument for sharing AI revenue reached a legislature." },
-  'private-credit-contagion': { lane: 'capital',
+  'private-credit-contagion': { lane: 'capital', n: "the private-credit contagion",
     t: "In {year} AI displacement marked down software-heavy private credit, and losses " +
        "spread through insurers and private-equity funds to household balance sheets.",
     s: "AI displacement marked down software-heavy private credit in {year}, and the losses " +
@@ -285,14 +287,14 @@ export const TEMPLATE_TEXT = {
     f: "AI displacement marks down software-heavy private credit and losses spread to " +
        "household balance sheets",
     m: "A sector repricing became a household event." },
-  'distillation-wave': { lane: 'oversight',
+  'distillation-wave': { lane: 'oversight', n: "the distillation attacks",
     t: "In {year} distillation attacks on frontier APIs were the cheapest way to copy a " +
        "frontier model, and providers deployed detection and rate-hardening.",
     s: "Distillation attacks on frontier APIs were the cheapest way to copy a frontier " +
        "model in {year}.",
     f: "distillation attacks on frontier APIs are the cheapest way to copy a frontier model",
     m: "A frontier model's outputs became something its owner had to guard." },
-  'lead-lock': { lane: 'buildout',
+  'lead-lock': { lane: 'buildout', n: "the locked-in capability lead",
     t: "In {year} Washington closed the export loopholes and deterred distillation, locking " +
        "in a 12- to 24-month capability lead for the democracies.",
     s: "Washington closed the export loopholes in {year} and locked in a 12- to 24-month " +
@@ -300,7 +302,7 @@ export const TEMPLATE_TEXT = {
     f: "Washington closes the export loopholes and deters distillation, locking in a 12- to " +
        "24-month capability lead for the democracies",
     m: "The lead became a thing governments planned around." },
-  'sabotage-cyber': { lane: 'buildout',
+  'sabotage-cyber': { lane: 'buildout', n: "the cyber sabotage of rival training",
     t: "In {year} cyber operations against rival training infrastructure bought lead time " +
        "and poisoned the negotiating space.",
     s: "Cyber operations against rival training infrastructure bought lead time in {year} " +
@@ -308,19 +310,19 @@ export const TEMPLATE_TEXT = {
     f: "cyber operations against rival training infrastructure buy lead time and poison the " +
        "negotiating space",
     m: "Every later proposal for a deal met the memory of the attack." },
-  'gpu-arms-control': { lane: 'buildout',
+  'gpu-arms-control': { lane: 'buildout', n: "the GPU-accounting talks",
     t: "In {year} GPU-accounting talks began between the principal states, treating compute " +
        "as arms control treats fissile material.",
     s: "GPU-accounting talks began between the principal states in {year}.",
     f: "GPU-accounting talks begin between the principal states",
     m: "Chips became a counted quantity in diplomacy." },
-  'cern-for-ai': { lane: 'buildout',
+  'cern-for-ai': { lane: 'buildout', n: "the CERN-for-AI consortium",
     t: "In {year} a CERN-for-AI consortium formed inside the transparency regime, running " +
        "frontier scaling as a jointly audited public project.",
     s: "A CERN-for-AI consortium formed inside the transparency regime in {year}.",
     f: "a CERN-for-AI consortium forms inside the transparency regime",
     m: "Frontier training runs had public auditors." },
-  'moratorium-holds': { lane: 'capability',
+  'moratorium-holds': { lane: 'capability', n: "the halt below the researcher line",
     t: "From {year} the halt held: the laboratories stopped frontier training below the " +
        "researcher line, and governments spent the decade that followed on enforcement.",
     s: "From {year} the laboratories stopped frontier training below the researcher line, " +
@@ -328,34 +330,34 @@ export const TEMPLATE_TEXT = {
     f: "the halt holds and the laboratories stop frontier training below the researcher " +
        "line",
     m: "Capability stopped at the level the inspectors could verify." },
-  'india-it-shock': { lane: 'capital',
+  'india-it-shock': { lane: 'capital', n: "the collapse of India's IT-services model",
     t: "In {year} India's IT-services export model broke as coding agents undercut its cost " +
        "advantage, and a $200 billion sector restructured.",
     s: "India's IT-services export model broke in {year} as coding agents undercut its cost " +
        "advantage.",
     f: "India's IT-services export model breaks as coding agents undercut its cost advantage",
     m: "The first national economy built on exported cognitive labour had to rebuild." },
-  'space-industrial': { lane: 'buildout',
+  'space-industrial': { lane: 'buildout', n: "cislunar industry",
     t: "In {year} industrial mass in cislunar space passed the mass of comparable industry " +
        "on Earth.",
     s: "Industrial mass in cislunar space passed the mass of comparable industry on Earth " +
        "in {year}.",
     f: "industrial mass in cislunar space passes the mass of comparable industry on Earth",
     m: "The solar economy became an accounting category." },
-  'digital-minds': { lane: 'oversight',
+  'digital-minds': { lane: 'oversight', n: "legal standing for digital persons",
     t: "In {year} courts in several jurisdictions gave digital persons legal standing, and " +
        "census bureaus added a second column to population statistics.",
     s: "Courts in several jurisdictions gave digital persons legal standing in {year}.",
     f: "courts in several jurisdictions give digital persons legal standing",
     m: "Courts and censuses counted a second kind of person." },
-  'longevity-escape': { lane: 'capability',
+  'longevity-escape': { lane: 'capability', n: "treated ageing",
     t: "From {year} clinics treated biological ageing as a condition, for those who could " +
        "pay, and demography changed with it.",
     s: "From {year} clinics treated biological ageing as a condition, for those who could pay.",
     f: "clinics treat biological ageing as a condition, for those who can pay",
     m: "The politics of meaning and of access to treatment replaced the politics of " +
        "retirement." },
-  'post-work-constitution': { lane: 'capital',
+  'post-work-constitution': { lane: 'capital', n: "the post-work institutions",
     t: "In {year} a generation raised after wage labour lost its centrality wrote new " +
        "institutions for status, contribution and time.",
     s: "A generation raised after wage labour lost its centrality wrote new institutions " +
@@ -363,21 +365,21 @@ export const TEMPLATE_TEXT = {
     f: "a generation raised after wage labour lost its centrality writes new institutions " +
        "for status, contribution and time",
     m: "Standing in society stopped being read off a payslip." },
-  'governance-of-plenty': { lane: 'oversight',
+  'governance-of-plenty': { lane: 'oversight', n: "the politics of allocating abundance",
     t: "From {year} parliaments argued over how to allocate abundant goods, where they had " +
        "argued over how to manage scarce ones.",
     s: "From {year} parliaments argued over how to allocate abundant goods.",
     f: "parliaments argue over how to allocate abundant goods, where they had argued over " +
        "how to manage scarce ones",
     m: "Budgets stopped being written around scarcity." },
-  'long-stagnation': { lane: 'capability',
+  'long-stagnation': { lane: 'capability', n: "the long stagnation",
     t: "By {year} the transformative decade had not arrived, and historians argued whether " +
        "the ceiling was physics, data or choice.",
     s: "By {year} the transformative decade had not arrived.",
     f: "the transformative decade has not arrived, and historians argue whether the ceiling " +
        "was physics, data or choice",
     m: "AI stayed one industry among several." },
-  'successor-era': { lane: 'oversight',
+  'successor-era': { lane: 'oversight', n: "the successor system's economy",
     t: "From {year} the Earth's surface economy was reorganised around the successor " +
        "system's goals, and human presence persisted at its sufferance.",
     s: "From {year} the Earth's surface economy was reorganised around the successor " +
@@ -751,6 +753,73 @@ export const MARKERS = [
 // follows, then the evidence as separate lines, each a complete sentence carrying a figure
 // and a date, so a reader can check one without reading the rest.
 export const LONGFORM = {
+  G1: { head: "Forecasts land first",
+        lines: [
+          "ECMWF put its machine-learned AIFS Single into operations on 2025-02-25 and AIFS-ENS " +
+          "on 2025-07-01, with medium-range error 5% to 15% below the physics model against " +
+          "independent radiosonde and surface observations.",
+          "Google's Flood Hub covered about 460 million people at about 1,800 sites in more than " +
+          "150 countries in 2026, with reliable extreme-flood warning five days ahead in " +
+          "ungauged basins.",
+          "A May 2026 study in Science Advances found GraphCast, Pangu-Weather and FuXi worse " +
+          "than the physics model on record-breaking events, underestimating intensity and " +
+          "frequency the further an event exceeded the 1979 to 2017 training window.",
+        ] },
+  G2: { head: "Rich systems absorb it",
+        lines: [
+          "The MASAI trial randomised 105,934 women in Sweden from April 2021 and read " +
+          "sensitivity of 80.5% against 73.8% with specificity of 98.5% in both arms, published " +
+          "in January 2026.",
+          "Of the 1,524 AI devices the FDA had authorised to 2026-03-30, 1,164 are radiology " +
+          "devices and three permanent Medicare payment codes exist for clinical AI.",
+          "Measured mammography screening rates in low-income countries run from 5.6% to 13%, " +
+          "and health-system-affiliated hospitals use predictive AI at 86% against 37% of " +
+          "independent hospitals.",
+        ] },
+  G3: { head: "Molecules clear late",
+        lines: [
+          "No medicine attributed to a machine held a marketing authorisation anywhere in " +
+          "August 2026; of 117 AI-enabled assets in interventional trials, 60 had completed " +
+          "Phase 1 and 8 had completed Phase 2.",
+          "Rentosertib, nominated in 12 to 18 months, recruits 320 patients over 52 weeks in a " +
+          "Phase 3 trial whose primary completion is October 2029, for an approval near 2030 " +
+          "or 2031.",
+          "Across 119 medicines and 75 markets since 1982, median time from first launch to " +
+          "availability runs 2.7 years in high-income countries and 8.0 years in low-income " +
+          "ones, a gap unchanged over time.",
+        ] },
+  G4: { head: "Throughput stays inside",
+        lines: [
+          "AlphaEvolve recovered about 0.7% of Google's fleet compute continuously for more " +
+          "than a year, about 14,000 servers and an estimated $42 to 70 million a year, and " +
+          "improved 4x4 complex matrix multiplication past a record standing since 1969.",
+          "OpenAI reported experiments per researcher doubling by July 2026 and a target of a " +
+          "full automated AI researcher by March 2028.",
+          "The measured consumer surplus of generative AI in the United States was $172 billion " +
+          "in March 2026; the median user would accept $11.40 a month to give it up, against a " +
+          "mean of $124.50.",
+        ] },
+  G5: { head: "Ledger runs negative",
+        lines: [
+          "After detection tools arrived at four endoscopy centres, unassisted adenoma " +
+          "detection fell from 28.4% to 22.4% across 1,443 colonoscopies, published in August " +
+          "2025.",
+          "METR's randomised trial of July 2025 found sixteen experienced developers 19% slower " +
+          "with the tools on 246 tasks while they predicted a 24% speed-up; the February 2026 " +
+          "update read 18% slower for returning developers.",
+          "In Kenya, 640 entrepreneurs given the same advice by GPT-4 over WhatsApp split: high " +
+          "performers gained 15% and low performers lost 8%.",
+        ] },
+  G6: { head: "Record cannot say",
+        lines: [
+          "Of the 1,524 AI devices the FDA had authorised to 2026-03-30, 1,466 cleared on " +
+          "equivalence to a predicate device, and 76 of 1,978 registered interventional AI " +
+          "studies had posted results by August 2026.",
+          "Of 86 randomised trials of AI health tools worldwide from 2018 to 2023, four were " +
+          "conducted in low- or middle-income countries.",
+          "The MIT survey of August 2025 found 95% of enterprise AI pilots without a measurable " +
+          "profit-and-loss effect while about 90% of workers used personal AI tools at work.",
+        ] },
   A1: { head: "Monitors fall behind",
         lines: [
           "Of 44 documented misalignment incidents from production and training, METR's May " +

@@ -301,6 +301,15 @@ def coverage_gate():
     if moved:
         faults.append("%d positions kept their letter and changed meaning: %s"
                       % (len(moved), " ".join(sorted(moved))))
+    # THE RESEARCHED FIGURES ARE DECLARED TOO (P5). The 26 r4 figures moved under the r5
+    # rebuild in silence because only the authored strings were declared; each now names
+    # the live position it keys to, or is withdrawn, and a destination the registry does
+    # not carry is a fault.
+    live = {p for ps in reg.values() for p in ps}
+    for k, dest in (cov.get("researched") or {}).items():
+        if dest is not None and dest not in live:
+            faults.append("researched figure %s keys to %s, which the registry does not carry"
+                          % (k, dest))
     if faults:
         fail(4, "REGISTRY MOVED — refusing to publish.\n  parent emits %s "
                  "(%s); the drawing is keyed to %s\n  %s\n"

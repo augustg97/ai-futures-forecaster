@@ -1,5 +1,59 @@
 # AI Futures Forecaster — live state
 
+**2026-09-02, night, later: P5 is in — the plates.** Every plate the plan named now reads
+the r9 emission, and the last authored table is full.
+
+- **M7 · BRANCHES FROM THE DRAWN PATH** replaces the alternatives plate. Twelve panels; on each,
+  one variable takes another of its settings and the ledger of dated events changes most.
+  `ledgerDiff()` in `ledger.js` scores a branch against the drawn path — the research and coding
+  crossings moved, the events gained and lost, and the 2050 quantities — and `branchCaption()`
+  letters it: "The research crossing moves from 2034 to 2043. This branch gains the quiet decades
+  of infrastructure in 2035 and the long stagnation in 2059. Sales of AI services in 2050 are
+  $20.8 trillion a year against $26.7 trillion on the drawn path." The weight beside each is the
+  share of sampled futures holding the setting. Today's ranking: C8 (halt), T5, T4, D4, T1, C3,
+  S2, D3, T2, A2, S1, E4. **A branch's events are a counterfactual of the drawn path's own
+  ledger** (`branchEventsJS` in `engine.js`): where a template's requirements hold on both lines
+  the drawn path's draw stands, a crossing-tied year moves with the crossing, and only a template
+  the branch newly qualifies for gets a fresh draw. Pressing a panel makes the branch the active
+  line through the whole document (`state.branch`, hash `&branch=`; the chronicle composes it);
+  pressing it again releases it. Its note letters the axis by name, what changes against the
+  drawn path, what the drawn path holds, and the position's grounding.
+- **The controls read their natural quantity.** K reads the gap between the coding and research
+  crossings (K1 −1.3 y to K4 +2.7 y), G reads AI revenue in 2040, and L, which no track reads,
+  prints its strongest network edge ("STRONGEST EDGE R1 ×0.75"), since the sampler is where L
+  acts. `EFF_PRIMARY` names each axis's quantities and `EFF_READ.gap` computes the gap under the
+  same common random numbers as the rest.
+- **The research rows are keyed to the live registry.** `web/data/registry-covered.json` carries
+  `researched`: the 26 r4 keys the evidence programme was written against, each mapped to the r9
+  position that carries its meaning (T4→T5, A2→A3, A3→A5, A4→A6, C5→C8, D1→D4, D3→D1, P1→P5,
+  P2→P1, P3→P4, E2→E3, E3→E4, E4→E5) or to nothing where no live position does (C3, C4, S3). The
+  research tab letters each row's destination — "T4 NO SC IN WINDOW (R4) → T5 METHOD ASYMPTOTE",
+  "C3 VERIFIED DEAL (R4) · WITHDRAWN" — and the coverage gate refuses a destination the registry
+  does not carry. A dossier keeps its own key.
+- **The drift baseline is the date the position space last changed**, `space_since` in the same
+  file (2026-08-20, r7). The instrument column reads "SINCE 2026-08-20, WHEN THE POSITION SPACE
+  LAST CHANGED" and the dial caption says the same; the lookback used to run from the last
+  nightly, so a rebuild read as drift.
+- **Method carries THE NUMBERS**, read from the emission: the ensemble of 2,000 lines, the
+  medoid's agreement, the 25 exemplars, the p10 to p90 bands, the horizon anchors and the
+  ceilings in `engine.dynamics`. Nothing in the block is typed.
+- **LONGFORM G1 to G6 is authored** from `Research/findings/r8-benefit-axis.json` — ECMWF's AIFS,
+  Flood Hub, MASAI, the 1,524 FDA-listed devices, rentosertib, AlphaEvolve, the adenoma
+  deskilling study, METR's 19%, the Kenyan entrepreneurs, MIT's 95% — and table coverage reports
+  LONGFORM lacks none.
+
+Two defects found on the way, both in the branch captions. A crossing the parent reports at the
+horizon year is a rung never reached, so `buildLedger` nulls a crossing at or past `engine.y1`;
+before that every halted branch "lost the coding crossing". And the two crossing-tied templates
+move with their crossing, so `ledgerDiff` leaves them out of gained and lost; before that every
+tempo branch reported them as events.
+
+Verified: coverage r9 (11 axes, 61 positions); counts; prose (564 strings); port (30,000
+values, 0 divergences); readout strict (0 faults); sweep 34 cases, control passes, 0 collisions,
+0 off-sheet, 0 overflows. **Left for the next tranches:** M2's library growth to about 120
+cited templates (the far decades of the drawn path are thin: every far-field template requires
+A2 or A3 and the medoid holds A4), and M3's era registries.
+
 **2026-09-02, night: P4's first tranche is in — the model programme, in the parent.** The
 Atlas is on GitHub as `augustg97/ai-atlas`, so the work went where the plan puts it: registry
 **r9-2026-09-02** on the Atlas branch `claude/ai-futures-forecaster-review-t7fvqb`, held for
@@ -264,7 +318,7 @@ document window opens to 1720 px, where 2 mm of cap height renders at about 13 p
 | Instruments | details | A tempo dials · B compute manifold · C capability domains and agent collectives |
 | Behaviour | behaviour | six recorders: compute, revenue, employment, measures, approval, emissions |
 | World | world | the active line on the ground |
-| Alternatives | alternatives | twelve sampled world-lines across the spread |
+| Branches | alternatives | twelve branches from the drawn path, one variable moved on each, ranked by how much the ledger of dated events changes |
 | This morning | morning | today's evidence applications with their arithmetic, and the net drift |
 | Research | research | the evidence programme: the audit, all 26 recommended priors against their current values, and the structural finding |
 | Method | sources | method, grounding counts, the literature, and what this surface is |

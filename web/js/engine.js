@@ -233,13 +233,19 @@ export const hasDynamics = (E) => !!(E && E.dynamics);
 // not the same and a conditioned path's events are this sheet's own. `{survives}` reads the
 // parent's rule: the build-out survives the correction on E2 and E3 (the template's own
 // requirement), and the port said E2 alone until r9.
+// EVERY TEMPLATE TAKES ITS TWO UNIFORMS WHETHER OR NOT ITS REQUIREMENT HOLDS. Drawing only
+// for the templates a line qualifies for shifted every later draw when one requirement
+// changed, so two lines that differ on one axis differed on a dozen random events too, and a
+// branch "gained the distillation attacks" for no reason the flip could explain. Common
+// random numbers, as the effects machinery has them.
 export function instantiateJS(E, wl, seed) {
   const rng = mulberry32(seed), kn = capPath(E, wl), evs = [];
   for (const t of E.templates) {
+    const uP = rng(), uW = rng();
     let ok = true;
     for (const ax in t.req) if (!t.req[ax].includes(wl[ax])) ok = false;
-    if (!ok || rng() > t.p) continue;
-    let year = t.w[0] + (t.w[1] - t.w[0]) * Math.pow(rng(), 1.3);
+    if (!ok || uP > t.p) continue;
+    let year = t.w[0] + (t.w[1] - t.w[0]) * Math.pow(uW, 1.3);
     if (t.tie === 'cap>=3') { const k = kn.find((q) => q[1] >= 3.0); year = k ? k[0] : null; }
     if (t.tie === 'cap>=4') { const k = kn.find((q) => q[1] >= 4.0); year = k ? k[0] : null; }
     if (year === null || year > E.y1) continue;
@@ -247,6 +253,52 @@ export function instantiateJS(E, wl, seed) {
                       .replace('{survives}', (wl.E === 'E2' || wl.E === 'E3') ? 'survives' : 'stalls');
     evs.push({ year: Math.round(year * 10) / 10, layer: t.layer, text: txt,
                cites: t.cites, id: t.id, effects: t.effects || undefined });
+  }
+  evs.sort((a, b) => a.year - b.year);
+  return evs;
+}
+
+// ── a branch's events: the drawn path's own, except where the flip reaches ───────────────
+// One variable flips; everything the flip does not touch is held. A template whose
+// requirement holds on both lines keeps the drawn path's draw, present or absent, with its
+// year re-tied where it follows a crossing; one the branch newly qualifies for takes a fresh
+// draw of its own; one the branch no longer qualifies for is lost. The drawn path's events
+// may be the parent's, drawn by a generator this port cannot reproduce, and this is how a
+// branch can still be measured against them.
+export function branchEventsJS(E, base, baseEvents, wl, seed) {
+  const kn = capPath(E, wl), rng = mulberry32(seed), evs = [];
+  const had = {};
+  for (const e of baseEvents || []) if (!(e.id in had)) had[e.id] = e;
+  const holds = (line, t) => { for (const ax in t.req) if (!t.req[ax].includes(line[ax])) return false; return true; };
+  const tieYear = (t) => {
+    if (t.tie === 'cap>=3') { const k = kn.find((q) => q[1] >= 3.0); return k ? k[0] : null; }
+    if (t.tie === 'cap>=4') { const k = kn.find((q) => q[1] >= 4.0); return k ? k[0] : null; }
+    return undefined;
+  };
+  for (const t of E.templates) {
+    const uP = rng(), uW = rng();
+    const okA = holds(base, t), okB = holds(wl, t);
+    if (!okB) continue;
+    let year = null, text = null;
+    if (okA) {
+      const e = had[t.id];
+      if (!e) continue;                     // absent on the drawn path, absent here
+      year = e.year; text = e.text;
+      const ty = tieYear(t);
+      if (ty !== undefined) { year = ty; text = null; }
+    } else {
+      if (uP > t.p) continue;
+      year = t.w[0] + (t.w[1] - t.w[0]) * Math.pow(uW, 1.3);
+      const ty = tieYear(t);
+      if (ty !== undefined) year = ty;
+    }
+    if (year === null || year === undefined || year > E.y1) continue;
+    if (text === null) {
+      text = t.text.replace('{year}', String(Math.floor(year)))
+                   .replace('{survives}', (wl.E === 'E2' || wl.E === 'E3') ? 'survives' : 'stalls');
+    }
+    evs.push({ year: Math.round(year * 10) / 10, layer: t.layer, text, cites: t.cites, id: t.id,
+               effects: t.effects || undefined });
   }
   evs.sort((a, b) => a.year - b.year);
   return evs;

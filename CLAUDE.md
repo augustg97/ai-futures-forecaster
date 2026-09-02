@@ -155,6 +155,25 @@ The design is `Research/plan-2026-09-02-chronicle.md`; the review it answers is
   entry the headline, SINCE and AHEAD say the ledger has ended. A new track needs a
   `capSentence` case and a `READING` pattern in the gate before it reaches the sheet.
 
+- **A branch is a counterfactual of the drawn path's own ledger** (P5). `branchEventsJS` keeps
+  the drawn path's draw for every template whose requirements hold on both lines, moves a
+  crossing-tied year with its crossing, and draws fresh only where the branch newly qualifies.
+  A fresh stream per branch reported, on every panel, events the drawn path happened to draw
+  and the branch happened to miss. `ledgerDiff()` scores the difference — crossings moved,
+  events gained and lost, the 2050 quantities — and `branchCaption()` letters it. A crossing
+  the parent reports at the horizon year is a rung never reached, and the two crossing-tied
+  templates are movements of a crossing and never gained or lost events.
+- **The research rows are keyed to the live registry through `researched` in
+  `registry-covered.json`**: a dossier keeps its own key and letters its destination or its
+  withdrawal, and the coverage gate refuses a destination the registry does not carry. Never
+  re-letter a dossier's key to make a row match.
+- **The drift baseline is `space_since`**, the date the position space last changed. A lookback
+  from the last nightly reads a rebuild as drift.
+- **An axis no track reads prints its strongest network edge** (`strongestEdge()`), because the
+  sampler is where it acts. "Moves nothing" was true of the tracks and false of the model.
+- **The Method numbers are read from the emission** (`engine.dynamics`, `mainline.n`, the
+  bands), never typed.
+
 The traps below that name FRAG, CROSS, ECON_MOD, HEADCL, spans, stages or the calendar lanes
 describe the vignette layer that P1 retired; they are kept as the history of why the chronicle
 exists.

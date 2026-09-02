@@ -122,9 +122,11 @@ export function buildLedger(wl, tracks, events, engine, given = {}) {
   const entries = [];
   const cross = {};
   for (const r of [3, 4, 5, 6]) {
-    // the parent's exact crossing year where it emits one (r9), else the annual track's
+    // the parent's exact crossing year where it emits one (r9), else the annual track's; a
+    // rung first reached in the run's last year is the ladder's end, not a crossing
     cross[r] = given.crossings && given.crossings[String(r)] != null
       ? Math.floor(given.crossings[String(r)]) : firstYear(tracks, 'cap', (v) => v >= r);
+    if (cross[r] != null && cross[r] >= engine.y1) cross[r] = null;
   }
   const evs = (events || []).map((e) => ({ ...e, id: templateIdOf(e, engine.templates) }));
   const tied = new Set(evs.map((e) => e.id));
@@ -793,4 +795,72 @@ export function describe(wl, year, tracks, engine, network, events) {
 }
 export function headline(wl, year, tracks, engine, network, events) {
   return chronicle(wl, year, tracks, events, engine, network).headline;
+}
+
+// ── branches: what changes when one variable takes another setting (M7, P5) ──
+// A branch is the drawn path with one axis flipped. Its ledger is built the same way, and the
+// difference between the two ledgers is what the branches plate captions: the crossings that
+// move, the events gained and lost, and the quantities at a fixed year against the drawn
+// path. The distance ranks the branches, so the plate shows the flips where the ledger
+// changes most, each with the share of sampled futures holding that setting.
+const DIFF_YEAR = 2050;
+export function ledgerDiff(A, B, trA, trB, year = DIFF_YEAR) {
+  // the crossing-tied templates move with the crossings, which the caption reports as a move
+  const TIED = new Set(['sc-crossing', 'sar-crossing']);
+  const evA = new Map(A.entries.filter((e) => e.kind === 'event' && !TIED.has(e.k)).map((e) => [e.k, e]));
+  const evB = new Map(B.entries.filter((e) => e.kind === 'event' && !TIED.has(e.k)).map((e) => [e.k, e]));
+  const gained = [...evB.values()].filter((e) => !evA.has(e.k)).sort((a, b) => a.y - b.y);
+  const lost = [...evA.values()].filter((e) => !evB.has(e.k)).sort((a, b) => a.y - b.y);
+  const cross = {};
+  for (const r of [3, 4, 5, 6]) cross[r] = [A.cross[r] || null, B.cross[r] || null];
+  const i = Math.max(0, Math.min(trA.year.length - 1, year - trA.year[0]));
+  const q = {};
+  for (const k of ['gw', 'rev', 'jobs', 'appr', 'laws']) {
+    if (trA[k] && trB[k]) q[k] = [trA[k][i], trB[k][i]];
+  }
+  const yrs = (a, b) => Math.min(20, Math.abs((a || 2100) - (b || 2100)));
+  let score = yrs(cross[3][0], cross[3][1]) + yrs(cross[4][0], cross[4][1]) + 2 * (gained.length + lost.length);
+  if (q.rev) score += Math.abs(q.rev[1] - q.rev[0]) / Math.max(1, q.rev[0]) * 3;
+  if (q.gw) score += Math.abs(q.gw[1] - q.gw[0]) / Math.max(1, q.gw[0]) * 3;
+  if (q.jobs) score += Math.abs(q.jobs[1] - q.jobs[0]) / 5;
+  if (q.appr) score += Math.abs(q.appr[1] - q.appr[0]) / 8;
+  return { gained, lost, cross, q, year, score };
+}
+const nounOf = (e) => {
+  const tx = TEMPLATE_TEXT[e.k];
+  return (tx && tx.n) || (e.f ? `the event in which ${e.f}` : e.k);
+};
+// The caption, composed under the language standard: every clause dated, every quantity beside
+// the drawn path's own, in words a reader can check against the sheet.
+export function branchCaption(diff) {
+  const out = [];
+  const [a4, b4] = diff.cross[4], [a3, b3] = diff.cross[3];
+  if (a4 !== b4) {
+    if (a4 && b4) out.push(`The research crossing moves from ${a4} to ${b4}.`);
+    else if (b4) out.push(`The research rung is crossed in ${b4}; the drawn path never crosses it.`);
+    else out.push(`The research rung is not crossed before 2100; the drawn path crosses it in ${a4}.`);
+  } else if (a3 !== b3 && a3 && b3) {
+    out.push(`The coding crossing moves from ${a3} to ${b3}.`);
+  }
+  const g = diff.gained.slice(0, 2), l = diff.lost.slice(0, 2);
+  if (g.length) {
+    out.push(`This branch gains ${g.map((e) => `${nounOf(e)} in ${Math.floor(e.y)}`).join(' and ')}.`);
+  }
+  if (l.length) {
+    out.push(`It loses ${l.map((e) => `${nounOf(e)} of ${Math.floor(e.y)}`).join(' and ')}.`);
+  }
+  const q = diff.q, Y = diff.year;
+  const cands = [];
+  if (q.rev) cands.push([Math.abs(q.rev[1] - q.rev[0]) / Math.max(1, q.rev[0]),
+    `Sales of AI services in ${Y} are ${money(q.rev[1])} a year against ${money(q.rev[0])} on the drawn path.`]);
+  if (q.gw) cands.push([Math.abs(q.gw[1] - q.gw[0]) / Math.max(1, q.gw[0]),
+    `Installed AI computing capacity in ${Y} is ${gwFmt(q.gw[1])} gigawatts against ${gwFmt(q.gw[0])}.`]);
+  if (q.jobs) cands.push([Math.abs(q.jobs[1] - q.jobs[0]) / 10,
+    `Employment in ${Y} is ${Math.abs(q.jobs[1]).toFixed(0)}% below its 2026 level against ${Math.abs(q.jobs[0]).toFixed(0)}% on the drawn path.`]);
+  if (q.appr) cands.push([Math.abs(q.appr[1] - q.appr[0]) / 15,
+    `Approval of AI in ${Y} is ${q.appr[1].toFixed(0)}% against ${q.appr[0].toFixed(0)}%.`]);
+  cands.sort((a, b) => b[0] - a[0]);
+  for (const [w, t] of cands.slice(0, 2)) if (w >= 0.08) out.push(t);
+  if (!out.length) out.push(`The ledger and the quantities at ${Y} are unchanged by this setting.`);
+  return out.join(' ');
 }

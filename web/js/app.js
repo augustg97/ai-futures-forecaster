@@ -9,9 +9,11 @@ import { Draft, PEN, INK, paperTileURL } from './draft.js';
 import { SECTIONS, SHEET_W, TABS, CHART, COL, CTL_NOTE_W, balance,
          proseColumns, measureSections, SHEET_CW, NOTE_TITLE } from './sections.js';
 import { column, fmtNum } from './instruments.js';
-import { chronicle, provenanceNote, capsFor, trackNote, capsSummary, ledgerEndOf } from './ledger.js';
+import { chronicle, provenanceNote, capsFor, trackNote, capsSummary, ledgerEndOf,
+         buildLedger, ledgerDiff, branchCaption } from './ledger.js';
 import { mulberry32, capPath as capPathE, capAt as capAtE, tracksJS as tracksE,
-         instantiateJS as instantiateE, medoid, crossings as crossingsE } from './engine.js';
+         instantiateJS as instantiateE, medoid, crossings as crossingsE, onsetsJS as onsetsE,
+         branchEventsJS } from './engine.js';
 import { describeRecord, headlineRecord, RECORD, recordAt, whenOf } from './record.js';
 import { LONGFORM } from './narrative.js';
 import { chooseFigures } from './figures.js';
@@ -35,7 +37,7 @@ const D = {};
 const SEC = [];                       // { id, fn, el, cv, draft, h, sig }
 
 const state = {
-  tab: 'forecast', ctlAxis: 'T', yr: NOW_Y, pin: {}, obs: false, alt: null,
+  tab: 'forecast', ctlAxis: 'T', yr: NOW_Y, pin: {}, obs: false, alt: null, branch: null,
   chartView: 'forecast',   // 'forecast' | 'record' — which drawing the middle column carries
   recordWindow: 'all',     // which span the record view magnifies
   mmPerPx: 0.25, hovered: null, selected: null, touched: null,
@@ -266,16 +268,82 @@ function trackBandsJS(lines) {
   return out;
 }
 const altLine = () => (state.alt !== null && D.exemplars ? D.exemplars.lines[state.alt] : null);
-function activeMain() { const a = altLine(); return a ? a.wl : (cond ? cond.main : D.mainline.wl); }
+
+// ── branches: the drawn path with one variable at another of its settings (M7, P5) ──────
+// A branch is built by the port the way the parent builds a path — events first, then the
+// tracks they move — and its ledger is diffed against the drawn path's. The plate ranks the
+// flips by how much the ledger changes and captions each in words with its weight; pressing
+// one makes it the active line through the whole document.
+let branchCache = { sig: null, map: {}, drawn: null, ranked: null };
+function drawnBase() { return cond ? cond.main : D.mainline.wl; }
+function branchSig() { return JSON.stringify(drawnBase()) + '|' + D.network.version; }
+function branchOf(pos) {
+  const sig = branchSig();
+  if (branchCache.sig !== sig) branchCache = { sig, map: {}, drawn: null, ranked: null };
+  if (branchCache.map[pos]) return branchCache.map[pos];
+  const a = D.network.axes.find((z) => z.positions.some((q) => q[0] === pos));
+  if (!a) return null;
+  const base = drawnBase();
+  const wl = { ...base, [a.key]: pos };
+  const knots = capPath(wl);
+  // the drawn path's own events, held wherever the flip does not reach them
+  const baseEvents = cond ? cond.events : D.mainline.events;
+  const events = branchEventsJS(D.engine, base, baseEvents, wl, 20260731);
+  const tracks = tracksJS(wl, events);
+  const b = { axis: a.key, pos, wl, knots, events, tracks, name: (a.positions.find((q) => q[0] === pos) || [])[1] || pos,
+              crossings: crossingsE(knots, D.engine.y1), onsets: onsetsE(D.engine, wl, knots, events, tracks) };
+  branchCache.map[pos] = b;
+  return b;
+}
+const branchLine = () => (state.branch ? branchOf(state.branch) : null);
+// the drawn path's own ledger, the thing every branch is measured against
+function drawnLedger() {
+  const sig = branchSig();
+  if (branchCache.sig !== sig) branchCache = { sig, map: {}, drawn: null, ranked: null };
+  if (branchCache.drawn) return branchCache.drawn;
+  const wl = drawnBase();
+  const tracks = cond ? cond.tracks : (D.mainline.tracks.twh ? D.mainline.tracks : tracksJS(wl, D.mainline.events));
+  const events = cond ? cond.events : D.mainline.events;
+  const given = cond ? {} : { crossings: D.mainline.crossings || null, onsets: D.mainline.onsets || null };
+  branchCache.drawn = { wl, tracks, events, ledger: buildLedger(wl, tracks, events, D.engine, given) };
+  return branchCache.drawn;
+}
+// every flip of one axis, ranked by how much the ledger changes, with its weight
+function rankedBranches() {
+  const sig = branchSig();
+  if (branchCache.sig === sig && branchCache.ranked) return branchCache.ranked;
+  const base = drawnBase(), d0 = drawnLedger(), marg = activeMarginals();
+  const out = [];
+  for (const a of D.network.axes) {
+    for (const p of a.positions) {
+      if (p[0] === base[a.key]) continue;
+      const b = branchOf(p[0]);
+      if (!b) continue;
+      const L = buildLedger(b.wl, b.tracks, b.events, D.engine, { crossings: b.crossings, onsets: b.onsets });
+      const diff = ledgerDiff(d0.ledger, L, d0.tracks, b.tracks);
+      out.push({ ...b, weight: (marg[a.key] || {})[p[0]] || 0, diff, caption: branchCaption(diff),
+                 from: base[a.key] });
+    }
+  }
+  out.sort((x, y) => y.diff.score - x.diff.score);
+  branchCache.ranked = out;
+  return out;
+}
+
+function activeMain() { const b = branchLine(); if (b) return b.wl; const a = altLine(); return a ? a.wl : drawnBase(); }
 function activeTracks() {
+  const b = branchLine();
+  if (b) return b.tracks;
   const a = altLine();
   if (a) return a.tracks.twh ? a.tracks : tracksJS(a.wl, a.events);
   if (cond) return cond.tracks;
   return D.mainline.tracks.twh ? D.mainline.tracks : tracksJS(D.mainline.wl, D.mainline.events);
 }
-function activeEvents() { const a = altLine(); return a ? a.events : (cond ? cond.events : D.mainline.events); }
+function activeEvents() { const b = branchLine(); if (b) return b.events; const a = altLine(); return a ? a.events : (cond ? cond.events : D.mainline.events); }
 // what the parent emitted for the drawn line, or what the port computed for a conditioned one
 function activePath() {
+  const b = branchLine();
+  if (b) return { onsets: b.onsets, crossings: b.crossings, kind: 'branch', agree: null, argmax: null, branch: b };
   const a = altLine();
   if (a) return { onsets: a.onsets || null, crossings: a.crossings || null, kind: 'exemplar', agree: null, argmax: null };
   if (cond) return { onsets: null, crossings: null, kind: cond.kind, agree: cond.agree, argmax: cond.argmax, argmaxP: null };
@@ -285,7 +353,7 @@ function activePath() {
            argmax: am ? am.wl : null, argmaxP: am ? am.p : null, p: D.mainline.p };
 }
 function activeTrackBands() {
-  if (altLine()) return null;
+  if (altLine() || branchLine()) return null;
   if (cond) return cond.trackBands;
   return (D.bands && D.bands.tracks) || null;
 }
@@ -294,7 +362,7 @@ function activeBands() { return cond ? cond.bands : D.bands.annual; }
 function activeLayers() {
   const a = altLine(); if (a && a.layers) return a.layers;
   const wl = activeMain();
-  if (!cond && state.alt === null) return D.mainline.layers || {};
+  if (!cond && state.alt === null && !state.branch) return D.mainline.layers || {};
   if (!D.exemplars) return D.mainline.layers || {};
   let best = null, bs = -1;
   for (const e of D.exemplars.lines) {
@@ -317,6 +385,11 @@ function daysBetween(a, b) { return Math.round((Date.parse(b) - Date.parse(a)) /
 // defect 6). The lookback never reaches behind the registry it is comparing against, and the
 // span it letters is the span it measured.
 function registryDate() {
+  // THE BASELINE IS THE DATE THE POSITION SPACE LAST CHANGED, declared in the coverage
+  // file, so a registry version that moves no position (r9) does not reset the dials to
+  // zero and a rebuild that does still reads as a rebuild (P5).
+  const sp = D.covered && D.covered.space_since;
+  if (sp) return sp;
   const m = String((D.network || {}).version || '').match(/(\d{4}-\d{2}-\d{2})/);
   return m ? m[1] : null;
 }
@@ -511,6 +584,21 @@ function selectionNotes() {
     const on = tr[tk] ? [{ h: 'On this path', p: [trackNote(tr, tk, Math.floor(state.yr))] }] : [];
     return [{ h: e.t, p: [e.b] }].concat(on, [{ h: 'Grounding', p: [(e.cites || []).join(' · ')] }]);
   }
+  if (kind === 'branch') {
+    const b = rankedBranches().find((q) => q.pos === rest[0]) || branchOf(rest[0]);
+    if (!b) return null;
+    const a = D.network.axes.find((z) => z.key === b.axis);
+    const pos = a && a.positions.find((q) => q[0] === b.pos);
+    const held = a && a.positions.find((q) => q[0] === drawnBase()[b.axis]);
+    return [{ h: `Branch · ${a ? a.name : b.axis} ${b.pos} · ${b.name}`, p: [
+      plain(pos ? pos[4] : ''),
+      `${((b.weight || 0) * 100).toFixed(1)}% of the sampled futures hold this setting of ${a ? a.name.toLowerCase() : b.axis}. ` +
+      'Pressing it makes this branch the active line through the whole document; pressing it again releases it.'] },
+      { h: 'What changes against the drawn path', p: [b.caption || branchCaption(ledgerDiff(drawnLedger().ledger,
+          buildLedger(b.wl, b.tracks, b.events, D.engine, { crossings: b.crossings, onsets: b.onsets }), drawnLedger().tracks, b.tracks))] },
+      { h: 'The drawn path holds', p: [held ? `${held[0]} · ${held[1]}. ${plain(held[4] || '')}` : drawnBase()[b.axis]] },
+      { h: 'Grounding', p: [((pos && pos[3]) || []).join(' · ')] }];
+  }
   if (kind === 'alt') {
     const e = D.exemplars.lines[+rest[0]];
     if (!e) return null;
@@ -638,6 +726,43 @@ function drawWorldPlate(d, S, box) {
   });
 }
 
+function drawBranchesPlate(d, S, box) {
+  const [x, y, w, h] = box;
+  const ranked = rankedBranches().slice(0, 12);
+  const base = drawnBase();
+  const kn0 = capPath(base);
+  const cols = 4, cw = w / cols, ch = h / 3;
+  ranked.forEach((b, idx) => {
+    const cx = x + (idx % cols) * cw, cy = y + h - (Math.floor(idx / cols) + 1) * ch;
+    const on = state.branch === b.pos;
+    d.rect(cx + 2, cy + 6, cw - 6, ch - 10,
+           { weight: on ? PEN.medium : PEN.hairline, colour: on ? INK.ochre : INK.inkLight });
+    // the small multiple: the branch's capability path over the drawn path's, on the same ladder
+    const gx = cx + 6, gy = cy + ch - 34, gw = cw - 16, gh = 22;
+    for (let m = 1; m <= 6; m += 1) {
+      d.line([gx, gy + (m / 6.4) * gh], [gx + gw, gy + (m / 6.4) * gh],
+             { weight: PEN.hairline, colour: INK.redLight, dash: [3, 2], alpha: 0.35 });
+    }
+    const path = (kn, col, wt) => {
+      const pts = [];
+      for (let yr = 2026; yr <= 2100; yr += 2) pts.push([gx + ((yr - 2026) / 74) * gw, gy + (capAt(kn, yr) / 6.4) * gh]);
+      d.polyline(pts, { weight: wt, colour: col });
+    };
+    path(kn0, INK.pencilLight, PEN.thin);
+    path(b.knots, on ? INK.ochre : INK.blue, PEN.medium);
+    d.text([cx + 6, cy + ch - 9.6], `IF ${b.axis} IS ${b.pos} · ${(b.weight * 100).toFixed(0)}% OF SAMPLED FUTURES`,
+           { size: 1.9, face: 'figure', weight: 700, colour: on ? INK.ochre : INK.ink });
+    d.text([cx + 6, cy + ch - 6.2], elide(d, `${b.name} · the drawn path holds ${b.from}`, cw - 14, 1.45),
+           { size: 1.45, colour: INK.pencilLight, track: 0.08 });
+    d.textBlock([cx + 6, gy - 3.4], b.caption, cw - 14,
+                { size: 1.5, lead: 1.36, colour: INK.pencil, max: 5 });
+    d.region(`branch:${b.pos}`, cx + 2, cy + 6, cw - 6, ch - 10, b);
+  });
+  if (!ranked.length) {
+    d.text([x + 6, y + h / 2], 'NO BRANCH DIFFERS FROM THE DRAWN PATH',
+           { size: 2.4, colour: INK.pencilLight, track: 0.10 });
+  }
+}
 function drawAltsPlate(d, S, box) {
   const [x, y, w, h] = box;
   if (!D.exemplars) { d.text([x, y + h / 2], 'THE ENSEMBLE IS STILL LOADING',
@@ -915,6 +1040,11 @@ const EFF_READ = {
           (t) => (t.cap[Math.min(t.cap.length - 1, CROSS_YEAR - D.engine.y0)] >= RESEARCH_RUNG ? 100 : 0),
           (d) => sgn(d) + Math.abs(d).toFixed(0) + 'PP'],
   cap:   ['MEDIAN CAPABILITY 2040', (t, i) => t.cap[i], (d) => (d > 0 ? '+' : '') + d.toFixed(2)],
+  // the years between the coding rung and the research rung on a sampled path (K's own quantity)
+  gap:   ['CODING TO RESEARCH GAP', (t) => {
+            const n = t.cap.length, y3 = t.cap.findIndex((v) => v >= 3), y4 = t.cap.findIndex((v) => v >= 4);
+            return (y4 < 0 ? n : y4) - (y3 < 0 ? n : y3);
+          }, (d) => sgn(d) + Math.abs(d).toFixed(1) + ' Y'],
   gw:    ['COMPUTE 2040', (t, i) => t.gw[i], (d) => sgn(d) + fmtNum(Math.abs(d)) + ' GW'],
   rev:   ['AI REVENUE 2040', (t, i) => t.rev[i], (d) => sgn(d) + Math.abs(d).toFixed(1) + ' $T'],
   jobs:  ['EMPLOYMENT 2040', (t, i) => t.jobs[i], (d) => sgn(d) + Math.abs(d).toFixed(1) + 'PP'],
@@ -930,13 +1060,28 @@ const EFF_KEYS = Object.keys(EFF_READ);
 // r9: the takeoff shape moves the coding crossing and so the work it gates; the benefit
 // position lifts world output and so the revenue it bounds
 const EFF_PRIMARY = {
-  T: ['cross', 'cap'], K: ['jobs', 'rev', 'cross', 'cap'], A: ['cross', 'cap'],
+  T: ['cross', 'cap'], K: ['gap', 'jobs', 'rev'], A: ['cross', 'cap'],
   C: ['appr', 'us'], R: ['laws', 'us'], D: ['jobs', 'rev'], S: ['gw', 'co2'],
   P: ['appr'], E: ['rev', 'gw'], L: [], G: ['rev'],
 };
 // the smallest movement that would print as other than zero, per quantity
-const EFF_MIN = { cross: 0.5, cap: 0.005, gw: 0.5, rev: 0.05, jobs: 0.05, laws: 0.5,
+const EFF_MIN = { cross: 0.5, cap: 0.005, gap: 0.05, gw: 0.5, rev: 0.05, jobs: 0.05, laws: 0.5,
                   appr: 0.05, us: 0.05, co2: 0.5 };
+// An axis no track reads acts through its edges. The button prints the edge it tilts hardest:
+// the child position and the multiplier, which is true and teaches something (review of
+// 2026-09-01, §5).
+function strongestEdge(pos) {
+  let best = null;
+  for (const child in D.network.conditionals || {}) {
+    const tilts = (D.network.conditionals[child] || {})[pos];
+    if (!tilts) continue;
+    for (const q in tilts) {
+      const m = tilts[q], sc = Math.abs(Math.log(m));
+      if (!best || sc > best.sc) best = { sc, child, q, m };
+    }
+  }
+  return best;
+}
 let effCache = { sig: null, base: null, map: {} };
 
 // Common random numbers. Drawing a fresh stream for each setting makes the comparison mostly
@@ -1024,8 +1169,12 @@ function effectsFor(pin, obs = state.obs) {
           break;
         }
       }
-      // Nothing moved. `noTrack` says whether that is because no track reads the axis at
-      // all, which is a fact about the model the button should state.
+      // Nothing moved. An axis no track reads prints the edge it tilts hardest; one that
+      // enters a track and moved nothing says so.
+      if (!best && primary.length === 0 && !obs) {
+        const e = strongestEdge(p[0]);
+        best = e ? { label: 'STRONGEST EDGE', text: `${e.q} ×${e.m.toFixed(2)}`, edge: true, key: 'edge' } : null;
+      }
       map[key] = best || { none: true, noTrack: primary.length === 0 };
     }
   }
@@ -1102,7 +1251,15 @@ function recommend(axis, pos) {
   const key = `${axis}:${pos}`;
   const from = PRIOR_R2[key], to = RESEARCHED[key];
   if (from === undefined || to === undefined) return null;
-  return Math.abs(to - from) < 0.005 ? null : { from, to, name: `${pos} ${R4_NAMES[key] || ''} (r4)` };
+  if (Math.abs(to - from) < 0.005) return null;
+  // RE-KEYED BY MEANING, AND DECLARED (P5). The destination is read from the coverage
+  // declaration, which the build checks against the live registry; a figure whose subject
+  // the r5 rebuild split has no destination and is withdrawn on the sheet.
+  const table = (D.covered && D.covered.researched) || {};
+  const dest = key in table ? table[key] : undefined;
+  const destName = dest ? posName(`${dest[0]}.${dest}`) : null;
+  return { from, to, name: `${pos} ${R4_NAMES[key] || ''} (r4)`,
+           dest: dest || null, destName, withdrawn: dest === null };
 }
 
 // ── the state handed to the sections ─────────────────────────────────────────
@@ -1173,7 +1330,11 @@ function sheetState(measure) {
     headlineH: 0,   // filled below, once the headline string exists
     figures: chooseFigures(wl, state.yr, cap),
     plain, recommend,
-    drawWorld: drawWorldPlate, drawAlts: drawAltsPlate, drawMorning: drawMorningPlate,
+    drawWorld: drawWorldPlate, drawAlts: drawAltsPlate, drawBranches: drawBranchesPlate,
+    drawMorning: drawMorningPlate, branch: state.branch, spaceSince: registryDate(),
+    covered: D.covered || null,
+    mainlineN: D.mainline.n || (D.ens2k ? D.ens2k.lines.length : 2000),
+    exemplarN: D.exemplars ? D.exemplars.lines.length : 120,
   };
   // A note is drawn where the mark that opened it is: an axis entry unfolds inside its own row
   // on the controls, a milestone or a crisis point fills the band under the chart, and anything
@@ -1257,7 +1418,12 @@ function onDown(e) {
   }
   if (hit.id.startsWith('ctl:')) { applyControl(hit.id); return; }
   state.selected = state.selected === hit.id ? null : hit.id;
-  if (hit.id.startsWith('alt:')) { state.alt = +hit.id.split(':')[1]; cond = null; state.pin = {}; }
+  if (hit.id.startsWith('alt:')) { state.alt = +hit.id.split(':')[1]; state.branch = null; cond = null; state.pin = {}; }
+  if (hit.id.startsWith('branch:')) {
+    const pos = hit.id.split(':')[1];
+    state.branch = state.branch === pos ? null : pos;
+    state.alt = null; cond = null; state.pin = {};
+  }
   writeHash(); redraw();
 }
 function onMove(e) {
@@ -1307,7 +1473,7 @@ function applyControl(id) {
   } else if (kind === 'pin') {
     if (state.pin[arg] === pos) { delete state.pin[arg]; state.selected = `axis:${arg}`; }
     else { state.pin[arg] = pos; state.selected = `pos:${arg}:${pos}`; }
-    state.alt = null; recondition();
+    state.alt = null; state.branch = null; recondition();
     state.ctlAxis = arg;
   } else if (kind === 'mode') {
     state.obs = arg === 'obs';
@@ -1319,7 +1485,7 @@ function applyControl(id) {
     state.chartView = arg;
     state.selected = null;
   } else if (kind === 'reset') {
-    state.pin = {}; state.alt = null; cond = null; state.selected = null;
+    state.pin = {}; state.alt = null; state.branch = null; cond = null; state.selected = null;
   }
   writeHash(); redraw();
 }
@@ -1339,7 +1505,7 @@ function hoverLabel(hit) {
       // toFixed on the object and threw on every pointer move over a set-variable button —
       // latent until r5's edges gave enough settings a measurable effect to hover over.
       const e = effCache.map[`${rest[1]}:${rest[2]}`];
-      const eff = e && e.text ? ` — ${e.text} on ${e.label.toLowerCase()} by 2040` : '';
+      const eff = e && e.edge ? ` — tilts ${e.text}` : e && e.text ? ` — ${e.text} on ${e.label.toLowerCase()} by 2040` : '';
       return p ? ['SET THIS VARIABLE', p[1] + eff] : null;
     }
     if (rest[0] === 'mode') return ['CONDITIONING MODE', rest[1] === 'obs'
@@ -1363,6 +1529,9 @@ function hoverLabel(hit) {
     return p ? ['COMPUTE SITE', `${p.s.n} — ~${p.gwSite.toFixed(1)} GW modelled`] : null; }
   if (kind === 'alt') { const e = hit.payload;
     return e ? ['ALTERNATIVE', lineLabel(e.wl)] : null; }
+  if (kind === 'branch') { const b = hit.payload;
+    const a = b && D.network.axes.find((z) => z.key === b.axis);
+    return b ? ['BRANCH', `${a ? a.name : b.axis} ${b.pos} · ${b.name} · press to draw it`] : null; }
   if (kind === 'delta') { const e = hit.payload; return e ? ['EVIDENCE APPLICATION', e.rule] : null; }
   if (kind === 'trk') return ['BEHAVIOUR TRACE', 'click for its mechanism'];
   if (kind === 'stat') return ['READING', hit.payload ? hit.payload[0] : ''];
@@ -1385,7 +1554,7 @@ addEventListener('resize', () => { for (const s of SEC) s.sig = ''; redraw(); })
 // reloading, so the state in the link would be ignored. Read it again when it changes.
 addEventListener('hashchange', () => {
   if (!state.ready) return;
-  state.pin = {}; state.alt = null; state.selected = null; cond = null;
+  state.pin = {}; state.alt = null; state.branch = null; state.selected = null; cond = null;
   readHash();
   markTabs();
   for (const s of SEC) s.sig = '';
@@ -1398,6 +1567,7 @@ function writeHash() {
     `#t=${state.tab}&v=${state.ctlAxis}&y=${state.yr.toFixed(2)}` +
     (pins ? `&pin=${pins}` : '') + (state.obs ? '&obs=1' : '') +
     (state.alt !== null ? `&alt=${state.alt}` : '') +
+    (state.branch ? `&branch=${state.branch}` : '') +
     (state.selected ? `&s=${encodeURIComponent(state.selected)}` : ''));
 }
 function readHash() {
@@ -1412,6 +1582,7 @@ function readHash() {
   }
   state.obs = /obs=1/.test(h);
   const a = h.match(/alt=(\d+)/); if (a) state.alt = +a[1];
+  const br = h.match(/branch=([A-Z]\d+)/); if (br) state.branch = br[1];
   const s = h.match(/s=([^&]+)/); if (s) state.selected = decodeURIComponent(s[1]);
   if (Object.keys(state.pin).length) recondition();
 }
@@ -1429,7 +1600,7 @@ function frame() {
   layout(S);
   if (!state.fitted) { requestAnimationFrame(frame); return; }
   const common = [state.tab, state.ctlAxis, state.yr.toFixed(2), JSON.stringify(state.pin),
-                  state.obs ? 1 : 0, state.alt, state.selected,
+                  state.obs ? 1 : 0, state.alt, state.branch, state.selected,
                   state.hovered && state.hovered.id, docEl.clientWidth].join('|');
   for (const s of SEC) {
     if (!s.on || !visible.has(s.id)) continue;
@@ -1575,7 +1746,7 @@ function setTab(id) {
 // are reported: lettering that overlaps other lettering or solid ground, and anything drawn
 // outside the section. Run from the console: __FW.auditSweep().
 function auditSweep({ tol = 0.6 } = {}) {
-  const saved = { yr: state.yr, sel: state.selected, alt: state.alt,
+  const saved = { yr: state.yr, sel: state.selected, alt: state.alt, branch: state.branch,
                   pin: { ...state.pin }, hovered: state.hovered, tab: state.tab,
                   ctlAxis: state.ctlAxis };
   const cases = [];
@@ -1596,10 +1767,12 @@ function auditSweep({ tol = 0.6 } = {}) {
   for (const which of ['first', 'criterion', 'last']) cases.push({ yr: 2035, sel: `prov?${which}`, pin: {} });
   cases.push({ yr: 2077, sel: 'band', pin: {} });
   cases.push({ yr: 2095, sel: null, pin: {} });
+  cases.push({ yr: 2041, sel: null, pin: {}, branch: 'C5' });
+  cases.push({ yr: 2041, sel: 'branch:E5', pin: {}, branch: null, tab: 'alternatives' });
   const out = { cases: cases.length, collisions: [], offSheet: [], overflows: [], byCase: [] };
   state.hovered = null;
   for (const c of cases) {
-    state.yr = c.yr; state.selected = c.sel; state.alt = null;
+    state.yr = c.yr; state.selected = c.sel; state.alt = null; state.branch = c.branch || null;
     state.pin = { ...c.pin };
     state.tab = 'forecast';
     state.ctlAxis = c.v || 'C';
@@ -1630,7 +1803,7 @@ function auditSweep({ tol = 0.6 } = {}) {
       for (const x of off) out.offSheet.push({ ...x, sec: s.id, yr: c.yr, sel: c.sel });
     }
   }
-  Object.assign(state, { yr: saved.yr, selected: saved.sel, alt: saved.alt,
+  Object.assign(state, { yr: saved.yr, selected: saved.sel, alt: saved.alt, branch: saved.branch,
                          pin: saved.pin, hovered: saved.hovered, tab: saved.tab,
                          ctlAxis: saved.ctlAxis });
   if (Object.keys(saved.pin).length) recondition(); else cond = null;
@@ -1674,6 +1847,10 @@ async function boot() {
     J('engine.json'), J('network.json'), J('bands.json'), J('marginals.json'),
     J('mainline.json'), J('crisis.json'), J('delta.json'), J('claims.json'),
     J('grounding.json'), J('climate.json')]);
+  // the drawing's own declaration: the position space it letters, the date that space last
+  // changed, and where each researched figure keys
+  D.covered = await fetch(`data/registry-covered.json?v=${DATA_V}`)
+    .then((r) => (r.ok ? r.json() : null)).catch(() => null);
   readHash();
 
   document.body.style.backgroundImage = `url(${paperTileURL()})`;
