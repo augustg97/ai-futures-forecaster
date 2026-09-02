@@ -1,12 +1,14 @@
 # The chronicle plan — the likeliest path told as a dated sequence, and a model that reaches 2100
 
-**Revises** [`review-2026-09-01.md`](review-2026-09-01.md) after August's reading of it. Findings F1
-to F7 and the six defects stand. Principles 2 and 4 of that review (a probability in every
-sentence, forecast register throughout), the variable-by-variable block layout and the 2035 mock
-are withdrawn. The premise now is his: **the sheet depicts and describes the likeliest path in
+**Revises** [`review-2026-09-01.md`](review-2026-09-01.md) after August's reading of it, and
+revised again on his second reading (2026-09-02): the language standard in section 2 is new,
+the mock is rewritten under it, and the pencil line under the headline is gone. Findings F1 to
+F7 and the six defects of the review stand. Principles 2 and 4 of the review (a probability in
+every sentence, forecast register throughout), its variable-by-variable layout and its 2035 mock
+are withdrawn. The premise is his: **the sheet depicts and describes the likeliest path in
 concrete, material terms**, in the register of the 2026 record headline. Probabilities and dates
-ground it; they are the instrument's business, and they appear where the instrument for them
-is. Nothing here is applied.
+ground it; they are the instrument's business, and they stay on the dials and the chart.
+Nothing here is applied; implementation follows this document.
 
 `ai-2027.com` and `ai-2040.com` were unreachable from this session (the egress proxy blocks
 both), so the reading below is of the wiki's raw captures, `Raw Sources/AI 2027.md` and
@@ -74,40 +76,92 @@ For a sampled path, in order of date:
 
 | kind | source in the model | example on today's likeliest path |
 |---|---|---|
-| **milestone** | the capability path's crossings of the ladder and of the eight domain thresholds (`engine.domains`) | superhuman coder 2029 · research loop 2031 · generally superhuman 2033 · ceiling 2036 |
-| **event** | the instantiated templates (`instantiateJS`; 38 templates today, with windows, requirements, probabilities, citations) | capex correction 2026.9 · agent incident 2028.7 · copyright settles 2029.1 · preemption fight 2029.7 · Europe's leverage moment 2030.9 · labour constitution 2033.5 · bio century 2046.4 |
-| **onset** | each position's date of coming into force: already in force (R4's release gate, June 2026; C1's controls), dated by a template (E3 by the correction; A2 by the first incident), or by a track threshold (D2 when employment first reads 5% below 2026) | E3 onset 2026.9 · A2 onset 2028.7 · D2 onset 2032 |
+| **milestone** | the capability path's crossings of the ladder and of the eight domain thresholds (`engine.domains`) | superhuman coder late 2028 · research loop 2031 · generally superhuman 2033 · ceiling 2036 |
+| **event** | the instantiated templates (`instantiateJS`; 38 templates today, with windows, requirements, probabilities, citations) | capex correction 2026.9 · agent incident 2028.7 · copyright settles 2029.1 · preemption fight 2029.7 · Europe's lithography decision 2030.9 · labour legislation 2033.5 · AI-designed cures 2046.4 |
+| **onset** | each position's date of coming into force: already in force (R4's approval step, June 2026; C1's controls), dated by a template (E3 by the correction; A2 by the first incident), or by a track threshold (D2 when employment first reads 5% below 2026) | E3 onset 2026.9 · A2 onset 2028.7 · D2 onset 2032 |
 | **threshold** | a track crossing a level with meaning in the world's units, compared with 2026 | AI revenue passes worldwide semiconductor sales, 2031 · installed compute passes half of United States generating capacity, 2035 |
 | **calendar** | dated commitments on the record (the present `MARKERS`, widened) | the EU's product high-risk rules apply from 2 August 2028 |
 
 Every entry carries `t` (what happens), `m` (what it establishes), `cites`, and `src` — the
 template, position or track it came from. The `t` and `m` text is authored **once per template
-and once per position**, with slots for the year and the quantities, in the register of the
-record: named actors, figures, dates. Sequence comes from the model's windows and `req`,
-causation from the templates' effects, and neither from prose. Positions stop being eternal
-states: the correction is an event of late 2026, so at 2077 it is fifty years old and the
-chronicle either says so or says nothing. That single change removes the Delaware bankruptcy
-judges from 2077.
+and once per position**, with slots for the year and the quantities. Sequence comes from the
+model's windows and `req`, causation from the templates' effects, and neither from prose.
+Positions stop being eternal states: the correction is an event of late 2026, so at 2077 it is
+fifty years old and the chronicle either says so or says nothing. That single change removes
+the Delaware bankruptcy judges from 2077.
+
+**One defect the ledger exposed.** K, the takeoff shape, does not enter the capability path:
+`capPath()` reads only T, with the A2 shift and the C3 pause. On today's likeliest path K1 says
+the two milestones fall inside twelve months, and the path itself puts them nineteen months
+apart (2028.6 and 2030.2). L and G enter no track either, which the review recorded. The ledger
+cannot be truthful about a takeoff its capability path ignores, so wiring K into `capPath()` —
+T dates the coding milestone, K sets the gap to the research milestone — is part of M1.
+
+### The language standard
+
+August's second reading named the remaining faults in the first mock: "the interval" and
+"projects that national policy favours" are pointers to things the sentence never names, and
+the sentences run "x did y, and a did b" one after another. The standard below is written so a
+gate can test composed output, every line, every year, every path.
+
+1. **Every noun phrase names its thing.** No "the interval", "the arrangement", "the choice",
+   "the gain", "the gap", "the moment", "the question", "the work" standing alone. A definite
+   noun phrase is either a proper noun, a concrete noun (data centre, statute, wage insurance),
+   or introduced with its full name in the same sentence. Test: read the sentence alone, and
+   say what every noun refers to. The gate carries the list of bare abstractions and refuses
+   one unless it is specified by "of", "between", "that" or "which" in the same sentence.
+2. **Say who, what and how much.** Every clause names an actor (a proper noun, or a role from
+   the registry's own vocabulary: frontier laboratories, the Commerce Department, county
+   councils, insurers), a verb a person could watch happen, and its object; the figure sits
+   beside the clause where the model has one. "Projects that national policy favours" becomes
+   "data-centre projects"; "the interval" becomes "about two years after they first
+   out-programmed the best human software engineers".
+3. **Plain verbs.** Decides, passes, buys, refuses, signs, files, hires, cuts, blocks, falls.
+   Not "faces its moment", "sets its decade", "settles into", "takes hold", "enters the
+   lexicon", "stops being a metaphor", "arrives" for an era. The `METAPHOR` rules in
+   `prose_gate.py` stay and widen to this list.
+4. **One idea to a sentence, twenty-eight words at most, and no two neighbours the same shape.**
+   The assembler builds the headline from one authored sentence per ledger entry or position,
+   and its own rules govern the joins: at most one ", and" join and one semicolon in a headline;
+   a figure sentence has two renderings ("X stands near N, comparison" and "X, at N,
+   comparison") and never repeats its neighbour's; no sentence opens on the same word as the
+   one before; a short sentence follows a long one. The record composer already varies this way
+   by hand; the forecast composer does it by rule, measured on the output.
+5. **Figures carry a comparison a reader can check**, against 2026 or against a thing that
+   existed in 2026 — the standing rule.
+6. **Dates are explicit.** An event carries its year; a standing condition names when it began;
+   "since 2031", "in late 2026", "in 2033". The composer computes "about two years after".
+7. **Repetition is bounded by rule.** An entry appears in full while it is within three years
+   of the date, then as a dated clause, then not at all unless it set a condition still in
+   force.
+8. **The template texts are rewritten to this standard before they reach the sheet.** The
+   parent's 38 template strings are written in a summary register that fails rules 1 to 3 —
+   "Europe faces its leverage moment over lithography and market access; the choice made in
+   2030 sets its decade", "the drama migrates elsewhere", "the solar economy stops being a
+   metaphor". Each gets a `t` and an `m` under the standard, faithful to its source: for the
+   Europe template, "In 2030 the European Union decides whether to use ASML's lithography
+   monopoly and access to its market as bargaining tools in AI negotiations with Washington and
+   Beijing", with the consequence the Europe 2031 source gives it. The registry's position
+   descriptions already meet the standard and supply the criterion sentences directly.
 
 ### The readout at a year
 
-**Headline** — blue, five or six sentences, the same construction every day, every clause from
+**Headline** — blue, six to eight sentences, the same construction every day, every clause from
 the ledger or the tracks:
 
-1. Capability, dated: the most recent milestone and how long ago, and what systems do now, in
-   the ladder's own words rewritten as work.
-2. Money and build-out: installed compute and AI revenue with their 2026 comparisons, and the
-   capital condition as the dated event that set it.
-3. Work: employment against 2026, and the labour event if one has happened.
-4. Who decides: the coordination and rule-making positions in force, named by what they do, and
-   the most recent law or geopolitics event, dated.
-5. The public: the approval figure and what the public-response position means on the ground.
+1. Capability, dated: the most recent milestone, how long ago, and the milestone before it.
+2. Money and build-out: the dated event that set the capital condition, then installed compute
+   and AI revenue with their 2026 comparisons.
+3. Work: employment against 2026, where the losses fall on this path, and the labour event if
+   one has happened.
+4. Who decides: the coordination and rule-making positions in force, named by what their
+   actors do, with the most recent law or geopolitics event, dated.
+5. The public: the approval figure and what the public-response position does on the ground.
 6. When one falls within about three years of the date: the year's own headline event, with
    what it established.
 
-Under it, one line in pencil, the only place the headline's probability appears: "The
-likeliest of 2,000 sampled paths. Two-thirds of paths have crossed the research line by 2035; a
-fifth never do. The spread is the blue band."
+No probability under it. The likelihood of the path against the others is on the tempo dials
+and the chart's band, which is where a reader expecting an instrument reading looks for it.
 
 **The passage** — the chronicle, chronological, which is how both references read:
 
@@ -119,66 +173,55 @@ fifth never do. The spread is the blue band."
   criterion — and the quantities, in world units, each beside a 2026 comparison and a five-year
   rate.
 - **Ahead.** The next entries on this path with their years: "the research loop closes in 2031
-  on this path; the EU's product high-risk rules apply from August 2028; the compressed century
-  in biology opens in 2046." This is what makes the passage a forecast, and it is the one thing
-  the record cannot do.
+  on this path; the EU's product high-risk rules apply from August 2028; in 2046 AI-designed
+  treatments begin clearing major disease families." This is what makes the passage a
+  forecast, and it is the one thing the record cannot do.
 
 Coherence falls out: an event is stated once, at its date, and referred to afterwards by date.
 Per-year variation falls out: the ledger grows, the numbers move, the "ahead" list shrinks.
-Repetition is bounded by rule: an entry appears in full while it is recent, then as a clause,
-then not at all. Past the last ledger entry on a path the chronicle stops and says so — no
-stage-six vignettes — until the model programme (section 3) gives the far decades a ledger.
+Past the last ledger entry on a path the chronicle stops and says so — no stage-six vignettes —
+until the model programme (section 3) gives the far decades a ledger.
 
-### Register
-
-- Every sentence carries a `src`: a ledger entry, a track value, or a registry criterion. The
-  gate refuses a line without one. This replaces most of `prose_gate.py`'s style rules, which
-  were policing the symptoms of unsourced prose.
-- Named actors are the ones the source names. No invented named actors, no invented staffing.
-- Every event carries a date; the composer computes "four years ago" and "ahead".
-- Quantities in world units with a 2026 comparison, as the standing rule already says.
-- Tense: past for what the ledger has, present for standing conditions, future for "ahead".
-- No model vocabulary. "Milestone" for rung, "path" for line, and no span, stage or index.
-
-### The mock, composed from today's model's own ledger
+### The mock, composed from today's model's own ledger, under the standard
 
 2035 on the likeliest path (`T2·K1·A2·C1·R4·D2·S1·P3·E3·L4·G4`; ledger and tracks from
-`mainline.json`; sources in brackets, which the sheet would carry as marks, never as text):
+`mainline.json`; each sentence's source in brackets, which the sheet would carry as a mark):
 
-> In 2035, frontier systems have run the AI research loop without human researchers since
-> 2031, two years after they passed the best human engineers at software, and the interval was
-> the shortest any forecasting group had priced. [milestones 2029, 2031; K1] The valuation
-> correction of late 2026 wiped out AI equity and left the build-out standing: installed AI
-> compute is about 630 gigawatts, half of United States generating capacity in 2026, and AI
-> revenue runs near $5.8 trillion a year, comparable to the global automotive industry. [event
-> bubble-correction 2026.9; E3; tracks gw, rev] Employment is 8% below its 2026 level, and the
-> wage-insurance and dividend schemes legislated in 2033 are the first national answer to it.
-> [tracks jobs; event labor-constitution 2033.5] Washington and Beijing each run their own
-> compute stack under their own export controls, and the release gate the executive branch set
-> in June 2026 still decides when a frontier model ships. [C1; R4] Approval of AI stands at 37%,
-> and planning boards refuse projects that national policy favours, one county at a time.
-> [tracks appr; P3]
->
-> *The likeliest of 2,000 sampled paths. Two-thirds of paths have crossed the research line by
-> 2035; a fifth never do. The spread is the blue band.*
+> In 2035, frontier AI systems have run the AI research loop without human researchers since
+> 2031, about two years after they first out-programmed the best human software engineers.
+> [milestones 2028.6, 2031] The investment boom broke in late 2026, taking down the share
+> prices of the data-centre builders and the loans of some of their lenders, but construction
+> never stopped. [event bubble-correction 2026.9; E3] Installed AI computing capacity stands
+> near 630 gigawatts, half of all United States generating capacity in 2026. [tracks gw] Sales
+> of AI services, at $5.8 trillion a year, rival the world's automotive industry. [tracks rev]
+> Employment is 8% below its 2026 level, the losses concentrated in coding, content and
+> back-office work; in 2033 the first wage-insurance programmes and AI-revenue dividends
+> became law. [tracks jobs; D2; event labor-constitution 2033.5] Washington polices chip
+> exports and Beijing restricts foreign access to Chinese models, each enforcing its own rules
+> alone. [C1] Approval of AI stands at 37%. [tracks appr] County councils and state
+> legislatures block or delay data-centre projects one at a time. Those fights decide where
+> capacity gets built, and national politics stays on its existing lines. [P3]
 
-Then the passage's "Ahead": "On this path the ladder's top is reached in 2036, and the
-compressed century in biology opens in 2046, clearing major disease families decades ahead of
-the prior trend."
+Then the passage's "Ahead": "On this path, systems pass the top of the capability scale in
+2036. In 2046 AI-designed treatments begin clearing major disease families, decades ahead of
+the trend before them."
 
-The same year composed today reads: "By 2035, AI is wrong in ways that surface after a plant
-is built or a trial finishes … Tenants refused a lease by an unlisted scoring tool must sue in
-housing court … School districts that miss the August procurement window teach a whole year
-without tutoring capacity." Every clause of the mock above is in the model; none of the
-current headline's is.
+Read against the standard: every noun names its thing; every sentence has an actor, a verb and
+an object; nine sentences in six shapes, one ", and" join, one semicolon, the longest 28
+words; every figure beside a comparison; every event dated. The same year composed today
+reads: "By 2035, AI is wrong in ways that surface after a plant is built or a trial finishes …
+Tenants refused a lease by an unlisted scoring tool must sue in housing court … School
+districts that miss the August procurement window teach a whole year without tutoring
+capacity." Every clause of the mock is in the model; none of the current headline's is.
 
 And 2077 on the same path, to show what the far decades have today:
 
-> In 2077 the research loop has run without human direction for 46 years. The compressed
-> century in biology that opened in 2046 cleared the major disease families decades ahead of
-> the prior trend. Since 2056 the central political question has been allocation among
-> abundant options. Digital persons have held legal standing in several jurisdictions since
-> 2067, and population statistics carry a second column.
+> In 2077 the research loop has run without human direction for 46 years. AI-designed
+> treatments have been clearing major disease families since the 2040s, decades ahead of the
+> trend before them. Since the mid-2050s the central political question has been how to
+> allocate abundant goods, where it used to be how to manage scarce ones. Digital persons have
+> held legal standing in several jurisdictions since 2067; population statistics now carry a
+> second column for them.
 
 Three entries in forty years and no quantity the tracks can be trusted for — revenue, employment
 and the agent count have all sat at their caps since the 2040s. That is the honest state of the
@@ -187,11 +230,12 @@ far future on today's model, and it is the case for section 3.
 ### What is retired, what is kept
 
 Retired: HEADCL, FRAG, RUNG_SHORT, CROSS, ECON, ECON_MOD, TENSION, PAIRS — 2,400 of the 2,897
-authored strings, the hash rotations, the stage clock. Kept: `record.js` and its composer,
-`MARKERS` (widened into the calendar lane), `PROCESS` (its cadences become effects on events),
-`LONGFORM` (the position entry that opens on click, where the best of the retired vignettes may
-live, marked as illustration). Authored anew: `t` and `m` for every template (38 today, ~120
-after M2) and a criterion sentence per position per era (61 today).
+authored strings, the hash rotations, the stage clock, and the pencil line. Kept: `record.js`
+and its composer, `MARKERS` (widened into the calendar lane), `PROCESS` (its cadences become
+effects on events), `LONGFORM` (the position entry that opens on click, where the best of the
+retired vignettes may live, marked as illustration). Authored anew, under the standard: `t` and
+`m` for every template (38 today, ~120 after M2) and a criterion sentence per position per era
+(61 today), most of them lifted from the registry descriptions.
 
 ## 3 · The model programme — a forecast that reaches 2100
 
@@ -203,17 +247,20 @@ revenue, employment and the agent count sit at their caps on every sampled path.
 changes, each a registry decision with its own changelog entry and self-test under the standing
 rule, in the order that unlocks the chronicle.
 
-**M1 · Positions become processes with onsets.** Every position gets an `onset` rule — in force
-now, dated by a template, or dated by a track threshold — and the engine emits the onset per
-path. Small, and it removes the eternal-state defect that produced most of F3 and F4.
+**M1 · Positions become processes with onsets, and K reaches the capability path.** Every
+position gets an `onset` rule — in force now, dated by a template, or dated by a track
+threshold — and the engine emits the onset per path. `capPath()` takes the coding milestone's
+date from T and the gap to the research milestone from K, so the takeoff a path says it has is
+the takeoff its curve draws. Small, and it removes the eternal-state defect that produced most
+of F3 and F4.
 
 **M2 · The ledger is an emitted object.** The engine emits, per path, the dated ledger of
-section 2, for the mainline, the exemplars and the ensemble. Every template gains `m` and slots.
-The library grows from 38 to about 120 across all eras, each cited to the wiki, and templates
-gain *effects* — an agent incident raises the statute rate for some years, a correction cuts
-compute growth, a deal shifts the capability path. Three such effects already exist (the A2
-shift, the C3 pause, `{survives}`); effects are what make the chronicle causal rather than
-listed.
+section 2, for the mainline, the exemplars and the ensemble. Every template gains `m`, slots,
+and text under the language standard. The library grows from 38 to about 120 across all eras,
+each cited to the wiki, and templates gain *effects* — an agent incident raises the statute rate
+for some years, a correction cuts compute growth, a deal shifts the capability path. Three such
+effects already exist (the A2 shift, the C3 pause, `{survives}`); effects are what make the
+chronicle causal rather than listed.
 
 **M3 · Eras, each with its own variables — the extension to 2100.** The eleven axes are the
 *arrival* era's questions: how fast, how controlled, who coordinates, who pays, who decides.
@@ -268,23 +315,23 @@ Slowdown — each captioned in words with its weight. That is AI 2027's grammar 
 
 ## 4 · Plan
 
-Each phase ships alone and leaves the sheet publishable. P1 to P3 are this project's; P4 is the
+Each phase ships alone and leaves the sheet publishable. P0 to P3 are this project's; P4 is the
 parent's, under the standing rule, and the chronicle improves as each of its parts lands.
 
 | phase | work | size | acceptance |
 |---|---|---|---|
-| **P0 · fixes and gates** | the six defects of the review; a provenance gate that refuses a composed line without a `src`; a sanity gate on quantities (compute against world generating capacity, revenue against world output, employment against the record) that refuses the publish | ½ day | gates run in `build_site.py` |
-| **P1 · the chronicle on today's model** | `web/js/ledger.js` builds the ledger for a path from `mainline.json`, `exemplars.json` and `engine.json` (milestones, events, onsets by rule, thresholds, calendar); `headline()` and `describe()` replaced by the record composer generalised; `t` and `m` authored for the 38 templates and a criterion sentence for the 61 positions; the eight vignette tables retired | 3 days | the 2035 mock reproduces from the module; holding a path and stepping 2027 to 2050, every year's passage differs by ledger content and no entry appears in full more than three years running |
-| **P2 · layout** | headline and grounding line; the passage in Since / Now / Ahead across the three columns, the existing partition balancing them; a provenance mark per line; `auditSweep()` clean | 1 day | reader test below |
+| **P0 · fixes and gates** | the six defects of the review; a provenance gate that refuses a composed line without a `src`; a language gate over composed output for rules 1 to 4 of the standard (bare abstractions, actor and object, plain verbs, length, joins and shapes); a sanity gate on quantities (compute against world generating capacity, revenue against world output, employment against the record) that refuses the publish | 1 day | gates run in `build_site.py` and fail on the current passage |
+| **P1 · the chronicle on today's model** | `web/js/ledger.js` builds the ledger for a path from `mainline.json`, `exemplars.json` and `engine.json` (milestones, events, onsets by rule, thresholds, calendar); `headline()` and `describe()` replaced by the record composer generalised, with the shape assembler of rule 4; `t` and `m` authored for the 38 templates and a criterion sentence for the 61 positions, all under the standard; the eight vignette tables retired | 3 days | the 2035 mock reproduces from the module; holding a path and stepping 2027 to 2050, every year's passage differs by ledger content, no entry appears in full more than three years running, and the language gate passes on every year of every exemplar |
+| **P2 · layout** | headline without the pencil line; the passage in Since / Now / Ahead across the three columns, the existing partition balancing them; a provenance mark per line; `auditSweep()` clean | 1 day | reader test below |
 | **P3 · horizon, interim** | the slider stays to 2100; past a path's last ledger entry the passage stops and letters the year the ledger ends; the "why the river has this shape" explainer gains the saturation sentence | ½ day | no quantity lettered past its cap |
-| **P4 · the model programme** | M1, M2, M6 first (they unlock the chronicle on the arrival era); then M4 and M5 (credible quantities to 2100); then M3 (the eras, with dossiers); then M7 | M1–M2 one week · M4–M6 one week · M3 three weeks of the evidence programme · M7 two days | each a registry version with changelog and self-test; the far chronicle at 2077 carries at least one entry per decade and a quantity per track with a spread |
+| **P4 · the model programme** | M1 (with K wired), M2, M6 first (they unlock the chronicle on the arrival era); then M4 and M5 (credible quantities to 2100); then M3 (the eras, with dossiers); then M7 | M1–M2 one week · M4–M6 one week · M3 three weeks of the evidence programme · M7 two days | each a registry version with changelog and self-test; the far chronicle at 2077 carries at least one entry per decade and a quantity per track with a spread |
 | **P5 · plates** | branches plate; the controls' per-axis readouts; the research rows re-keyed or withdrawn; the drift baseline | 2 days | coverage and counts gates pass |
 
 **Reader test**, from the head of the forecast tab alone, at any year: can a reader say what has
 happened on this path and when, what the world looks like now in numbers they know, what comes
-next on this path and when, and, from the line under the headline, how likely this path is
-against the others? On the present sheet the answer is no to all four; the 2026 record answers
-the first two.
+next on this path and when, and, from the tempo dials and the chart's band, how likely this
+path is against the others? On the present sheet the answer is no to all four; the 2026 record
+answers the first two.
 
 ## 5 · What I would still push back on
 
