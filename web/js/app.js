@@ -7,9 +7,9 @@
 
 import { Draft, PEN, INK, paperTileURL } from './draft.js';
 import { SECTIONS, SHEET_W, TABS, CHART, COL, CTL_NOTE_W, balance,
-         proseColumns, measureSections, SHEET_CW } from './sections.js';
+         proseColumns, measureSections, SHEET_CW, NOTE_TITLE } from './sections.js';
 import { column, fmtNum } from './instruments.js';
-import { chronicle } from './ledger.js';
+import { chronicle, provenanceNote } from './ledger.js';
 import { describeRecord, headlineRecord, RECORD, recordAt, whenOf } from './record.js';
 import { LONGFORM } from './narrative.js';
 import { chooseFigures } from './figures.js';
@@ -428,6 +428,7 @@ function selectionNotes() {
   if (!sel) return null;
   const [kind, ...rest] = sel.split(':');
   const m = activeMarginals();
+  if (kind === 'prov') return null;   // drawn by the readout, under the line that opened it
   if (kind === 'axis') {
     const a = D.network.axes.find((z) => z.key === rest[0]);
     return a ? axisNotes(a) : null;
@@ -1140,6 +1141,16 @@ function sheetState(measure) {
   // ledger, so they cannot disagree.
   const ch = isRecord ? null : chronicle(wl, state.yr, tr, activeEvents(), D.engine, D.network);
   const paras = isRecord ? describeRecord(state.yr, trunkCap) : ch.paras;
+  // A line of the passage opens onto its source, inside the column it is drawn in. The note
+  // is attached to the item, so the measure and the draw see the same rows.
+  if (ch && state.selected && state.selected.startsWith('prov:')) {
+    const key = state.selected.slice(5);
+    for (const p of ch.paras) {
+      for (const g of p.groups || []) {
+        for (const it of g.items || []) if (it.key === key) it.note = provenanceNote(it, D.engine, D.network, plain);
+      }
+    }
+  }
   const S = {
     yr: state.yr, NOW: NOW_Y, TRUNK, pin: state.pin, obs: state.obs, build: DATA_V,
     engine: D.engine, network: D.network, crisis: D.crisis, grounding: D.grounding,
@@ -1184,12 +1195,14 @@ function sheetState(measure) {
     // says the same thing twice in two sizes.
     const body = [{ ...notes[0], h: null }].concat(notes.slice(1));
     const mk = (w, columns) => {
+      const title = notes[0].h || 'Note';
+      const extra = (measure.wrap(title.toUpperCase(), w - 8, NOTE_TITLE).length - 1) *
+                    NOTE_TITLE.size * 1.28;
       if (columns === 1) {
-        return { title: notes[0].h || 'Note', cols: [body],
-                 h: measureSections(measure, body, w - 8, 2.0) };
+        return { title, cols: [body], h: measureSections(measure, body, w - 8, 2.0) + extra };
       }
       const bal = balance(measure, body, (w - 12) / 2, 2.0);
-      return { title: notes[0].h || 'Note', cols: bal.cols, h: bal.h };
+      return { title, cols: bal.cols, h: bal.h + extra };
     };
     if (state.tab !== 'forecast') S.plateNote = mk(SHEET_W - 26, 2);
     else if (inPanel) {
@@ -1345,6 +1358,8 @@ function hoverLabel(hit) {
     return ['POSITION ' + rest[1],
       (p ? p[1] : '') + ' — ' + (((m[rest[0]] || {})[rest[1]] || 0) * 100).toFixed(1) + '%']; }
   if (kind === 'crisis') { const c = hit.payload; return ['CRISIS POINT', c ? c.q : '']; }
+  if (kind === 'prov') { const it = hit.payload;
+    return ['SOURCE', (it ? it.src : hit.id.slice(5)) + ' · press for its entry']; }
   if (kind === 'mile') return ['MILESTONE DATUM', D.engine.ladder[+rest[0]] || ''];
   if (kind === 'dom') { const dm = D.engine.domains[+rest[0]];
     return dm ? ['CAPABILITY DOMAIN', dm.n] : null; }
@@ -1580,6 +1595,9 @@ function auditSweep({ tol = 0.6 } = {}) {
                    { C: 'C3' }, { D: 'D1', E: 'E4', P: 'P1' }]) {
     cases.push({ yr: 2041, sel: null, pin });
   }
+  // a line of the passage opened onto its source: the first line of SINCE, a condition in
+  // NOW, and the last line of AHEAD, resolved against what the year composes
+  for (const which of ['first', 'criterion', 'last']) cases.push({ yr: 2035, sel: `prov?${which}`, pin: {} });
   const out = { cases: cases.length, collisions: [], offSheet: [], overflows: [], byCase: [] };
   state.hovered = null;
   for (const c of cases) {
@@ -1588,6 +1606,14 @@ function auditSweep({ tol = 0.6 } = {}) {
     state.tab = 'forecast';
     state.ctlAxis = c.v || 'C';
     if (Object.keys(state.pin).length) recondition(); else cond = null;
+    if (c.sel && c.sel.startsWith('prov?')) {
+      state.selected = null;
+      const keys = sheetState(SEC[0].draft).prose.keys || [];
+      const which = c.sel.slice(5);
+      const key = which === 'first' ? keys[0]
+        : which === 'last' ? keys[keys.length - 1] : keys.find((k) => k.startsWith('criterion:'));
+      state.selected = key ? `prov:${key}` : null;
+    }
     const S = sheetState(SEC[0].draft);
     for (const s of SEC) {
       state.tab = s.tab;

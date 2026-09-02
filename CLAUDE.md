@@ -124,6 +124,20 @@ The design is `Research/plan-2026-09-02-chronicle.md`; the review it answers is
   `TEMPLATE_TEXT` carries it. A new position refuses until `CRITERION` carries it.
 - **A pinned path composes its own chronicle** from `cond.events`; the record year (≤ 2026)
   still composes from `record.js`.
+- **Every line of the passage is an item with `src`, `kind` and `key`** (P2). The kind is
+  drawn as a mark in the margin (`PROV_MARK` in `sections.js`, keyed on the sheet), and the
+  line is a region that opens its note under itself (`provenanceNote()` in `ledger.js`). A
+  new kind needs a mark and a note before it reaches the sheet; the gate refuses a line
+  without a source and a kind.
+- **NOW reads in the four lanes of SINCE** (`AXIS_LANE`). A new axis reads in the last lane
+  and its note says so until it is placed.
+- **The passage flows across the columns at group boundaries**, cut where the tallest column
+  is shortest (`proseColumns()`); a section that continues in a new column carries its heading
+  again, in pencil, marked continued. `blockRows()` is the one measure and the one draw.
+- **An event the headline keeps is drawn in full for three years, then in its short dated
+  form `s`** for as long as it stands; SINCE draws `s` for entries past their three years. A
+  criterion whose onset a rule dates carries its year once the dating event has left the
+  headline. Every template, milestone and domain text has `t`, `s`, `f` and `m`.
 
 The traps below that name FRAG, CROSS, ECON_MOD, HEADCL, spans, stages or the calendar lanes
 describe the vignette layer that P1 retired; they are kept as the history of why the chronicle
@@ -193,6 +207,12 @@ __FW.auditSweep()                      # in the console: the audit (check `contr
   and eats it. Stand crisis and difference labels off by 2.4 mm.
 - **One slot allocator for every label on the chart.** The difference label placed on its own
   collided with the crisis labels whenever they landed together.
+- **The allocator has to know every label already on the chart**, the rung names, RECORDED
+  and TODAY included, and a fallback that takes the first slot regardless puts two labels on
+  each other the moment the fixed ones are in the way. It seeds itself and takes the
+  least-overlapping slot when none is clear.
+- **A note title wider than its block runs off the sheet.** `noteBlock()` wraps it and
+  `sheetState()` adds the same lines to the note's height, from the same `wrap()`.
 
 - **A note block's column width follows the number of columns it was MEASURED at**, never the
   block width alone. A one-column note wrapped to half its width runs off the foot of its

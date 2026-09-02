@@ -101,6 +101,8 @@ def sentences(text):
 
 
 def shape(s):
+    if TAG.match(s):
+        return "tag"
     if ";" in s:
         return "semi"
     if re.search(r"\w:\s", s):
@@ -121,8 +123,14 @@ def first_word(s):
     return m.group(0).lower() if m else ""
 
 
+# A dated tag on a standing condition points at the sentence before it, which named the
+# actor: "That began in 2031." / "On this path that happened in 2028." (language standard,
+# rule 6). It is exempt from the actor rule and has a shape of its own.
+TAG = re.compile(r"^(?:That (?:began|has held since)|On this path that (?:happened|begins) in) ")
+
+
 def has_actor(s):
-    return bool(ROLE.search(s) or PROPER.search(s))
+    return bool(TAG.match(s) or ROLE.search(s) or PROPER.search(s))
 
 
 def check_language(headline):
@@ -227,8 +235,8 @@ def main():
         with open(arg("--json", ""), "w", encoding="utf-8") as fh:
             json.dump(sweep, fh)
 
-    # 1 · provenance
-    units = unsourced = 0
+    # 1 · provenance — every group, and every line inside a group, carries its source
+    units = unsourced = lines_n = lines_unsourced = 0
     for line in sweep["lines"]:
         for yr in line["years"]:
             for p in yr["paras"]:
@@ -236,6 +244,11 @@ def main():
                     units += 1
                     if not g.get("src"):
                         unsourced += 1
+                    for it in g.get("items") or []:
+                        lines_n += 1
+                        if not it.get("src") or not it.get("kind"):
+                            lines_unsourced += 1
+    unsourced += lines_unsourced
     # 2 · language, over every composed headline
     lang, examples, heads, bad_heads = {}, {}, 0, 0
     for line in sweep["lines"]:
@@ -282,7 +295,8 @@ def main():
     faults = unsourced + sum(lang.values()) + len(rep)
     mode = "STRICT" if strict else "report mode"
     print("readout gate (%s) · %d paths · %d composed years" % (mode, len(sweep["lines"]), heads))
-    print("  provenance: %d of %d composed groups carry no src" % (unsourced, units))
+    print("  provenance: %d of %d composed groups carry no src; %d of %d lines carry no src or kind"
+          % (unsourced - lines_unsourced, units, lines_unsourced, lines_n))
     print("  language: %d of %d headlines carry a fault" % (bad_heads, heads))
     for rule in sorted(lang, key=lambda r: -lang[r]):
         for ex_ in examples[rule][:2]:

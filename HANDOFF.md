@@ -1,5 +1,53 @@
 # AI Futures Forecaster — live state
 
+**2026-09-02, later still: P2 of the chronicle plan is in — the layout.** The passage flows
+across the three columns at group boundaries, so the columns end level however long NOW runs:
+`proseColumns()` tries every set of cuts over the blocks (a group, with its section heading
+when it opens the section) and takes the shortest tallest column, and a section that continues
+in the next column carries its heading again in pencil, marked continued. The passage at 2035
+went from 168 mm to 136 mm, with no column standing empty beside another. Measure and draw share
+`blockRows()`. NOW reads in the same four lanes as SINCE (`AXIS_LANE` in `ledger.js`: T K A ·
+C S · D E G · R P L), then the quantities; an axis the table does not know reads in the last
+lane and its note says so.
+
+**Every line of the passage is an item with its own provenance** — the ledger entry, criterion
+or track it was composed from, and its kind — drawn as a mark in the margin (`PROV_MARK`:
+◆ capability milestone, ▸ event on this path, ▪ a level a track passes, ○ a position in force,
+▫ the calendar) with the key on the sheet under the headline's rule. Pressing a line opens its
+note inside the column, under the line (`provenanceNote()`): which template the parent
+instantiated and at what date, in the parent's own words, with its window, probability and
+requirements from `engine.json`; which milestone the capability track crossed and when; which
+position of the registry is in force and by what rule it is dated; the grounding behind it. The
+readout gate now checks every line for a source and a kind (0 of 10,487 unsourced), and the
+audit sweep opens three notes (SINCE, NOW, AHEAD) among its cases.
+
+**The dated clauses August asked for.** Every template, milestone and domain text carries a
+short dated form `s` ("The AI investment boom broke in 2026 and construction never stopped").
+The headline keeps the capital event and the labour event for as long as they stand — in full
+for three years, then in that form — so 2050 reads "The AI investment boom broke in 2026 and
+construction never stopped" where it read the undated E3 criterion. SINCE draws the same form
+for entries past their three years. A criterion in the headline whose position a rule dates
+carries the year once the event that dated it has left the headline ("That began in 2031." /
+"On this path that happened in 2028." / "That has held since 2030."); the gate treats these tags
+as dated pointers to the sentence before them. The assembler's opening-word rule now moves a
+date to either end of a sentence, so "The first wage-insurance programmes … became law in 2033"
+before "The United States and China …" becomes "In 2033 the first …". A crossing that falls in
+the year of the date reads "first ran" and "first exceeded", where it read "since 2031" in 2031.
+
+**Both audit findings that predated P0 are fixed, and the sweep is clean** (30 cases, 29,526
+marks, 0 collisions, 0 off-section, 0 overflows, `controlPasses: true`). The chart's label
+allocator seeds itself with the rung labels, RECORDED and TODAY, tries every slot on both sides
+and takes the least-overlapping one when none is clear — the old fallback took the first
+in-frame slot regardless, which put two crisis labels on each other the moment the rung labels
+were in the way. A note title wider than its block wraps and the block grows by the lines it
+takes, with `sheetState()` adding the same lines from the same wrap; "COORDINATION BETWEEN
+PRINCIPAL STATES" ran off the sheet before.
+
+Gates at the commit: prose OK over 516 strings; tables OK; counts OK; readout gate strict, 0
+faults over 374 composed years; `measure_repeat` 74 of 74 distinct headlines on the likeliest
+path. `docs/` is untouched here; the nightly publishes it. Left for P3 to P5: the horizon
+interim, the model programme in the parent, the plates.
+
 **2026-09-02, later: P1 of the chronicle plan is in.** The forecast readout is a chronicle.
 `web/js/ledger.js` builds the ledger of the active path — milestone crossings from the
 capability track, the instantiated templates (ids recovered from the emitted text where the

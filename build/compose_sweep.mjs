@@ -34,7 +34,10 @@ for (const [li, L] of lines.entries()) {
       paras: ch.paras.map((p) => ({
         lead: p.lead, src: p.src || null, text: p.text,
         groups: (p.groups || []).map((g) => ({ head: g.head, text: g.text, src: g.src || null,
-                                               full: g.full || [] })),
+                                               full: g.full || [],
+                                               items: (g.items || []).map((it) => ({
+                                                 text: it.t, src: it.src || null,
+                                                 kind: it.kind || null, key: it.key || null })) })),
       })),
       ledger: ch.ledger.entries.length,
     });

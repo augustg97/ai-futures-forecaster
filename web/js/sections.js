@@ -43,115 +43,155 @@ export function measureSections(d, secs, colW, size = 2.0) {
   }
   return h;
 }
-// ── a paragraph of the passage ──────────────────────────────────────────────
-// A subheading, then the evidence as separate lines. The paragraph used to be a run-in lead
-// followed by one block of prose, which reads as a wall at the head of the sheet; the same
-// sentences under a heading, one to a line, let a reader take in a year at a glance and check
-// any single claim without reading the rest. Measuring and drawing share this function, so a
-// change to one cannot leave the other behind.
-const BULLET = '\u00b7\u2002';
-const IND = 3.0;        // the bullet's hanging indent, in sheet millimetres
-const HEAD_SIZE = 1.7;  // the subheading's cap height
+// ── the passage: blocks that flow across the columns ────────────────────────
+// The passage is SINCE, NOW and AHEAD, each a section of groups, and a group is the unit that
+// flows across the three columns, so the columns end level however long NOW runs. A group
+// that opens its section carries the section heading; a group that opens a column mid-section
+// carries the heading again, marked continued, so a reader landing there knows the tense.
+// Every line is an item of the chronicle with its own source: its kind is drawn as a mark in
+// the margin (PROV_MARK, one glyph per kind, the key published under the headline), and the
+// line is registered as a region a reader can open onto the note the composer wrote for it.
+// Measuring and drawing share blockRows(), so a change to one cannot leave the other behind.
+const BULLET_MARK = '·';
+export const PROV_MARK = { milestone: '◆', event: '▸', threshold: '▪',
+                           quantity: '▪', onset: '○', criterion: '○',
+                           calendar: '▫' };
+export const PROV_KEY = '◆ CAPABILITY MILESTONE   ▸ EVENT ON THIS PATH   ' +
+  '▪ LEVEL A TRACK PASSES   ○ POSITION IN FORCE   ▫ ON THE CALENDAR   ' +
+  '·  PRESS A LINE FOR ITS SOURCE';
+const IND = 3.0;        // the mark's hanging indent, in sheet millimetres
+const HEAD_SIZE = 1.7;  // the section heading's cap height
 const HEAD_LEAD = 1.28;
 const SUB_SIZE = 1.5;   // the group heading, a step under the section heading
+const KEY_H = 4.4;      // the key line under the headline's rule
+// the note a line opens: type sizes, padding and the air above and below the box
+const NOTE = { size: 1.7, lead: 1.36, title: 1.6, pad: 1.8, gap: 0.8, above: 1.2, below: 3.2 };
 // EVERY VERTICAL GAP IN THE PASSAGE IS A MULTIPLE OF ONE UNIT, and measure and draw read the
 // same numbers. They had been written out twice — 1.1 between bullets here, 1.0 + 0.6 around a
 // group heading there, 2.2 after a section heading, 3.6 between paragraphs — four figures with
 // no relation to each other, in two places that could disagree without anything noticing.
 const SP_U = 0.9;
 export const PROSE_SP = {
-  bullet: SP_U,             // air between two bullets
-  subOver: SP_U * 1.35,     // above a group heading, which belongs to the bullets below it
+  bullet: SP_U,             // air between two lines
+  subOver: SP_U * 1.35,     // above a group heading, which belongs to the lines below it
   subUnder: SP_U * 0.55,
   headUnder: SP_U * 1.9,    // under the section heading's rule
-  para: SP_U * 3.4,         // between paragraphs
-  lead: 1.34,               // inside a wrapped bullet, tighter than running prose
+  para: SP_U * 3.4,         // between sections inside a column
+  lead: 1.34,               // inside a wrapped line, tighter than running prose
 };
-export function paraLines(d, p, colW, size = 2.0) {
-  const head = String(p.lead || '').replace(/[.:]\s*$/, '').toUpperCase();
-  const body = String(p.text || '');
-  // sentence per line, keeping decimals, dates and abbreviations intact
+export function proseBlocks(paras) {
+  const blocks = [];
+  paras.forEach((p, pi) => {
+    const gs = p.groups && p.groups.length ? p.groups : [{ head: null, text: p.text }];
+    gs.forEach((g, gi) => blocks.push({ lead: p.lead || '', first: gi === 0, group: g, para: pi }));
+  });
+  return blocks;
+}
+// sentence per line for a group with no items (the record), keeping decimals, dates and
+// abbreviations intact
+const splitSentences = (t) => String(t || '').split(/(?<=[.!?])\s+(?=[A-Z“"])/)
+  .map((x) => x.trim()).filter(Boolean);
+function noteRows(d, note, colW) {
+  const w = colW - IND - NOTE.pad * 2;
+  const title = d.wrap(String(note.title || 'SOURCE').toUpperCase(), w,
+                       { size: NOTE.title, weight: 700, track: 0.16 });
+  const paras = (note.lines || []).map((t) => d.wrap(t, w, { size: NOTE.size }));
+  let h = NOTE.pad + title.length * NOTE.title * HEAD_LEAD + NOTE.gap;
+  for (const ls of paras) h += ls.length * NOTE.size * NOTE.lead + NOTE.gap;
+  h += NOTE.pad;
+  return { title, paras, h };
+}
+export function blockRows(d, b, colW, size = 2.0, atTop = false) {
   const rows = [];
-  if (head) rows.push({ t: head, head: 1 });
-  const split = (t) => String(t).split(/(?<=[.!?])\s+(?=[A-Z“"])/)
-    .map((x) => x.trim()).filter(Boolean);
-  if (p.groups && p.groups.length) {
-    // A GROUP HEADING SAYS WHAT KIND OF CLAIM FOLLOWS. Under one section heading the bullets
-    // mix the setting's own account, what a second variable does to it, the quantities the
-    // model computes, and dated commitments already on the record. Those are four different
-    // kinds of claim and the reader is entitled to see which is which.
-    for (const g of p.groups) {
-      if (g.head) rows.push({ t: g.head, head: 2 });
-      for (const b of split(g.text)) rows.push({ t: BULLET + b, head: 0 });
+  const lead = String(b.lead || '').replace(/[.:]\s*$/, '').toUpperCase();
+  if (lead && b.first) rows.push({ t: lead, head: 1 });
+  else if (lead && atTop) rows.push({ t: `${lead} · CONTINUED`, head: 1, cont: true });
+  const g = b.group;
+  // A GROUP HEADING SAYS WHAT KIND OF CLAIM FOLLOWS. Under one section heading the lines mix
+  // the lanes of the ledger, the conditions in force, the quantities the model computes, and
+  // dated commitments already on the record. The reader is entitled to see which is which.
+  if (g.head) rows.push({ t: g.head, head: 2 });
+  if (g.items && g.items.length) {
+    for (const it of g.items) {
+      rows.push({ t: it.t, head: 0, mark: PROV_MARK[it.kind] || BULLET_MARK, key: it.key, item: it });
+      if (it.note) rows.push({ head: 0, note: noteRows(d, it.note, colW) });
     }
   } else {
-    for (const b of split(body)) rows.push({ t: BULLET + b, head: 0 });
+    for (const t of splitSentences(g.text)) rows.push({ t, head: 0, mark: BULLET_MARK });
   }
   // The heading is set at its own size and lead, so it is counted at its own size and lead.
   // Counting every row at body size measured the block short and put nine marks off the
-  // section, which is the measure and the draw disagreeing by exactly one type size.
-  let headLines = 0, subLines = 0, bodyLines = 0;
+  // section, which is the measure and the draw disagreeing by exactly one type size. THE
+  // MEASURE MUST WRAP ON THE SAME TRACKING THE DRAW USES: textBlock defaults to 0.06, and a
+  // count at 0 wrapped every line to more lines than were measured for it.
+  let h = 0;
   for (const r of rows) {
-    // THE MEASURE MUST WRAP ON THE SAME TRACKING THE DRAW USES. textBlock defaults to 0.06
-    // and this counted at 0, so every bullet wrapped to more lines than were measured for it
-    // and the tallest column ran 4.3 mm past the section.
+    if (r.note) { r.h = NOTE.above + r.note.h + NOTE.below; h += r.h; continue; }
     const sz = r.head === 1 ? HEAD_SIZE : r.head === 2 ? SUB_SIZE : size;
-    const n = d.wrap(r.t, colW - (r.head ? (r.head === 2 ? IND : 0) : IND),
-                     { size: sz, track: r.head ? 0.16 : 0.06,
-                       weight: r.head ? 700 : 400 }).length;
-    if (r.head === 1) headLines += n;
-    else if (r.head === 2) subLines += n;
-    else bodyLines += n;
+    const n = d.wrap(r.t, colW - (r.head === 1 ? 0 : IND),
+                     { size: sz, track: r.head ? 0.16 : 0.06, weight: r.head ? 700 : 400 }).length;
+    r.h = r.head === 1 ? n * HEAD_SIZE * HEAD_LEAD + PROSE_SP.headUnder
+        : r.head === 2 ? n * SUB_SIZE * HEAD_LEAD + PROSE_SP.subOver + PROSE_SP.subUnder
+        : n * size * PROSE_SP.lead + PROSE_SP.bullet;
+    h += r.h;
   }
-  return { rows, headLines, subLines, bodyLines,
-           lines: headLines + subLines + bodyLines };
+  return { rows, h };
 }
 export function measureProse(d, paras, colW, size = 2.0) {
+  const blocks = proseBlocks(paras);
   let h = 0;
-  for (const p of paras) {
-    const { rows, headLines, subLines, bodyLines } = paraLines(d, p, colW, size);
-    const bullets = rows.filter((r) => !r.head).length;
-    const subs = rows.filter((r) => r.head === 2).length;
-    h += headLines * HEAD_SIZE * HEAD_LEAD + subLines * SUB_SIZE * HEAD_LEAD +
-         bodyLines * size * PROSE_SP.lead + bullets * PROSE_SP.bullet +
-         subs * (PROSE_SP.subOver + PROSE_SP.subUnder) +
-         (headLines ? PROSE_SP.headUnder : 0) + PROSE_SP.para;
-  }
+  blocks.forEach((b, k) => {
+    h += blockRows(d, b, colW, size, k === 0).h;
+    if (k + 1 < blocks.length && blocks[k + 1].first) h += PROSE_SP.para;
+  });
   return h;
 }
-// The passage across n columns, split so the columns end level. Three columns keep it a band
-// across the head of the sheet instead of a wall the chart has to sit under.
+// The passage across n columns, cut at group boundaries so the columns end level. Three
+// columns keep it a band across the head of the sheet instead of a wall the chart has to sit
+// under.
 export const PROSE_N = 3;
 export const PROSE_COL = (CW - (PROSE_N - 1) * 10) / PROSE_N;
 export function proseColumns(d, paras, colW = PROSE_COL, n = PROSE_N, size = 2.0) {
-  const hs = paras.map((p) => measureProse(d, [p], colW, size));
-  // Order has to be preserved, so the only choice is where to cut. With a handful of
-  // paragraphs every set of cuts can be tried, and the one with the shortest tallest column
-  // wins — a greedy fill left one column with a single line and another with four paragraphs.
-  const m = paras.length;
+  const blocks = proseBlocks(paras);
+  const m = blocks.length;
+  const keys = [];
+  for (const b of blocks) for (const it of b.group.items || []) if (it.key) keys.push(it.key);
+  if (!m) return { cols: Array.from({ length: n }, () => []), h: 0, keys };
+  // each block measured twice: inside a column, and at the top of one, where it may carry a
+  // continued heading
+  const Hs = blocks.map((b) => [blockRows(d, b, colW, size, false).h,
+                                blockRows(d, b, colW, size, true).h]);
+  const colH = (a, z) => {
+    let h = 0;
+    for (let k = a; k < z; k++) {
+      h += Hs[k][k === a ? 1 : 0];
+      if (k + 1 < z && blocks[k + 1].first) h += PROSE_SP.para;
+    }
+    return h;
+  };
+  // Order has to be preserved, so the only choice is where to cut. With a dozen blocks every
+  // set of cuts can be tried, and the one with the shortest tallest column wins — a greedy
+  // fill left one column with a single line and another with four paragraphs.
   let best = null;
-  const cuts = [];
-  const walk = (start, depth) => {
-    if (depth === n - 1) {
+  const walk = (cuts, start) => {
+    if (cuts.length === n - 1) {
       const bounds = [0, ...cuts, m];
       let tallest = 0;
-      for (let c = 0; c < n; c++) {
-        let sum = 0;
-        for (let k = bounds[c]; k < bounds[c + 1]; k++) sum += hs[k];
-        if (sum > tallest) tallest = sum;
-      }
-      if (best === null || tallest < best.tallest) {
-        best = { tallest, bounds: bounds.slice() };
-      }
+      for (let c = 0; c < n; c++) tallest = Math.max(tallest, colH(bounds[c], bounds[c + 1]));
+      if (!best || tallest < best.tallest) best = { tallest, bounds };
       return;
     }
-    for (let c = start; c <= m; c++) { cuts.push(c); walk(c, depth + 1); cuts.pop(); }
+    const left = n - 1 - cuts.length;
+    for (let c = start; c <= m - left; c++) walk([...cuts, c], c + 1);
   };
-  if (m === 0) return { cols: Array.from({ length: n }, () => []), h: 0 };
-  walk(0, 0);
+  if (m >= n) walk([], 1);
+  else {
+    best = { tallest: Math.max(...Hs.map((h) => h[1])),
+             bounds: [...Array(m + 1).keys()].concat(Array(n - m).fill(m)) };
+  }
   const cols = [];
-  for (let c = 0; c < n; c++) cols.push(paras.slice(best.bounds[c], best.bounds[c + 1]));
-  return { cols, h: Math.max(...cols.map((c) => measureProse(d, c, colW, size))) };
+  for (let c = 0; c < n; c++) cols.push(blocks.slice(best.bounds[c], best.bounds[c + 1]));
+  return { cols, h: best.tallest, keys };
 }
 // Split a run of sections into two columns of roughly equal drawn height.
 export function balance(d, secs, colW, size = 2.0) {
@@ -224,6 +264,7 @@ function button(d, x, y, w, h,
 }
 
 // A note drawn where the reader is looking: two columns inside a ruled block.
+export const NOTE_TITLE = { size: 2.4, weight: 700, track: 0.16 };
 function noteBlock(d, x, y, w, note, { title = null, colour = INK.red } = {}) {
   // The column width follows the number of columns the note was MEASURED at. Deriving it from
   // the block width alone wrapped a one-column note to half its width and ran it off the foot
@@ -231,13 +272,17 @@ function noteBlock(d, x, y, w, note, { title = null, colour = INK.red } = {}) {
   const n = Math.max(1, note.cols.length);
   const gap = n > 1 ? 4 : 0;
   const colW = (w - 8 - (n - 1) * gap) / n;
+  // A title wider than the block wraps, and the block grows by the lines it takes: the
+  // axis names r5 lengthened ran the title off the controls column and off the sheet. The
+  // measure in sheetState() adds the same lines to `note.h`, from the same wrap.
+  const tl = title ? d.wrap(title.toUpperCase(), w - 8, NOTE_TITLE) : [];
+  const extra = tl.length > 1 ? (tl.length - 1) * NOTE_TITLE.size * 1.28 : 0;
   d.rect(x, y - note.h - (title ? 9 : 4), w, note.h + (title ? 11 : 6),
          { weight: PEN.thin, colour, alpha: 0.6 });
   let top = y;
   if (title) {
-    d.text([x + 4, y - 3.0], title.toUpperCase(),
-           { size: 2.4, weight: 700, track: 0.16, colour });
-    top = y - 7.4;
+    d.textBlock([x + 4, y - 3.0], title.toUpperCase(), w - 8, { ...NOTE_TITLE, lead: 1.28, colour });
+    top = y - 7.4 - extra;
   }
   note.cols.forEach((col, ci) => {
     let cy = top;
@@ -478,11 +523,18 @@ function chartColumn(d, S, top) {
     d.text([X(yr), by - 5.0], String(yr),
            { size: 1.9, align: 'center', face: 'figure', colour: INK.inkLight });
   }
+  // Lettering already on the chart, so the label allocator below can keep out of it. The
+  // crisis label for the no-superintelligence window sat on GENERALLY SUPERINTELLIGENT when
+  // the path reached the top rung; the allocator only knew about its own labels.
+  const fixed = [];
+  const fix = (x, y, str, size) => fixed.push({ x, y: y - size * 0.24, h: size * 1.28,
+                                                w: d.textWidth(str, { size, track: 0.10 }) + 0.6 });
   for (let i = 1; i <= 6; i++) {
     d.line([bx, Yv(i)], [bx + bw, Yv(i)],
            { weight: PEN.thin, colour: INK.red, dash: [7, 2, 1.4, 2], alpha: 0.45 });
-    d.text([bx + 1.6, Yv(i) + 1.3], (S.engine.ladder[i] || '').toUpperCase(),
-           { size: 1.7, colour: INK.red, track: 0.10 });
+    const rung = (S.engine.ladder[i] || '').toUpperCase();
+    d.text([bx + 1.6, Yv(i) + 1.3], rung, { size: 1.7, colour: INK.red, track: 0.10 });
+    fix(bx + 1.6, Yv(i) + 1.3, rung, 1.7);
     d.text([bx - 1.8, Yv(i) - 0.8], String(i),
            { size: 1.8, align: 'right', face: 'figure', colour: INK.redLight });
     d.region(`mile:${i}`, bx, Yv(i) - 2.2, bw, 4.4, i);
@@ -546,36 +598,50 @@ function chartColumn(d, S, top) {
   d.polyline(S.TRUNK.map((p) => [X(p[0]), Yv(p[1])]), { weight: PEN.outline, colour: INK.ink });
   d.text([X(2013), Yv(0.75)], 'RECORDED',
          { size: 1.9, colour: INK.ink, weight: 600, track: 0.12 });
+  fix(X(2013), Yv(0.75), 'RECORDED', 1.9);
 
   d.line([X(S.NOW), by], [X(S.NOW), by + bh + 2.0], { weight: PEN.medium, colour: INK.ink });
   d.text([X(S.NOW) + 1.4, by + bh - 3.2], 'TODAY',
          { size: 2.0, colour: INK.ink, weight: 700, track: 0.16 });
+  fix(X(S.NOW) + 1.4, by + bh - 3.2, 'TODAY', 2.0);
   d.line([X(S.yr), by], [X(S.yr), by + bh], { weight: PEN.thin, colour: INK.blue });
   d.polyline([[X(S.yr), by + bh], [X(S.yr) - 2.0, by + bh + 3.0], [X(S.yr) + 2.0, by + bh + 3.0]],
              { close: true, weight: PEN.thin, colour: INK.blue, fill: INK.blue });
 
   // every label on the chart takes its slot from one allocator
-  const placed = [];
+  const placed = fixed.slice();
   const SLOTS = [10, -10, 16.5, -16.5, 23, -23, 29.5, -29.5];
   // A label is placed inside the frame on both axes: pushed above or below it lands on the
   // plate's caption, pushed past the right edge it lands in the control panel next door.
+  // Every slot on the preferred side, then every slot on the other side; the first clear one
+  // wins, and when none is clear the one that overlaps least. The old fallback took the
+  // first in-frame slot regardless, which is how two crisis labels landed on each other
+  // once the rung labels were in the allocator's way.
+  const overlap = (a, b) => Math.max(0, Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x)) *
+                            Math.max(0, Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y));
   const place = (cx, cy, str, size) => {
     const tw = d.textWidth(str, { size }) + 1.5;
-    const toRight = cx + 5 + tw <= bx + bw - 1;
-    const x0 = toRight ? cx + 5 : cx - 5 - tw;
-    let fallback = null;
-    for (const cand of SLOTS) {
-      const box = { x: x0, y: cy + cand - 1.0, w: tw, h: 3.3 };
-      if (box.y < by + 1 || box.y + box.h > by + bh - 1) continue;
-      if (fallback === null) fallback = cand;
-      if (!placed.some((q) => Math.min(q.x + q.w, box.x + box.w) - Math.max(q.x, box.x) > 0 &&
-                              Math.min(q.y + q.h, box.y + box.h) - Math.max(q.y, box.y) > 0)) {
-        placed.push(box); return { off: cand, right: !toRight };
+    const fitsRight = cx + 5 + tw <= bx + bw - 1;
+    const sides = fitsRight ? [true, false] : [false, true];
+    let best = null;
+    for (const toRight of sides) {
+      const x0 = toRight ? cx + 5 : cx - 5 - tw;
+      if (x0 < bx + 1 || x0 + tw > bx + bw - 1) continue;
+      for (const cand of SLOTS) {
+        const box = { x: x0, y: cy + cand - 1.0, w: tw, h: 3.3 };
+        if (box.y < by + 1 || box.y + box.h > by + bh - 1) continue;
+        const cost = placed.reduce((t, q) => t + overlap(q, box), 0);
+        if (!best || cost < best.cost) best = { cost, box, off: cand, right: !toRight };
+        if (cost === 0) break;
       }
+      if (best && best.cost === 0) break;
     }
-    const off = fallback === null ? SLOTS[0] : fallback;
-    placed.push({ x: x0, y: cy + off - 1.0, w: tw, h: 3.3 });
-    return { off, right: !toRight };
+    if (!best) {
+      const x0 = fitsRight ? cx + 5 : cx - 5 - tw;
+      best = { cost: 0, box: { x: x0, y: cy + SLOTS[0] - 1.0, w: tw, h: 3.3 }, off: SLOTS[0], right: !fitsRight };
+    }
+    placed.push(best.box);
+    return { off: best.off, right: best.right };
   };
   if (diffLabel) {
     const str = `SETTINGS MOVED THIS ${diffLabel.d > 0 ? '+' : '−'}` +
@@ -1015,19 +1081,43 @@ board.height = (S) => {
 };
 
 // ── 3 · the passage, across the head of the sheet ───────────────────────────
+function drawNote(d, x, y, w, note) {
+  const top = y + NOTE.above;
+  d.rect(x, top - note.h, w, note.h, { weight: PEN.thin, colour: INK.red, alpha: 0.6 });
+  let ty = top - NOTE.pad - NOTE.title;
+  for (const ln of note.title) {
+    d.text([x + NOTE.pad, ty], ln, { size: NOTE.title, weight: 700, track: 0.16, colour: INK.red });
+    ty -= NOTE.title * HEAD_LEAD;
+  }
+  ty -= NOTE.gap;
+  for (const ls of note.paras) {
+    for (const ln of ls) {
+      d.text([x + NOTE.pad, ty], ln, { size: NOTE.size, colour: INK.pencil, track: 0.06 });
+      ty -= NOTE.size * NOTE.lead;
+    }
+    ty -= NOTE.gap;
+  }
+}
 export function readout(d, S, H) {
   let y = H - 8;
   d.textBlock([PAD, y], S.headline, CW,
               { size: 3.2, lead: 1.28, colour: INK.blue, weight: 600 });
   y -= d.wrap(S.headline, CW, { size: 3.2, weight: 600 }).length * 3.2 * 1.28 + 3.2;
   rule(d, y + 1.6, PAD, CW, { weight: PEN.thin, colour: INK.blue });
-  y -= 2.2;
+  // The key to the marks is on the document, under the rule the marks hang from. The record
+  // carries no marks: its lines are the record's own and open nothing.
+  if (!S.isRecord) {
+    d.text([PAD, y - 1.2], PROV_KEY, { size: 1.45, colour: INK.pencilLight, track: 0.10 });
+  }
+  y -= KEY_H;
   S.prose.cols.forEach((col, ci) => {
     let cy = y;
     const cx = PAD + ci * (PROSE_COL + 10);
-    for (const para of col) {
-      const { rows } = paraLines(d, para, PROSE_COL, 2.0);
-      rows.forEach((r, ri) => {
+    col.forEach((b, bi) => {
+      if (bi && b.first) cy -= PROSE_SP.para;
+      const { rows } = blockRows(d, b, PROSE_COL, 2.0, bi === 0);
+      for (const r of rows) {
+        if (r.note) { drawNote(d, cx + IND, cy, PROSE_COL - IND, r.note); cy -= r.h; continue; }
         if (r.head === 2) {
           cy -= PROSE_SP.subOver;
           cy -= d.textBlock([cx + IND, cy], r.t, PROSE_COL - IND,
@@ -1037,21 +1127,24 @@ export function readout(d, S, H) {
         } else if (r.head) {
           // A SUBHEADING HAS TO LOOK LIKE ONE. Bold body type at body size read as another
           // sentence; this is smaller, letter-spaced, in full ink, over a hairline, which is
-          // the same treatment every other heading on the sheet gets.
+          // the same treatment every other heading on the sheet gets. A continued heading is
+          // the same heading in pencil.
           cy -= d.textBlock([cx, cy], r.t, PROSE_COL,
                             { size: HEAD_SIZE, lead: HEAD_LEAD, weight: 700,
-                              track: 0.16, colour: INK.ink });
+                              track: 0.16, colour: r.cont ? INK.pencil : INK.ink });
           d.line([cx, cy + 1.0], [cx + PROSE_COL, cy + 1.0],
                  { weight: PEN.hairline, colour: INK.inkLight, alpha: 0.8 });
           cy -= PROSE_SP.headUnder;
         } else {
-          cy -= d.textBlock([cx + IND, cy], r.t, PROSE_COL - IND,
-                            { size: 2.0, lead: PROSE_SP.lead, colour: INK.pencil });
-          cy -= PROSE_SP.bullet;  // air between bullets, so they read as separate claims
+          // the mark hangs in the margin; the line is a region a reader can open
+          d.text([cx + 0.2, cy], r.mark, { size: 2.0, track: 0, colour: INK.pencilLight });
+          const h = d.textBlock([cx + IND, cy], r.t, PROSE_COL - IND,
+                                { size: 2.0, lead: PROSE_SP.lead, colour: INK.pencil });
+          if (r.key) d.region(`prov:${r.key}`, cx, cy - h + 0.5, PROSE_COL, h + 1.0, r.item);
+          cy -= h + PROSE_SP.bullet;  // air between lines, so they read as separate claims
         }
-      });
-      cy -= PROSE_SP.para;
-    }
+      }
+    });
   });
   for (let i = 1; i < PROSE_N; i++) {
     const gx = PAD + i * (PROSE_COL + 10) - 5;
@@ -1067,7 +1160,7 @@ export function readout(d, S, H) {
 // it only ever grows within a session.
 readout.reserve = 0;
 readout.height = (S) => {
-  const want = 22 + (S.headlineH || 12) + S.prose.h;
+  const want = 22 + KEY_H + (S.headlineH || 12) + S.prose.h;
   if (want > readout.reserve) readout.reserve = want;
   return readout.reserve;
 };
