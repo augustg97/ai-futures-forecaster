@@ -57,7 +57,10 @@ for (const L of ex.lines) {
   if (n++ >= N) break;
   compare(`exemplar ${n}`, L.wl, L.tracks, L.events || [], L.knots || null);
 }
-const mode = hasDynamics(E) ? 'r9 dynamics' : 'r8 arithmetic';
+// name the mode by the emission it read, never by the revision that introduced it:
+// 'r9 dynamics' stayed on the line under r10 and read as a stale version (2026-09-03).
+const net = (() => { try { return F('network.json').version; } catch { return null; } })();
+const mode = hasDynamics(E) ? `${net || 'emitted'} dynamics` : 'r8 arithmetic fallback';
 console.log(`port gate · ${mode} · mainline + ${n} exemplars · ${checked} values compared`);
 if (main.crossings) {
   const mine = crossings(capPath(E, main.wl), E.y1);
