@@ -1,5 +1,22 @@
 # AI Futures Forecaster — live state
 
+**2026-09-03, morning: the branch carries a built `docs/`, and nothing of P0 to P5 is live
+until `main` carries it.** Pages serves `main:/docs`, the nightly on August's machine builds
+`docs/` from `main`'s `web/` and pushes it, and every phase since P0 changed `web/` on the branch
+`claude/ai-futures-forecaster-review-t7fvqb` alone — so the live sheet on 2026-09-03 was still
+the vignette layer, one day after P5 landed. The branch now carries `origin/main` merged in (the
+nightly's two `docs/` stamps of 2026-09-02) and a production build of its own, `__BUILD
+20260903-0331`, made here with the Atlas gate, the pull, the five gates and the versioned entry:
+the built sheet draws the branches plate and composes the chronicle. **To make it live, merge
+this branch into `main`**; Pages serves the committed `docs/` at once and the next nightly
+rebuilds it. **The first nightly after the merge builds against whatever the Atlas's `main`
+emits.** That is r8 until the Atlas branch of the same name is merged, and it was tested here:
+the branch's client built against Atlas `main`'s r8 emission of 2026-09-02 in a throwaway
+worktree, every gate passing (port gate on the r8 arithmetic, readout strict 0 faults, the 76
+sanity findings reported and refusing nothing). The Atlas branch has two nightly emits behind
+it on its `main`; the staged emission files will conflict on merge and are regenerated, never
+merged — emit after merging.
+
 **2026-09-02, night, later: P5 is in — the plates.** Every plate the plan named now reads
 the r9 emission, and the last authored table is full.
 

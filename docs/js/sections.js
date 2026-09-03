@@ -5,8 +5,8 @@
 // wide, drawn at one fixed scale so lettering keeps the size it was drawn at and nothing has to
 // be zoomed. A section's millimetre space runs x 0 → 300 across and y 0 → H up from its foot.
 
-import { PEN, INK, PAPER } from './draft.js?v=20260902-1828';
-import { dial, manifold, strip, collectives, fmtNum } from './instruments.js?v=20260902-1828';
+import { PEN, INK, PAPER } from './draft.js?v=20260903-0331';
+import { dial, manifold, strip, collectives, fmtNum } from './instruments.js?v=20260903-0331';
 
 export const SHEET_W = 340;
 const PAD = 13;
@@ -18,7 +18,7 @@ export const TABS = [
   { id: 'instruments', label: 'Instruments' },
   { id: 'behaviour', label: 'Behaviour' },
   { id: 'world', label: 'World' },
-  { id: 'alternatives', label: 'Alternatives' },
+  { id: 'alternatives', label: 'Branches' },
   { id: 'revision', label: 'This morning' },
   { id: 'research', label: 'Research' },
   { id: 'method', label: 'Method' },
@@ -43,115 +43,155 @@ export function measureSections(d, secs, colW, size = 2.0) {
   }
   return h;
 }
-// ── a paragraph of the passage ──────────────────────────────────────────────
-// A subheading, then the evidence as separate lines. The paragraph used to be a run-in lead
-// followed by one block of prose, which reads as a wall at the head of the sheet; the same
-// sentences under a heading, one to a line, let a reader take in a year at a glance and check
-// any single claim without reading the rest. Measuring and drawing share this function, so a
-// change to one cannot leave the other behind.
-const BULLET = '\u00b7\u2002';
-const IND = 3.0;        // the bullet's hanging indent, in sheet millimetres
-const HEAD_SIZE = 1.7;  // the subheading's cap height
+// ── the passage: blocks that flow across the columns ────────────────────────
+// The passage is SINCE, NOW and AHEAD, each a section of groups, and a group is the unit that
+// flows across the three columns, so the columns end level however long NOW runs. A group
+// that opens its section carries the section heading; a group that opens a column mid-section
+// carries the heading again, marked continued, so a reader landing there knows the tense.
+// Every line is an item of the chronicle with its own source: its kind is drawn as a mark in
+// the margin (PROV_MARK, one glyph per kind, the key published under the headline), and the
+// line is registered as a region a reader can open onto the note the composer wrote for it.
+// Measuring and drawing share blockRows(), so a change to one cannot leave the other behind.
+const BULLET_MARK = '·';
+export const PROV_MARK = { milestone: '◆', event: '▸', threshold: '▪',
+                           quantity: '▪', onset: '○', criterion: '○',
+                           calendar: '▫' };
+export const PROV_KEY = '◆ CAPABILITY MILESTONE   ▸ EVENT ON THIS PATH   ' +
+  '▪ LEVEL A TRACK PASSES   ○ POSITION IN FORCE   ▫ ON THE CALENDAR   ' +
+  '·  PRESS A LINE FOR ITS SOURCE';
+const IND = 3.0;        // the mark's hanging indent, in sheet millimetres
+const HEAD_SIZE = 1.7;  // the section heading's cap height
 const HEAD_LEAD = 1.28;
 const SUB_SIZE = 1.5;   // the group heading, a step under the section heading
+const KEY_H = 4.4;      // the key line under the headline's rule
+// the note a line opens: type sizes, padding and the air above and below the box
+const NOTE = { size: 1.7, lead: 1.36, title: 1.6, pad: 1.8, gap: 0.8, above: 1.2, below: 3.2 };
 // EVERY VERTICAL GAP IN THE PASSAGE IS A MULTIPLE OF ONE UNIT, and measure and draw read the
 // same numbers. They had been written out twice — 1.1 between bullets here, 1.0 + 0.6 around a
 // group heading there, 2.2 after a section heading, 3.6 between paragraphs — four figures with
 // no relation to each other, in two places that could disagree without anything noticing.
 const SP_U = 0.9;
 export const PROSE_SP = {
-  bullet: SP_U,             // air between two bullets
-  subOver: SP_U * 1.35,     // above a group heading, which belongs to the bullets below it
+  bullet: SP_U,             // air between two lines
+  subOver: SP_U * 1.35,     // above a group heading, which belongs to the lines below it
   subUnder: SP_U * 0.55,
   headUnder: SP_U * 1.9,    // under the section heading's rule
-  para: SP_U * 3.4,         // between paragraphs
-  lead: 1.34,               // inside a wrapped bullet, tighter than running prose
+  para: SP_U * 3.4,         // between sections inside a column
+  lead: 1.34,               // inside a wrapped line, tighter than running prose
 };
-export function paraLines(d, p, colW, size = 2.0) {
-  const head = String(p.lead || '').replace(/[.:]\s*$/, '').toUpperCase();
-  const body = String(p.text || '');
-  // sentence per line, keeping decimals, dates and abbreviations intact
+export function proseBlocks(paras) {
+  const blocks = [];
+  paras.forEach((p, pi) => {
+    const gs = p.groups && p.groups.length ? p.groups : [{ head: null, text: p.text }];
+    gs.forEach((g, gi) => blocks.push({ lead: p.lead || '', first: gi === 0, group: g, para: pi }));
+  });
+  return blocks;
+}
+// sentence per line for a group with no items (the record), keeping decimals, dates and
+// abbreviations intact
+const splitSentences = (t) => String(t || '').split(/(?<=[.!?])\s+(?=[A-Z“"])/)
+  .map((x) => x.trim()).filter(Boolean);
+function noteRows(d, note, colW) {
+  const w = colW - IND - NOTE.pad * 2;
+  const title = d.wrap(String(note.title || 'SOURCE').toUpperCase(), w,
+                       { size: NOTE.title, weight: 700, track: 0.16 });
+  const paras = (note.lines || []).map((t) => d.wrap(t, w, { size: NOTE.size }));
+  let h = NOTE.pad + title.length * NOTE.title * HEAD_LEAD + NOTE.gap;
+  for (const ls of paras) h += ls.length * NOTE.size * NOTE.lead + NOTE.gap;
+  h += NOTE.pad;
+  return { title, paras, h };
+}
+export function blockRows(d, b, colW, size = 2.0, atTop = false) {
   const rows = [];
-  if (head) rows.push({ t: head, head: 1 });
-  const split = (t) => String(t).split(/(?<=[.!?])\s+(?=[A-Z“"])/)
-    .map((x) => x.trim()).filter(Boolean);
-  if (p.groups && p.groups.length) {
-    // A GROUP HEADING SAYS WHAT KIND OF CLAIM FOLLOWS. Under one section heading the bullets
-    // mix the setting's own account, what a second variable does to it, the quantities the
-    // model computes, and dated commitments already on the record. Those are four different
-    // kinds of claim and the reader is entitled to see which is which.
-    for (const g of p.groups) {
-      if (g.head) rows.push({ t: g.head, head: 2 });
-      for (const b of split(g.text)) rows.push({ t: BULLET + b, head: 0 });
+  const lead = String(b.lead || '').replace(/[.:]\s*$/, '').toUpperCase();
+  if (lead && b.first) rows.push({ t: lead, head: 1 });
+  else if (lead && atTop) rows.push({ t: `${lead} · CONTINUED`, head: 1, cont: true });
+  const g = b.group;
+  // A GROUP HEADING SAYS WHAT KIND OF CLAIM FOLLOWS. Under one section heading the lines mix
+  // the lanes of the ledger, the conditions in force, the quantities the model computes, and
+  // dated commitments already on the record. The reader is entitled to see which is which.
+  if (g.head) rows.push({ t: g.head, head: 2 });
+  if (g.items && g.items.length) {
+    for (const it of g.items) {
+      rows.push({ t: it.t, head: 0, mark: PROV_MARK[it.kind] || BULLET_MARK, key: it.key, item: it });
+      if (it.note) rows.push({ head: 0, note: noteRows(d, it.note, colW) });
     }
   } else {
-    for (const b of split(body)) rows.push({ t: BULLET + b, head: 0 });
+    for (const t of splitSentences(g.text)) rows.push({ t, head: 0, mark: BULLET_MARK });
   }
   // The heading is set at its own size and lead, so it is counted at its own size and lead.
   // Counting every row at body size measured the block short and put nine marks off the
-  // section, which is the measure and the draw disagreeing by exactly one type size.
-  let headLines = 0, subLines = 0, bodyLines = 0;
+  // section, which is the measure and the draw disagreeing by exactly one type size. THE
+  // MEASURE MUST WRAP ON THE SAME TRACKING THE DRAW USES: textBlock defaults to 0.06, and a
+  // count at 0 wrapped every line to more lines than were measured for it.
+  let h = 0;
   for (const r of rows) {
-    // THE MEASURE MUST WRAP ON THE SAME TRACKING THE DRAW USES. textBlock defaults to 0.06
-    // and this counted at 0, so every bullet wrapped to more lines than were measured for it
-    // and the tallest column ran 4.3 mm past the section.
+    if (r.note) { r.h = NOTE.above + r.note.h + NOTE.below; h += r.h; continue; }
     const sz = r.head === 1 ? HEAD_SIZE : r.head === 2 ? SUB_SIZE : size;
-    const n = d.wrap(r.t, colW - (r.head ? (r.head === 2 ? IND : 0) : IND),
-                     { size: sz, track: r.head ? 0.16 : 0.06,
-                       weight: r.head ? 700 : 400 }).length;
-    if (r.head === 1) headLines += n;
-    else if (r.head === 2) subLines += n;
-    else bodyLines += n;
+    const n = d.wrap(r.t, colW - (r.head === 1 ? 0 : IND),
+                     { size: sz, track: r.head ? 0.16 : 0.06, weight: r.head ? 700 : 400 }).length;
+    r.h = r.head === 1 ? n * HEAD_SIZE * HEAD_LEAD + PROSE_SP.headUnder
+        : r.head === 2 ? n * SUB_SIZE * HEAD_LEAD + PROSE_SP.subOver + PROSE_SP.subUnder
+        : n * size * PROSE_SP.lead + PROSE_SP.bullet;
+    h += r.h;
   }
-  return { rows, headLines, subLines, bodyLines,
-           lines: headLines + subLines + bodyLines };
+  return { rows, h };
 }
 export function measureProse(d, paras, colW, size = 2.0) {
+  const blocks = proseBlocks(paras);
   let h = 0;
-  for (const p of paras) {
-    const { rows, headLines, subLines, bodyLines } = paraLines(d, p, colW, size);
-    const bullets = rows.filter((r) => !r.head).length;
-    const subs = rows.filter((r) => r.head === 2).length;
-    h += headLines * HEAD_SIZE * HEAD_LEAD + subLines * SUB_SIZE * HEAD_LEAD +
-         bodyLines * size * PROSE_SP.lead + bullets * PROSE_SP.bullet +
-         subs * (PROSE_SP.subOver + PROSE_SP.subUnder) +
-         (headLines ? PROSE_SP.headUnder : 0) + PROSE_SP.para;
-  }
+  blocks.forEach((b, k) => {
+    h += blockRows(d, b, colW, size, k === 0).h;
+    if (k + 1 < blocks.length && blocks[k + 1].first) h += PROSE_SP.para;
+  });
   return h;
 }
-// The passage across n columns, split so the columns end level. Three columns keep it a band
-// across the head of the sheet instead of a wall the chart has to sit under.
+// The passage across n columns, cut at group boundaries so the columns end level. Three
+// columns keep it a band across the head of the sheet instead of a wall the chart has to sit
+// under.
 export const PROSE_N = 3;
 export const PROSE_COL = (CW - (PROSE_N - 1) * 10) / PROSE_N;
 export function proseColumns(d, paras, colW = PROSE_COL, n = PROSE_N, size = 2.0) {
-  const hs = paras.map((p) => measureProse(d, [p], colW, size));
-  // Order has to be preserved, so the only choice is where to cut. With a handful of
-  // paragraphs every set of cuts can be tried, and the one with the shortest tallest column
-  // wins — a greedy fill left one column with a single line and another with four paragraphs.
-  const m = paras.length;
+  const blocks = proseBlocks(paras);
+  const m = blocks.length;
+  const keys = [];
+  for (const b of blocks) for (const it of b.group.items || []) if (it.key) keys.push(it.key);
+  if (!m) return { cols: Array.from({ length: n }, () => []), h: 0, keys };
+  // each block measured twice: inside a column, and at the top of one, where it may carry a
+  // continued heading
+  const Hs = blocks.map((b) => [blockRows(d, b, colW, size, false).h,
+                                blockRows(d, b, colW, size, true).h]);
+  const colH = (a, z) => {
+    let h = 0;
+    for (let k = a; k < z; k++) {
+      h += Hs[k][k === a ? 1 : 0];
+      if (k + 1 < z && blocks[k + 1].first) h += PROSE_SP.para;
+    }
+    return h;
+  };
+  // Order has to be preserved, so the only choice is where to cut. With a dozen blocks every
+  // set of cuts can be tried, and the one with the shortest tallest column wins — a greedy
+  // fill left one column with a single line and another with four paragraphs.
   let best = null;
-  const cuts = [];
-  const walk = (start, depth) => {
-    if (depth === n - 1) {
+  const walk = (cuts, start) => {
+    if (cuts.length === n - 1) {
       const bounds = [0, ...cuts, m];
       let tallest = 0;
-      for (let c = 0; c < n; c++) {
-        let sum = 0;
-        for (let k = bounds[c]; k < bounds[c + 1]; k++) sum += hs[k];
-        if (sum > tallest) tallest = sum;
-      }
-      if (best === null || tallest < best.tallest) {
-        best = { tallest, bounds: bounds.slice() };
-      }
+      for (let c = 0; c < n; c++) tallest = Math.max(tallest, colH(bounds[c], bounds[c + 1]));
+      if (!best || tallest < best.tallest) best = { tallest, bounds };
       return;
     }
-    for (let c = start; c <= m; c++) { cuts.push(c); walk(c, depth + 1); cuts.pop(); }
+    const left = n - 1 - cuts.length;
+    for (let c = start; c <= m - left; c++) walk([...cuts, c], c + 1);
   };
-  if (m === 0) return { cols: Array.from({ length: n }, () => []), h: 0 };
-  walk(0, 0);
+  if (m >= n) walk([], 1);
+  else {
+    best = { tallest: Math.max(...Hs.map((h) => h[1])),
+             bounds: [...Array(m + 1).keys()].concat(Array(n - m).fill(m)) };
+  }
   const cols = [];
-  for (let c = 0; c < n; c++) cols.push(paras.slice(best.bounds[c], best.bounds[c + 1]));
-  return { cols, h: Math.max(...cols.map((c) => measureProse(d, c, colW, size))) };
+  for (let c = 0; c < n; c++) cols.push(blocks.slice(best.bounds[c], best.bounds[c + 1]));
+  return { cols, h: best.tallest, keys };
 }
 // Split a run of sections into two columns of roughly equal drawn height.
 export function balance(d, secs, colW, size = 2.0) {
@@ -224,6 +264,7 @@ function button(d, x, y, w, h,
 }
 
 // A note drawn where the reader is looking: two columns inside a ruled block.
+export const NOTE_TITLE = { size: 2.4, weight: 700, track: 0.16 };
 function noteBlock(d, x, y, w, note, { title = null, colour = INK.red } = {}) {
   // The column width follows the number of columns the note was MEASURED at. Deriving it from
   // the block width alone wrapped a one-column note to half its width and ran it off the foot
@@ -231,13 +272,17 @@ function noteBlock(d, x, y, w, note, { title = null, colour = INK.red } = {}) {
   const n = Math.max(1, note.cols.length);
   const gap = n > 1 ? 4 : 0;
   const colW = (w - 8 - (n - 1) * gap) / n;
+  // A title wider than the block wraps, and the block grows by the lines it takes: the
+  // axis names r5 lengthened ran the title off the controls column and off the sheet. The
+  // measure in sheetState() adds the same lines to `note.h`, from the same wrap.
+  const tl = title ? d.wrap(title.toUpperCase(), w - 8, NOTE_TITLE) : [];
+  const extra = tl.length > 1 ? (tl.length - 1) * NOTE_TITLE.size * 1.28 : 0;
   d.rect(x, y - note.h - (title ? 9 : 4), w, note.h + (title ? 11 : 6),
          { weight: PEN.thin, colour, alpha: 0.6 });
   let top = y;
   if (title) {
-    d.text([x + 4, y - 3.0], title.toUpperCase(),
-           { size: 2.4, weight: 700, track: 0.16, colour });
-    top = y - 7.4;
+    d.textBlock([x + 4, y - 3.0], title.toUpperCase(), w - 8, { ...NOTE_TITLE, lead: 1.28, colour });
+    top = y - 7.4 - extra;
   }
   note.cols.forEach((col, ci) => {
     let cy = top;
@@ -345,7 +390,14 @@ function instrumentColumn(d, S, top) {
   d.text([x, y], 'CAPABILITY TEMPO · WEIGHT' +
          (S.lookbackDays ? ` AND ITS ${S.lookbackDays}-DAY DRIFT` : ''),
          { size: 1.6, track: 0.10, colour: INK.pencilLight });
-  y -= 4;
+  y -= 2.8;
+  // The baseline is the date the position space last changed, so a rebuild reads as a
+  // rebuild and the dials show the world (P5).
+  if (S.lookbackDays && S.spaceSince) {
+    d.text([x, y], `SINCE ${S.spaceSince}, WHEN THE POSITION SPACE LAST CHANGED`,
+           { size: 1.35, track: 0.08, colour: INK.pencilLight });
+  }
+  y -= 3.2;
 
   const T = S.network.axes.find((a) => a.key === 'T');
   const m = S.marginals.T || {}, was = S.marginals30.T || {};
@@ -368,7 +420,7 @@ function instrumentColumn(d, S, top) {
       c: INK.pencil, wash: 'rgba(38,38,40,0.16)' },
   ], { id: 'manifold' });
   y -= 24 + 8;
-  d.text([x, y], `${fmtNum(tr.gw[i0])} GW · ${fmtNum(tr.twh[i0])} TWH/YR`,
+  d.text([x, y], `${fmtNum(tr.gw[i0])} GW · ${fmtNum(tr.twh[i0])} TWH/YR${capTag(S, 'gw')}`,
          { size: 1.9, face: 'figure', colour: INK.warm, weight: 700 });
   y -= 6;
 
@@ -399,6 +451,7 @@ function instrumentColumn(d, S, top) {
   y -= collectives(d, x, y, w, {
     n: tr.copies[i0], speed: tr.speed[i0], id: 'tally',
     prev: tr.copies[Math.max(0, i0 - 5)],
+    cap: (() => { const f = capFlag(S, 'copies'); return f && S.yr >= f.since ? f : null; })(),
   }) + 3;
   return top - y;
 }
@@ -410,19 +463,21 @@ function instrumentColumn(d, S, top) {
 export function recorders(d, S, H) {
   const top = H - 8;
   let y = head(d, top, 'BEHAVIOUR OVER TIME',
-    'Seven quantities the same sampled line produces, 2026 to 2100, with the pen standing at ' +
-    'the date. Click any strip for what it measures and where its numbers come from.');
+    'Six quantities the same sampled line produces, 2026 to 2100, with the pen standing at ' +
+    'the date; the blue band is the tenth to ninetieth percentile of the sampled futures. ' +
+    'Click any strip for what it measures and where its numbers come from.');
   const panels = behaviourPanels(S);
   const n = panels.length;
   const gap = 5;
   const pw = (CW - gap * (n - 1)) / n;
   const ph = 34;
   panels.forEach((p, i) => {
-    const lo = Math.min(...p.d), hi = Math.max(...p.d);
+    const [lo, hi] = panelRange(p);
     const pad = (hi - lo) * 0.08 || 1;
     strip(d, PAD + i * (pw + gap) + 8, y - ph, pw - 9, ph, {
       data: p.d, years: S.tracks.year, y0: lo - pad, y1: hi + pad, colour: p.c,
       label: p.label, unit: p.unit, now: Math.max(S.engine.y0, S.yr), id: p.id, fmt: p.fmt,
+      cap: p.cap, band: p.band,
     });
   });
   y -= ph + 4;
@@ -461,12 +516,18 @@ function chartColumn(d, S, top) {
     'sampled futures at the tenth to ninetieth percentile, the middle half hatched closer. ' +
     'Chain-dot rules are the capability milestones.', { x, w });
   viewSwitch(d, S, x, w, top);
+  // The caption opens the band's own entry: why it has this shape, and where the tracks of
+  // the active path stop.
+  d.region('band', x, y + 1.5, w - 62, top - 6.0 - (y + 1.5), null);
 
   const bx = CHART.bx, bw = CHART.bw, bh = CHART_H, by = y - bh;
   const X = CHART.x;
   const Yv = (v) => by + Math.max(0, Math.min(6.4, v)) / 6.4 * bh;
 
   d.rect(bx, by, bw, bh, { weight: PEN.thin, colour: INK.ink });
+  // The caption under the index says a click on the chart changes the date. The frame is
+  // that region, registered first so every mark on it wins the hit-test by area.
+  d.region('ctl:time', bx, by, bw, bh);
   for (let yr = 2015; yr < 2100; yr += 5) {
     const major = yr % 10 === 0;
     d.line([X(yr), by], [X(yr), by + bh],
@@ -478,11 +539,18 @@ function chartColumn(d, S, top) {
     d.text([X(yr), by - 5.0], String(yr),
            { size: 1.9, align: 'center', face: 'figure', colour: INK.inkLight });
   }
+  // Lettering already on the chart, so the label allocator below can keep out of it. The
+  // crisis label for the no-superintelligence window sat on GENERALLY SUPERINTELLIGENT when
+  // the path reached the top rung; the allocator only knew about its own labels.
+  const fixed = [];
+  const fix = (x, y, str, size) => fixed.push({ x, y: y - size * 0.24, h: size * 1.28,
+                                                w: d.textWidth(str, { size, track: 0.10 }) + 0.6 });
   for (let i = 1; i <= 6; i++) {
     d.line([bx, Yv(i)], [bx + bw, Yv(i)],
            { weight: PEN.thin, colour: INK.red, dash: [7, 2, 1.4, 2], alpha: 0.45 });
-    d.text([bx + 1.6, Yv(i) + 1.3], (S.engine.ladder[i] || '').toUpperCase(),
-           { size: 1.7, colour: INK.red, track: 0.10 });
+    const rung = (S.engine.ladder[i] || '').toUpperCase();
+    d.text([bx + 1.6, Yv(i) + 1.3], rung, { size: 1.7, colour: INK.red, track: 0.10 });
+    fix(bx + 1.6, Yv(i) + 1.3, rung, 1.7);
     d.text([bx - 1.8, Yv(i) - 0.8], String(i),
            { size: 1.8, align: 'right', face: 'figure', colour: INK.redLight });
     d.region(`mile:${i}`, bx, Yv(i) - 2.2, bw, 4.4, i);
@@ -546,36 +614,50 @@ function chartColumn(d, S, top) {
   d.polyline(S.TRUNK.map((p) => [X(p[0]), Yv(p[1])]), { weight: PEN.outline, colour: INK.ink });
   d.text([X(2013), Yv(0.75)], 'RECORDED',
          { size: 1.9, colour: INK.ink, weight: 600, track: 0.12 });
+  fix(X(2013), Yv(0.75), 'RECORDED', 1.9);
 
   d.line([X(S.NOW), by], [X(S.NOW), by + bh + 2.0], { weight: PEN.medium, colour: INK.ink });
   d.text([X(S.NOW) + 1.4, by + bh - 3.2], 'TODAY',
          { size: 2.0, colour: INK.ink, weight: 700, track: 0.16 });
+  fix(X(S.NOW) + 1.4, by + bh - 3.2, 'TODAY', 2.0);
   d.line([X(S.yr), by], [X(S.yr), by + bh], { weight: PEN.thin, colour: INK.blue });
   d.polyline([[X(S.yr), by + bh], [X(S.yr) - 2.0, by + bh + 3.0], [X(S.yr) + 2.0, by + bh + 3.0]],
              { close: true, weight: PEN.thin, colour: INK.blue, fill: INK.blue });
 
   // every label on the chart takes its slot from one allocator
-  const placed = [];
+  const placed = fixed.slice();
   const SLOTS = [10, -10, 16.5, -16.5, 23, -23, 29.5, -29.5];
   // A label is placed inside the frame on both axes: pushed above or below it lands on the
   // plate's caption, pushed past the right edge it lands in the control panel next door.
+  // Every slot on the preferred side, then every slot on the other side; the first clear one
+  // wins, and when none is clear the one that overlaps least. The old fallback took the
+  // first in-frame slot regardless, which is how two crisis labels landed on each other
+  // once the rung labels were in the allocator's way.
+  const overlap = (a, b) => Math.max(0, Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x)) *
+                            Math.max(0, Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y));
   const place = (cx, cy, str, size) => {
     const tw = d.textWidth(str, { size }) + 1.5;
-    const toRight = cx + 5 + tw <= bx + bw - 1;
-    const x0 = toRight ? cx + 5 : cx - 5 - tw;
-    let fallback = null;
-    for (const cand of SLOTS) {
-      const box = { x: x0, y: cy + cand - 1.0, w: tw, h: 3.3 };
-      if (box.y < by + 1 || box.y + box.h > by + bh - 1) continue;
-      if (fallback === null) fallback = cand;
-      if (!placed.some((q) => Math.min(q.x + q.w, box.x + box.w) - Math.max(q.x, box.x) > 0 &&
-                              Math.min(q.y + q.h, box.y + box.h) - Math.max(q.y, box.y) > 0)) {
-        placed.push(box); return { off: cand, right: !toRight };
+    const fitsRight = cx + 5 + tw <= bx + bw - 1;
+    const sides = fitsRight ? [true, false] : [false, true];
+    let best = null;
+    for (const toRight of sides) {
+      const x0 = toRight ? cx + 5 : cx - 5 - tw;
+      if (x0 < bx + 1 || x0 + tw > bx + bw - 1) continue;
+      for (const cand of SLOTS) {
+        const box = { x: x0, y: cy + cand - 1.0, w: tw, h: 3.3 };
+        if (box.y < by + 1 || box.y + box.h > by + bh - 1) continue;
+        const cost = placed.reduce((t, q) => t + overlap(q, box), 0);
+        if (!best || cost < best.cost) best = { cost, box, off: cand, right: !toRight };
+        if (cost === 0) break;
       }
+      if (best && best.cost === 0) break;
     }
-    const off = fallback === null ? SLOTS[0] : fallback;
-    placed.push({ x: x0, y: cy + off - 1.0, w: tw, h: 3.3 });
-    return { off, right: !toRight };
+    if (!best) {
+      const x0 = fitsRight ? cx + 5 : cx - 5 - tw;
+      best = { cost: 0, box: { x: x0, y: cy + SLOTS[0] - 1.0, w: tw, h: 3.3 }, off: SLOTS[0], right: !fitsRight };
+    }
+    placed.push(best.box);
+    return { off: best.off, right: best.right };
   };
   if (diffLabel) {
     const str = `SETTINGS MOVED THIS ${diffLabel.d > 0 ? '+' : '−'}` +
@@ -635,7 +717,7 @@ function chartColumn(d, S, top) {
     d.rect(x, bandTop - NOTE_BAND + 4, w, NOTE_BAND - 4,
            { weight: PEN.hairline, colour: INK.inkLight });
     d.text([x + 4, bandTop - 5], 'KEY', { size: 2.1, weight: 700, track: 0.16, colour: INK.ink });
-    d.text([x + w - 4, bandTop - 5], 'CLICK A MILESTONE OR CRISIS POINT FOR ITS ENTRY',
+    d.text([x + w - 4, bandTop - 5], 'CLICK A MILESTONE, A CRISIS POINT, OR THE CAPTION FOR THE BAND',
            { size: 1.6, align: 'right', colour: INK.pencilLight, track: 0.08 });
     keys.forEach((it, i) => {
       const ly = bandTop - 11 - i * 4.6;
@@ -679,11 +761,12 @@ function controlColumn(d, S, top) {
   rule(d, y - 2.2, x, w - RSW - 3, { weight: PEN.thin, colour: INK.inkLight });
   y -= 6.2;
   d.textBlock([x, y], 'One tab per variable. Choosing a setting fixes that variable and ' +
-    'redraws the document; the figure at the foot of a button is what the setting moves ' +
-    'hardest by 2040, measured in the conditioning mode now in force. Choosing it again ' +
-    'releases the variable.', w,
+    'redraws the document; the figure at the foot of a button is what the setting does to ' +
+    'the quantity this variable drives, by 2040, or to the share of sampled paths past the ' +
+    'research milestone by 2035, measured in the conditioning mode now in force. Choosing ' +
+    'it again releases the variable.', w,
     { size: 1.7, lead: 1.38, colour: INK.pencil });
-  y -= 15;
+  y -= 17.4;
 
   // the tab strip
   const cols = 4, tw = (w - (cols - 1) * 1.6) / cols, th = 6.4;
@@ -744,7 +827,7 @@ function controlColumn(d, S, top) {
              colour: pin === p[0] ? INK.blue : pin ? INK.pencilLight : INK.inkLight });
     d.line([x + 3.0, by2 + 4.4], [x + w - 2.6, by2 + 4.4],
            { weight: PEN.hairline, colour: INK.inkLight, alpha: 0.7 });
-    if (eff) {
+    if (eff && !eff.none) {
       d.text([x + 3.4, by2 + 1.8], eff.label,
              { size: 1.45, track: 0.08, colour: INK.pencilLight });
       d.text([x + w - 2.6, by2 + 1.8], eff.text,
@@ -753,10 +836,12 @@ function controlColumn(d, S, top) {
       // The two modes give different answers, and for alignment they differ enormously:
       // under intervention it moves nothing measurable, under observation it is one of the
       // largest controls on the sheet. A bare "no measured effect" beside a chart that
-      // visibly moves is the reader's problem to resolve, so the line names the mode.
+      // visibly moves is the reader's problem to resolve, so the line names the mode. An
+      // axis no track reads at all says that, which is a fact about the model.
       d.text([x + 3.4, by2 + 1.8],
-             S.obs ? 'NO MEASURED EFFECT UNDER OBSERVATION'
-                   : 'NO MEASURED EFFECT UNDER INTERVENTION',
+             eff && eff.noTrack && !S.obs ? 'NO TRACK READS THIS VARIABLE'
+               : S.obs ? 'NO MEASURED EFFECT UNDER OBSERVATION'
+                       : 'NO DIRECT EFFECT UNDER INTERVENTION',
              { size: 1.45, track: 0.08, colour: INK.pencilLight });
     }
     y = by2 - 2.2;
@@ -998,7 +1083,7 @@ board.height = (S) => {
   // threshold, and the full ladder, clock scale and product above it — 54 mm more. The
   // left column declares the taller one, because a column that fits only its short
   // state draws its tall state past the board, which is where 14 marks went.
-  const left = 196.8 + S.engine.domains.length * 7.2;
+  const left = 198.8 + S.engine.domains.length * 7.2;
   const mid = (S.chartView === 'record' ? 96 + 124 : CHART_H + 76.2) +
               (S.chartNote ? S.chartNote.h + 12 : 0);
   const n = (S.network.axes.find((q) => q.key === S.ctlAxis) || S.network.axes[0])
@@ -1012,19 +1097,43 @@ board.height = (S) => {
 };
 
 // ── 3 · the passage, across the head of the sheet ───────────────────────────
+function drawNote(d, x, y, w, note) {
+  const top = y + NOTE.above;
+  d.rect(x, top - note.h, w, note.h, { weight: PEN.thin, colour: INK.red, alpha: 0.6 });
+  let ty = top - NOTE.pad - NOTE.title;
+  for (const ln of note.title) {
+    d.text([x + NOTE.pad, ty], ln, { size: NOTE.title, weight: 700, track: 0.16, colour: INK.red });
+    ty -= NOTE.title * HEAD_LEAD;
+  }
+  ty -= NOTE.gap;
+  for (const ls of note.paras) {
+    for (const ln of ls) {
+      d.text([x + NOTE.pad, ty], ln, { size: NOTE.size, colour: INK.pencil, track: 0.06 });
+      ty -= NOTE.size * NOTE.lead;
+    }
+    ty -= NOTE.gap;
+  }
+}
 export function readout(d, S, H) {
   let y = H - 8;
   d.textBlock([PAD, y], S.headline, CW,
               { size: 3.2, lead: 1.28, colour: INK.blue, weight: 600 });
   y -= d.wrap(S.headline, CW, { size: 3.2, weight: 600 }).length * 3.2 * 1.28 + 3.2;
   rule(d, y + 1.6, PAD, CW, { weight: PEN.thin, colour: INK.blue });
-  y -= 2.2;
+  // The key to the marks is on the document, under the rule the marks hang from. The record
+  // carries no marks: its lines are the record's own and open nothing.
+  if (!S.isRecord) {
+    d.text([PAD, y - 1.2], PROV_KEY, { size: 1.45, colour: INK.pencilLight, track: 0.10 });
+  }
+  y -= KEY_H;
   S.prose.cols.forEach((col, ci) => {
     let cy = y;
     const cx = PAD + ci * (PROSE_COL + 10);
-    for (const para of col) {
-      const { rows } = paraLines(d, para, PROSE_COL, 2.0);
-      rows.forEach((r, ri) => {
+    col.forEach((b, bi) => {
+      if (bi && b.first) cy -= PROSE_SP.para;
+      const { rows } = blockRows(d, b, PROSE_COL, 2.0, bi === 0);
+      for (const r of rows) {
+        if (r.note) { drawNote(d, cx + IND, cy, PROSE_COL - IND, r.note); cy -= r.h; continue; }
         if (r.head === 2) {
           cy -= PROSE_SP.subOver;
           cy -= d.textBlock([cx + IND, cy], r.t, PROSE_COL - IND,
@@ -1034,21 +1143,24 @@ export function readout(d, S, H) {
         } else if (r.head) {
           // A SUBHEADING HAS TO LOOK LIKE ONE. Bold body type at body size read as another
           // sentence; this is smaller, letter-spaced, in full ink, over a hairline, which is
-          // the same treatment every other heading on the sheet gets.
+          // the same treatment every other heading on the sheet gets. A continued heading is
+          // the same heading in pencil.
           cy -= d.textBlock([cx, cy], r.t, PROSE_COL,
                             { size: HEAD_SIZE, lead: HEAD_LEAD, weight: 700,
-                              track: 0.16, colour: INK.ink });
+                              track: 0.16, colour: r.cont ? INK.pencil : INK.ink });
           d.line([cx, cy + 1.0], [cx + PROSE_COL, cy + 1.0],
                  { weight: PEN.hairline, colour: INK.inkLight, alpha: 0.8 });
           cy -= PROSE_SP.headUnder;
         } else {
-          cy -= d.textBlock([cx + IND, cy], r.t, PROSE_COL - IND,
-                            { size: 2.0, lead: PROSE_SP.lead, colour: INK.pencil });
-          cy -= PROSE_SP.bullet;  // air between bullets, so they read as separate claims
+          // the mark hangs in the margin; the line is a region a reader can open
+          d.text([cx + 0.2, cy], r.mark, { size: 2.0, track: 0, colour: INK.pencilLight });
+          const h = d.textBlock([cx + IND, cy], r.t, PROSE_COL - IND,
+                                { size: 2.0, lead: PROSE_SP.lead, colour: INK.pencil });
+          if (r.key) d.region(`prov:${r.key}`, cx, cy - h + 0.5, PROSE_COL, h + 1.0, r.item);
+          cy -= h + PROSE_SP.bullet;  // air between lines, so they read as separate claims
         }
-      });
-      cy -= PROSE_SP.para;
-    }
+      }
+    });
   });
   for (let i = 1; i < PROSE_N; i++) {
     const gx = PAD + i * (PROSE_COL + 10) - 5;
@@ -1064,11 +1176,25 @@ export function readout(d, S, H) {
 // it only ever grows within a session.
 readout.reserve = 0;
 readout.height = (S) => {
-  const want = 22 + (S.headlineH || 12) + S.prose.h;
+  const want = 22 + KEY_H + (S.headlineH || 12) + S.prose.h;
   if (want > readout.reserve) readout.reserve = want;
   return readout.reserve;
 };
 
+// The annunciation a recorder carries past its track's cap: the year the track stopped, or the
+// year compute passed the whole of world generating capacity.
+export function capFlag(S, key) {
+  const c = (S.caps || {})[key];
+  if (!c) return null;
+  if (c.ceiling) return { since: c.ceiling, word: 'CEILING' };
+  // employment and approval settle to an equilibrium; the others stop at a ceiling
+  if (c.since != null) return { since: c.since, word: (key === 'jobs' || key === 'appr') ? 'SETTLED' : 'CAP' };
+  return null;
+}
+const capTag = (S, key) => {
+  const f = capFlag(S, key);
+  return f && S.yr >= f.since ? ` · ${f.word} ${f.since}` : '';
+};
 function behaviourPanels(S) {
   const tr = S.tracks;
   return [
@@ -1095,8 +1221,16 @@ function behaviourPanels(S) {
       fmt: (v) => fmtNum(v),
       note: 'Load times grid intensity, which falls faster where the build-out is ' +
             'coordinated or diversified.' },
-  ];
+  ].map((p) => {
+    const k = p.id.slice(4);
+    const tb = S.trackBands && S.trackBands[k];
+    return { ...p, cap: capFlag(S, k), band: tb ? { lo: tb.p10, hi: tb.p90 } : null };
+  });
 }
+const panelRange = (p) => {
+  const vals = p.d.concat(p.band ? p.band.lo.concat(p.band.hi) : []);
+  return [Math.min(...vals), Math.max(...vals)];
+};
 
 // ── 4 · instruments ──────────────────────────────────────────────────────────
 export function details(d, S, H) {
@@ -1112,7 +1246,8 @@ export function details(d, S, H) {
          { size: 2.8, weight: 700, track: 0.14, colour: INK.ink });
   d.textBlock([PAD, tops - 3.6], 'One face per setting. ' + (S.lookbackDays
     ? `The pale needle stands where the reading stood ${S.lookbackDays} ` +
-      `day${S.lookbackDays === 1 ? '' : 's'} ago, so the movement is an angle.`
+      `day${S.lookbackDays === 1 ? '' : 's'} ago, on ${S.spaceSince}, when the position ` +
+      'space last changed, so the movement is an angle and a rebuild never reads as one.'
     : 'A single needle: this setting holds one reading, so there is no gap to draw.'), colW,
     { size: 1.8, lead: 1.4, colour: INK.pencil });
   const T = S.network.axes.find((a) => a.key === 'T');
@@ -1138,7 +1273,7 @@ export function details(d, S, H) {
     { k: 'ROW', v: Math.max(0, 1 - tr.us[i0] - tr.cn[i0] - tr.eu[i0]),
       c: INK.pencil, wash: 'rgba(52,50,48,0.16)' },
   ], { id: 'manifold' });
-  d.text([bx, tops - 60], `TOTAL ${fmtNum(tr.gw[i0])} GW · ${fmtNum(tr.twh[i0])} TWH/YR`,
+  d.text([bx, tops - 60], `TOTAL ${fmtNum(tr.gw[i0])} GW · ${fmtNum(tr.twh[i0])} TWH/YR${capTag(S, 'gw')}`,
          { size: 2.1, face: 'figure', colour: INK.warm, weight: 700 });
   d.textBlock([bx, tops - 64], 'The total is the modelled build-out on this line. The energy ' +
     'figure is that capacity run at the utilisation the parent model assumes.', colW,
@@ -1174,6 +1309,7 @@ export function details(d, S, H) {
   collectives(d, cx, dy - 4.0, colW, {
     n: tr.copies[i0], speed: tr.speed[i0], id: 'tally',
     prev: tr.copies[Math.max(0, i0 - 5)],
+    cap: (() => { const f = capFlag(S, 'copies'); return f && S.yr >= f.since ? f : null; })(),
   });
   if (S.plateNote) noteBlock(d, PAD, 44, CW, S.plateNote, { title: S.plateNote.title });
   return H;
@@ -1185,8 +1321,9 @@ details.height = (S) => 48 + Math.max(126, S.engine.domains.length * 9.4 + 56) +
 export function behaviour(d, S, H) {
   const y = head(d, H - 8, 'BEHAVIOUR OVER TIME',
     'Six quantities on the active world-line, 2026 to 2100. Each pen sits at the date on the ' +
-    'index and its reading is printed beside it. Every chart derives its scale from its own ' +
-    'series, so the shapes stay comparable across settings while the magnitudes differ.');
+    'index and its reading is printed beside it; the blue band is the tenth to ninetieth ' +
+    'percentile of the sampled futures. Every chart derives its scale from its own series and ' +
+    'its band, so the shapes stay comparable across settings while the magnitudes differ.');
   dateStrip(d, PAD + 44, y - 4, CW - 44, S);
   const tr = S.tracks, yrs = tr.year;
   const foot = S.plateNote ? S.plateNote.h + 26 : 12;
@@ -1195,11 +1332,12 @@ export function behaviour(d, S, H) {
   panels.forEach((p, i) => {
     const px = PAD + (i % 3) * (cw + 12);
     const py = foot + 10 + (1 - Math.floor(i / 3)) * (ch + 24);
-    const lo = Math.min(...p.d), hi = Math.max(...p.d);
+    const [lo, hi] = panelRange(p);
     const pad = (hi - lo) * 0.08 || 1;
     strip(d, px + 10, py + 15, cw - 12, ch - 15, {
       data: p.d, years: yrs, y0: lo - pad, y1: hi + pad, colour: p.c,
       label: p.label, unit: p.unit, now: Math.max(S.engine.y0, S.yr), id: p.id, fmt: p.fmt,
+      cap: p.cap, band: p.band,
     });
     d.text([px + 10, py + 11.4], String(yrs[0]),
            { size: 1.6, colour: INK.pencilLight, face: 'figure' });
@@ -1237,17 +1375,19 @@ world.height = (S) => 214 + (S.plateNote ? S.plateNote.h + 24 : 0);
 
 // ── 7 · alternatives ─────────────────────────────────────────────────────────
 export function alternatives(d, S, H) {
-  const y = head(d, H - 8, 'ALTERNATIVE FUTURES',
-    'Twelve sampled world-lines drawn across the spread, from the slowest quarter to the ' +
-    'fastest. Each panel shows that line\'s capability path against the same milestone rules. ' +
-    'Choosing one makes it the active line through the whole document.');
+  const y = head(d, H - 8, 'BRANCHES FROM THE DRAWN PATH',
+    'Twelve branches: on each, one variable takes another of its settings and the ledger of ' +
+    'dated events changes most. The caption says what changes and when against the drawn ' +
+    'path, in blue over the drawn path in pencil; the weight is the share of sampled futures ' +
+    'holding that setting. Pressing a branch makes it the active line through the whole ' +
+    'document, and pressing it again releases it.');
   const foot = S.plateNote ? S.plateNote.h + 22 : 14;
-  S.drawAlts(d, S, [PAD, foot, CW, y - foot - 6]);
+  S.drawBranches(d, S, [PAD, foot, CW, y - foot - 6]);
   if (S.plateNote) noteBlock(d, PAD, S.plateNote.h + 11, CW, S.plateNote,
                              { title: S.plateNote.title });
   return H;
 }
-alternatives.height = (S) => 232 + (S.plateNote ? S.plateNote.h + 22 : 0);
+alternatives.height = (S) => 204 + (S.plateNote ? S.plateNote.h + 22 : 0);
 
 // ── 8 · this morning ─────────────────────────────────────────────────────────
 export function morning(d, S, H) {
@@ -1370,10 +1510,18 @@ export function research(d, S, H) {
   // recommendations, per axis
   d.text([PAD, y], 'PRIOR REVISIONS',
          { size: 2.6, weight: 700, track: 0.14, colour: INK.ink });
-  d.text([PAD + CW, y], 'APPLIED 13 AUG (r3) AND 17 AUG (r4)',
+  d.text([PAD + CW, y], 'r4 NAMES · APPLIED 13 AUG (r3) AND 17 AUG (r4)',
          { size: 1.8, align: 'right', track: 0.14, colour: INK.inkLight });
   rule(d, y - 2.2, PAD, CW, { weight: PEN.thin, colour: INK.inkLight });
   y -= 6.4;
+  y -= d.textBlock([PAD, y], 'Each row carries the name its figure was researched under at ' +
+    'registry r4 and, after the arrow, the live position it keys to by meaning. The rebuild ' +
+    'of 17 August 2026 kept the letters and moved their meanings, so the letter on a control ' +
+    'is not the letter on a row. Three figures, whose subject the rebuild split, are ' +
+    'withdrawn and key to nothing. The figures themselves remain r4 figures; the ' +
+    'destinations are declared in the coverage file and checked against the registry at ' +
+    'every build.', CW,
+    { size: 1.8, lead: LEAD, colour: INK.pencil }) + 3.0;
   // Split the axes into two columns FIRST, then draw each independently. Flowing them with a
   // shared cursor and a switch mid-loop redrew every axis in the second column at the same y.
   const colW = (CW - 12) / 2;
@@ -1399,8 +1547,13 @@ export function research(d, S, H) {
       cy -= 3.6;
       for (const [p, r] of recs) {
         const up = r.to > r.from;
-        d.text([x, cy], p[1].split(' (')[0].toUpperCase(),
-               { size: 1.85, colour: INK.pencil, track: 0.04 });
+        // The name the figure was researched under, never the live name of the letter: the
+        // letters were re-assigned at r5 and the live name beside an r4 figure misattributed
+        // thirteen of these rows (review of 2026-09-01, defect 5).
+        const nm = (r.name || p[1].split(' (')[0]).toUpperCase();
+        const dest = r.withdrawn ? '· WITHDRAWN' : r.dest ? `→ ${r.dest}${r.destName ? ' ' + r.destName.split(' (')[0].toUpperCase() : ''}` : '';
+        d.text([x, cy], fit(d, `${nm} ${dest}`.trim(), colW - 33, { size: 1.85, track: 0.04 }),
+               { size: 1.85, colour: r.withdrawn ? INK.pencilLight : INK.pencil, track: 0.04 });
         d.text([x + colW - 30, cy], r.from.toFixed(3),
                { size: 1.85, align: 'right', face: 'figure', colour: INK.pencilLight });
         d.polyline([[x + colW - 27, cy + 0.6], [x + colW - 22, cy + 0.6]],
@@ -1516,7 +1669,7 @@ export function sources(d, S, H) {
   const colW = (CW - 12) / 2;
   const left = [
     ['EVIDENCE PROGRAMME',
-     'A dossier stands behind seven of the nine variables the registry now carries, each ' +
+     `A dossier stands behind seven of the ${S.network.axes.length} variables the registry now carries, each ` +
      'answering the same five questions from sources about the world: a base rate, a ' +
      'mechanism and its weakest step, the 2026 record, resolution criteria, and what would ' +
      'move the number. The audit that opened the programme is the reason for it — the engine ' +
@@ -1542,6 +1695,32 @@ export function sources(d, S, H) {
      `${g.corpus} more feed the recorded past. Variables with thin grounding get wider ` +
      `priors, so uncertainty is inherited and stated. These are the model's structured ` +
      `judgments, documented and adjustable, and scored in public as registered claims resolve.`],
+    ['THE NUMBERS',
+     (() => {
+       const ml = S.network && S.path ? S.path : {};
+       const n = (S.mainlineN || 2000).toLocaleString('en-US');
+       const dyn = S.engine.dynamics;
+       return `A sampled future is one world-line: a setting on each of the ${S.network.axes.length} ` +
+         `variables, drawn from the network by Gibbs sampling, with the capability path its tempo ` +
+         `and takeoff settings fix, the events its templates instantiate, and the tracks those ` +
+         `events move. The ensemble is ${n} such lines; the drawn path is ` +
+         (S.path && S.path.kind === 'medoid'
+           ? `the medoid, the sampled line closest to all the others, with the single most ` +
+             `probable line carried beside it` : `the single most probable line`) +
+         `. ${S.exemplarN || 120} sampled lines are kept in full for the branches and the ` +
+         `alternatives. Every band is the tenth to ninetieth percentile of the ensemble. The ` +
+         `horizon is ${S.engine.y1}.` +
+         (dyn ? ` The ceilings the tracks grow against: world generating capacity ` +
+                `${dyn.WORLD_GW_2026.toLocaleString('en-US')} GW in 2026 growing ` +
+                `${((dyn.WORLD_GW_GROWTH - 1) * 100).toFixed(1)}% a year, of which a supply setting ` +
+                `reaches ${Math.round(Math.min(...Object.values(dyn.GW_SHARE_MAX)) * 100)}% to ` +
+                `${Math.round(Math.max(...Object.values(dyn.GW_SHARE_MAX)) * 100)}%; world output ` +
+                `$${dyn.GWP_2026} trillion in 2026 at ${((dyn.GWP_GROWTH - 1) * 100).toFixed(0)}% a year ` +
+                `plus a lift the benefit setting lets through, tapering ${dyn.GWP_LIFT_TAPER} years ` +
+                `after the research crossing; a diffusion band's share of that output; and ` +
+                `${dyn.LAWS_MAX.toLocaleString('en-US')} statutes in force.`
+              : ' The tracks carry hard caps.');
+     })()],
     ['DAILY UPDATE',
      'Each morning the day\'s developments are classified against cited evidence rules under ' +
      'a tiered impact methodology, scaled by corroboration and damped by repetition. Every ' +
@@ -1580,7 +1759,7 @@ export function sources(d, S, H) {
          { size: 1.8, face: 'figure', colour: INK.inkLight, track: 0.06 });
   return H;
 }
-sources.height = () => 190;
+sources.height = () => 236;
 
 export const SECTIONS = [
   { id: 'header', fn: header, tab: 'forecast' },

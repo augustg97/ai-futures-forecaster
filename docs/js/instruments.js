@@ -12,7 +12,7 @@
 //
 // Everything is in sheet millimetres and goes through Draft.
 
-import { PEN, INK, PAPER } from './draft.js?v=20260902-1828';
+import { PEN, INK, PAPER } from './draft.js?v=20260903-0331';
 
 // ── the dial ─────────────────────────────────────────────────────────────────
 // An engraved 240° face. The LIVE needle is ink; the GHOST needle is where the same reading
@@ -202,7 +202,7 @@ export function manifold(d, x, y, w, h, series, { id = null, unit = '%' } = {}) 
 // engraved on the left and the pen sitting at the current date.
 export function strip(d, x, y, w, h, { data, years, y0, y1, colour = null, label, unit = '',
                                        now = null, id = null, dash = null, extra = null,
-                                       fmt = (v) => v.toFixed(0) }) {
+                                       fmt = (v) => v.toFixed(0), cap = null, band = null }) {
   const c = colour ?? INK.ink;
   d.rect(x, y, w, h, { weight: PEN.hairline, colour: INK.inkLight });
   for (let i = 1; i < 4; i++) {
@@ -222,6 +222,14 @@ export function strip(d, x, y, w, h, { data, years, y0, y1, colour = null, label
     });
     d.stroke({ weight: PEN.thin, colour: col, dash: dsh });
   };
+  // the spread of the sampled futures behind the pen line: the tenth to ninetieth
+  // percentile of the ensemble, the quantity's own band (r9)
+  if (band && band.lo && band.hi) {
+    const pts = [];
+    for (let i = 0; i < band.hi.length; i++) pts.push([X(years[i]), Y(band.hi[i])]);
+    for (let i = band.lo.length - 1; i >= 0; i--) pts.push([X(years[i]), Y(band.lo[i])]);
+    d.fillPoly(pts, 'rgba(38,118,214,0.10)');
+  }
   if (extra) draw(extra.data, extra.c ?? INK.pencilLight, [2.2, 1.4]);
   draw(data, c, dash);
   d.text([x + 0.8, y + h - 2.0], label,
@@ -235,12 +243,15 @@ export function strip(d, x, y, w, h, { data, years, y0, y1, colour = null, label
   if (now !== null) {
     const nx = X(now);
     d.line([nx, y], [nx, y + h], { weight: PEN.hairline, colour: INK.red });
-    const i = Math.max(0, Math.min(data.length - 1, Math.round(now - years[0])));
+    // the reading is the year's value, the same index every other instrument reads at
+    const i = Math.max(0, Math.min(data.length - 1, Math.floor(now - years[0])));
     const py = Y(data[i]);
     d.dot([nx, py], 0.55, { colour: INK.red });
     // The label band along the top of the frame is the recorder's own lettering. A reading that
     // lands in it is unreadable, so it drops to the underside of the pen instead.
-    const str = fmt(data[i]);
+    // A reading past the track's cap is annunciated as one: the value the track stopped at
+    // and the year it stopped, so the pen never letters a saturated model as a forecast.
+    const str = fmt(data[i]) + (cap && now >= cap.since ? ` · ${cap.word} ${cap.since}` : '');
     const rw = d.textWidth(str, { size: 1.6, face: 'figure', weight: 700 });
     const right = nx + 1.2 + rw < x + w - 1;
     const inLabelBand = py + 1.4 + 1.6 > y + h - 3.2;
@@ -267,7 +278,7 @@ export function strip(d, x, y, w, h, { data, years, y0, y1, colour = null, label
 
 const WORLD_LABOUR = 3.6e9;         // ILO global labour force, order of magnitude
 
-export function collectives(d, x, y, w, { n, speed, id = null, prev = null }) {
+export function collectives(d, x, y, w, { n, speed, id = null, prev = null, cap = null }) {
   const top = y;
   d.text([x, y], 'AGENT COLLECTIVES',
          { size: 2.0, weight: 700, track: 0.14, colour: INK.ink });
@@ -287,7 +298,7 @@ export function collectives(d, x, y, w, { n, speed, id = null, prev = null }) {
   const bw = w, bx = x;
 
   // ── population, on a decade ladder ────────────────────────────────────────
-  d.text([x, y], 'CONCURRENT INSTANCES',
+  d.text([x, y], 'CONCURRENT INSTANCES' + (cap ? ` · AT CAP SINCE ${cap.since}` : ''),
          { size: 1.5, track: 0.10, colour: INK.pencilLight });
   d.text([x + w, y], fmtNum(n),
          { size: 2.3, align: 'right', face: 'figure', weight: 700, colour: INK.ink });
@@ -378,6 +389,8 @@ export function tally(d, x, y, w, opts) {
 
 
 export function fmtNum(v) {
+  // billions, since r9: the machine population follows compute and passes a billion copies
+  if (v >= 1e9) return (v / 1e9).toFixed(1) + 'B';
   if (v >= 1e6) return (v / 1e6).toFixed(1) + 'M';
   if (v >= 1e3) return (v / 1e3).toFixed(0) + 'K';
   return String(Math.round(v));
