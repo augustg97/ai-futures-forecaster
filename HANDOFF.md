@@ -1,5 +1,17 @@
 # AI Futures Forecaster — live state
 
+**2026-09-03, nightly: the merge landed and P0–P5 is LIVE.** `origin/main` carries
+`claude/ai-futures-forecaster-review-t7fvqb`, and the nightly rebuilt `docs/` from the merged
+`web/` against the parent's r10-2026-09-03 emission. Published `__BUILD 20260903-1130`,
+verified live on what the build draws, never on the stamp alone: `js/ledger.js` served at
+50,312 bytes with a SHA-256 matching the local build, and the branches plate's heading present
+in the live `js/sections.js`. Every gate passed — port gate 0 divergences over 30,000 values
+with the four crossings agreeing, readout gate STRICT 0 faults over 13 paths and 374 composed
+years, registry drift none, coverage and tables clean. The instruction below to merge the
+branch is **done**; it is kept for the history. The note is `Research/nightly-2026-09-03.md`,
+which also records the one defect found: the port gate was printing `r9 dynamics` under r10,
+a mode named after the revision that introduced it, now named after the emission it reads.
+
 **2026-09-03, later: the far decades of the drawn path are dated, and the branches plate ranks
 by weight.** Registry **r10-2026-09-03** on the Atlas branch (beside r9, held for the merge)
 grows the template library from 38 to 59. Every template past 2045 had required A2 or A3 (or
