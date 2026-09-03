@@ -325,7 +325,9 @@ function rankedBranches() {
                  from: base[a.key] });
     }
   }
-  out.sort((x, y) => y.diff.score - x.diff.score);
+  // ranked by the ledger difference weighted by the share of sampled futures holding the
+  // setting (2026-09-03): a branch one future in a hundred holds no longer heads the plate
+  out.sort((x, y) => y.diff.score * y.weight - x.diff.score * x.weight);
   branchCache.ranked = out;
   return out;
 }

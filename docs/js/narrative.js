@@ -337,6 +337,147 @@ export const TEMPLATE_TEXT = {
        "advantage.",
     f: "India's IT-services export model breaks as coding agents undercut its cost advantage",
     m: "The first national economy built on exported cognitive labour had to rebuild." },
+  // r10 (2026-09-03): the mid and far decades of a plain path. Each entry is one template the
+  // parent carries, in the register of the record: who, what, how much, with a comparison
+  // beside every figure and a date in every form that dates.
+  'parity-reached': { lane: 'buildout', n: "frontier parity between the principals",
+    t: "In {year} the second principal's frontier systems matched the first's, and the lead " +
+       "the laboratories had held since the hardware controls of 2022 was spent.",
+    s: "The second principal's frontier systems matched the first's in {year}.",
+    f: "the second principal's frontier systems match the first's, and the lead the " +
+       "laboratories held since the hardware controls of 2022 is spent",
+    m: "Export controls stopped deciding who held the frontier." },
+  'siting-preemption': { lane: 'oversight', n: "the national siting statute",
+    t: "In {year} a national siting statute took datacentre and transmission permission away " +
+       "from municipalities, as federal energy law took pipeline siting from counties in 2005.",
+    s: "A national siting statute took datacentre permission away from municipalities in {year}.",
+    f: "a national siting statute takes datacentre and transmission permission away from " +
+       "municipalities",
+    m: "Grid connection stopped waiting on a municipal timetable." },
+  'off-grid-majority': { lane: 'buildout', n: "the off-grid majority of AI capacity",
+    t: "From {year} more than half of AI computing capacity drew its power from dedicated " +
+       "generation behind the meter, off the public grid.",
+    s: "More than half of AI computing capacity ran on its own generation from {year}.",
+    f: "more than half of AI computing capacity draws its power from dedicated generation " +
+       "behind the meter",
+    m: "The datacentre builders became power companies." },
+  'sovereign-compute-bloc': { lane: 'buildout', n: "the sovereign compute majority",
+    t: "In {year} sovereign and second-tier capacity outside the United States hyperscalers " +
+       "passed half of the world's AI compute.",
+    s: "Capacity outside the United States hyperscalers passed half of world AI compute in {year}.",
+    f: "sovereign and second-tier capacity outside the United States hyperscalers passes half " +
+       "of the world's AI compute",
+    m: "Compute stopped pooling in four companies." },
+  'humanoid-million': { lane: 'capital', n: "the millionth working humanoid",
+    t: "In {year} a million general-purpose humanoid robots worked outside factories, and " +
+       "physical work joined the transfer to machines.",
+    s: "A million humanoid robots worked outside factories in {year}.",
+    f: "a million general-purpose humanoid robots work outside factories",
+    m: "The transfer of work reached hands as well as desks." },
+  'ai-drug-majority': { lane: 'capability', n: "the AI-designed majority of new drugs",
+    t: "In {year} AI-designed molecules were a majority of the year's new drug approvals, two " +
+       "decades after the first such approval on the trial clock.",
+    s: "AI-designed molecules were a majority of new drug approvals in {year}.",
+    f: "AI-designed molecules are a majority of the year's new drug approvals",
+    m: "Drug discovery moved to the model clock and approval stayed on the trial clock." },
+  'open-weights-incident': { lane: 'oversight', n: "the released-weights incident",
+    t: "In {year} a model fine-tuned from released weights outside any laboratory caused a " +
+       "headline incident, and the regulators extended the release gate to weights.",
+    s: "A model fine-tuned from released weights caused a headline incident in {year}.",
+    f: "a model fine-tuned from released weights outside any laboratory causes a headline " +
+       "incident",
+    m: "The gate that had covered releases came to cover weights." },
+  'verdict-closes': { lane: 'capability', n: "the closing of the alignment verdict",
+    t: "In {year} alignment techniques that had held inside the laboratories held on released " +
+       "weights too, and the verdict stopped splitting by distribution channel.",
+    s: "Alignment techniques held on released weights too from {year}.",
+    f: "alignment techniques that held inside the laboratories hold on released weights too",
+    m: "The open weights and the closed ones behaved alike under test." },
+  'second-correction': { lane: 'capital', n: "the second AI capital correction",
+    t: "In {year} a second AI capital cycle broke a decade or more after the first, and the " +
+       "datacentre builders and their lenders repriced as railway companies did after 1845.",
+    s: "A second AI capital cycle broke in {year}.",
+    f: "a second AI capital cycle breaks a decade or more after the first, and the datacentre " +
+       "builders and their lenders reprice",
+    m: "Capital cycles recurred at datacentre scale as they had at railway scale." },
+  'frontier-breakup': { lane: 'oversight', n: "the antitrust breakup of the largest frontier developer",
+    t: "In {year} an antitrust court ordered the largest frontier developer split or its " +
+       "compute opened to rivals, as courts split Standard Oil in 1911 and AT&T in 1984.",
+    s: "An antitrust court ordered the largest frontier developer split in {year}.",
+    f: "an antitrust court orders the largest frontier developer split or its compute opened " +
+       "to rivals",
+    m: "Competition law reached the frontier the way it reached oil and telephones." },
+  'working-time-statute': { lane: 'capital', n: "the 32-hour week",
+    t: "In {year} a G7 parliament legislated a working week under 32 hours, the first statutory " +
+       "cut since the 40-hour week of 1940.",
+    s: "A G7 parliament legislated a working week under 32 hours in {year}.",
+    f: "a G7 parliament legislates a working week under 32 hours",
+    m: "The statute book conceded that machines held part of the week." },
+  'basic-income-enacted': { lane: 'capital', n: "the national basic income",
+    t: "In {year} a G20 legislature enacted an unconditional national basic income financed " +
+       "from AI revenue, the first outside a pilot.",
+    s: "A G20 legislature enacted a national basic income financed from AI revenue in {year}.",
+    f: "a G20 legislature enacts an unconditional national basic income financed from AI revenue",
+    m: "A share of AI revenue reached every household by statute." },
+  'research-intake-halves': { lane: 'capability', n: "the halving of research intake",
+    t: "By {year} graduate intake had halved in the fields where frontier systems ran the " +
+       "research loop, and universities stopped training human researchers for them.",
+    s: "Graduate intake halved in the automated research fields by {year}.",
+    f: "graduate intake halves in the fields where frontier systems run the research loop",
+    m: "Universities stopped training people for work the systems already did." },
+  'orbital-gigawatt': { lane: 'buildout', n: "the first orbital gigawatt",
+    t: "In {year} orbital datacentres passed a gigawatt of installed compute, about the draw " +
+       "of a large city, and launch cost set the builders' pace.",
+    s: "Orbital datacentres passed a gigawatt of installed compute in {year}.",
+    f: "orbital datacentres pass a gigawatt of installed compute",
+    m: "Some of the compute left the ground, and the permit fights with it." },
+  'surveillance-state-ai': { lane: 'oversight', n: "the population-scale surveillance programme",
+    t: "In {year} a government fused to its laboratories ran frontier systems over its whole " +
+       "population's communications, and its courts left the programme in place.",
+    s: "A government ran frontier systems over its whole population's communications from " +
+       "{year}.",
+    f: "a government fused to its laboratories runs frontier systems over its whole " +
+       "population's communications",
+    m: "Frontier systems watched the citizens, and the courts let them." },
+  'verification-body': { lane: 'oversight', n: "the multilateral licensing body",
+    t: "In {year} the national release gate became a multilateral licensing body with its own " +
+       "inspectors, on the pattern of the International Atomic Energy Agency.",
+    s: "The release gate became a multilateral licensing body in {year}.",
+    f: "the national release gate becomes a multilateral licensing body with its own inspectors",
+    m: "Release approval moved from one capital to a treaty body." },
+  'first-fleet-retired': { lane: 'buildout', n: "the retirement of the first fleet",
+    t: "In {year} the operators retired the halls of the first build-out at the end of their " +
+       "design life, and rebuilt a fifth of installed capacity on new power.",
+    s: "The operators retired the halls of the first build-out in {year}.",
+    f: "the operators retire the halls of the first build-out at the end of their design life " +
+       "and rebuild a fifth of installed capacity",
+    m: "The build-out became a replacement cycle." },
+  'limit-lapses-late': { lane: 'buildout', n: "the lapse of the verified limit",
+    t: "In {year} the verified compute limit lapsed as one principal let it expire, near the " +
+       "median thirty-year life of inspection agreements.",
+    s: "The verified compute limit lapsed in {year}.",
+    f: "the verified compute limit lapses as one principal lets it expire",
+    m: "The inspection regime ended the way most of its predecessors did, by expiry." },
+  'late-accord': { lane: 'buildout', n: "the late compute accord",
+    t: "In {year} the principal states signed a compute-limit accord with inspections, decades " +
+       "after parity, as strategic arms limits followed nuclear parity in 1972.",
+    s: "The principal states signed a compute-limit accord with inspections in {year}.",
+    f: "the principal states sign a compute-limit accord with inspections, decades after parity",
+    m: "Limits came after parity, as they had for warheads." },
+  'controls-sunset': { lane: 'buildout', n: "the sunset of the hardware controls",
+    t: "In {year} the principal states folded the unilateral hardware controls of 2022 into a " +
+       "multilateral list, as COCOM gave way to Wassenaar in 1994 after 44 years.",
+    s: "The principal states folded the hardware controls of 2022 into a multilateral list in " +
+       "{year}.",
+    f: "the principal states fold the unilateral hardware controls of 2022 into a multilateral " +
+       "list",
+    m: "The control regime of the arrival era closed its books." },
+  'code-consolidation': { lane: 'oversight', n: "the consolidated AI code",
+    t: "In {year} legislatures consolidated the AI statutes into a single code and the count " +
+       "stopped growing, as national codes followed decades of accretion.",
+    s: "Legislatures consolidated the AI statutes into a single code in {year}.",
+    f: "legislatures consolidate the AI statutes into a single code",
+    m: "The statute count stopped being a measure of anything." },
   'space-industrial': { lane: 'buildout', n: "cislunar industry",
     t: "In {year} industrial mass in cislunar space passed the mass of comparable industry " +
        "on Earth.",
@@ -352,18 +493,18 @@ export const TEMPLATE_TEXT = {
     m: "Courts and censuses counted a second kind of person." },
   'longevity-escape': { lane: 'capability', n: "treated ageing",
     t: "From {year} clinics treated biological ageing as a condition, for those who could " +
-       "pay, and demography changed with it.",
+       "pay, and the census bureaus recorded the longer lives.",
     s: "From {year} clinics treated biological ageing as a condition, for those who could pay.",
     f: "clinics treat biological ageing as a condition, for those who can pay",
     m: "The politics of meaning and of access to treatment replaced the politics of " +
        "retirement." },
   'post-work-constitution': { lane: 'capital', n: "the post-work institutions",
-    t: "In {year} a generation raised after wage labour lost its centrality wrote new " +
-       "institutions for status, contribution and time.",
-    s: "A generation raised after wage labour lost its centrality wrote new institutions " +
-       "for status, contribution and time in {year}.",
-    f: "a generation raised after wage labour lost its centrality writes new institutions " +
-       "for status, contribution and time",
+    t: "In {year} a generation of adults raised after wage labour lost its centrality wrote " +
+       "new institutions for status, contribution and time.",
+    s: "A generation of adults raised after wage labour lost its centrality wrote new " +
+       "institutions for status, contribution and time in {year}.",
+    f: "a generation of adults raised after wage labour lost its centrality writes new " +
+       "institutions for status, contribution and time",
     m: "Standing in society stopped being read off a payslip." },
   'governance-of-plenty': { lane: 'oversight', n: "the politics of allocating abundance",
     t: "From {year} parliaments argued over how to allocate abundant goods, where they had " +

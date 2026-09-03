@@ -173,6 +173,19 @@ The design is `Research/plan-2026-09-02-chronicle.md`; the review it answers is
   sampler is where it acts. "Moves nothing" was true of the tracks and false of the model.
 - **The Method numbers are read from the emission** (`engine.dynamics`, `mainline.n`, the
   bands), never typed.
+- **A far-field template is keyed to the variables its subject depends on, never to the
+  aligned branch as a proxy** (r10). Cislunar industry needs capital that survived, digital
+  minds need a control verdict short of loss, treated ageing needs the benefit position. Keyed
+  on A2 and A3 the far field was one branch's future, and the medoid read forty empty years.
+  The Atlas self-test holds an expected 0.6 events or more per decade to 2080 on the plain
+  composition; a template added without a window, a probability and a wiki citation fails it.
+- **A clause the assembler cuts at ", and" stands alone and needs its own actor.** "Launch
+  cost set their pace" passed as the tail of a sentence and failed as a sentence; the readout
+  gate reads every sentence of the composed headline, so write each clause of a `t` with a role
+  the gate knows (`ROLES` in `build/readout_gate.py`) or a proper noun.
+- **A hash-only `goto` does not reload the page.** A Playwright script that changes `#t=` or
+  `#y=` and reads `sheetState()` after `__FRAME_READY` reads the previous tab's state; reload
+  after every navigation before reading anything.
 
 The traps below that name FRAG, CROSS, ECON_MOD, HEADCL, spans, stages or the calendar lanes
 describe the vignette layer that P1 retired; they are kept as the history of why the chronicle

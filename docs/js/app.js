@@ -5,18 +5,18 @@
 // on that instrument. It reads the same emitted data and implements the same functions against
 // the same shipped constants (`engine.json`), so the two surfaces cannot drift apart.
 
-import { Draft, PEN, INK, paperTileURL } from './draft.js?v=20260903-0331';
+import { Draft, PEN, INK, paperTileURL } from './draft.js?v=20260903-0408';
 import { SECTIONS, SHEET_W, TABS, CHART, COL, CTL_NOTE_W, balance,
-         proseColumns, measureSections, SHEET_CW, NOTE_TITLE } from './sections.js?v=20260903-0331';
-import { column, fmtNum } from './instruments.js?v=20260903-0331';
+         proseColumns, measureSections, SHEET_CW, NOTE_TITLE } from './sections.js?v=20260903-0408';
+import { column, fmtNum } from './instruments.js?v=20260903-0408';
 import { chronicle, provenanceNote, capsFor, trackNote, capsSummary, ledgerEndOf,
-         buildLedger, ledgerDiff, branchCaption } from './ledger.js?v=20260903-0331';
+         buildLedger, ledgerDiff, branchCaption } from './ledger.js?v=20260903-0408';
 import { mulberry32, capPath as capPathE, capAt as capAtE, tracksJS as tracksE,
          instantiateJS as instantiateE, medoid, crossings as crossingsE, onsetsJS as onsetsE,
-         branchEventsJS } from './engine.js?v=20260903-0331';
-import { describeRecord, headlineRecord, RECORD, recordAt, whenOf } from './record.js?v=20260903-0331';
-import { LONGFORM } from './narrative.js?v=20260903-0331';
-import { chooseFigures } from './figures.js?v=20260903-0331';
+         branchEventsJS } from './engine.js?v=20260903-0408';
+import { describeRecord, headlineRecord, RECORD, recordAt, whenOf } from './record.js?v=20260903-0408';
+import { LONGFORM } from './narrative.js?v=20260903-0408';
+import { chooseFigures } from './figures.js?v=20260903-0408';
 
 // One build number, injected into index.html at ship time, versions BOTH the data fetches and
 // (via the build's import rewrite) every module. A fresh app.js against a stale draft.js is the
@@ -325,7 +325,9 @@ function rankedBranches() {
                  from: base[a.key] });
     }
   }
-  out.sort((x, y) => y.diff.score - x.diff.score);
+  // ranked by the ledger difference weighted by the share of sampled futures holding the
+  // setting (2026-09-03): a branch one future in a hundred holds no longer heads the plate
+  out.sort((x, y) => y.diff.score * y.weight - x.diff.score * x.weight);
   branchCache.ranked = out;
   return out;
 }

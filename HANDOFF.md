@@ -1,5 +1,34 @@
 # AI Futures Forecaster — live state
 
+**2026-09-03, later: the far decades of the drawn path are dated, and the branches plate ranks
+by weight.** Registry **r10-2026-09-03** on the Atlas branch (beside r9, held for the merge)
+grows the template library from 38 to 59. Every template past 2045 had required A2 or A3 (or
+A1, or T4), so the medoid — T3·K1·A4·C1·R4·D2·S3·P3·E3·L4·G2 — dated nothing after its research
+crossing in 2034. Five far templates are re-keyed to the variables their subjects depend on
+(cislunar industry to capital surviving, digital minds to a control verdict short of loss,
+treated ageing to the benefit position, the post-work constitution to work having transferred,
+the politics of plenty to benefit realised with diffusion broad), and twenty-one are added, each
+cited to the wiki and dated by a base rate where the record carries one: parity within the lead
+the controls bought, a national siting statute, the off-grid majority, a sovereign compute
+majority, the millionth humanoid, AI-designed molecules a majority of approvals, a
+released-weights incident and the verdict closing later, a second capital cycle, an antitrust
+breakup, a 32-hour week, a national basic income, graduate intake halving, the first orbital
+gigawatt, a surveillance programme under a state-fused laboratory, a multilateral licensing
+body, the first fleet retired, the verified limit lapsing at the thirty-year median, a late
+accord after parity, the 2022 controls folded into a multilateral list, the statutes
+consolidated. The Atlas self-test asserts an expected 0.6 events or more in every decade from
+the 2040s to the 2070s on the plain composition (measured 3.4, 2.6, 1.1, 0.8). On the emitted
+medoid the ledger carries 23 events: five in the 2040s, two each in the 2050s and 2060s, one
+each in the 2070s and 2080s — the plan's P4 acceptance at 2077, an entry per decade, holds on
+the drawn path. `TEMPLATE_TEXT` carries all 59 in the register of the record; the readout gate
+found twenty split clauses with no actor on the first pass (a clause the assembler cuts at
+", and" stands alone and needs its own actor: "Launch cost set their pace" became "launch cost
+set the builders' pace"), all rewritten.
+
+**The branches plate ranks by the ledger difference times the share of sampled futures holding
+the setting** (August's choice, 2026-09-03), so a branch one future in a hundred holds no
+longer heads the plate; the intro says so.
+
 **2026-09-03, morning: the branch carries a built `docs/`, and nothing of P0 to P5 is live
 until `main` carries it.** Pages serves `main:/docs`, the nightly on August's machine builds
 `docs/` from `main`'s `web/` and pushes it, and every phase since P0 changed `web/` on the branch
@@ -335,7 +364,7 @@ document window opens to 1720 px, where 2 mm of cap height renders at about 13 p
 | Instruments | details | A tempo dials · B compute manifold · C capability domains and agent collectives |
 | Behaviour | behaviour | six recorders: compute, revenue, employment, measures, approval, emissions |
 | World | world | the active line on the ground |
-| Branches | alternatives | twelve branches from the drawn path, one variable moved on each, ranked by how much the ledger of dated events changes |
+| Branches | alternatives | twelve branches from the drawn path, one variable moved on each, ranked by the ledger difference weighted by the setting's share of sampled futures |
 | This morning | morning | today's evidence applications with their arithmetic, and the net drift |
 | Research | research | the evidence programme: the audit, all 26 recommended priors against their current values, and the structural finding |
 | Method | sources | method, grounding counts, the literature, and what this surface is |

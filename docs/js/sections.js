@@ -5,8 +5,8 @@
 // wide, drawn at one fixed scale so lettering keeps the size it was drawn at and nothing has to
 // be zoomed. A section's millimetre space runs x 0 → 300 across and y 0 → H up from its foot.
 
-import { PEN, INK, PAPER } from './draft.js?v=20260903-0331';
-import { dial, manifold, strip, collectives, fmtNum } from './instruments.js?v=20260903-0331';
+import { PEN, INK, PAPER } from './draft.js?v=20260903-0408';
+import { dial, manifold, strip, collectives, fmtNum } from './instruments.js?v=20260903-0408';
 
 export const SHEET_W = 340;
 const PAD = 13;
@@ -1376,11 +1376,11 @@ world.height = (S) => 214 + (S.plateNote ? S.plateNote.h + 24 : 0);
 // ── 7 · alternatives ─────────────────────────────────────────────────────────
 export function alternatives(d, S, H) {
   const y = head(d, H - 8, 'BRANCHES FROM THE DRAWN PATH',
-    'Twelve branches: on each, one variable takes another of its settings and the ledger of ' +
-    'dated events changes most. The caption says what changes and when against the drawn ' +
-    'path, in blue over the drawn path in pencil; the weight is the share of sampled futures ' +
-    'holding that setting. Pressing a branch makes it the active line through the whole ' +
-    'document, and pressing it again releases it.');
+    'Twelve branches: on each, one variable takes another of its settings, ranked by how much ' +
+    'the ledger of dated events changes, weighted by the share of sampled futures holding ' +
+    'that setting. The caption says what changes and when against the drawn path, in blue ' +
+    'over the drawn path in pencil; the weight is that share. Pressing a branch makes it the ' +
+    'active line through the whole document, and pressing it again releases it.');
   const foot = S.plateNote ? S.plateNote.h + 22 : 14;
   S.drawBranches(d, S, [PAD, foot, CW, y - foot - 6]);
   if (S.plateNote) noteBlock(d, PAD, S.plateNote.h + 11, CW, S.plateNote,
