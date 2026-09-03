@@ -15,7 +15,7 @@
 // a mark in the margin, and what a reader opening it is shown (`prov`). The readout gate
 // refuses a line without a source.
 import { MILESTONE_TEXT, DOMAIN_TEXT, LADDER_NOW, TEMPLATE_TEXT, THRESHOLDS, CRITERION,
-         WORK_CLAUSE, ONSET, EVENT_GROUPS, MARKERS } from './narrative.js?v=20260903-0408';
+         WORK_CLAUSE, ONSET, EVENT_GROUPS, MARKERS } from './narrative.js?v=20260903-1130';
 
 export const LANES = ['capability', 'buildout', 'capital', 'oversight'];
 export const LANE_HEAD = {
