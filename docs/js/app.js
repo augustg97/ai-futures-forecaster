@@ -5,14 +5,14 @@
 // on that instrument. It reads the same emitted data and implements the same functions against
 // the same shipped constants (`engine.json`), so the two surfaces cannot drift apart.
 
-import { Draft, PEN, INK, paperTileURL } from './draft.js?v=20260901-1130';
+import { Draft, PEN, INK, paperTileURL } from './draft.js?v=20260902-1828';
 import { SECTIONS, SHEET_W, TABS, CHART, COL, CTL_NOTE_W, balance,
-         proseColumns, measureSections, SHEET_CW } from './sections.js?v=20260901-1130';
-import { column, fmtNum } from './instruments.js?v=20260901-1130';
-import { describe, headline } from './narrative.js?v=20260901-1130';
-import { describeRecord, headlineRecord, RECORD, recordAt, whenOf } from './record.js?v=20260901-1130';
-import { LONGFORM } from './narrative.js?v=20260901-1130';
-import { chooseFigures } from './figures.js?v=20260901-1130';
+         proseColumns, measureSections, SHEET_CW } from './sections.js?v=20260902-1828';
+import { column, fmtNum } from './instruments.js?v=20260902-1828';
+import { describe, headline } from './narrative.js?v=20260902-1828';
+import { describeRecord, headlineRecord, RECORD, recordAt, whenOf } from './record.js?v=20260902-1828';
+import { LONGFORM } from './narrative.js?v=20260902-1828';
+import { chooseFigures } from './figures.js?v=20260902-1828';
 
 // One build number, injected into index.html at ship time, versions BOTH the data fetches and
 // (via the build's import rewrite) every module. A fresh app.js against a stale draft.js is the
