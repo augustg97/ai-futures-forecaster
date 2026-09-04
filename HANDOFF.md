@@ -1,5 +1,22 @@
 # AI Futures Forecaster — live state
 
+**2026-09-04, nightly: published `20260904-1130`, and the Atlas gate is one event from
+refusing.** Exit 0, every gate clean — port gate 0 divergences over 30,000 values, readout gate
+STRICT 0 faults over 13 paths and 374 composed years, registry drift none at `r10-2026-09-03`,
+coverage and tables clean. Verified live on what the build draws: four served modules hashed
+against the local build, `ledger.js` 50,312 bytes, `sections.js` 96,323, `narrative.js` 108,019,
+`engine.js` 18,046, every SHA-256 matching at the `?v=` the served entry carries. **The one thing
+to know before the next run:** the Atlas ratchet's floor on `events.explicit_pct` is 90.7 and the
+staged trunk stands at 90.6759% (2,227 explicit of 2,456) — already below the floor, passing only
+because `check_events` rounds to one place. One further event without an explicit date refuses the
+publish. Incoming events run about 79% explicit against a corpus at 90.7%, so the slide is
+composition, not a data defect, and the refusal is due on an ordinary night. That is the Atlas's
+to fix and its own nightly owns it; here the designed behaviour holds — the build stops and the
+sheet keeps serving `20260904-1130`. The note is `Research/nightly-2026-09-04.md`, which also
+records why the Atlas's day-over-day drift printer stayed silent on the night the margin closed:
+it compares against `last_run`, the Atlas's own nightly ran first and overwrote it with tonight's
+value, and a second reader of an unchanged corpus can never report the day's drift.
+
 **2026-09-03, nightly: the merge landed and P0–P5 is LIVE.** `origin/main` carries
 `claude/ai-futures-forecaster-review-t7fvqb`, and the nightly rebuilt `docs/` from the merged
 `web/` against the parent's r10-2026-09-03 emission. Published `__BUILD 20260903-1130`,
