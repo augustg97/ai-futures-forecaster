@@ -1,5 +1,24 @@
 # AI Futures Forecaster — live state
 
+**2026-09-06, nightly: THE ATLAS GATE REFUSED. Nothing published; live stands at
+`20260905-1131`.** Exit 1 at the first step — the gate ran, refused, and the pull, the stamp, the
+commit and the push never happened. `docs/` is untouched and the working tree is clean. One check
+failed: `events.explicit_pct` at 90.6 against an operative floor of 90.7 (stored baseline 91.7,
+flat 1.0 tolerance, compared on the one-decimal rounded value). The staged trunk is 2,251 explicit
+of 2,484 — **90.6200%** — after a batch of ten arrived carrying eight dates (80.0%); yesterday's
+recorded headroom to the `< 90.65` boundary was 0.0129 pp and it is now 0.0300 pp the wrong side
+of it. **It takes 8 consecutive fully-dated events to publish again.** This is the designed
+behaviour and it is the Atlas's to fix, not this project's: do not set `SKIP_AUDIT`. Two figures
+improved tonight and were discarded, because `audit_all.py` returns on failure before it ratchets
+— `forecast.grounded_direct` 1645 → 1653 and `review.pct` 6.993 → 6.965. **The baseline has never
+been re-taken**: recorded 2026-07-31 against n=1825, enforced tonight against 2,484. Registry
+`r10-2026-09-03`, unchanged — 11 axes, 61 positions, no plate needs room; 18 priors moved, all
+under 0.0011, on axes A, S and G. The note is `Research/nightly-2026-09-06.md`.
+
+**2026-09-05, nightly: published `20260905-1131`**, live-verified on five served modules hashed
+against the local build. Gate PASS at 2,474 events, 90.6629% explicit — the floor held on the
+batch's dated share, not the corpus's. The note is `Research/nightly-2026-09-05.md`.
+
 **2026-09-04, nightly: published `20260904-1130`, and the Atlas gate is one event from
 refusing.** Exit 0, every gate clean — port gate 0 divergences over 30,000 values, readout gate
 STRICT 0 faults over 13 paths and 374 composed years, registry drift none at `r10-2026-09-03`,
