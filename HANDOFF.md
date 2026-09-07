@@ -1,5 +1,30 @@
 # AI Futures Forecaster — live state
 
+**2026-09-07, nightly: published `20260907-1129` after a two-night hold.** Exit 0, every gate
+clean — port gate `r10-2026-09-03` 0 divergences over 30,000 values with the four crossings
+agreeing, readout gate STRICT 0 faults over 13 paths and 374 composed years, registry drift none,
+coverage and tables clean. Verified live on what the build draws: nine served files hashed against
+the local build at the `?v=` the served entry carries — `app.js` 101,619 bytes plus all eight
+modules it imports — every SHA-256 matching, and served `data/meta.json` identical and carrying
+tonight's 2,501-event corpus. **The gate passed because two batches happened to be well dated, and
+nothing was fixed.** The seventeen events that arrived since the refusal all carried explicit dates
+(100%, against 80/80/79% in the batches that caused the slide), lifting the corpus 90.6200% →
+**90.6837%**. That is still **below** the operative floor of 90.7 (stored baseline 91.7, flat 1.0
+tolerance), passing only because `check_events` rounds to one place before `audit_all.py:270`
+compares. **The runway is one event again**: a single undated arrival gives 90.6475 → 90.6 and
+refuses. For a batch of *k*, the line holds only at `ceil(0.9065k − 0.8435)` dated — 9 of 10, 15 of
+17 — and incoming batches have run 79%, 80%, 80%, 100%, 100%. The baseline is still the day-one
+pair, `recorded 2026-07-31` against `n: 1825`, enforced tonight against a corpus 37% larger. The
+Atlas owns all of this; do not set `SKIP_AUDIT`. **Neither of the Atlas's change printers fired
+tonight** — no `DRIFT` line and no `RATCHET` line — because its own nightly ran first and wrote
+`last_run` and the tightened baselines before this gate read them; three things moved unreported,
+`explicit_pct` 90.6 → 90.7, `forecast.grounded_direct` 1653 → 1664 and `review.pct` 6.965 → 6.957,
+the last two being the figures the 09-06 refusal discarded. Registry `r10-2026-09-03`, unchanged —
+11 axes, 61 positions, 59 templates, **no plate needs room**. The note is
+`Research/nightly-2026-09-07.md`, which also records that `forecast.grounded_direct`,
+`witness_epoch.matched` and `statelaw.observed` all sit at zero margin by the ratchet's design, so
+the explicit-date share is not the only floor a single step would cross.
+
 **2026-09-06, nightly: THE ATLAS GATE REFUSED. Nothing published; live stands at
 `20260905-1131`.** Exit 1 at the first step — the gate ran, refused, and the pull, the stamp, the
 commit and the push never happened. `docs/` is untouched and the working tree is clean. One check
