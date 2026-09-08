@@ -1,5 +1,35 @@
 # AI Futures Forecaster — live state
 
+**2026-09-08, nightly: published `20260908-1130`.** Exit 0, every gate clean — port gate
+`r10-2026-09-03` 0 divergences over 30,000 values with the four crossings agreeing, readout gate
+STRICT 0 faults over 13 paths and 374 composed years, registry drift none, coverage and tables
+clean. Verified live on what the build draws: nine served files hashed against the local build at
+the `?v=` the served entry carries — `index.html` identical, `app.js` 101,619 bytes plus all eight
+modules it imports — every SHA-256 matching, and served `data/meta.json` identical and carrying
+tonight's 2,524-event corpus. **Tonight's finding is that three of the eleven axes have never
+moved, and two of them have no rule that could move them.** K (Takeoff shape) and R (Regulatory
+architecture) have taken **exactly one distinct emitted marginal across all 35 builds**; L
+(Laboratory conduct) two, its seed and its birth night 2026-08-20. Of the parent's 31
+`EVIDENCE_RULES`, **zero** nudge any position on K, R or L, and **zero of 192 logged applications**
+have landed on them — so no arriving event can ever change their reading, and the sheet prints
+those constants in the same ink and phrasing as C's, which 23 rules update nightly. CLAUDE.md
+already names this defect — "an axis nothing can move renders a frozen prior as a live reading" —
+but attaches it to **G**, which turns out to carry 15 rules, 13 distinct values and movement on 12
+of 19 nights. G is starved (15 rules earning 3 applications, four never fired); K, R and L are
+unwired, and R is the axis whose subject the feed carries most of. Held, not applied: the fix is a
+rule set or a letter on the sheet, and both are the parent's round to decide. **The explicit-date
+floor sat below itself a fourth night** — 2,289 of 2,524 is **90.6894%** against an operative floor
+of 90.7, passing only because `check_events` rounds before `audit_all.py:270` compares; the runway
+is now **two** undated arrivals (23 arrived tonight, 21 dated, 91.3%). **Both change printers were
+silent a second night**, the Atlas's own nightly having written `last_run` first — and DRIFT
+carries a second blindness that survives fixing that, since it compares the *rounded*
+`explicit_pct` and so cannot see the digits the erosion happens in. **`review.pct` ratcheted twice
+on no review work**: the backlog rose 173 → 174 on 09-07 and stood still tonight, and both nights
+the growing denominator printed an improvement and tightened the baseline; the `review.n` check
+that would catch it is unreachable behind an `elif`. Registry `r10-2026-09-03`, unchanged — 11
+axes, 61 positions, 59 templates, **no plate needs room**. The note is
+`Research/nightly-2026-09-08.md`.
+
 **2026-09-07, nightly: published `20260907-1129` after a two-night hold.** Exit 0, every gate
 clean — port gate `r10-2026-09-03` 0 divergences over 30,000 values with the four crossings
 agreeing, readout gate STRICT 0 faults over 13 paths and 374 composed years, registry drift none,
