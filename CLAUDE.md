@@ -378,11 +378,25 @@ __FW.auditSweep()                      # in the console: the audit (check `contr
   `prose_gate.empty_marks()` flags a second half with no figure, no named body and under five new
   content words. It was 32% of 245 marked sentences; the ceiling is 20%.
 
-- **An axis's inputs are a property of the CORPUS, not of the rule library.** Before adding an
-  axis, sweep its subject terms over the event trunk and count. A generous benefit sweep matched
-  17 of 2,180 events — the feed carries no health or science section at all — where
-  `ev-safety-research` fires on 95. Writing rules does not fix that; only widening the feed does.
-  An axis nothing can move renders a frozen prior as a live reading.
+- **An axis nothing can move renders a frozen prior as a live reading, and there are TWO ways
+  for an axis to be unmovable.** Check both, from both sides, before believing either.
+
+  *Starved* — the rules exist and the corpus cannot feed them. An axis's inputs are a property of
+  the CORPUS, not of the rule library, so before adding an axis sweep its subject terms over the
+  event trunk and count. A generous benefit sweep matched 17 of 2,180 events — the feed carries no
+  health or science section at all — where `ev-safety-research` fires on 95. Writing rules does not
+  fix that; only widening the feed does. **G is the starved axis** and it still moves: 15 rules,
+  3 applications, 13 distinct values over 19 nights.
+
+  *Unwired* — no rule names the axis at all, so the corpus is irrelevant. Measured 2026-09-08:
+  **zero of the 31 `EVIDENCE_RULES` nudge any position on K, R or L**, and zero of 192 logged
+  applications have landed on them. K and R have taken **exactly one** distinct emitted marginal
+  across all 35 builds; L two. R is Regulatory architecture — the subject the feed carries most of —
+  so the corpus argument does not touch it. **Count an axis's WRITERS, not its readers.** A frozen
+  value and a value nothing can write look identical from the reading side, and the sheet prints
+  all eleven in the same ink, size and phrasing. This rule named G for three weeks and never named
+  the three axes that had never moved, because it was derived from the corpus side only.
+  `Research/nightly-2026-09-08.md` carries the measurement.
 
 - **`auditSweep()` LEAVES THE CANVAS IN THE LAST STATE IT SWEPT.** It draws every section at four
   dates, seven selections and five pin sets, and does not restore the view. A screenshot taken
