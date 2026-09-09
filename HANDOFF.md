@@ -1,5 +1,39 @@
 # AI Futures Forecaster — live state
 
+**2026-09-09, nightly: published `20260909-1130`.** Exit 0, every gate clean — port gate
+`r10-2026-09-03` 0 divergences over 30,000 values with the four crossings agreeing, readout gate
+STRICT 0 faults over 13 paths and 374 composed years, registry drift none, coverage and tables
+clean. Verified live on what the build draws: nine served files hashed against the local build at
+the `?v=` the served entry carries — `index.html` identical, `app.js` 101,619 bytes plus all eight
+modules it imports — every SHA-256 matching, and served `data/meta.json` identical and carrying
+tonight's 2,544-event corpus. **Tonight's finding is that `review.pct` has ratcheted thirteen
+consecutive times on a backlog that is exactly where it started.** Reading the parent's whole
+`baselines.json` history rather than the last two nights: the rate has fallen on all 37 recorded
+runs, 11.629 → 6.879, but the early ones were earned (222 → 174 items cleared by 2026-08-24) and
+**the last thirteen were bought with events**. Across the fourteen runs since 2026-08-25 the
+backlog went 175 → 175 (two cleared 09-04, three arrived since), the corpus grew 2,287 → 2,544,
+and the floor tightened 0.773pp every night. For the rate to read as erosion the backlog must grow
+by `pct × Δcorpus` — **1.376 items** at twenty arrivals a night — so growing by one reads as an
+improvement, which is what happened tonight. Nothing catches it: the gate's own contract
+(`audit_all.py:24`, "needs-review count may not grow") lives at line 297 behind an `elif` whose
+`if "pct" in b["review"]` has always been true, and the stored `review.n` is still the day-one
+**224**, forty-nine above the live figure, so it would not fire if reached. **Five of the six
+ratchet paths compare like with like; the sixth divides a backlog by a flow.** The remedy is one
+line — `review.n` into the DRIFT block, which already compares against `last_run` — and it is the
+parent's; held, not applied, and the sheet draws no review figure so nothing is lettered here.
+**The explicit-date floor cleared on merit for the first time in five nights**: 20 of 20 arrivals
+dated (third straight 100% batch), 2,309 of 2,544 = **90.7626%**, above the 90.7 operative floor
+without the rounding that carried the four nights before it; the runway widened from two undated
+arrivals to **four**. **Both change printers were silent a third night**, the Atlas's own nightly
+having committed `last_run` and the tightened baselines first — `explicit_pct` 90.7 → 90.8,
+`forecast.grounded_direct` 1664 → 1678 and `review.pct` 6.894 → 6.879 all moved unreported here.
+**Five axes printed exactly 0.0000pp** — K, R and L still unwired (one, one and two distinct
+vectors in 26, 26 and 21 nights), and now T still on four consecutive sheets and P quiet after
+eleven moves in thirty-five; the sheet prints all five in the same ink as E's, which moved on 25 of
+35. Registry `r10-2026-09-03`, unchanged — 11 axes, 61 positions, 59 templates, every axis and
+position key identical to last night's pull, **no plate needs room**. The note is
+`Research/nightly-2026-09-09.md`.
+
 **2026-09-08, nightly: published `20260908-1130`.** Exit 0, every gate clean — port gate
 `r10-2026-09-03` 0 divergences over 30,000 values with the four crossings agreeing, readout gate
 STRICT 0 faults over 13 paths and 374 composed years, registry drift none, coverage and tables
