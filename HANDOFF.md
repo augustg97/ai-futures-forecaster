@@ -21,8 +21,8 @@ improvement, which is what happened tonight. Nothing catches it: the gate's own 
 ratchet paths compare like with like; the sixth divides a backlog by a flow.** The remedy is one
 line — `review.n` into the DRIFT block, which already compares against `last_run` — and it is the
 parent's; held, not applied, and the sheet draws no review figure so nothing is lettered here.
-**The explicit-date floor cleared on merit for the first time in five nights**: 20 of 20 arrivals
-dated (third straight 100% batch), 2,309 of 2,544 = **90.7626%**, above the 90.7 operative floor
+**The explicit-date floor cleared on merit for the first time since 2026-09-03**: 20 of 20 arrivals
+dated — the second 100% batch in three nights (79/80/80/100/91.3/100) — 2,309 of 2,544 = **90.7626%**, above the 90.7 operative floor
 without the rounding that carried the four nights before it; the runway widened from two undated
 arrivals to **four**. **Both change printers were silent a third night**, the Atlas's own nightly
 having committed `last_run` and the tightened baselines first — `explicit_pct` 90.7 → 90.8,
