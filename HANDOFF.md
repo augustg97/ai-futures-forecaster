@@ -1,5 +1,39 @@
 # AI Futures Forecaster — live state
 
+**2026-09-10, nightly: published `20260910-1129`.** Exit 0, every gate clean — port gate
+`r10-2026-09-03` 0 divergences over 30,000 values with the four crossings agreeing, readout gate
+STRICT 0 faults over 13 paths and 374 composed years, registry drift none, coverage and tables
+clean. Verified live on what the build draws: nine served files hashed against the local build at
+the `?v=` the served entry carries — `index.html` identical, `app.js` 101,619 bytes plus all eight
+modules it imports — every SHA-256 matching, and served `data/meta.json` identical and carrying
+tonight's 2,562-event corpus. **Tonight's finding is the mirror of last night's: the gate ratchets
+a count whose reference stopped growing.** `witness_epoch.matched` has been the integer **20 on all
+thirteen regenerations** of the witness while the wiki side grew 56 → 74 models — eighteen arrivals,
+**not one match** — because `data/witness/epoch-notable-models.csv` is a 1,041-row snapshot whose
+last model is dated **2026-07-24**, whose mtime is 2026-07-31, and which is **not in git** (`/data/`
+is gitignored), so nothing versions or refreshes it. Fourteen of the 74 wiki models postdate that
+cutoff and can never match; `disagreements` (4) and `gaps` (133) are pinned by the same file. The
+match **rate** fell 35.71% → **27.03%**, a 24.3% relative erosion, and no ratchet path can see it —
+the gate reads only counts here. Same root as `review.pct`: **the ratchet compares a number against
+its own past without holding the population fixed** — one chose a growing denominator, the other
+none at all. **Last night's "five of six compare like with like" is corrected: only three do**, and
+**three of the six have never moved in 38 runs** (`explicit_pct` frozen at the day-one 91.7 because
+the live share has always been *below* it, so the floor has never once been raised; both witness
+counts frozen because their reference is). **No path has loosened once in 38 runs** — 84 moves, all
+improving. A hypothesis that FAILED and should not be re-derived: `forecast.grounded_direct` is
+structurally loose the same way, but its share rose on all 39 nights it moved, 71.888% → **79.036%**
+— never once erosion. **`review.pct` ratcheted a fourteenth time, and for the first time since
+09-04 with real review work behind it** — the backlog actually fell 175 → 174 — though 55.3% of the
+0.08736pp was still the denominator; break-even is 1.22 items on 18 arrivals, and the stored
+`review.n` is still the day-one **224**. **The explicit-date floor cleared on merit a second night**:
+18 of 18 arrivals dated — the third 100% batch in four nights — 2,327 of 2,562 = **90.8275%**,
+runway 4 → **6** undated arrivals. **Both change printers silent a fourth night** (`review.pct`
+6.879 → 6.792 and `grounded_direct` 1678 → 1689 moved unreported). **Seven axes printed exactly
+0.0000pp and C carried 91.8% of the night** — 1.2324pp of 1.3423pp, the parent attributing it to
+California SB 813; T still on five straight sheets, P on two, and K/R/L still one vector each over
+23/23/20 nights. Registry `r10-2026-09-03`, unchanged — 11 axes, 61 positions, 59 templates,
+**no plate needs room**. The note is `Research/nightly-2026-09-10.md`.
+
 **2026-09-09, nightly: published `20260909-1130`.** Exit 0, every gate clean — port gate
 `r10-2026-09-03` 0 divergences over 30,000 values with the four crossings agreeing, readout gate
 STRICT 0 faults over 13 paths and 374 composed years, registry drift none, coverage and tables
