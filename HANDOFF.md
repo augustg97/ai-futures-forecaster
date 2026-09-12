@@ -1,5 +1,47 @@
 # AI Futures Forecaster — live state
 
+**2026-09-12, nightly: published `20260912-1131`.** Exit 0, every gate clean — port gate
+`r10-2026-09-03` 0 divergences over 30,000 values with the four crossings agreeing, readout gate
+STRICT 0 faults over 13 paths and 374 composed years, registry drift none, coverage and tables
+clean, live stamp verified. **Tonight's finding is that the chronicle is a lookup table with three
+rows, and this project's own git archive proves it without re-running the parent.** `docs/data/
+forecast/` is committed on every publish, so 37 published `mainline.json` blobs are on disk.
+Grouping them by drawn line, and holding the template set fixed at the 59 that landed 09-03: line a
+was drawn on 09-03, 09-05, 09-11 and **09-12** and returned **ONE** ledger — the same 23 entries at
+the same years to four decimals, nine days and every night of evidence apart; line b on five nights
+returned one ledger of 15; and the argmax line, drawn on **thirteen consecutive nights**
+08-20 to 09-01, returned one ledger of 11. **Across 22 published nights the drawn line took three
+values and the ledger took exactly three.** The one apparent exception is the r10 template set
+going 38 → 59 within 09-03, and the nine entries common to both keep their years exactly. Tonight
+the line HELD and the whole drawn object came back byte-identical — `wl`, `knots`, `crossings`,
+`tracks`, `onsets`, all 23 entries — on a night when **six axes moved 0.5409 pp** (T 0.2640 on
+`ev-benchmark-progress`, A 0.0895, C 0.0794, E 0.0751 on evidence; D and G on the widener). So last
+night's twelve arrivals were the line flipping and tonight's silence is the line holding; neither
+was evidence. **The four flips all moved the same four axes — R, S, P, G — and evidence wrote three
+of sixteen axis-flips; R and P were written by nothing at all on any of the four**, and R has not
+moved in 24 emissions. C and A carry 6.2371 pp between them and have held C1/A4 on every medoid
+night, so the two axes evidence actually writes have never once changed the chronicle.
+**The held remedy now has a measured control and its terms change**: the argmax rule is what the
+sheet ran before 09-03 (the 08-20..09-01 drawn vector is the current argmax byte for byte, and the
+09-01 `p` 7.524e-06 is the 09-03 argmax `p` to every digit) — 13 nights, 12 transitions, **7.0950
+pp of mass moved, line changed 0×, ledger changed 0×**, against the medoid's 9 nights, 8
+transitions, 5.3203 pp, **4× and 4×**. Drawing the argmax removes the noise and creates no signal:
+its chronicle was frozen thirteen nights while the marginals moved on all twelve transitions.
+Under either rule the ledger and the evidence are uncorrelated. Still **held, not applied**;
+`agree` sat at 0.2950–0.2962 through all four flips and five holds and warns of nothing.
+**`review.pct` ratcheted a sixteenth time on a numerator that did not move at all** — 175 → 175,
+corpus +19, 6.7803 → 6.7308 — the purest form yet of the 09-09 defect, and `review.n` is still the
+day-one 224. **`explicit_pct` ERODED to 90.8077** (15 of 19 arrivals dated, 78.9%, breaking four
+100% batches in five nights): margin to the 90.7 floor is **0.1077 pp / 3.09 items**, runway 7 → **3**
+undated arrivals, and **at tonight's mix the gate refuses in two more nights** — a 19-event batch
+needs 18 dated to hold the share. Nothing ratchets it upward; it can only erode until it refuses.
+Witness frozen at `matched` 20 a **fourteenth** time (`epoch-notable-models.csv` still 2026-07-31,
+ungitted); `grounded_direct` 1,689 → 1,716 of 2,164, a fortieth rise with no erosion. Corpus
+2,581 → **2,600** events, 1,043 entities, 314 people. Registry `r10-2026-09-03` dated 2026-09-12,
+unchanged — 11 axes, 61 positions, 59 templates, only the 35 marginals and the date differ in
+`network.json`, **no plate needs room**. K, R and L still unwired, one vector each over 24 nights.
+The note is `Research/nightly-2026-09-12.md`.
+
 **2026-09-10, nightly: published `20260910-1129`.** Exit 0, every gate clean — port gate
 `r10-2026-09-03` 0 divergences over 30,000 values with the four crossings agreeing, readout gate
 STRICT 0 faults over 13 paths and 374 composed years, registry drift none, coverage and tables
